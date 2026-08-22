@@ -1,0 +1,6 @@
+{
+  "name": "VizTR - Architecture Visualization Studio & XR World",
+  "description": "Next-generation Architectural Visualization Studio and WebXR/Pixel-Streaming platform with real-time project tracking, 360 panoramic tours, 3D model viewers, and client portal.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
