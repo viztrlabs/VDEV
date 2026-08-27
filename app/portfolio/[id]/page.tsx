@@ -2,6 +2,7 @@
 
 import React, { use } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { portfolioProjects, getProjectById, getRelatedProjects } from '@/data/portfolio';
 import { useAppStore } from '@/lib/store';
@@ -40,9 +41,13 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
     <main className="flex-1 w-full pb-24">
       {/* HERO SECTION */}
       <section className="relative min-h-[60vh] flex items-end bg-zinc-950 text-white overflow-hidden pb-16 pt-32 px-6">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-40 scale-105"
-          style={{ backgroundImage: `url(${project.featuredImage})` }}
+        <Image
+          src={project.featuredImage}
+          alt={project.title}
+          fill
+          priority
+          referrerPolicy="no-referrer"
+          className="object-cover opacity-40 scale-105 pointer-events-none"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-black/40" />
 
@@ -192,12 +197,15 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
                     idx
                   )
                 }
-                className="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all"
+                className="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all bg-zinc-900"
               >
-                <img
+                <Image
                   src={imgUrl}
                   alt={`${project.title} visual ${idx + 1}`}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  referrerPolicy="no-referrer"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <div className="px-4 py-2 rounded-xl bg-white/90 text-zinc-900 text-xs font-bold flex items-center gap-1.5 shadow-lg">
@@ -256,11 +264,16 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
                   href={`/portfolio/${rel.id}`}
                   className="group p-5 rounded-2xl bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 hover:border-rose-500/50 shadow-md hover:shadow-xl transition-all flex items-center gap-4"
                 >
-                  <img
-                    src={rel.featuredImage}
-                    alt={rel.title}
-                    className="w-24 h-24 rounded-xl object-cover shrink-0 group-hover:scale-105 transition-transform"
-                  />
+                  <div className="relative w-24 h-24 rounded-xl overflow-hidden shrink-0 bg-zinc-900">
+                    <Image
+                      src={rel.featuredImage}
+                      alt={rel.title}
+                      width={96}
+                      height={96}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                  </div>
                   <div className="space-y-1">
                     <span className="text-[10px] uppercase font-bold text-rose-500">{rel.category}</span>
                     <h4 className="text-sm font-bold text-zinc-900 dark:text-white group-hover:text-rose-600 transition-colors">

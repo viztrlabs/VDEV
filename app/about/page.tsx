@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, CheckCircle2, Globe, Sparkles, Cpu, Leaf, Award, Users } from 'lucide-react';
 
 export default function AboutPage() {
@@ -9,12 +10,13 @@ export default function AboutPage() {
     <main className="flex-1 w-full pb-24">
       {/* HERO */}
       <section className="relative py-28 px-6 bg-zinc-950 text-white overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-30"
-          style={{
-            backgroundImage:
-              'url(https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=85)',
-          }}
+        <Image
+          src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=85"
+          alt="VizTR Architectural Design"
+          fill
+          priority
+          referrerPolicy="no-referrer"
+          className="object-cover opacity-30 pointer-events-none"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-transparent" />
 
@@ -113,11 +115,16 @@ export default function AboutPage() {
                 key={idx}
                 className="p-5 rounded-3xl bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 shadow-md space-y-4"
               >
-                <img
-                  src={leader.image}
-                  alt={leader.name}
-                  className="w-full aspect-square rounded-2xl object-cover"
-                />
+                <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+                  <Image
+                    src={leader.image}
+                    alt={leader.name}
+                    width={400}
+                    height={400}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                 <div className="space-y-1">
                   <h4 className="text-base font-bold text-zinc-900 dark:text-white font-display">
                     {leader.name}

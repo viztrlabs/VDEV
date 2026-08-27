@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import Image from 'next/image';
 import { useAppStore } from '@/lib/store';
 import {
   X,
@@ -37,15 +38,15 @@ export default function GalleryViewer() {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (lightboxItems.length === 0) return;
     setLightboxIndex((lightboxIndex + 1) % lightboxItems.length);
-  };
+  }, [lightboxItems.length, lightboxIndex, setLightboxIndex]);
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (lightboxItems.length === 0) return;
     setLightboxIndex((lightboxIndex - 1 + lightboxItems.length) % lightboxItems.length);
-  };
+  }, [lightboxItems.length, lightboxIndex, setLightboxIndex]);
 
   const handleZoomIn = () => {
     setZoom((prev) => Math.min(prev + 0.5, 4));
@@ -104,7 +105,7 @@ export default function GalleryViewer() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [lightboxOpen, lightboxIndex, lightboxItems.length, closeLightbox]);
+  }, [lightboxOpen, closeLightbox, handleNext, handlePrev]);
 
   if (!lightboxOpen || lightboxItems.length === 0) return null;
 
@@ -258,12 +259,18 @@ export default function GalleryViewer() {
               </button>
             </div>
           ) : (
-            <img
-              src={currentItem.url}
-              alt={currentItem.title}
-              className="max-h-[72vh] max-w-[85vw] object-contain rounded-lg shadow-2xl pointer-events-none"
-              draggable={false}
-            />
+            <div className="relative max-h-[72vh] max-w-[85vw] flex items-center justify-center">
+              <Image
+                src={currentItem.url}
+                alt={currentItem.title}
+                width={1920}
+                height={1080}
+                priority
+                referrerPolicy="no-referrer"
+                className="max-h-[72vh] max-w-[85vw] w-auto h-auto object-contain rounded-lg shadow-2xl pointer-events-none"
+                draggable={false}
+              />
+            </div>
           )}
         </div>
 
@@ -302,10 +309,13 @@ export default function GalleryViewer() {
                     : 'opacity-50 hover:opacity-80'
                 }`}
               >
-                <img
+                <Image
                   src={item.url}
                   alt={item.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="64px"
+                  referrerPolicy="no-referrer"
+                  className="object-cover"
                 />
                 {item.type === '360' && (
                   <div className="absolute inset-0 bg-rose-900/60 flex items-center justify-center">

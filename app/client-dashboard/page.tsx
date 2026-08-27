@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useAppStore } from '@/lib/store';
 import {
   Building,
@@ -25,13 +25,43 @@ import {
   ShieldCheck,
   Bell,
   BellRing,
-  Settings
+  Settings,
+  Film,
+  Columns2,
+  Video,
+  FileText,
+  Archive,
+  Loader2,
+  Check,
+  AlertTriangle,
+  CloudUpload,
+  GripVertical,
+  Filter,
+  RotateCcw,
+  SlidersHorizontal,
+  ArrowUpDown,
+  History
 } from 'lucide-react';
 import ProjectTracker from '@/components/tracking/ProjectTracker';
 import NotificationSettings from '@/components/ui/NotificationSettings';
 import ProjectStatsWidget, { ProjectStatsData } from '@/components/tracking/ProjectStatsWidget';
 import ProjectDocumentRepository, { ProjectDocument } from '@/components/tracking/ProjectDocumentRepository';
 import ProjectPhaseRoadmap, { RoadmapStage } from '@/components/tracking/ProjectPhaseRoadmap';
+import ProjectTimelapses from '@/components/tracking/ProjectTimelapses';
+import ProjectRevisionCompare from '@/components/tracking/ProjectRevisionCompare';
+import RevisionHistoryModal from '@/components/tracking/RevisionHistoryModal';
+import GoogleDriveClientConnect from '@/components/drive/GoogleDriveClientConnect';
+import GoogleMeetClientConnect from '@/components/meet/GoogleMeetClientConnect';
+import CollapsibleLeftFilterPanel from '@/components/dashboard/CollapsibleLeftFilterPanel';
+import CollapsibleRightInspectorPanel from '@/components/dashboard/CollapsibleRightInspectorPanel';
+import {
+  INITIAL_MANAGED_PROJECTS,
+  ManagedProject,
+  ProjectType,
+  ProjectStatus,
+  PaymentStatus,
+  TimesheetEntry
+} from '@/lib/projects-data';
 
 interface ClientProject {
   id: string;
@@ -782,10 +812,138 @@ const CLIENT_PROJECTS: ClientProject[] = [
 export default function ClientDashboardPage() {
   const { user, showToast, openModelViewer, openPanorama, openPixelStream } = useAppStore();
   const [selectedProjectId, setSelectedProjectId] = useState<string>('VIZTR-882');
+  const [activeTab, setActiveTab] = useState<'all' | 'timelapses' | 'compare' | 'pipeline' | 'documents' | 'reviews'>('all');
   const [feedbackText, setFeedbackText] = useState('');
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+  const [hoveredProjectId, setHoveredProjectId] = useState<string | null>(null);
+  const [archivingProjects, setArchivingProjects] = useState<Record<string, boolean>>({});
+  const [archivedProjects, setArchivedProjects] = useState<Record<string, boolean>>({});
 
-  const selectedProject = CLIENT_PROJECTS.find((p) => p.id === selectedProjectId) || CLIENT_PROJECTS[0];
+  // Drag-and-drop & status filtering state
+  const [orderedProjects, setOrderedProjects] = useState<ClientProject[]>(CLIENT_PROJECTS);
+  const [managedProjects, setManagedProjects] = useState<ManagedProject[]>(INITIAL_MANAGED_PROJECTS);
+  const [statusFilter, setStatusFilter] = useState<'all' | 'In Production' | 'Client Review' | 'Completed'>('all');
+  const [draggedProjectIndex, setDraggedProjectIndex] = useState<number | null>(null);
+  const [dragOverProjectIndex, setDragOverProjectIndex] = useState<number | null>(null);
+
+  // Collapsible Side Panels State
+  const [leftPanelOpen, setLeftPanelOpen] = useState<boolean>(true);
+  const [rightPanelOpen, setRightPanelOpen] = useState<boolean>(true);
+
+  // Dedicated Revision History & Chronological Markups Modal State
+  const [revisionHistoryModalOpen, setRevisionHistoryModalOpen] = useState<boolean>(false);
+  const [revisionHistoryProject, setRevisionHistoryProject] = useState<{ id: string; name: string } | null>(null);
+
+  // Filter Criteria State
+  const [filterCriteria, setFilterCriteria] = useState<{
+    searchQuery: string;
+    projectType: ProjectType | 'all';
+    status: ProjectStatus | 'all';
+    paymentStatus: PaymentStatus | 'all';
+    category: string | 'all';
+    budgetTier: 'all' | 'under50k' | '50kTo100k' | 'over100k';
+  }>({
+    searchQuery: '',
+    projectType: 'all',
+    status: 'all',
+    paymentStatus: 'all',
+    category: 'all',
+    budgetTier: 'all',
+  });
+
+  const selectedProject = orderedProjects.find((p) => p.id === selectedProjectId) || orderedProjects[0];
+  const selectedManagedProject = managedProjects.find((p) => p.id === selectedProjectId) || managedProjects[0];
+
+  const handleResetAllFilters = () => {
+    setFilterCriteria({
+      searchQuery: '',
+      projectType: 'all',
+      status: 'all',
+      paymentStatus: 'all',
+      category: 'all',
+      budgetTier: 'all',
+    });
+    setStatusFilter('all');
+    showToast('Filters reset.', 'info');
+  };
+
+  const handleLogHours = (projectId: string, entry: Omit<TimesheetEntry, 'id'>) => {
+    const newEntry: TimesheetEntry = {
+      ...entry,
+      id: `ts-${Date.now()}`,
+    };
+    setManagedProjects((prev) =>
+      prev.map((p) => {
+        if (p.id === projectId) {
+          const updatedHours = p.hoursMonitoring.hoursSpent + entry.hours;
+          return {
+            ...p,
+            hoursMonitoring: {
+              ...p.hoursMonitoring,
+              hoursSpent: updatedHours,
+              timesheetEntries: [newEntry, ...p.hoursMonitoring.timesheetEntries],
+            },
+          };
+        }
+        return p;
+      })
+    );
+  };
+
+  // Status Filter Counts
+  const totalCount = orderedProjects.length;
+  const inProdCount = orderedProjects.filter((p) => p.status === 'In Production').length;
+  const reviewCount = orderedProjects.filter((p) => p.status === 'Client Review').length;
+  const completedCount = orderedProjects.filter((p) => p.status === 'Completed').length;
+
+  const filteredProjects = orderedProjects.filter((p) => {
+    if (statusFilter === 'all') return true;
+    return p.status === statusFilter;
+  });
+
+  const isCustomSorted = JSON.stringify(orderedProjects.map((p) => p.id)) !== JSON.stringify(CLIENT_PROJECTS.map((p) => p.id));
+
+  // Drag and drop handlers
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedProjectIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', index.toString());
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (dragOverProjectIndex !== index) {
+      setDragOverProjectIndex(index);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent, targetIndex: number) => {
+    e.preventDefault();
+    if (draggedProjectIndex === null || draggedProjectIndex === targetIndex) {
+      setDraggedProjectIndex(null);
+      setDragOverProjectIndex(null);
+      return;
+    }
+
+    const newProjects = [...orderedProjects];
+    const [removed] = newProjects.splice(draggedProjectIndex, 1);
+    newProjects.splice(targetIndex, 0, removed);
+    setOrderedProjects(newProjects);
+    setDraggedProjectIndex(null);
+    setDragOverProjectIndex(null);
+    showToast('Project list order updated.', 'success');
+  };
+
+  const handleDragEnd = () => {
+    setDraggedProjectIndex(null);
+    setDragOverProjectIndex(null);
+  };
+
+  const handleResetOrder = () => {
+    setOrderedProjects(CLIENT_PROJECTS);
+    showToast('Visual sorting order restored to default.', 'info');
+  };
 
   const handleSendFeedback = (e: React.FormEvent) => {
     e.preventDefault();
@@ -794,48 +952,244 @@ export default function ClientDashboardPage() {
     showToast('Revision feedback logged and routed directly to the production lead.', 'success');
   };
 
+  const handleBatchArchive = (projectId: string, projectName: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (archivingProjects[projectId]) return;
+
+    setArchivingProjects((prev) => ({ ...prev, [projectId]: true }));
+    showToast(`Triggering batch cloud backup for ${projectName} (CAD, BIM & 8K renders)...`, 'info');
+
+    setTimeout(() => {
+      setArchivingProjects((prev) => ({ ...prev, [projectId]: false }));
+      setArchivedProjects((prev) => ({ ...prev, [projectId]: true }));
+      showToast(`Batch Cloud Archive Complete: All approved deliverables for ${projectName} safely replicated to redundant vault.`, 'success');
+    }, 1500);
+  };
+
   return (
-    <main className="min-h-screen bg-[#09090B] text-[#FAFAFA] py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-8">
-        {/* HEADER BAR */}
-        <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-md bg-[#09090B] border border-[#3ECF8E]/40 text-[10px] font-mono font-bold uppercase text-[#3ECF8E]">
-                Authorized Client Portal
-              </span>
-              <span className="text-xs font-mono text-[#71717A]">• Project Workspace</span>
+    <main className="min-h-screen bg-[#09090B] text-[#FAFAFA] flex flex-col w-full">
+      {/* WIDESCREEN FLEX CONTAINER WITH COLLAPSIBLE SIDE PANELS */}
+      <div className="flex-1 flex overflow-hidden w-full max-w-[2400px] mx-auto min-h-screen">
+        {/* COLLAPSIBLE LEFT FILTER PANEL */}
+        <CollapsibleLeftFilterPanel
+          isOpen={leftPanelOpen}
+          onToggle={() => setLeftPanelOpen(!leftPanelOpen)}
+          projects={managedProjects}
+          selectedProjectId={selectedProjectId}
+          onSelectProject={(id) => {
+            setSelectedProjectId(id);
+            setFeedbackSubmitted(false);
+          }}
+          filters={filterCriteria}
+          onFilterChange={setFilterCriteria}
+          onResetFilters={handleResetAllFilters}
+          userRole="CLIENT"
+        />
+
+        {/* CENTRAL WORKSPACE (EXPANDS ON WIDESCREEN) */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-8 min-w-0">
+          {/* HEADER BAR */}
+          <div
+            role="region"
+            aria-label="Client Portal Header"
+            className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl"
+          >
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span
+                  role="status"
+                  aria-label="Portal authorization status: Authorized Client Portal"
+                  className="px-2.5 py-0.5 rounded-md bg-[#09090B] border border-[#3ECF8E]/40 text-[10px] font-mono font-bold uppercase text-[#3ECF8E]"
+                >
+                  Authorized Client Portal
+                </span>
+                <span className="text-xs font-mono text-[#71717A]">• Project Workspace</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-bold font-display text-white">
+                Welcome, {user?.name || 'Elena Rostova'}
+              </h1>
+              <p className="text-xs text-[#A1A1AA]">
+                Viewing {orderedProjects.length} active architectural CGI pipelines under NDA license agreement.
+              </p>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold font-display text-white">
-              Welcome, {user?.name || 'Elena Rostova'}
-            </h1>
-            <p className="text-xs text-[#A1A1AA]">
-              Viewing 3 active architectural CGI pipelines under NDA license agreement.
-            </p>
+
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              {/* Quick Side Panel Toggle Buttons */}
+              <button
+                type="button"
+                onClick={() => setLeftPanelOpen(!leftPanelOpen)}
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-mono border transition-colors flex items-center gap-1.5 cursor-pointer ${
+                  leftPanelOpen
+                    ? 'bg-[#3ECF8E]/20 text-[#3ECF8E] border-[#3ECF8E]/40'
+                    : 'bg-[#09090B] text-[#A1A1AA] border-[#27272A] hover:text-white'
+                }`}
+                title="Toggle Left Category & Status Filters"
+              >
+                <Filter className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Filters</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setRightPanelOpen(!rightPanelOpen)}
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-mono border transition-colors flex items-center gap-1.5 cursor-pointer ${
+                  rightPanelOpen
+                    ? 'bg-[#3ECF8E]/20 text-[#3ECF8E] border-[#3ECF8E]/40'
+                    : 'bg-[#09090B] text-[#A1A1AA] border-[#27272A] hover:text-white'
+                }`}
+                title="Toggle Right Hours Spent & Pipeline Inspector"
+              >
+                <Clock className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Hours & Pipeline</span>
+              </button>
+
+              <Link
+                href={`/client-view/${selectedProject.id}`}
+                aria-label={`Copy public review link for ${selectedProject.name}`}
+                className="px-3 py-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white flex items-center gap-1.5 transition-colors focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]"
+              >
+                <Share2 className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                <span className="hidden sm:inline">Public Link</span>
+              </Link>
+              <Link
+                href="/contact"
+                aria-label="Schedule an architectural project review call"
+                className="px-3.5 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-white"
+              >
+                Schedule Call
+              </Link>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <Link
-              href={`/client-view/${selectedProject.id}`}
-              className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white flex items-center gap-1.5 transition-colors"
-            >
-              <Share2 className="w-3.5 h-3.5 text-[#3ECF8E]" />
-              <span>Copy Public Link</span>
-            </Link>
-            <Link
-              href="/contact"
-              className="px-3.5 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors shadow-lg"
-            >
-              Schedule Review Call
-            </Link>
-          </div>
-        </div>
+        {/* ASSIGNED PROJECTS GRID WITH STATUS FILTER PILLS & DRAG-AND-DROP REORDER */}
+        <section aria-labelledby="assigned-projects-heading" className="space-y-4">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-1 border-b border-[#27272A]">
+            <div className="flex items-center gap-3">
+              <h2
+                id="assigned-projects-heading"
+                className="text-sm font-mono font-bold uppercase tracking-wider text-[#A1A1AA] flex items-center gap-2"
+              >
+                <span>Assigned Architectural Commissions ({filteredProjects.length})</span>
+              </h2>
+              {isCustomSorted && (
+                <button
+                  type="button"
+                  onClick={handleResetOrder}
+                  className="px-2 py-0.5 rounded bg-[#27272A] hover:bg-[#3ECF8E]/20 hover:text-[#3ECF8E] text-[10px] font-mono text-[#A1A1AA] flex items-center gap-1 transition-colors cursor-pointer"
+                  title="Reset custom drag-and-drop order"
+                >
+                  <RotateCcw className="w-3 h-3" />
+                  <span>Reset Order</span>
+                </button>
+              )}
+            </div>
 
-        {/* ASSIGNED PROJECTS GRID */}
-        <div className="space-y-3">
-          <h2 className="text-sm font-mono font-bold uppercase tracking-wider text-[#A1A1AA]">
-            Assigned Architectural Commissions ({CLIENT_PROJECTS.length})
-          </h2>
+            {/* FILTER PILL-BUTTONS & DROPDOWN */}
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="hidden sm:flex items-center gap-1.5 p-1 rounded-xl bg-[#141416] border border-[#27272A]">
+                <button
+                  type="button"
+                  id="filter-all-projects"
+                  onClick={() => setStatusFilter('all')}
+                  className={`px-3 py-1 text-xs font-mono rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                    statusFilter === 'all'
+                      ? 'bg-[#3ECF8E] text-black font-bold shadow-md'
+                      : 'text-[#A1A1AA] hover:text-white hover:bg-[#27272A]'
+                  }`}
+                >
+                  <span>All</span>
+                  <span
+                    className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono ${
+                      statusFilter === 'all' ? 'bg-black/20 text-black' : 'bg-[#27272A] text-[#A1A1AA]'
+                    }`}
+                  >
+                    {totalCount}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  id="filter-in-production"
+                  onClick={() => setStatusFilter('In Production')}
+                  className={`px-3 py-1 text-xs font-mono rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                    statusFilter === 'In Production'
+                      ? 'bg-[#3ECF8E] text-black font-bold shadow-md'
+                      : 'text-[#A1A1AA] hover:text-white hover:bg-[#27272A]'
+                  }`}
+                >
+                  <span>In Production</span>
+                  <span
+                    className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono ${
+                      statusFilter === 'In Production' ? 'bg-black/20 text-black' : 'bg-[#27272A] text-[#A1A1AA]'
+                    }`}
+                  >
+                    {inProdCount}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  id="filter-client-review"
+                  onClick={() => setStatusFilter('Client Review')}
+                  className={`px-3 py-1 text-xs font-mono rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                    statusFilter === 'Client Review'
+                      ? 'bg-[#3ECF8E] text-black font-bold shadow-md'
+                      : 'text-[#A1A1AA] hover:text-white hover:bg-[#27272A]'
+                  }`}
+                >
+                  <span>Client Review</span>
+                  <span
+                    className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono ${
+                      statusFilter === 'Client Review' ? 'bg-black/20 text-black' : 'bg-[#27272A] text-[#A1A1AA]'
+                    }`}
+                  >
+                    {reviewCount}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  id="filter-completed"
+                  onClick={() => setStatusFilter('Completed')}
+                  className={`px-3 py-1 text-xs font-mono rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                    statusFilter === 'Completed'
+                      ? 'bg-[#3ECF8E] text-black font-bold shadow-md'
+                      : 'text-[#A1A1AA] hover:text-white hover:bg-[#27272A]'
+                  }`}
+                >
+                  <span>Completed</span>
+                  <span
+                    className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono ${
+                      statusFilter === 'Completed' ? 'bg-black/20 text-black' : 'bg-[#27272A] text-[#A1A1AA]'
+                    }`}
+                  >
+                    {completedCount}
+                  </span>
+                </button>
+              </div>
+
+              {/* MOBILE DROPDOWN FILTER */}
+              <div className="sm:hidden relative w-full flex items-center gap-2">
+                <Filter className="w-4 h-4 text-[#3ECF8E] shrink-0" />
+                <select
+                  id="mobile-status-filter"
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value as any)}
+                  className="w-full bg-[#18181B] border border-[#27272A] text-white text-xs font-mono rounded-lg px-3 py-1.5 focus:outline-none focus:border-[#3ECF8E]"
+                >
+                  <option value="all">All Projects ({totalCount})</option>
+                  <option value="In Production">In Production ({inProdCount})</option>
+                  <option value="Client Review">Client Review ({reviewCount})</option>
+                  <option value="Completed">Completed ({completedCount})</option>
+                </select>
+              </div>
+
+              <div className="hidden xl:flex items-center gap-1.5 text-[11px] font-mono text-[#71717A] pl-2 border-l border-[#27272A]">
+                <GripVertical className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                <span>Drag cards to reorder</span>
+              </div>
+            </div>
+          </div>
 
           <motion.div
             className="grid grid-cols-1 md:grid-cols-3 gap-4"
@@ -846,17 +1200,45 @@ export default function ClientDashboardPage() {
               visible: {
                 opacity: 1,
                 transition: {
-                  staggerChildren: 0.1,
-                  delayChildren: 0.05,
+                  staggerChildren: 0.08,
+                  delayChildren: 0.04,
                 },
               },
             }}
           >
-            {CLIENT_PROJECTS.map((project, idx) => {
+            {filteredProjects.map((project, index) => {
               const isSelected = project.id === selectedProjectId;
+              const hasPendingRevisions = project.stats.pendingRevisions > 0;
+              const isArchiving = !!archivingProjects[project.id];
+              const isArchived = !!archivedProjects[project.id];
+              const isDragging = draggedProjectIndex === index;
+              const isDragOver = dragOverProjectIndex === index;
+
               return (
                 <motion.div
                   key={project.id}
+                  id={`project-card-${project.id}`}
+                  draggable
+                  onDragStartCapture={(e: React.DragEvent) => handleDragStart(e, index)}
+                  onDragOverCapture={(e: React.DragEvent) => handleDragOver(e, index)}
+                  onDragEndCapture={handleDragEnd}
+                  onDropCapture={(e: React.DragEvent) => handleDrop(e, index)}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={isSelected}
+                  aria-label={`Select commission ${project.name}, Status: ${project.status}, Progress: ${project.progress}%. Drag to customize sort position.`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedProjectId(project.id);
+                      setFeedbackSubmitted(false);
+                    }
+                  }}
+                  onMouseEnter={() => setHoveredProjectId(project.id)}
+                  onMouseLeave={() => setHoveredProjectId(null)}
+                  onFocus={() => setHoveredProjectId(project.id)}
+                  onBlur={() => setHoveredProjectId(null)}
+                  aria-describedby={hoveredProjectId === project.id ? `project-peek-${project.id}` : undefined}
                   variants={{
                     hidden: { opacity: 0, y: 16 },
                     visible: {
@@ -868,66 +1250,284 @@ export default function ClientDashboardPage() {
                       },
                     },
                   }}
-                  whileHover={{ y: -3 }}
+                  animate={{
+                    scale: isSelected ? 1.025 : 1,
+                    boxShadow: isSelected
+                      ? '0 0 28px -2px rgba(62, 207, 142, 0.28), 0 12px 24px -6px rgba(0, 0, 0, 0.6)'
+                      : '0 0 0px 0px rgba(0, 0, 0, 0)',
+                    borderColor: isSelected ? '#3ECF8E' : 'rgba(39, 39, 42, 1)',
+                  }}
+                  whileHover={{
+                    scale: isSelected ? 1.035 : 1.015,
+                    y: -3,
+                    boxShadow: isSelected
+                      ? '0 0 35px 0px rgba(62, 207, 142, 0.38), 0 16px 28px -6px rgba(0, 0, 0, 0.7)'
+                      : '0 0 16px -2px rgba(62, 207, 142, 0.15), 0 8px 16px -4px rgba(0, 0, 0, 0.4)',
+                  }}
+                  whileTap={{ scale: 0.99 }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 380,
+                    damping: 24,
+                  }}
                   onClick={() => {
                     setSelectedProjectId(project.id);
                     setFeedbackSubmitted(false);
                   }}
-                  className={`hd-card p-4 rounded-2xl border transition-colors cursor-pointer flex flex-col justify-between space-y-4 ${
-                    isSelected
-                      ? 'bg-[#18181B] border-[#3ECF8E] shadow-xl shadow-[#3ECF8E]/10'
+                  className={`hd-card p-4 rounded-2xl border transition-colors cursor-grab active:cursor-grabbing flex flex-col justify-between space-y-4 focus:outline-none focus:ring-2 focus:ring-[#3ECF8E] relative overflow-hidden ${
+                    isDragging
+                      ? 'opacity-40 border-dashed border-[#3ECF8E] scale-95'
+                      : isDragOver
+                      ? 'ring-2 ring-[#3ECF8E] border-[#3ECF8E] scale-[1.02]'
+                      : isSelected
+                      ? 'bg-[#18181B] border-[#3ECF8E] ring-1 ring-[#3ECF8E]/40'
                       : 'bg-[#18181B]/60 border-[#27272A] hover:border-[#3ECF8E]/40'
                   }`}
                 >
+                  {/* HOVER-ACTIVATED DETAIL PEEK TOOLTIP / POPUP */}
+                  <AnimatePresence>
+                    {hoveredProjectId === project.id && (
+                      <motion.div
+                        id={`project-peek-${project.id}`}
+                        role="tooltip"
+                        aria-live="polite"
+                        initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -4, scale: 0.98 }}
+                        transition={{ duration: 0.18, ease: 'easeOut' }}
+                        className="absolute inset-x-2.5 top-2.5 z-40 p-3 rounded-xl bg-[#09090B]/95 backdrop-blur-md border border-[#3ECF8E]/50 shadow-2xl shadow-black/90 pointer-events-none space-y-2.5 text-left"
+                      >
+                        {/* PEEK HEADER */}
+                        <div className="flex items-center justify-between pb-1.5 border-b border-[#27272A]">
+                          <div className="flex items-center gap-1.5">
+                            <span className="relative flex h-2 w-2">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3ECF8E] opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#3ECF8E]"></span>
+                            </span>
+                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#3ECF8E]">
+                              Telemetry Peek
+                            </span>
+                          </div>
+                          <span className="text-[9px] font-mono text-[#71717A]">
+                            {project.id}
+                          </span>
+                        </div>
+
+                        {/* CRITICAL METRIC: CURRENT STAGE */}
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between text-[10px] font-mono">
+                            <span className="text-[#A1A1AA] flex items-center gap-1">
+                              <Layers className="w-3 h-3 text-[#3ECF8E]" />
+                              <span>Current Stage</span>
+                            </span>
+                            <span className="px-1.5 py-0.5 rounded bg-[#27272A] text-white font-bold text-[9px]">
+                              Stage {project.stats.currentStageNumber} / {project.stats.totalStages}
+                            </span>
+                          </div>
+                          <p className="text-[11px] font-mono font-semibold text-white truncate">
+                            {project.stats.nextMilestone}
+                          </p>
+                        </div>
+
+                        {/* CRITICAL METRIC: PENDING REVISIONS COUNT */}
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between text-[10px] font-mono">
+                            <span className="text-[#A1A1AA] flex items-center gap-1">
+                              <AlertCircle className={`w-3 h-3 ${project.stats.pendingRevisions > 0 ? 'text-amber-400' : 'text-emerald-400'}`} />
+                              <span>Pending Revisions</span>
+                            </span>
+                            <span
+                              className={`px-1.5 py-0.5 rounded font-bold text-[9px] ${
+                                project.stats.pendingRevisions > 0
+                                  ? 'bg-amber-950/80 text-amber-300 border border-amber-800/80'
+                                  : 'bg-emerald-950/80 text-emerald-300 border border-emerald-800/80'
+                              }`}
+                            >
+                              {project.stats.pendingRevisions > 0
+                                ? `${project.stats.pendingRevisions} Action Required`
+                                : '0 (All Approved)'}
+                            </span>
+                          </div>
+                          {project.stats.pendingRevisions > 0 ? (
+                            <p className="text-[10px] font-mono text-amber-400/90 line-clamp-1">
+                              {project.stats.revisionsSummary}
+                            </p>
+                          ) : (
+                            <p className="text-[10px] font-mono text-emerald-400/90">
+                              All current milestones signed off
+                            </p>
+                          )}
+                        </div>
+
+                        {/* SECONDARY QUICK METRICS ROW */}
+                        <div className="grid grid-cols-2 gap-2 pt-1.5 border-t border-[#27272A]/80 text-[10px] font-mono">
+                          <div>
+                            <span className="text-[#71717A] text-[9px] block">ETA Milestone</span>
+                            <span className="text-white font-medium">{project.stats.milestoneEta}</span>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-[#71717A] text-[9px] block">Approved Assets</span>
+                            <span className="text-[#3ECF8E] font-medium">
+                              {project.stats.assetsApproved}/{project.stats.totalAssets} Locked
+                            </span>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                   <div className="space-y-3">
                     <div className="relative h-36 rounded-xl overflow-hidden bg-[#09090B]">
                       <Image
                         src={project.image}
-                        alt={project.name}
+                        alt={`Archival preview of ${project.name}`}
                         fill
                         className="object-cover"
                         referrerPolicy="no-referrer"
                       />
-                      <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/80 backdrop-blur-sm border border-white/10 text-[10px] font-mono text-white">
-                        {project.id}
+                      <div className="absolute top-2 left-2 flex items-center gap-1.5">
+                        <div className="px-2 py-0.5 rounded bg-black/80 backdrop-blur-sm border border-white/10 text-[10px] font-mono text-white flex items-center gap-1">
+                          <GripVertical className="w-3 h-3 text-[#3ECF8E]/80" />
+                          <span>{project.id}</span>
+                        </div>
                       </div>
-                      <div
-                        className={`absolute top-2 right-2 px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
-                          project.status === 'Completed'
-                            ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-800'
-                            : 'bg-[#3ECF8E]/20 text-[#3ECF8E] border border-[#3ECF8E]/40'
-                        }`}
-                      >
-                        {project.status}
+                      
+                      <div className="absolute top-2 right-2 flex items-center gap-1.5">
+                        {/* Revision History icon button on card */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setRevisionHistoryProject({ id: project.id, name: project.name });
+                            setRevisionHistoryModalOpen(true);
+                          }}
+                          aria-label={`View Revision History for ${project.name}`}
+                          title="Revision History — view chronological markups and changes"
+                          className="p-1 rounded bg-black/80 hover:bg-[#27272A] border border-white/10 hover:border-[#3ECF8E]/60 text-zinc-300 hover:text-[#3ECF8E] transition-colors cursor-pointer flex items-center gap-1 text-[10px] font-mono shadow-sm"
+                        >
+                          <History className="w-3 h-3 text-[#3ECF8E]" />
+                          <span className="hidden sm:inline">History</span>
+                        </button>
+
+                        <div
+                          role="status"
+                          aria-label={`Current phase status: ${project.status}`}
+                          className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
+                            project.status === 'Completed'
+                              ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-800'
+                              : 'bg-[#3ECF8E]/20 text-[#3ECF8E] border border-[#3ECF8E]/40'
+                          }`}
+                        >
+                          {project.status}
+                        </div>
                       </div>
+
+                      {/* NEEDS-ATTENTION PULSE INDICATOR OVERLAY */}
+                      {hasPendingRevisions && (
+                        <div
+                          role="status"
+                          aria-label={`Needs Attention: ${project.stats.pendingRevisions} pending revision review`}
+                          className="absolute bottom-2 left-2 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/85 backdrop-blur-md border border-amber-500/60 text-[10px] font-mono text-amber-400 shadow-lg"
+                        >
+                          <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                          </span>
+                          <span className="font-bold tracking-tight">Needs Attention ({project.stats.pendingRevisions})</span>
+                        </div>
+                      )}
                     </div>
 
                     <div>
-                      <h3 className="text-sm font-bold font-display text-white line-clamp-1">
-                        {project.name}
-                      </h3>
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="text-sm font-bold font-display text-white line-clamp-1">
+                          {project.name}
+                        </h3>
+                        {isSelected && (
+                          <span className="px-1.5 py-0.5 rounded bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[9px] font-mono text-[#3ECF8E] uppercase font-bold shrink-0">
+                            Active
+                          </span>
+                        )}
+                      </div>
                       <p className="text-[11px] text-[#71717A] font-mono">{project.category}</p>
                     </div>
+
+                    {/* STATUS CHANGE / NEEDS ATTENTION NOTICE IN SELECTED CARD */}
+                    {hasPendingRevisions && isSelected && (
+                      <div className="p-2 rounded-lg bg-amber-950/40 border border-amber-800/60 flex items-center justify-between text-[10px] font-mono text-amber-300">
+                        <div className="flex items-center gap-1.5 truncate">
+                          <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                          <span className="truncate">{project.stats.pendingRevisions} Revision Feedback Action Pending</span>
+                        </div>
+                        <span className="px-1.5 py-0.5 rounded bg-amber-900/60 border border-amber-700/60 text-[9px] uppercase font-bold shrink-0">
+                          Review
+                        </span>
+                      </div>
+                    )}
                   </div>
 
-                  <div className="space-y-2 pt-2 border-t border-[#27272A]">
+                  <div className="space-y-2.5 pt-2 border-t border-[#27272A]">
                     <div className="flex items-center justify-between text-[11px] font-mono">
                       <span className="text-[#A1A1AA]">Pipeline Progress</span>
                       <span className="text-white font-bold">{project.progress}%</span>
                     </div>
-                    <div className="w-full h-1.5 rounded-full bg-[#09090B] overflow-hidden">
+                    <div
+                      role="progressbar"
+                      aria-valuenow={project.progress}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-label={`${project.name} pipeline completion: ${project.progress}%`}
+                      className="w-full h-1.5 rounded-full bg-[#09090B] overflow-hidden"
+                    >
                       <div
-                        className="h-full bg-[#3ECF8E] transition-all"
+                        className="h-full bg-[#3ECF8E] transition-all duration-500"
                         style={{ width: `${project.progress}%` }}
                       />
                     </div>
-                    <p className="text-[10px] text-[#71717A] font-mono truncate">{project.lastUpdate}</p>
+                    
+                    <div className="flex items-center justify-between text-[10px] text-[#71717A] font-mono">
+                      <span className="truncate">{project.lastUpdate}</span>
+                      <span className="shrink-0">{project.deliverablesCount} Deliverables</span>
+                    </div>
+
+                    {/* BATCH ARCHIVE TOGGLE / ACTION BUTTON */}
+                    <button
+                      type="button"
+                      onClick={(e) => handleBatchArchive(project.id, project.name, e)}
+                      disabled={isArchiving}
+                      aria-label={`Trigger cloud batch archive backup of all approved documents for ${project.name}`}
+                      className={`w-full py-1.5 px-2.5 rounded-lg text-[10px] font-mono font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#3ECF8E] ${
+                        isArchived
+                          ? 'bg-emerald-950/80 border border-emerald-700/80 text-emerald-300 hover:bg-emerald-900/80'
+                          : isArchiving
+                          ? 'bg-[#18181B] border border-[#3ECF8E]/50 text-[#3ECF8E] cursor-wait'
+                          : isSelected
+                          ? 'bg-[#3ECF8E]/15 hover:bg-[#3ECF8E] text-[#3ECF8E] hover:text-black border border-[#3ECF8E]/40 shadow-sm'
+                          : 'bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/40 text-[#A1A1AA] hover:text-white'
+                      }`}
+                    >
+                      {isArchiving ? (
+                        <>
+                          <Loader2 className="w-3 h-3 animate-spin text-[#3ECF8E]" />
+                          <span>Archiving to Cloud...</span>
+                        </>
+                      ) : isArchived ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-400" />
+                          <span>Cloud Backup Synced</span>
+                        </>
+                      ) : (
+                        <>
+                          <Archive className="w-3 h-3" />
+                          <span>Batch Archive Docs</span>
+                        </>
+                      )}
+                    </button>
                   </div>
                 </motion.div>
               );
             })}
           </motion.div>
-        </div>
+        </section>
 
         {/* SELECTED PROJECT DETAIL VIEW */}
         <div className="space-y-6">
@@ -951,8 +1551,10 @@ export default function ClientDashboardPage() {
               <div className="flex flex-wrap items-center gap-2">
                 {selectedProject.xrAvailable && (
                   <button
+                    type="button"
                     onClick={() => openModelViewer('models/apex-tower-v3-draco.glb', selectedProject.name)}
-                    className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#3ECF8E]/40 text-xs font-mono text-[#3ECF8E] flex items-center gap-1.5 transition-colors cursor-pointer"
+                    aria-label={`Launch 3D WebXR Model viewer for ${selectedProject.name}`}
+                    className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#3ECF8E]/40 text-xs font-mono text-[#3ECF8E] flex items-center gap-1.5 transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]"
                   >
                     <Box className="w-4 h-4" />
                     <span>Launch 3D WebXR Model</span>
@@ -961,8 +1563,10 @@ export default function ClientDashboardPage() {
 
                 {selectedProject.pixelStreamingAvailable && (
                   <button
+                    type="button"
                     onClick={() => openPixelStream()}
-                    className="px-3 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase flex items-center gap-1.5 transition-colors cursor-pointer shadow-lg"
+                    aria-label="Launch real-time Unreal Engine 5.5 Pixel Streaming session"
+                    className="px-3 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase flex items-center gap-1.5 transition-colors cursor-pointer shadow-lg focus:outline-none focus:ring-2 focus:ring-white"
                   >
                     <Play className="w-4 h-4 fill-black" />
                     <span>Launch Pixel Stream</span>
@@ -970,8 +1574,10 @@ export default function ClientDashboardPage() {
                 )}
 
                 <button
+                  type="button"
                   onClick={() => openPanorama('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2000&q=90', selectedProject.name)}
-                  className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                  aria-label={`Launch 360° Panorama Spherical Node Tour for ${selectedProject.name}`}
+                  className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white flex items-center gap-1.5 transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]"
                 >
                   <Eye className="w-4 h-4" />
                   <span>360° Node Tour</span>
@@ -979,145 +1585,334 @@ export default function ClientDashboardPage() {
               </div>
             </div>
 
-            {/* PROJECT STATISTICS SUMMARY WIDGET */}
-            <ProjectStatsWidget
-              stats={selectedProject.stats}
-              projectName={selectedProject.name}
-              projectId={selectedProject.id}
-            />
+            {/* DASHBOARD MODULE FILTER / NAVIGATION TABS */}
+            <div
+              role="tablist"
+              aria-label="Dashboard Module View Selector"
+              className="flex items-center gap-1.5 p-1 rounded-xl bg-[#09090B] border border-[#27272A] overflow-x-auto text-xs font-mono"
+            >
+              <button
+                type="button"
+                role="tab"
+                id="tab-all-modules"
+                aria-selected={activeTab === 'all'}
+                aria-controls="panel-dashboard-modules"
+                onClick={() => setActiveTab('all')}
+                className={`px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
+                  activeTab === 'all'
+                    ? 'bg-[#18181B] text-[#3ECF8E] font-bold border border-[#3ECF8E]/40 shadow-sm'
+                    : 'text-[#71717A] hover:text-white'
+                }`}
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span>All Modules</span>
+              </button>
 
-            {/* PROJECT PHASE ROADMAP (7-STAGE PIPELINE) */}
-            <div className="space-y-4">
-              <ProjectPhaseRoadmap
-                stages={selectedProject.roadmapStages}
-                currentStageNumber={selectedProject.stats.currentStageNumber}
+              <button
+                type="button"
+                role="tab"
+                id="tab-timelapses"
+                aria-selected={activeTab === 'timelapses'}
+                aria-controls="panel-dashboard-modules"
+                onClick={() => setActiveTab('timelapses')}
+                className={`px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
+                  activeTab === 'timelapses'
+                    ? 'bg-[#18181B] text-[#3ECF8E] font-bold border border-[#3ECF8E]/40 shadow-sm'
+                    : 'text-[#71717A] hover:text-white'
+                }`}
+              >
+                <Film className="w-3.5 h-3.5" />
+                <span>Project Timelapses</span>
+              </button>
+
+              <button
+                type="button"
+                role="tab"
+                id="tab-compare-revisions"
+                aria-selected={activeTab === 'compare'}
+                aria-controls="panel-dashboard-modules"
+                onClick={() => setActiveTab('compare')}
+                className={`px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
+                  activeTab === 'compare'
+                    ? 'bg-[#18181B] text-[#3ECF8E] font-bold border border-[#3ECF8E]/40 shadow-sm'
+                    : 'text-[#71717A] hover:text-white'
+                }`}
+              >
+                <Columns2 className="w-3.5 h-3.5" />
+                <span>Compare Revisions</span>
+              </button>
+
+              <button
+                type="button"
+                role="tab"
+                id="tab-pipeline-roadmap"
+                aria-selected={activeTab === 'pipeline'}
+                aria-controls="panel-dashboard-modules"
+                onClick={() => setActiveTab('pipeline')}
+                className={`px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
+                  activeTab === 'pipeline'
+                    ? 'bg-[#18181B] text-[#3ECF8E] font-bold border border-[#3ECF8E]/40 shadow-sm'
+                    : 'text-[#71717A] hover:text-white'
+                }`}
+              >
+                <Clock className="w-3.5 h-3.5" />
+                <span>7-Stage Pipeline</span>
+              </button>
+
+              <button
+                type="button"
+                role="tab"
+                id="tab-documents-cad"
+                aria-selected={activeTab === 'documents'}
+                aria-controls="panel-dashboard-modules"
+                onClick={() => setActiveTab('documents')}
+                className={`px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
+                  activeTab === 'documents'
+                    ? 'bg-[#18181B] text-[#3ECF8E] font-bold border border-[#3ECF8E]/40 shadow-sm'
+                    : 'text-[#71717A] hover:text-white'
+                }`}
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>Documents & CAD</span>
+              </button>
+
+              <button
+                type="button"
+                role="tab"
+                id="tab-reviews-meet"
+                aria-selected={activeTab === 'reviews'}
+                aria-controls="panel-dashboard-modules"
+                onClick={() => setActiveTab('reviews')}
+                className={`px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
+                  activeTab === 'reviews'
+                    ? 'bg-[#18181B] text-[#3ECF8E] font-bold border border-[#3ECF8E]/40 shadow-sm'
+                    : 'text-[#71717A] hover:text-white'
+                }`}
+              >
+                <Video className="w-3.5 h-3.5" />
+                <span>Live Video Reviews</span>
+              </button>
+            </div>
+
+            {/* MAIN DASHBOARD CONTENT REGION */}
+            <div id="panel-dashboard-modules" role="tabpanel" className="space-y-6">
+              {/* PROJECT STATISTICS SUMMARY WIDGET */}
+              <ProjectStatsWidget
+                stats={selectedProject.stats}
                 projectName={selectedProject.name}
                 projectId={selectedProject.id}
               />
-            </div>
 
-            {/* EMBEDDED TRACKER ENGINE */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-bold font-display text-white flex items-center gap-2">
-                <Clock className="w-4 h-4 text-[#3ECF8E]" />
-                <span>Live 7-Stage Production Timeline & Access Token Query</span>
-              </h3>
-              <ProjectTracker initialProjectId={selectedProject.id} />
-            </div>
-
-            {/* REAL-TIME DESKTOP NOTIFICATIONS & MILESTONE ALERTS CONTROL */}
-            <div className="space-y-4">
-              <NotificationSettings />
-            </div>
-
-            {/* TECHNICAL DOCUMENT & CAD REPOSITORY SECTION */}
-            <div className="space-y-4">
-              <ProjectDocumentRepository
-                documents={selectedProject.documents}
-                projectName={selectedProject.name}
-                projectId={selectedProject.id}
-              />
-            </div>
-
-            {/* DOWNLOAD CENTER & ASSET ARCHIVE */}
-            <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-4">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white flex items-center gap-2">
-                  <Download className="w-4 h-4 text-[#3ECF8E]" />
-                  <span>Approved Deliverables & Master Package Archive ({selectedProject.deliverablesCount})</span>
-                </h4>
-                <button
-                  onClick={() => showToast('Master ZIP bundle packaging initiated (2.4 GB). Download will commence shortly.', 'success')}
-                  className="text-xs font-mono text-[#3ECF8E] hover:underline"
-                >
-                  Download All (ZIP) →
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs font-mono">
-                <div className="p-3 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <FileCode className="w-4 h-4 text-[#3ECF8E]" />
-                    <div>
-                      <div className="text-white font-bold">8K Exterior Master Hero TIFF</div>
-                      <div className="text-[10px] text-[#71717A]">7680x4320 · 240 MB</div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => showToast('Downloading 8K TIFF...', 'info')}
-                    className="p-1.5 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
-                <div className="p-3 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <FileCode className="w-4 h-4 text-[#3ECF8E]" />
-                    <div>
-                      <div className="text-white font-bold">WebXR GLB Compressed Asset</div>
-                      <div className="text-[10px] text-[#71717A]">Draco Geometry · 8.4 MB</div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => showToast('Downloading GLB asset...', 'info')}
-                    className="p-1.5 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
-                <div className="p-3 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <FileCode className="w-4 h-4 text-[#3ECF8E]" />
-                    <div>
-                      <div className="text-white font-bold">4K 60FPS Cinematic MP4</div>
-                      <div className="text-[10px] text-[#71717A]">ProRes & H.265 · 820 MB</div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => showToast('Downloading 4K MP4 Master...', 'info')}
-                    className="p-1.5 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* DIRECT CLIENT REVISION FEEDBACK FORM */}
-            <div className="p-5 rounded-xl bg-[#09090B] border border-[#27272A] space-y-3">
-              <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white flex items-center gap-2">
-                <MessageSquare className="w-4 h-4 text-[#3ECF8E]" />
-                <span>Submit Client Revision Notes & Material Markups</span>
-              </h4>
-
-              {feedbackSubmitted ? (
-                <div className="p-3 rounded-lg bg-[#18181B] border border-[#3ECF8E]/40 text-xs font-mono text-[#3ECF8E] flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 shrink-0" />
-                  <span>Revision request logged. The studio lead will update render passes within 24 hours.</span>
-                </div>
-              ) : (
-                <form onSubmit={handleSendFeedback} className="space-y-3">
-                  <textarea
-                    rows={3}
-                    value={feedbackText}
-                    onChange={(e) => setFeedbackText(e.target.value)}
-                    placeholder="Enter lighting adjustments, material revisions, or camera angle notes for this milestone..."
-                    className="w-full px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] resize-none"
+              {/* 1. PROJECT TIMELAPSES SECTION */}
+              {(activeTab === 'all' || activeTab === 'timelapses') && (
+                <section aria-labelledby="section-timelapses-title" className="space-y-3">
+                  <ProjectTimelapses
+                    projectId={selectedProject.id}
+                    projectName={selectedProject.name}
                   />
-                  <button
-                    type="submit"
-                    className="px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
-                  >
-                    Dispatch Revision Notes
-                  </button>
-                </form>
+                </section>
+              )}
+
+              {/* 2. COMPARE REVISIONS TOOL */}
+              {(activeTab === 'all' || activeTab === 'compare') && (
+                <section aria-labelledby="section-compare-title" className="space-y-3">
+                  <ProjectRevisionCompare
+                    projectId={selectedProject.id}
+                    projectName={selectedProject.name}
+                    documents={selectedProject.documents}
+                  />
+                </section>
+              )}
+
+              {/* 3. 7-STAGE PIPELINE ROADMAP */}
+              {(activeTab === 'all' || activeTab === 'pipeline') && (
+                <section aria-labelledby="section-roadmap-title" className="space-y-4">
+                  <ProjectPhaseRoadmap
+                    stages={selectedProject.roadmapStages}
+                    currentStageNumber={selectedProject.stats.currentStageNumber}
+                    projectName={selectedProject.name}
+                    projectId={selectedProject.id}
+                  />
+
+                  {/* EMBEDDED TRACKER ENGINE */}
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-bold font-display text-white flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-[#3ECF8E]" />
+                      <span>Live 7-Stage Production Timeline & Access Token Query</span>
+                    </h3>
+                    <ProjectTracker initialProjectId={selectedProject.id} />
+                  </div>
+                </section>
+              )}
+
+              {/* 4. TECHNICAL DOCUMENT & CAD REPOSITORY */}
+              {(activeTab === 'all' || activeTab === 'documents') && (
+                <section aria-labelledby="section-documents-title" className="space-y-4">
+                  <ProjectDocumentRepository
+                    documents={selectedProject.documents}
+                    projectName={selectedProject.name}
+                    projectId={selectedProject.id}
+                  />
+
+                  {/* DOWNLOAD CENTER & ASSET ARCHIVE */}
+                  <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white flex items-center gap-2">
+                        <Download className="w-4 h-4 text-[#3ECF8E]" />
+                        <span>Approved Deliverables & Master Package Archive ({selectedProject.deliverablesCount})</span>
+                      </h4>
+                      <button
+                        type="button"
+                        onClick={() => showToast('Master ZIP bundle packaging initiated (2.4 GB). Download will commence shortly.', 'success')}
+                        aria-label="Download all approved deliverables as a 2.4 GB ZIP archive"
+                        className="text-xs font-mono text-[#3ECF8E] hover:underline cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]"
+                      >
+                        Download All (ZIP) →
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs font-mono">
+                      <div className="p-3 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <FileCode className="w-4 h-4 text-[#3ECF8E]" />
+                          <div>
+                            <div className="text-white font-bold">8K Exterior Master Hero TIFF</div>
+                            <div className="text-[10px] text-[#71717A]">7680x4320 · 240 MB</div>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => showToast('Downloading 8K TIFF...', 'info')}
+                          aria-label="Download 8K Exterior Master Hero TIFF (240 MB)"
+                          className="p-1.5 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      <div className="p-3 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <FileCode className="w-4 h-4 text-[#3ECF8E]" />
+                          <div>
+                            <div className="text-white font-bold">WebXR GLB Compressed Asset</div>
+                            <div className="text-[10px] text-[#71717A]">Draco Geometry · 8.4 MB</div>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => showToast('Downloading GLB asset...', 'info')}
+                          aria-label="Download WebXR GLB Compressed Asset (8.4 MB)"
+                          className="p-1.5 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      <div className="p-3 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <FileCode className="w-4 h-4 text-[#3ECF8E]" />
+                          <div>
+                            <div className="text-white font-bold">4K 60FPS Cinematic MP4</div>
+                            <div className="text-[10px] text-[#71717A]">ProRes & H.265 · 820 MB</div>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => showToast('Downloading 4K MP4 Master...', 'info')}
+                          aria-label="Download 4K 60FPS Cinematic MP4 Master (820 MB)"
+                          className="p-1.5 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {/* 5. REVIEWS, GOOGLE MEET & DRIVE CLOUD INTEGRATIONS */}
+              {(activeTab === 'all' || activeTab === 'reviews') && (
+                <section aria-labelledby="section-reviews-title" className="space-y-4">
+                  {/* REAL-TIME DESKTOP NOTIFICATIONS & MILESTONE ALERTS */}
+                  <NotificationSettings />
+
+                  {/* GOOGLE DRIVE CLIENT CLOUD INTEGRATION */}
+                  <GoogleDriveClientConnect
+                    currentProjectId={selectedProject.id}
+                    currentProjectName={selectedProject.name}
+                  />
+
+                  {/* GOOGLE MEET CLIENT LIVE REVIEWS & CALENDAR SLOT SELECTOR */}
+                  <GoogleMeetClientConnect
+                    currentProjectId={selectedProject.id}
+                    currentProjectName={selectedProject.name}
+                  />
+
+                  {/* DIRECT CLIENT REVISION FEEDBACK FORM */}
+                  <div className="p-5 rounded-xl bg-[#09090B] border border-[#27272A] space-y-3">
+                    <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white flex items-center gap-2">
+                      <MessageSquare className="w-4 h-4 text-[#3ECF8E]" />
+                      <span>Submit Client Revision Notes & Material Markups</span>
+                    </h4>
+
+                    {feedbackSubmitted ? (
+                      <div
+                        role="status"
+                        aria-live="polite"
+                        className="p-3 rounded-lg bg-[#18181B] border border-[#3ECF8E]/40 text-xs font-mono text-[#3ECF8E] flex items-center gap-2"
+                      >
+                        <CheckCircle2 className="w-4 h-4 shrink-0" />
+                        <span>Revision request logged. The studio lead will update render passes within 24 hours.</span>
+                      </div>
+                    ) : (
+                      <form onSubmit={handleSendFeedback} className="space-y-3">
+                        <label htmlFor="client-revision-notes" className="sr-only">
+                          Client Revision Notes and Feedback
+                        </label>
+                        <textarea
+                          id="client-revision-notes"
+                          rows={3}
+                          value={feedbackText}
+                          onChange={(e) => setFeedbackText(e.target.value)}
+                          placeholder="Enter lighting adjustments, material revisions, or camera angle notes for this milestone..."
+                          className="w-full px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] resize-none"
+                        />
+                        <button
+                          type="submit"
+                          aria-label="Dispatch revision notes to lead CGI supervisor"
+                          className="px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white"
+                        >
+                          Dispatch Revision Notes
+                        </button>
+                      </form>
+                    )}
+                  </div>
+                </section>
               )}
             </div>
           </div>
         </div>
       </div>
-    </main>
-  );
+
+      {/* COLLAPSIBLE RIGHT INSPECTOR & HOURS MONITORING PANEL */}
+      {selectedManagedProject && (
+        <CollapsibleRightInspectorPanel
+          isOpen={rightPanelOpen}
+          onToggle={() => setRightPanelOpen(!rightPanelOpen)}
+          project={selectedManagedProject}
+          onLogHours={handleLogHours}
+          userRole="CLIENT"
+        />
+      )}
+
+      {/* REVISION HISTORY & CHRONOLOGICAL MARKUPS MODAL */}
+      <RevisionHistoryModal
+        isOpen={revisionHistoryModalOpen}
+        onClose={() => setRevisionHistoryModalOpen(false)}
+        projectId={revisionHistoryProject?.id || selectedProject.id}
+        projectName={revisionHistoryProject?.name || selectedProject.name}
+      />
+    </div>
+  </main>
+);
 }

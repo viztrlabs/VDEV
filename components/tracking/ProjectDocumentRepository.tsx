@@ -208,12 +208,24 @@ export default function ProjectDocumentRepository({
 
           {/* ACTION BUTTONS: UPLOAD & BATCH DOWNLOAD */}
           <div className="flex items-center gap-2">
-            <label className="px-3 py-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/40 text-xs font-mono text-white flex items-center gap-1.5 transition-colors cursor-pointer shrink-0">
+            <label
+              role="button"
+              tabIndex={0}
+              aria-label="Upload reference blueprint or CAD document"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  (e.currentTarget.querySelector('input[type="file"]') as HTMLInputElement)?.click();
+                }
+              }}
+              className="px-3 py-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/40 text-xs font-mono text-white flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]"
+            >
               <Upload className="w-3.5 h-3.5 text-[#3ECF8E]" />
               <span>{isUploading ? 'Ingesting...' : 'Upload Reference'}</span>
               <input
                 type="file"
                 className="hidden"
+                aria-label="Upload reference document file"
                 accept=".pdf,.dwg,.dxf,.rvt,.ifc,.skp,.3dm,.json,.ies"
                 onChange={handleSimulatedUpload}
                 disabled={isUploading}
@@ -221,8 +233,10 @@ export default function ProjectDocumentRepository({
             </label>
 
             <button
+              type="button"
               onClick={handleBatchDownload}
-              className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 shadow"
+              aria-label={`Export all ${filteredDocuments.length} repository documents as ZIP`}
+              className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 shadow focus:outline-none focus:ring-2 focus:ring-white"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Export All (ZIP)</span>
@@ -233,8 +247,16 @@ export default function ProjectDocumentRepository({
         {/* SEARCH AND CATEGORY FILTER TABS */}
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 pt-1">
           {/* CATEGORY TABS */}
-          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#09090B] border border-[#27272A] overflow-x-auto text-xs font-mono">
+          <div
+            role="tablist"
+            aria-label="Document Category Filter"
+            className="flex items-center gap-1.5 p-1 rounded-xl bg-[#09090B] border border-[#27272A] overflow-x-auto text-xs font-mono"
+          >
             <button
+              type="button"
+              role="tab"
+              aria-selected={selectedCategory === 'all'}
+              aria-label={`View all ${allDocuments.length} document assets`}
               onClick={() => setSelectedCategory('all')}
               className={`px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap cursor-pointer ${
                 selectedCategory === 'all'
@@ -245,6 +267,10 @@ export default function ProjectDocumentRepository({
               All Assets ({allDocuments.length})
             </button>
             <button
+              type="button"
+              role="tab"
+              aria-selected={selectedCategory === 'pdf'}
+              aria-label="Filter to PDF Blueprints"
               onClick={() => setSelectedCategory('pdf')}
               className={`px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
                 selectedCategory === 'pdf'
@@ -256,6 +282,10 @@ export default function ProjectDocumentRepository({
               <span>PDF Blueprints</span>
             </button>
             <button
+              type="button"
+              role="tab"
+              aria-selected={selectedCategory === 'cad'}
+              aria-label="Filter to CAD and BIM exchange files"
               onClick={() => setSelectedCategory('cad')}
               className={`px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
                 selectedCategory === 'cad'
@@ -267,6 +297,10 @@ export default function ProjectDocumentRepository({
               <span>CAD & BIM</span>
             </button>
             <button
+              type="button"
+              role="tab"
+              aria-selected={selectedCategory === 'spec'}
+              aria-label="Filter to Technical Specification sheets"
               onClick={() => setSelectedCategory('spec')}
               className={`px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
                 selectedCategory === 'spec'
@@ -285,12 +319,15 @@ export default function ProjectDocumentRepository({
             <input
               type="text"
               value={searchQuery}
+              aria-label="Search repository documents by title, format, or keyword"
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by title, format, or tag..."
               className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] transition-colors"
             />
             {searchQuery && (
               <button
+                type="button"
+                aria-label="Clear document search query"
                 onClick={() => setSearchQuery('')}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#71717A] hover:text-white"
               >
@@ -303,7 +340,11 @@ export default function ProjectDocumentRepository({
 
       {/* UPLOAD SUCCESS ALERT */}
       {uploadSuccess && (
-        <div className="p-3 mx-5 mt-4 rounded-xl bg-emerald-950/40 border border-emerald-800 text-xs font-mono text-emerald-400 flex items-center gap-2">
+        <div
+          role="status"
+          aria-live="polite"
+          className="p-3 mx-5 mt-4 rounded-xl bg-emerald-950/40 border border-emerald-800 text-xs font-mono text-emerald-400 flex items-center gap-2"
+        >
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>New document ingested into the studio pipeline index and staged for review.</span>
         </div>
@@ -321,11 +362,13 @@ export default function ProjectDocumentRepository({
               </p>
             </div>
             <button
+              type="button"
+              aria-label="Reset document search and category filters"
               onClick={() => {
                 setSearchQuery('');
                 setSelectedCategory('all');
               }}
-              className="text-xs font-mono text-[#3ECF8E] hover:underline"
+              className="text-xs font-mono text-[#3ECF8E] hover:underline cursor-pointer"
             >
               Reset Filters
             </button>
@@ -339,8 +382,17 @@ export default function ProjectDocumentRepository({
                 <div
                   key={doc.id}
                   id={`doc-item-${doc.id}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Document ${doc.title}, format ${doc.extension}, size ${doc.fileSize}, status ${doc.status}`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setActivePreviewDoc(doc);
+                    }
+                  }}
                   onClick={() => setActivePreviewDoc(doc)}
-                  className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] hover:border-[#3ECF8E]/50 transition-all flex flex-col justify-between space-y-3 group cursor-pointer hover:bg-[#121215]"
+                  className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] hover:border-[#3ECF8E]/50 transition-all flex flex-col justify-between space-y-3 group cursor-pointer hover:bg-[#121215] focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]"
                 >
                   <div className="space-y-2.5">
                     {/* TOP ROW: ICON + TITLE + BADGES */}
@@ -363,6 +415,8 @@ export default function ProjectDocumentRepository({
 
                       <div className="flex items-center gap-1.5 shrink-0">
                         <span
+                          role="status"
+                          aria-label={`Document approval status: ${doc.status}`}
                           className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase border ${
                             doc.status === 'Approved'
                               ? 'bg-emerald-950/60 border-emerald-800 text-emerald-400'
@@ -401,24 +455,26 @@ export default function ProjectDocumentRepository({
                     {/* ACTIONS: PREVIEW & DOWNLOAD */}
                     <div className="flex items-center gap-1.5">
                       <button
+                        type="button"
+                        aria-label={`Quick View preview for ${doc.title}`}
                         onClick={(e) => {
                           e.stopPropagation();
                           setActivePreviewDoc(doc);
                         }}
-                        className="px-2.5 py-1 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[10px] font-mono text-white flex items-center gap-1 transition-colors cursor-pointer hover:border-[#3ECF8E]/40"
-                        title="Preview PDF, CAD or Specs directly in browser"
+                        className="px-2.5 py-1 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[10px] font-mono text-white flex items-center gap-1 transition-colors cursor-pointer hover:border-[#3ECF8E]/40 focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]"
                       >
                         <Eye className="w-3 h-3 text-[#3ECF8E]" />
                         <span>Quick View</span>
                       </button>
 
                       <button
+                        type="button"
+                        aria-label={`Download ${doc.fileName}`}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDownload(doc);
                         }}
-                        className="p-1 px-2 rounded bg-[#3ECF8E]/10 hover:bg-[#3ECF8E] text-[#3ECF8E] hover:text-black border border-[#3ECF8E]/30 text-[10px] font-mono font-bold flex items-center gap-1 transition-all cursor-pointer"
-                        title={`Download ${doc.fileName}`}
+                        className="p-1 px-2 rounded bg-[#3ECF8E]/10 hover:bg-[#34b27b] text-[#3ECF8E] hover:text-black border border-[#3ECF8E]/30 text-[10px] font-mono font-bold flex items-center gap-1 transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]"
                       >
                         <Download className="w-3 h-3" />
                         <span>Download</span>

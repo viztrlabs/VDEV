@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { homepageData } from '@/data/homepage';
 import { ArrowRight, CheckCircle2, Sparkles, Box } from 'lucide-react';
 
@@ -36,10 +37,13 @@ export default function ServiceCategories() {
           <div>
             {/* Image Header */}
             <div className="relative h-56 sm:h-64 w-full overflow-hidden border-b border-[#27272A]">
-              <img
+              <Image
                 src={serviceCategories.studio.image}
                 alt="Studio Architectural Visualization"
-                className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                referrerPolicy="no-referrer"
+                className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#18181B] via-transparent to-black/40" />
               <div className="absolute top-4 left-4">
@@ -96,10 +100,13 @@ export default function ServiceCategories() {
           <div>
             {/* Image Header */}
             <div className="relative h-56 sm:h-64 w-full overflow-hidden border-b border-[#27272A]">
-              <img
+              <Image
                 src={serviceCategories.xrWorld.image}
                 alt="XR World Spatial Technology"
-                className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                referrerPolicy="no-referrer"
+                className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#18181B] via-transparent to-black/40" />
               <div className="absolute top-4 right-4">

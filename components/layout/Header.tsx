@@ -20,6 +20,8 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import NotificationCenter from '@/components/ui/NotificationCenter';
+import ThemeSwitcherDropdown from '@/components/ui/ThemeSwitcherDropdown';
+import ThemePreviewModal from '@/components/ui/ThemePreviewModal';
 
 export default function Header() {
   const pathname = usePathname();
@@ -38,9 +40,10 @@ export default function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 40);
     };
-    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -71,16 +74,22 @@ export default function Header() {
   const isContactActive = pathname === '/contact';
   const isHomeActive = pathname === '/';
 
+  // Header visibility & glassmorphism theme logic
+  const isHiddenOnLanding = isHomeActive && !scrolled;
+
   return (
-    <header
-      id="main-header"
-      className={`sticky top-0 z-50 w-full transition-all duration-200 ${
-        scrolled
-          ? 'bg-[#09090B]/95 backdrop-blur-md shadow-md border-b border-[#27272A]'
-          : 'bg-[#09090B] border-b border-[#27272A]'
-      }`}
-      style={{ height: '56px' }}
-    >
+    <>
+      <header
+        id="main-header"
+        className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ease-out ${
+          isHiddenOnLanding
+            ? 'opacity-0 -translate-y-full pointer-events-none'
+            : isHomeActive
+            ? 'opacity-100 translate-y-0 pointer-events-auto bg-[#09090B]/75 backdrop-blur-xl border-b border-white/10 shadow-2xl shadow-black/80'
+            : 'opacity-100 translate-y-0 pointer-events-auto bg-[#09090B]/85 backdrop-blur-xl border-b border-[#27272A] shadow-md'
+        }`}
+        style={{ height: '56px' }}
+      >
       <div className="max-w-[1400px] mx-auto h-full px-4 sm:px-6 flex items-center justify-between">
         {/* LEFT SECTION: Logo & Live Status */}
         <div className="flex items-center gap-3 sm:gap-4">
@@ -331,52 +340,49 @@ export default function Header() {
           </Link>
         </nav>
 
-        {/* RIGHT SECTION: Actions (Theme, Track, Notifications, Login) */}
+        {/* RIGHT SECTION: Actions (User, Theme, Track, Notification) */}
         <div className="flex items-center space-x-2">
-          {/* Real-time Project Notifications Center */}
-          <NotificationCenter />
-
-          {/* Quick Track Link */}
-          <Link
-            href="/track-project"
-            id="header-track-btn"
-            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold bg-[#18181B] hover:bg-[#27272A] text-[#FAFAFA] transition-colors border border-[#27272A]"
-            title="Track project by ID & Access Code"
-          >
-            <ShieldCheck className="w-3.5 h-3.5 text-[#3ECF8E]" />
-            <span>Track</span>
-          </Link>
-
-          {/* Theme Toggle Button */}
-          <button
-            id="theme-toggle-btn"
-            onClick={cycleTheme}
-            suppressHydrationWarning
-            className="p-1.5 rounded-md text-[#A1A1AA] hover:text-white bg-[#18181B] border border-[#27272A] hover:bg-[#27272A] transition-colors cursor-pointer"
-            title={`Current theme: ${theme}. Click to cycle Light → Dark → System`}
-            aria-label="Toggle theme"
-          >
-            {theme === 'light' && <Sun className="w-3.5 h-3.5 text-amber-400" />}
-            {theme === 'dark' && <Moon className="w-3.5 h-3.5 text-[#3ECF8E]" />}
-            {theme === 'system' && <Monitor className="w-3.5 h-3.5 text-sky-400" />}
-          </button>
-
-          {/* Client Access Login Icon */}
+          {/* 1. Client Access / User Profile Icon */}
           <Link
             href={user ? '/client-dashboard' : '/client-access'}
             id="header-client-access-btn"
             suppressHydrationWarning
-            className="p-1.5 rounded-md text-[#A1A1AA] hover:text-white bg-[#18181B] border border-[#27272A] hover:bg-[#27272A] transition-colors flex items-center gap-1.5"
+            className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-md text-[#A1A1AA] hover:text-white bg-[#18181B] border border-[#27272A] hover:bg-[#27272A] transition-colors flex items-center gap-1.5 text-xs font-semibold"
             title={user ? `Logged in as ${user.name} (${user.role})` : 'Client Access Login'}
           >
             {user ? (
-              <div className="w-5 h-5 rounded bg-[#3ECF8E] text-black font-bold text-xs flex items-center justify-center">
-                {user.name.charAt(0)}
-              </div>
+              <>
+                <div className="w-5 h-5 rounded bg-[#3ECF8E] text-black font-bold text-xs flex items-center justify-center shrink-0">
+                  {user.name.charAt(0)}
+                </div>
+                <span className="hidden sm:inline text-white font-medium max-w-[100px] truncate">
+                  {user.name.split(' ')[0]}
+                </span>
+              </>
             ) : (
-              <User className="w-3.5 h-3.5" />
+              <>
+                <User className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                <span className="hidden sm:inline text-zinc-300">Account</span>
+              </>
             )}
           </Link>
+
+          {/* 2. Theme Switcher Dropdown & Live Previews */}
+          <ThemeSwitcherDropdown />
+
+          {/* 3. Quick Track Link */}
+          <Link
+            href="/track-project"
+            id="header-track-btn"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold bg-[#18181B] hover:bg-[#27272A] text-[#FAFAFA] transition-colors border border-[#27272A]"
+            title="Track project by ID & Access Code"
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-[#3ECF8E]" />
+            <span className="hidden sm:inline">Track</span>
+          </Link>
+
+          {/* 4. Real-time Project Notifications Center */}
+          <NotificationCenter />
 
           {/* Mobile Hamburger Toggle Button */}
           <button
@@ -558,5 +564,7 @@ export default function Header() {
         </div>
       )}
     </header>
+    {!isHomeActive && <div className="h-[56px] w-full shrink-0 pointer-events-none" aria-hidden="true" />}
+    </>
   );
 }

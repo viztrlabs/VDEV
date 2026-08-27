@@ -37,63 +37,80 @@ import {
   ChevronRight,
   Menu,
   X,
-  MessageSquare
+  MessageSquare,
+  HardDrive,
+  Video,
+  DollarSign,
+  Filter,
+  Plus,
+  SlidersHorizontal
 } from 'lucide-react';
 import ModelManager from '@/components/admin/ModelManager';
+import GoogleDriveAdminManager from '@/components/admin/GoogleDriveAdminManager';
+import GoogleMeetAdminManager from '@/components/admin/GoogleMeetAdminManager';
+import SuperAdminProjectManager from '@/components/admin/SuperAdminProjectManager';
+import CollapsibleLeftFilterPanel from '@/components/dashboard/CollapsibleLeftFilterPanel';
+import CollapsibleRightInspectorPanel from '@/components/dashboard/CollapsibleRightInspectorPanel';
 import { useAppStore } from '@/lib/store';
+import {
+  INITIAL_MANAGED_PROJECTS,
+  ManagedProject,
+  ProjectType,
+  ProjectStatus,
+  PaymentStatus,
+  TimesheetEntry
+} from '@/lib/projects-data';
 
-// 6 Sections with all 20 specified admin routes / tabs
+// 6 Sections with admin routes / tabs
 const SIDEBAR_SECTIONS = [
   {
-    title: 'Overview',
+    title: 'Overview & Pipelines',
     items: [
-      { id: 'dashboard', label: 'Platform Overview', icon: Activity, href: '/admin/dashboard' },
-      { id: 'projects', label: 'All Projects', icon: Database, href: '/admin/projects' },
-      { id: 'analytics', label: 'Analytics', icon: TrendingUp, href: '/admin/analytics' },
+      { id: 'dashboard', label: 'Platform Overview', icon: Activity },
+      { id: 'projects', label: 'Commissions & Pipelines', icon: Database },
+      { id: 'analytics', label: 'Analytics & Hours', icon: TrendingUp },
     ],
   },
   {
-    title: 'Users',
+    title: 'Super Admin Authority',
     items: [
-      { id: 'users', label: 'User Management', icon: Users, href: '/admin/users' },
-      { id: 'clients', label: 'Client Access', icon: UserCheck, href: '/admin/clients' },
-      { id: 'inquiries', label: 'Contact Inquiries', icon: MessageSquare, href: '/admin/inquiries' },
+      { id: 'super-admin-crud', label: 'Master CRUD & Telemetry', icon: Shield },
+      { id: 'users', label: 'User & Client Roles', icon: Users },
+      { id: 'clients', label: 'Client Access Tokens', icon: UserCheck },
+      { id: 'inquiries', label: 'Contact Inquiries', icon: MessageSquare },
     ],
   },
   {
-    title: 'XR Tools',
+    title: 'XR & Real-Time Engine',
     items: [
-      { id: 'vr-configurator', label: 'VR Tour Builder', icon: Headset, href: '/admin/vr-configurator' },
-      { id: 'ar', label: 'AR Projects', icon: Box, href: '/admin/ar' },
-      { id: 'streaming', label: 'GPU & Streaming', icon: Server, href: '/admin/streaming' },
+      { id: 'vr-configurator', label: 'VR Tour Builder', icon: Headset },
+      { id: 'ar', label: 'AR QuickLook Assets', icon: Box },
+      { id: 'streaming', label: 'GPU & Pixel Streaming', icon: Server },
     ],
   },
   {
-    title: 'Content',
+    title: 'Content & Design',
     items: [
-      { id: 'blog', label: 'Blog Management', icon: FileText, href: '/admin/blog' },
-      { id: 'cms-services', label: 'Services CMS', icon: Layers, href: '/admin/cms/services' },
-      { id: 'cms-testimonials', label: 'Testimonials', icon: Sparkles, href: '/admin/cms/testimonials' },
-      { id: 'media', label: 'Media Library', icon: Globe, href: '/admin/media' },
-      { id: 'cms-navigation', label: 'Navigation Menus', icon: Sliders, href: '/admin/cms/navigation' },
-      { id: 'forms', label: 'Form Builder', icon: FileText, href: '/admin/forms' },
-      { id: 'design-themes', label: 'Theme Manager', icon: Palette, href: '/admin/design/themes' },
-      { id: 'seo', label: 'SEO Settings', icon: Globe, href: '/admin/seo' },
+      { id: 'blog', label: 'Blog Management', icon: FileText },
+      { id: 'cms-services', label: 'Services CMS', icon: Layers },
+      { id: 'media', label: 'Media Library', icon: Globe },
+      { id: 'design-themes', label: 'Theme Manager', icon: Palette },
+      { id: 'seo', label: 'SEO Settings', icon: Globe },
     ],
   },
   {
-    title: 'Bookings',
+    title: 'Meetings & Bookings',
     items: [
-      { id: 'bookings', label: 'All Bookings', icon: Calendar, href: '/admin/bookings' },
-      { id: 'support', label: 'Support Tickets', icon: LifeBuoy, href: '/admin/support' },
+      { id: 'google-meet', label: 'Google Meet Fleet', icon: Video },
+      { id: 'bookings', label: 'All Bookings', icon: Calendar },
+      { id: 'support', label: 'Support Tickets', icon: LifeBuoy },
     ],
   },
   {
-    title: 'System',
+    title: 'Cloud Infrastructure',
     items: [
-      { id: 'settings', label: 'Platform Settings', icon: Settings, href: '/admin/settings' },
-      { id: 'ai-settings', label: 'AI Configuration', icon: Sparkles, href: '/admin/ai-settings' },
-      { id: 'admins', label: 'Admin Management', icon: Shield, href: '/admin/admins' },
+      { id: 'google-drive', label: 'Google Drive Fleet', icon: HardDrive },
+      { id: 'settings', label: 'Platform Settings', icon: Settings },
     ],
   },
 ];
@@ -102,12 +119,96 @@ export default function AdminDashboardPage() {
   const [activeSection, setActiveSection] = useState('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  // Managed Projects State (Super Admin / Admin CRUD)
+  const [projectsList, setProjectsList] = useState<ManagedProject[]>(INITIAL_MANAGED_PROJECTS);
+  const [selectedProjectId, setSelectedProjectId] = useState<string>(INITIAL_MANAGED_PROJECTS[0]?.id || 'VIZTR-882');
+
+  // Collapsible Left and Right Panels
+  const [leftPanelOpen, setLeftPanelOpen] = useState<boolean>(true);
+  const [rightPanelOpen, setRightPanelOpen] = useState<boolean>(true);
+
+  // Left Filter State
+  const [filterCriteria, setFilterCriteria] = useState<{
+    searchQuery: string;
+    projectType: ProjectType | 'all';
+    status: ProjectStatus | 'all';
+    paymentStatus: PaymentStatus | 'all';
+    category: string | 'all';
+    budgetTier: 'all' | 'under50k' | '50kTo100k' | 'over100k';
+  }>({
+    searchQuery: '',
+    projectType: 'all',
+    status: 'all',
+    paymentStatus: 'all',
+    category: 'all',
+    budgetTier: 'all',
+  });
+
   const { user, showToast } = useAppStore();
 
+  const selectedProject = projectsList.find((p) => p.id === selectedProjectId) || projectsList[0];
+
+  // Super Admin CRUD Handlers
+  const handleAddProject = (newProject: ManagedProject) => {
+    setProjectsList((prev) => [newProject, ...prev]);
+    setSelectedProjectId(newProject.id);
+  };
+
+  const handleUpdateProject = (updated: ManagedProject) => {
+    setProjectsList((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+  };
+
+  const handleDeleteProject = (id: string) => {
+    setProjectsList((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  // Hours logging handler
+  const handleLogHours = (projectId: string, entry: Omit<TimesheetEntry, 'id'>) => {
+    const newEntry: TimesheetEntry = {
+      ...entry,
+      id: `ts-${Date.now()}`,
+    };
+    setProjectsList((prev) =>
+      prev.map((p) => {
+        if (p.id === projectId) {
+          const updatedHoursSpent = p.hoursMonitoring.hoursSpent + entry.hours;
+          return {
+            ...p,
+            hoursMonitoring: {
+              ...p.hoursMonitoring,
+              hoursSpent: updatedHoursSpent,
+              timesheetEntries: [newEntry, ...p.hoursMonitoring.timesheetEntries],
+            },
+          };
+        }
+        return p;
+      })
+    );
+  };
+
+  const handleResetFilters = () => {
+    setFilterCriteria({
+      searchQuery: '',
+      projectType: 'all',
+      status: 'all',
+      paymentStatus: 'all',
+      category: 'all',
+      budgetTier: 'all',
+    });
+    showToast('Filters reset.', 'info');
+  };
+
+  // Computed summary metrics
+  const totalRevenue = projectsList.reduce((acc, p) => acc + p.bookingAmount, 0);
+  const totalHoursLogged = projectsList.reduce((acc, p) => acc + p.hoursMonitoring.hoursSpent, 0);
+  const totalEstimatedHours = projectsList.reduce((acc, p) => acc + p.hoursMonitoring.estimatedHours, 0);
+  const activeProjectsCount = projectsList.filter((p) => p.status === 'Work in Progress' || p.status === 'Client Review').length;
+
   return (
-    <div className="min-h-screen bg-[#09090B] text-[#FAFAFA] flex flex-col">
+    <div className="min-h-screen bg-[#09090B] text-[#FAFAFA] flex flex-col w-full">
       {/* ADMIN TOP BAR */}
-      <header className="h-16 border-b border-[#27272A] bg-[#18181B] px-4 sm:px-6 flex items-center justify-between sticky top-0 z-40">
+      <header className="h-16 border-b border-[#27272A] bg-[#18181B] px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-40 w-full">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
@@ -121,28 +222,60 @@ export default function AdminDashboardPage() {
               VIZ<span className="text-[#3ECF8E]">TR</span>
             </span>
             <span className="hidden sm:inline px-2 py-0.5 rounded bg-[#09090B] border border-[#27272A] text-[#3ECF8E] text-[10px] font-mono font-bold uppercase">
-              Admin CMS v2.5
+              Super Admin Core v3.0
             </span>
           </Link>
         </div>
 
-        {/* Global Admin Search */}
-        <div className="hidden sm:flex items-center relative max-w-xs w-full">
-          <Search className="w-3.5 h-3.5 text-[#71717A] absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search projects, client tokens, assets..."
-            className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
-          />
+        {/* Global Admin Search & View Controls */}
+        <div className="hidden md:flex items-center gap-4 max-w-lg w-full">
+          <div className="relative w-full">
+            <Search className="w-3.5 h-3.5 text-[#71717A] absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search projects, client tokens, assets, hour logs..."
+              className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+            />
+          </div>
         </div>
 
-        {/* User Info & Notifications */}
-        <div className="flex items-center gap-3">
+        {/* User Info & Panel Toggles */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Quick Panel Toggle Buttons */}
           <button
-            onClick={() => showToast('No pending critical cluster alerts.', 'info')}
+            type="button"
+            onClick={() => setLeftPanelOpen(!leftPanelOpen)}
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-mono border transition-colors flex items-center gap-1.5 cursor-pointer ${
+              leftPanelOpen
+                ? 'bg-[#3ECF8E]/20 text-[#3ECF8E] border-[#3ECF8E]/40'
+                : 'bg-[#09090B] text-[#A1A1AA] border-[#27272A] hover:text-white'
+            }`}
+            title="Toggle Left Filter Panel"
+          >
+            <Filter className="w-3.5 h-3.5" />
+            <span className="hidden lg:inline">Filters</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setRightPanelOpen(!rightPanelOpen)}
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-mono border transition-colors flex items-center gap-1.5 cursor-pointer ${
+              rightPanelOpen
+                ? 'bg-[#3ECF8E]/20 text-[#3ECF8E] border-[#3ECF8E]/40'
+                : 'bg-[#09090B] text-[#A1A1AA] border-[#27272A] hover:text-white'
+            }`}
+            title="Toggle Right Hours & Pipeline Inspector"
+          >
+            <Clock className="w-3.5 h-3.5" />
+            <span className="hidden lg:inline">Hours & Pipeline</span>
+          </button>
+
+          <button
+            onClick={() => showToast('Cluster healthy: 0 critical pipeline alerts.', 'info')}
             className="p-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] hover:text-white relative cursor-pointer"
+            title="Notifications"
           >
             <Bell className="w-4 h-4" />
             <span className="w-2 h-2 rounded-full bg-[#3ECF8E] absolute top-1.5 right-1.5" />
@@ -150,34 +283,35 @@ export default function AdminDashboardPage() {
 
           <div className="flex items-center gap-2 pl-2 border-l border-[#27272A]">
             <div className="w-8 h-8 rounded-full bg-[#3ECF8E]/20 border border-[#3ECF8E]/40 flex items-center justify-center text-xs font-mono font-bold text-[#3ECF8E]">
-              AD
+              SA
             </div>
-            <div className="hidden md:block text-left">
-              <div className="text-xs font-mono font-bold text-white">VizTR SuperAdmin</div>
-              <div className="text-[10px] font-mono text-[#71717A]">admin@viztr.com</div>
+            <div className="hidden xl:block text-left">
+              <div className="text-xs font-mono font-bold text-white">SuperAdmin Master</div>
+              <div className="text-[10px] font-mono text-[#3ECF8E]">Full Authority</div>
             </div>
           </div>
 
           <Link
-            href="/"
-            className="p-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white transition-colors"
-            title="Return to Public Site"
+            href="/client-dashboard"
+            className="px-3 py-1.5 rounded-lg bg-[#27272A] hover:bg-[#3ECF8E] hover:text-black border border-[#27272A] text-xs font-mono font-bold text-white transition-all"
+            title="Switch to Client Portal View"
           >
-            <LogOut className="w-4 h-4" />
+            Client View →
           </Link>
         </div>
       </header>
 
-      <div className="flex-1 flex overflow-hidden">
-        {/* SIDEBAR NAVIGATION (260px desktop, 6 sections, 20 items) */}
+      {/* MAIN CONTAINER (FLUID WIDE SCREEN ADAPTABILITY) */}
+      <div className="flex-1 flex overflow-hidden w-full max-w-[2400px] mx-auto">
+        {/* SIDEBAR NAVIGATION (240px desktop) */}
         <aside
-          className={`w-[260px] bg-[#18181B] border-r border-[#27272A] flex flex-col justify-between overflow-y-auto shrink-0 transition-all z-30 ${
-            mobileSidebarOpen ? 'fixed inset-y-16 left-0 shadow-2xl' : 'hidden md:flex'
+          className={`w-[240px] bg-[#18181B] border-r border-[#27272A] flex flex-col justify-between overflow-y-auto shrink-0 transition-all z-30 ${
+            mobileSidebarOpen ? 'fixed inset-y-16 left-0 shadow-2xl z-50' : 'hidden md:flex'
           }`}
         >
-          <div className="p-4 space-y-6">
+          <div className="p-3.5 space-y-5">
             {SIDEBAR_SECTIONS.map((section) => (
-              <div key={section.title} className="space-y-1.5">
+              <div key={section.title} className="space-y-1">
                 <h4 className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#71717A] px-2">
                   {section.title}
                 </h4>
@@ -192,13 +326,13 @@ export default function AdminDashboardPage() {
                           setActiveSection(item.id);
                           setMobileSidebarOpen(false);
                         }}
-                        className={`w-full px-2.5 py-2 rounded-lg text-xs font-mono flex items-center gap-2.5 transition-all text-left cursor-pointer ${
+                        className={`w-full px-2.5 py-1.5 rounded-lg text-xs font-mono flex items-center gap-2 transition-all text-left cursor-pointer ${
                           isActive
                             ? 'bg-[#09090B] text-[#3ECF8E] font-bold border-l-2 border-[#3ECF8E] pl-2'
                             : 'text-[#A1A1AA] hover:text-white hover:bg-[#09090B]/50'
                         }`}
                       >
-                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-[#3ECF8E]' : 'text-[#71717A]'}`} />
+                        <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-[#3ECF8E]' : 'text-[#71717A]'}`} />
                         <span className="truncate">{item.label}</span>
                       </button>
                     );
@@ -208,164 +342,153 @@ export default function AdminDashboardPage() {
             ))}
           </div>
 
-          <div className="p-4 border-t border-[#27272A] text-[10px] font-mono text-[#71717A] flex items-center justify-between">
+          <div className="p-3 border-t border-[#27272A] text-[10px] font-mono text-[#71717A] flex items-center justify-between">
             <span>Prisma 5.x DB Sync</span>
             <span className="text-[#3ECF8E] flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-[#3ECF8E] animate-pulse" />
-              Connected
+              Live Connected
             </span>
           </div>
         </aside>
 
-        {/* MAIN ADMIN WORKSPACE */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-8 max-w-7xl">
-          {/* SECTION: PLATFORM OVERVIEW (HOME) */}
+        {/* COLLAPSIBLE LEFT FILTER PANEL */}
+        <CollapsibleLeftFilterPanel
+          isOpen={leftPanelOpen}
+          onToggle={() => setLeftPanelOpen(!leftPanelOpen)}
+          projects={projectsList}
+          selectedProjectId={selectedProjectId}
+          onSelectProject={(id) => {
+            setSelectedProjectId(id);
+            setActiveSection('projects');
+          }}
+          filters={filterCriteria}
+          onFilterChange={setFilterCriteria}
+          onResetFilters={handleResetFilters}
+          userRole="SUPER_ADMIN"
+        />
+
+        {/* CENTRAL WORKSPACE (EXPANDS ON WIDESCREEN) */}
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-8 min-w-0">
+          {/* SECTION 1: PLATFORM OVERVIEW & TELEMETRY */}
           {activeSection === 'dashboard' && (
             <div className="space-y-6">
-              {/* TOP SUMMARY */}
+              {/* TOP HEADER */}
               <div className="space-y-1">
-                <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E]">
+                <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
                   <Shield className="w-4 h-4" />
-                  <span>EXECUTIVE CMS CONTROL TOWER</span>
+                  <span>SUPER ADMIN EXECUTIVE COMMAND CONSOLE</span>
                 </div>
                 <h1 className="text-2xl sm:text-3xl font-bold font-display text-white">
-                  Platform Operations & Asset Telemetry
+                  Platform Operations, Hours Telemetry & Pipeline Cluster
                 </h1>
                 <p className="text-xs text-[#A1A1AA]">
-                  Real-time pipeline monitoring, Cloudflare R2 object storage tracker, WebRTC stream capacity, and client engagement analytics.
+                  Full-stack project monitoring, real-time hours burn tracking, WebRTC streaming telemetry, and client deliverable sign-offs.
                 </p>
               </div>
 
-              {/* STATS CARDS: Total Leads, Total Bookings, Total Projects, Active Projects */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* STATS CARDS WITH LIVE AGGREGATIONS */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
                 <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
                   <div className="flex items-center justify-between text-[#A1A1AA] text-xs font-mono">
-                    <span>TOTAL LEADS</span>
-                    <TrendingUp className="w-4 h-4 text-[#3ECF8E]" />
-                  </div>
-                  <div className="text-2xl font-bold text-[#FAFAFA] font-mono">148</div>
-                  <div className="text-[10px] text-[#3ECF8E]">+24% vs last month</div>
-                </div>
-
-                <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
-                  <div className="flex items-center justify-between text-[#A1A1AA] text-xs font-mono">
-                    <span>TOTAL BOOKINGS</span>
-                    <Calendar className="w-4 h-4 text-[#3ECF8E]" />
-                  </div>
-                  <div className="text-2xl font-bold text-[#FAFAFA] font-mono">36</div>
-                  <div className="text-[10px] text-[#3ECF8E]">9 Scheduled this week</div>
-                </div>
-
-                <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
-                  <div className="flex items-center justify-between text-[#A1A1AA] text-xs font-mono">
-                    <span>TOTAL PROJECTS</span>
+                    <span>TOTAL COMMISSIONS</span>
                     <Database className="w-4 h-4 text-[#3ECF8E]" />
                   </div>
-                  <div className="text-2xl font-bold text-[#FAFAFA] font-mono">52</div>
-                  <div className="text-[10px] text-[#71717A]">44 Archival Master Deliveries</div>
+                  <div className="text-2xl font-bold text-white font-mono">{projectsList.length} Projects</div>
+                  <div className="text-[10px] text-[#3ECF8E]">{activeProjectsCount} In Active Production</div>
                 </div>
 
                 <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
                   <div className="flex items-center justify-between text-[#A1A1AA] text-xs font-mono">
-                    <span>ACTIVE PROJECTS</span>
-                    <Activity className="w-4 h-4 text-[#3ECF8E]" />
+                    <span>CONTRACT VALUE</span>
+                    <DollarSign className="w-4 h-4 text-[#3ECF8E]" />
                   </div>
-                  <div className="text-2xl font-bold text-[#FAFAFA] font-mono">8</div>
-                  <div className="text-[10px] text-[#3ECF8E]">3 in Final Stage Review</div>
+                  <div className="text-2xl font-bold text-[#3ECF8E] font-mono">
+                    ${totalRevenue.toLocaleString()}
+                  </div>
+                  <div className="text-[10px] text-[#A1A1AA]">Across All Disciplines</div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+                  <div className="flex items-center justify-between text-[#A1A1AA] text-xs font-mono">
+                    <span>HOURS LOGGED</span>
+                    <Clock className="w-4 h-4 text-[#3ECF8E]" />
+                  </div>
+                  <div className="text-2xl font-bold text-white font-mono">
+                    {totalHoursLogged.toFixed(1)} / {totalEstimatedHours.toFixed(1)}h
+                  </div>
+                  <div className="text-[10px] text-[#3ECF8E]">
+                    {Math.round((totalHoursLogged / Math.max(totalEstimatedHours, 1)) * 100)}% Global Burn Rate
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+                  <div className="flex items-center justify-between text-[#A1A1AA] text-xs font-mono">
+                    <span>GPU CLUSTER STATUS</span>
+                    <Server className="w-4 h-4 text-[#3ECF8E]" />
+                  </div>
+                  <div className="text-2xl font-bold text-white font-mono">32 Nodes Active</div>
+                  <div className="text-[10px] text-[#3ECF8E]">14.2ms WebRTC Latency</div>
                 </div>
               </div>
 
-              {/* DUAL COLUMN: RECENT ACTIVITY & QUICK LINKS */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Recent Activity List */}
-                <div className="lg:col-span-2 p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
-                  <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
-                    <h3 className="text-sm font-bold font-display text-white flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-[#3ECF8E]" />
-                      <span>Recent Platform Activity Log</span>
-                    </h3>
-                    <span className="text-[10px] font-mono text-[#71717A]">Live Socket Feed</span>
+              {/* CURRENTLY SELECTED COMMISSION SPOTLIGHT */}
+              {selectedProject && (
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-[#18181B] to-[#121214] border border-[#27272A] space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#27272A] pb-3">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-mono font-bold text-[#3ECF8E]">
+                          Active Focus: {selectedProject.id}
+                        </span>
+                        <span className="px-2 py-0.5 rounded bg-[#27272A] text-[10px] font-mono text-white">
+                          {selectedProject.projectType}
+                        </span>
+                        <span className="px-2 py-0.5 rounded bg-[#27272A] text-[10px] font-mono text-[#3ECF8E]">
+                          ${selectedProject.bookingAmount.toLocaleString()}
+                        </span>
+                      </div>
+                      <h3 className="text-lg font-bold font-display text-white">
+                        {selectedProject.name}
+                      </h3>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setActiveSection('super-admin-crud')}
+                        className="px-3.5 py-1.5 rounded-lg bg-[#3ECF8E] text-black font-mono font-bold text-xs"
+                      >
+                        Open Super Admin Authority →
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="space-y-3 text-xs font-mono">
-                    <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <CheckCircle2 className="w-4 h-4 text-[#3ECF8E] shrink-0" />
-                        <div>
-                          <div className="text-white font-bold">The Apex Tower - WebXR Asset Approved</div>
-                          <div className="text-[10px] text-[#71717A]">Elena Rostova (Foster & Partners) · 12 min ago</div>
-                        </div>
-                      </div>
-                      <span className="text-[10px] text-[#3ECF8E] font-bold">Stage 4 Complete</span>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+                    <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A]">
+                      <div className="text-[#71717A]">CLIENT & PRACTICE</div>
+                      <div className="text-white font-bold">{selectedProject.clientName}</div>
+                      <div className="text-[10px] text-[#A1A1AA]">{selectedProject.clientCompany}</div>
                     </div>
-
-                    <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <Cpu className="w-4 h-4 text-[#3ECF8E] shrink-0" />
-                        <div>
-                          <div className="text-white font-bold">Unreal Engine 5.4 Pixel Stream Instance Allocated</div>
-                          <div className="text-[10px] text-[#71717A]">Frankfurt EU-Central Node #12 · 45 min ago</div>
-                        </div>
+                    <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A]">
+                      <div className="text-[#71717A]">HOURS MONITORING</div>
+                      <div className="text-white font-bold">
+                        {selectedProject.hoursMonitoring.hoursSpent}h logged ({selectedProject.hoursMonitoring.estimatedHours}h budget)
                       </div>
-                      <span className="text-[10px] text-[#A1A1AA]">60 FPS · 14ms</span>
+                      <div className="text-[10px] text-[#3ECF8E]">
+                        @ ${selectedProject.hoursMonitoring.hourlyRate}/hr
+                      </div>
                     </div>
-
-                    <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <Calendar className="w-4 h-4 text-[#3ECF8E] shrink-0" />
-                        <div>
-                          <div className="text-white font-bold">New Architectural Consultation Booked</div>
-                          <div className="text-[10px] text-[#71717A]">Marcus Weber (Zaha Hadid Architects) · 2 hours ago</div>
-                        </div>
+                    <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A]">
+                      <div className="text-[#71717A]">TAILORED PIPELINE</div>
+                      <div className="text-white font-bold truncate">
+                        {selectedProject.pipeline.pipelineType}
                       </div>
-                      <span className="text-[10px] text-[#3ECF8E]">$50K-$100K Tier</span>
+                      <div className="text-[10px] text-[#3ECF8E]">
+                        Stage {selectedProject.pipeline.currentStageIndex + 1} of {selectedProject.pipeline.stages.length}
+                      </div>
                     </div>
                   </div>
                 </div>
-
-                {/* Quick Links & Health Cards */}
-                <div className="space-y-4">
-                  {/* Theme Status Card */}
-                  <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-2">
-                    <div className="flex items-center justify-between text-xs font-mono">
-                      <span className="text-white font-bold flex items-center gap-1.5">
-                        <Palette className="w-4 h-4 text-[#3ECF8E]" />
-                        <span>Theme Status</span>
-                      </span>
-                      <span className="text-[#3ECF8E]">Active</span>
-                    </div>
-                    <p className="text-[11px] text-[#A1A1AA]">
-                      Primary Accent: <span className="text-[#3ECF8E] font-mono">#3ECF8E</span> (Emerald) • Base: Zinc Dark #09090B
-                    </p>
-                    <button
-                      onClick={() => setActiveSection('design-themes')}
-                      className="text-xs font-mono text-[#3ECF8E] hover:underline pt-1 block"
-                    >
-                      Theme Manager →
-                    </button>
-                  </div>
-
-                  {/* SEO Health Card */}
-                  <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-2">
-                    <div className="flex items-center justify-between text-xs font-mono">
-                      <span className="text-white font-bold flex items-center gap-1.5">
-                        <Globe className="w-4 h-4 text-[#3ECF8E]" />
-                        <span>SEO Health</span>
-                      </span>
-                      <span className="text-[#3ECF8E] font-bold">98 / 100</span>
-                    </div>
-                    <p className="text-[11px] text-[#A1A1AA]">
-                      Dynamic Sitemap & Schema markup active on all 21 service and portfolio routes.
-                    </p>
-                    <button
-                      onClick={() => setActiveSection('seo')}
-                      className="text-xs font-mono text-[#3ECF8E] hover:underline pt-1 block"
-                    >
-                      Audit Meta Tags →
-                    </button>
-                  </div>
-                </div>
-              </div>
+              )}
 
               {/* 3D MODEL & ASSET MANAGEMENT SECTION EMBED */}
               <div className="space-y-3">
@@ -377,7 +500,17 @@ export default function AdminDashboardPage() {
             </div>
           )}
 
-          {/* SECTION: XR & 3D TOOLS */}
+          {/* SECTION 2: SUPER ADMIN MASTER CRUD */}
+          {(activeSection === 'super-admin-crud' || activeSection === 'projects' || activeSection === 'admins') && (
+            <SuperAdminProjectManager
+              projects={projectsList}
+              onAddProject={handleAddProject}
+              onUpdateProject={handleUpdateProject}
+              onDeleteProject={handleDeleteProject}
+            />
+          )}
+
+          {/* SECTION 3: XR & REAL-TIME ENGINE */}
           {(activeSection === 'ar' || activeSection === 'vr-configurator' || activeSection === 'models') && (
             <div className="space-y-6">
               <div className="space-y-1">
@@ -388,7 +521,7 @@ export default function AdminDashboardPage() {
             </div>
           )}
 
-          {/* SECTION: STREAMING */}
+          {/* SECTION 4: STREAMING */}
           {activeSection === 'streaming' && (
             <div className="space-y-6">
               <div className="space-y-1">
@@ -417,73 +550,53 @@ export default function AdminDashboardPage() {
             </div>
           )}
 
-          {/* SECTION: ALL PROJECTS */}
-          {activeSection === 'projects' && (
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold font-display text-white">Architectural Project Pipelines</h2>
-                  <p className="text-xs text-[#A1A1AA]">Track milestone proofs, 3D deliverables, and client feedback.</p>
-                </div>
-                <Link
-                  href="/client-dashboard"
-                  className="px-3.5 py-2 rounded-lg bg-[#3ECF8E] text-black font-mono font-bold text-xs uppercase"
-                >
-                  Open Client Portal View
-                </Link>
-              </div>
+          {/* SECTION 5: GOOGLE DRIVE */}
+          {activeSection === 'google-drive' && <GoogleDriveAdminManager />}
 
-              <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3">
-                <div className="space-y-2 font-mono text-xs">
-                  <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-between">
-                    <div>
-                      <div className="text-white font-bold">The Apex Tower (VIZTR-882)</div>
-                      <div className="text-[10px] text-[#71717A]">Foster & Partners · WebXR + 8K Stills</div>
-                    </div>
-                    <span className="px-2.5 py-1 rounded bg-[#3ECF8E]/20 text-[#3ECF8E] text-[10px]">Client Review (75%)</span>
-                  </div>
-
-                  <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-between">
-                    <div>
-                      <div className="text-white font-bold">Solarium Sky Penthouse (VIZTR-904)</div>
-                      <div className="text-[10px] text-[#71717A]">Zaha Hadid Architects · Interior 360 Tour</div>
-                    </div>
-                    <span className="px-2.5 py-1 rounded bg-[#3ECF8E]/20 text-[#3ECF8E] text-[10px]">In Production (50%)</span>
-                  </div>
-
-                  <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-between">
-                    <div>
-                      <div className="text-white font-bold">Nordic Monolith Residence (VIZTR-771)</div>
-                      <div className="text-[10px] text-[#71717A]">Snøhetta Studio · 8K Stills & Animations</div>
-                    </div>
-                    <span className="px-2.5 py-1 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px]">Completed (100%)</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* SECTION 6: GOOGLE MEET */}
+          {activeSection === 'google-meet' && <GoogleMeetAdminManager isSuperAdmin={true} />}
 
           {/* FALLBACK / OTHER CMS VIEWS */}
-          {activeSection !== 'dashboard' && activeSection !== 'ar' && activeSection !== 'vr-configurator' && activeSection !== 'models' && activeSection !== 'streaming' && activeSection !== 'projects' && (
-            <div className="p-8 rounded-2xl bg-[#18181B] border border-[#27272A] text-center space-y-4">
-              <div className="w-12 h-12 rounded-full bg-[#3ECF8E]/10 border border-[#3ECF8E]/40 flex items-center justify-center mx-auto text-[#3ECF8E]">
-                <Settings className="w-6 h-6 animate-spin-slow" />
+          {activeSection !== 'dashboard' &&
+            activeSection !== 'super-admin-crud' &&
+            activeSection !== 'projects' &&
+            activeSection !== 'admins' &&
+            activeSection !== 'google-drive' &&
+            activeSection !== 'google-meet' &&
+            activeSection !== 'ar' &&
+            activeSection !== 'vr-configurator' &&
+            activeSection !== 'models' &&
+            activeSection !== 'streaming' && (
+              <div className="p-8 rounded-2xl bg-[#18181B] border border-[#27272A] text-center space-y-4 font-mono">
+                <div className="w-12 h-12 rounded-full bg-[#3ECF8E]/10 border border-[#3ECF8E]/40 flex items-center justify-center mx-auto text-[#3ECF8E]">
+                  <Settings className="w-6 h-6 animate-spin-slow" />
+                </div>
+                <h3 className="text-lg font-bold font-display text-white capitalize">
+                  {activeSection.replace('-', ' ')} Super Admin Workspace
+                </h3>
+                <p className="text-xs text-[#A1A1AA] max-w-md mx-auto">
+                  Prisma schema bindings configured. Live CRUD operations synchronized with Postgres database.
+                </p>
+                <button
+                  onClick={() => setActiveSection('dashboard')}
+                  className="px-4 py-2 rounded-lg bg-[#3ECF8E] text-black font-bold text-xs uppercase"
+                >
+                  Return to Overview
+                </button>
               </div>
-              <h3 className="text-lg font-bold font-display text-white capitalize">
-                {activeSection.replace('-', ' ')} Module
-              </h3>
-              <p className="text-xs text-[#A1A1AA] max-w-md mx-auto font-mono">
-                Prisma schema bindings configured. Live CRUD operations synchronized with Postgres database.
-              </p>
-              <button
-                onClick={() => setActiveSection('dashboard')}
-                className="px-4 py-2 rounded-lg bg-[#3ECF8E] text-black font-mono font-bold text-xs uppercase"
-              >
-                Return to Overview
-              </button>
-            </div>
-          )}
+            )}
         </main>
+
+        {/* COLLAPSIBLE RIGHT INSPECTOR & HOURS MONITORING PANEL */}
+        {selectedProject && (
+          <CollapsibleRightInspectorPanel
+            isOpen={rightPanelOpen}
+            onToggle={() => setRightPanelOpen(!rightPanelOpen)}
+            project={selectedProject}
+            onLogHours={handleLogHours}
+            userRole="SUPER_ADMIN"
+          />
+        )}
       </div>
     </div>
   );

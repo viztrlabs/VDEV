@@ -3,10 +3,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAppStore } from '@/lib/store';
-import { Mail, Phone, MapPin, Send, CheckCircle2, Instagram, Linkedin, Twitter, Youtube, ArrowRight } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle2, Instagram, Linkedin, Twitter, Youtube, ArrowRight, Palette } from 'lucide-react';
+import { useTheme } from '@/lib/theme-provider';
 
 export default function Footer() {
   const { showToast } = useAppStore();
+  const { setThemeModalOpen, activeThemeConfig } = useTheme();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -279,8 +281,16 @@ export default function Footer() {
 
         {/* BOTTOM BAR */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-[#71717A]">
-          <div>
-            © 2026 VizTR Architectural CGI & Spatial XR Engines.
+          <div className="flex items-center gap-3">
+            <span>© 2026 VizTR Architectural CGI & Spatial XR Engines.</span>
+            <button
+              type="button"
+              onClick={() => setThemeModalOpen(true)}
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-zinc-300 hover:text-white transition-colors cursor-pointer text-[10px] font-mono"
+            >
+              <Palette className="w-3 h-3 text-[#3ECF8E]" />
+              <span>Theme: <strong className="text-[#3ECF8E]">{activeThemeConfig.name}</strong></span>
+            </button>
           </div>
           <div className="flex items-center space-x-4">
             <Link href="/privacy-policy" className="hover:text-[#FAFAFA] transition-colors">

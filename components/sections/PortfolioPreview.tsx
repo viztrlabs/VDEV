@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { portfolioProjects } from '@/data/portfolio';
 import { useAppStore } from '@/lib/store';
 import { ArrowRight, Compass, Box, Play, Eye } from 'lucide-react';
@@ -67,10 +68,13 @@ export default function PortfolioPreview() {
             <div>
               {/* Media Preview Box */}
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#09090B] border-b border-[#27272A]">
-                <img
+                <Image
                   src={project.featuredImage}
                   alt={project.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  referrerPolicy="no-referrer"
+                  className="object-cover"
                 />
 
                 {/* Badges */}

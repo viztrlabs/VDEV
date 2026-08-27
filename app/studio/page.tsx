@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { servicePagesData } from '@/data/pages';
 import ContactForm from '@/components/forms/ContactForm';
 import { ArrowRight, CheckCircle2, Eye, Sparkles } from 'lucide-react';
@@ -13,7 +14,14 @@ export default function StudioHubPage() {
     <main className="flex-1 w-full pb-20">
       {/* HERO SECTION */}
       <section className="relative py-24 px-6 bg-zinc-950 text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-30 bg-cover bg-center" style={{ backgroundImage: `url(${data.heroImage})` }} />
+        <Image
+          src={data.heroImage}
+          alt="Studio Visualization Hub"
+          fill
+          priority
+          referrerPolicy="no-referrer"
+          className="object-cover opacity-30 pointer-events-none"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-transparent" />
         
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
@@ -39,11 +47,14 @@ export default function StudioHubPage() {
             } items-center gap-10 lg:gap-14`}
           >
             {/* Image */}
-            <div className="w-full lg:w-1/2 rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800 relative group aspect-[16/10]">
-              <img
+            <div className="w-full lg:w-1/2 rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800 relative group aspect-[16/10] bg-zinc-900">
+              <Image
                 src={svc.image}
                 alt={svc.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                referrerPolicy="no-referrer"
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>
 

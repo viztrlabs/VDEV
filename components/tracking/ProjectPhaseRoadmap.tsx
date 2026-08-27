@@ -277,8 +277,18 @@ export default function ProjectPhaseRoadmap({
                 >
                   {/* STAGE HEADER (CLICKABLE ACCORDION) */}
                   <div
+                    role="button"
+                    tabIndex={0}
+                    aria-expanded={isExpanded}
+                    aria-label={`Toggle Stage 0${stageItem.stage}: ${stageItem.title}`}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleExpand(stageItem.stage);
+                      }
+                    }}
                     onClick={() => toggleExpand(stageItem.stage)}
-                    className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer hover:bg-white/[0.02] transition-colors"
+                    className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer hover:bg-white/[0.02] transition-colors focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]/50"
                   >
                     <div className="space-y-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
@@ -317,16 +327,16 @@ export default function ProjectPhaseRoadmap({
                         )}
                       </div>
 
-                      <button
+                      <div
                         className="p-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-[#A1A1AA] group-hover:text-white transition-colors"
-                        aria-label="Toggle details"
+                        aria-hidden="true"
                       >
                         {isExpanded ? (
                           <ChevronUp className="w-4 h-4" />
                         ) : (
                           <ChevronDown className="w-4 h-4" />
                         )}
-                      </button>
+                      </div>
                     </div>
                   </div>
 
@@ -441,7 +451,9 @@ export default function ProjectPhaseRoadmap({
                                   <div className="flex items-center gap-1 shrink-0">
                                     {deliv.previewUrl && deliv.isAvailable && (
                                       <button
+                                        type="button"
                                         onClick={() => handleDeliverableAction(deliv)}
+                                        aria-label={`Preview ${deliv.name} in 8K Lightbox`}
                                         className="p-1.5 rounded bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
                                         title="Preview in 8K Lightbox"
                                       >
@@ -450,8 +462,10 @@ export default function ProjectPhaseRoadmap({
                                     )}
 
                                     <button
+                                      type="button"
                                       onClick={() => handleDeliverableAction(deliv)}
                                       disabled={!deliv.isAvailable}
+                                      aria-label={deliv.isAvailable ? `Download ${deliv.name} (${deliv.size})` : `${deliv.name} locked pending stage signoff`}
                                       className={`p-1.5 rounded transition-all ${
                                         deliv.isAvailable
                                           ? 'bg-[#3ECF8E]/10 hover:bg-[#3ECF8E] text-[#3ECF8E] hover:text-black border border-[#3ECF8E]/30 cursor-pointer'

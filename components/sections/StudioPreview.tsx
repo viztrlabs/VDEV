@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { homepageData } from '@/data/homepage';
 import { ArrowRight, Eye } from 'lucide-react';
 
@@ -41,12 +42,15 @@ export default function StudioPreview() {
           >
             <div>
               <div className="relative h-48 w-full overflow-hidden border-b border-[#27272A]">
-                <img
+                <Image
                   src={svc.image}
                   alt={svc.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  referrerPolicy="no-referrer"
+                  className="object-cover"
                 />
-                <span className="absolute top-3 left-3 px-2 py-0.5 rounded bg-[#09090B]/90 text-[#3ECF8E] border border-[#27272A] text-[10px] font-mono font-bold">
+                <span className="absolute top-3 left-3 px-2 py-0.5 rounded bg-[#09090B]/90 text-[#3ECF8E] border border-[#27272A] text-[10px] font-mono font-bold z-10">
                   {svc.tag}
                 </span>
               </div>

@@ -33,10 +33,12 @@ import {
   Code,
   Printer,
   Smartphone,
-  RefreshCw
+  RefreshCw,
+  History
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import { ALL_STAGES } from '@/data/projects-tracking';
+import RevisionHistoryModal from '@/components/tracking/RevisionHistoryModal';
 
 export interface ProjectStatsData {
   hoursSpent: number;
@@ -113,6 +115,9 @@ export default function ProjectStatsWidget({
   const [scopeStats, setScopeStats] = useState(true);
   const [scopeRoadmap, setScopeRoadmap] = useState(true);
   const [scopeDocs, setScopeDocs] = useState(false);
+
+  // Dedicated Revision History & Chronological Markups Modal State
+  const [revisionModalOpen, setRevisionModalOpen] = useState(false);
 
   // Reference time for expiry calculations
   const [nowTimestamp, setNowTimestamp] = useState<number>(0);
@@ -911,6 +916,20 @@ export default function ProjectStatsWidget({
               </div>
             </div>
             <div className="flex items-center gap-1.5">
+              {/* Revision History Icon */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setRevisionModalOpen(true);
+                }}
+                aria-label="View Revision History & recent markups"
+                title="Revision History — chronological list of markups & changes"
+                className="opacity-70 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/60 text-[#A1A1AA] hover:text-[#3ECF8E] cursor-pointer"
+              >
+                <History className="w-3.5 h-3.5 text-[#3ECF8E]" />
+              </button>
+
               <button
                 type="button"
                 onClick={(e) => {
@@ -933,7 +952,14 @@ export default function ProjectStatsWidget({
               <span className="text-[#71717A]">Est. Budget: {stats.totalEstimatedHours}h</span>
               <span className="text-[#3ECF8E] font-bold">{hoursPercentage}% used</span>
             </div>
-            <div className="w-full h-1.5 rounded-full bg-[#09090B] overflow-hidden">
+            <div
+              role="progressbar"
+              aria-valuenow={hoursPercentage}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`Hours budget utilization: ${hoursPercentage}%`}
+              className="w-full h-1.5 rounded-full bg-[#09090B] overflow-hidden"
+            >
               <div
                 className="h-full bg-[#3ECF8E] rounded-full transition-all duration-500"
                 style={{ width: `${hoursPercentage}%` }}
@@ -973,12 +999,27 @@ export default function ProjectStatsWidget({
               </div>
             </div>
             <div className="flex items-center gap-1.5">
+              {/* Revision History Icon */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setRevisionModalOpen(true);
+                }}
+                aria-label="View Revision History & recent markups"
+                title="Revision History — chronological list of markups & changes"
+                className="opacity-70 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/60 text-[#A1A1AA] hover:text-[#3ECF8E] cursor-pointer"
+              >
+                <History className="w-3.5 h-3.5 text-[#3ECF8E]" />
+              </button>
+
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleOpenQrModal();
                 }}
+                aria-label="Scan QR on mobile for asset approval stats"
                 title="Scan QR on mobile"
                 className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/50 text-[#71717A] hover:text-[#3ECF8E] cursor-pointer"
               >
@@ -997,7 +1038,14 @@ export default function ProjectStatsWidget({
               </span>
               <span className="text-[#3ECF8E] font-bold">{assetsPercentage}% done</span>
             </div>
-            <div className="w-full h-1.5 rounded-full bg-[#09090B] overflow-hidden">
+            <div
+              role="progressbar"
+              aria-valuenow={assetsPercentage}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`Asset completion rate: ${assetsPercentage}%`}
+              className="w-full h-1.5 rounded-full bg-[#09090B] overflow-hidden"
+            >
               <div
                 className="h-full bg-[#3ECF8E] rounded-full transition-all duration-500"
                 style={{ width: `${assetsPercentage}%` }}
@@ -1020,13 +1068,20 @@ export default function ProjectStatsWidget({
               },
             },
           }}
-          className="hd-card p-4 hover:border-[#3ECF8E]/40 transition-all flex flex-col justify-between space-y-3 group relative"
+          className="hd-card p-4 hover:border-[#3ECF8E]/40 transition-all flex flex-col justify-between space-y-3 group relative cursor-pointer"
+          onClick={() => setRevisionModalOpen(true)}
+          title="Click to view chronological Revision History & recent markups"
         >
           <div className="flex items-start justify-between">
             <div className="space-y-1">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-[#A1A1AA]">
-                Pending Revisions
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-[#A1A1AA]">
+                  Pending Revisions
+                </span>
+                <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E]">
+                  History
+                </span>
+              </div>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-display font-bold text-white tracking-tight">
                   {stats.pendingRevisions}
@@ -1037,12 +1092,28 @@ export default function ProjectStatsWidget({
               </div>
             </div>
             <div className="flex items-center gap-1.5">
+              {/* Revision History Button with distinct active indicator */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setRevisionModalOpen(true);
+                }}
+                aria-label="View Revision History & recent markups"
+                title="Revision History — chronological list of markups & changes"
+                className="p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E] text-[#3ECF8E] cursor-pointer flex items-center gap-1 text-[10px] font-mono shadow-sm"
+              >
+                <History className="w-3.5 h-3.5 animate-pulse" />
+                <span className="hidden xl:inline font-bold">Log</span>
+              </button>
+
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleOpenQrModal();
                 }}
+                aria-label="Scan QR on mobile for pending revisions"
                 title="Scan QR on mobile"
                 className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/50 text-[#71717A] hover:text-[#3ECF8E] cursor-pointer"
               >
@@ -1069,6 +1140,8 @@ export default function ProjectStatsWidget({
               {stats.revisionsSummary || (stats.pendingRevisions > 0 ? 'In active studio queue' : 'Zero blockers')}
             </span>
             <span
+              role="status"
+              aria-label={`Revision status: ${stats.pendingRevisions > 0 ? 'Active tickets under review' : 'Zero blockers clear'}`}
               className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
                 stats.pendingRevisions > 0
                   ? 'bg-amber-950/80 text-amber-400 border border-amber-800/60'
@@ -1108,12 +1181,27 @@ export default function ProjectStatsWidget({
               </div>
             </div>
             <div className="flex items-center gap-1.5">
+              {/* Revision History Icon */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setRevisionModalOpen(true);
+                }}
+                aria-label="View Revision History & recent markups"
+                title="Revision History — chronological list of markups & changes"
+                className="opacity-70 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/60 text-[#A1A1AA] hover:text-[#3ECF8E] cursor-pointer"
+              >
+                <History className="w-3.5 h-3.5 text-[#3ECF8E]" />
+              </button>
+
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleOpenQrModal();
                 }}
+                aria-label="Scan QR on mobile for current milestone status"
                 title="Scan QR on mobile"
                 className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/50 text-[#71717A] hover:text-[#3ECF8E] cursor-pointer"
               >
@@ -1129,7 +1217,11 @@ export default function ProjectStatsWidget({
             <span className="text-[#A1A1AA] truncate font-medium max-w-[130px]" title={stats.nextMilestone}>
               {stats.nextMilestone}
             </span>
-            <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#09090B] border border-[#27272A] text-[#3ECF8E] shrink-0">
+            <span
+              role="status"
+              aria-label={`Milestone estimated completion time: ${stats.milestoneEta}`}
+              className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#09090B] border border-[#27272A] text-[#3ECF8E] shrink-0"
+            >
               {stats.milestoneEta}
             </span>
           </div>
@@ -2016,6 +2108,14 @@ export default function ProjectStatsWidget({
           </div>
         )}
       </AnimatePresence>
+
+      {/* REVISION HISTORY & CHRONOLOGICAL MARKUPS MODAL */}
+      <RevisionHistoryModal
+        isOpen={revisionModalOpen}
+        onClose={() => setRevisionModalOpen(false)}
+        projectId={projectId}
+        projectName={projectName}
+      />
     </div>
   );
 }

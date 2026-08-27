@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { useAppStore } from '@/lib/store';
 import {
   X,
@@ -131,9 +132,12 @@ export default function PixelStreamingTerminal() {
 
       {/* STREAMING VIEWPORT VIDEO CANVAS */}
       <div className="relative flex-1 w-full h-full overflow-hidden flex items-center justify-center bg-black">
-        <img
+        <Image
           src={cameraFeeds[activeCam]}
           alt="Cloud Pixel Streaming Unreal Feed"
+          fill
+          priority
+          referrerPolicy="no-referrer"
           className="w-full h-full object-cover transition-all duration-500 scale-100 filter brightness-105"
         />
 

@@ -8,6 +8,7 @@ import PanoramaViewer from '@/components/viewers/PanoramaViewer';
 import ModelViewer from '@/components/viewers/ModelViewer';
 import PixelStreamingTerminal from '@/components/viewers/PixelStreamingTerminal';
 import ToastNotification from '@/components/ui/ToastNotification';
+import ThemePreviewModal from '@/components/ui/ThemePreviewModal';
 
 export const metadata: Metadata = {
   title: 'VizTR — Architecture Visualization Studio & XR World Platform',
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ModelViewer />
           <PixelStreamingTerminal />
           <ToastNotification />
+          <ThemePreviewModal />
         </ThemeProvider>
       </body>
     </html>

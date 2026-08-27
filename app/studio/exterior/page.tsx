@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { servicePagesData } from '@/data/pages';
 import ContactForm from '@/components/forms/ContactForm';
 import { useAppStore } from '@/lib/store';
@@ -15,7 +16,14 @@ export default function ExteriorStudioPage() {
     <main className="flex-1 w-full pb-20">
       {/* HERO */}
       <section className="relative py-28 px-6 bg-zinc-950 text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-35 bg-cover bg-center" style={{ backgroundImage: `url(${data.heroImage})` }} />
+        <Image
+          src={data.heroImage}
+          alt="Exterior Architecture Rendering"
+          fill
+          priority
+          referrerPolicy="no-referrer"
+          className="object-cover opacity-35 pointer-events-none"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-transparent" />
 
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
@@ -122,12 +130,15 @@ export default function ExteriorStudioPage() {
                     idx
                   )
                 }
-                className="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all"
+                className="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all bg-zinc-900"
               >
-                <img
+                <Image
                   src={img}
                   alt={`Exterior sample ${idx + 1}`}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  referrerPolicy="no-referrer"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <div className="px-4 py-2 rounded-xl bg-white/90 text-zinc-900 text-xs font-bold flex items-center gap-1.5 shadow-lg">
