@@ -85,12 +85,12 @@ export default function CollapsibleLeftFilterPanel({
   ];
 
   // Statuses list
-  const STATUSES: { id: ProjectStatus; label: string; color: string }[] = [
-    { id: 'Complete', label: 'Complete', color: 'text-emerald-400 bg-emerald-950/80 border-emerald-800/80' },
-    { id: 'Work in Progress', label: 'Work in Progress', color: 'text-sky-400 bg-sky-950/80 border-sky-800/80' },
-    { id: 'Client Review', label: 'Client Review', color: 'text-amber-400 bg-amber-950/80 border-amber-800/80' },
-    { id: 'Awaited', label: 'Awaited', color: 'text-purple-400 bg-purple-950/80 border-purple-800/80' },
-    { id: 'Hold', label: 'On Hold', color: 'text-rose-400 bg-rose-950/80 border-rose-800/80' },
+  const STATUSES: { id: ProjectStatus; label: string; icon: React.ComponentType<{ className?: string }>; color: string }[] = [
+    { id: 'Complete', label: 'Complete', icon: CheckCircle2, color: 'text-emerald-400 bg-emerald-950/80 border-emerald-800/80' },
+    { id: 'Work in Progress', label: 'Work in Progress', icon: Clock, color: 'text-sky-400 bg-sky-950/80 border-sky-800/80' },
+    { id: 'Client Review', label: 'Client Review', icon: Eye, color: 'text-amber-400 bg-amber-950/80 border-amber-800/80' },
+    { id: 'Awaited', label: 'Awaited', icon: Sparkles, color: 'text-purple-400 bg-purple-950/80 border-purple-800/80' },
+    { id: 'Hold', label: 'On Hold', icon: PauseCircle, color: 'text-rose-400 bg-rose-950/80 border-rose-800/80' },
   ];
 
   // Payment Statuses list
@@ -306,6 +306,7 @@ export default function CollapsibleLeftFilterPanel({
                       All ({projects.length})
                     </button>
                     {STATUSES.map((st) => {
+                      const Icon = st.icon;
                       const count = projects.filter((p) => p.status === st.id).length;
                       const isSelected = filters.status === st.id;
                       return (
@@ -313,13 +314,17 @@ export default function CollapsibleLeftFilterPanel({
                           key={st.id}
                           type="button"
                           onClick={() => onFilterChange({ ...filters, status: isSelected ? 'all' : st.id })}
-                          className={`px-2 py-1 rounded text-[10px] truncate text-left transition-all border cursor-pointer ${
+                          className={`px-2 py-1 rounded text-[10px] text-left transition-all border cursor-pointer flex items-center justify-between ${
                             isSelected
                               ? 'bg-[#3ECF8E] text-black border-[#3ECF8E] font-bold'
                               : 'bg-[#09090B] text-[#A1A1AA] border-[#27272A] hover:border-[#71717A]'
                           }`}
                         >
-                          {st.label} ({count})
+                          <span className="flex items-center gap-1.5 truncate">
+                            <Icon className="w-3 h-3 shrink-0" />
+                            <span className="truncate">{st.label}</span>
+                          </span>
+                          <span className="text-[9px] font-bold shrink-0">{count}</span>
                         </button>
                       );
                     })}
@@ -502,8 +507,13 @@ export default function CollapsibleLeftFilterPanel({
                               <span className="text-[10px] font-bold text-[#3ECF8E] truncate">
                                 {project.id}
                               </span>
-                              <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#27272A] text-white">
-                                {project.projectType}
+                              <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#27272A] text-white flex items-center gap-1">
+                                {project.status === 'Complete' && <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400" />}
+                                {project.status === 'Work in Progress' && <Clock className="w-2.5 h-2.5 text-sky-400" />}
+                                {project.status === 'Client Review' && <Eye className="w-2.5 h-2.5 text-amber-400" />}
+                                {project.status === 'Awaited' && <Sparkles className="w-2.5 h-2.5 text-purple-400" />}
+                                {project.status === 'Hold' && <PauseCircle className="w-2.5 h-2.5 text-rose-400" />}
+                                <span>{project.projectType}</span>
                               </span>
                             </div>
                             <h4 className="text-[11px] font-bold text-white truncate">

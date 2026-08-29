@@ -19,6 +19,7 @@ import {
   ExternalLink,
   ShieldCheck
 } from 'lucide-react';
+import { ViztrLogoMark } from '@/components/ui/Logo';
 import NotificationCenter from '@/components/ui/NotificationCenter';
 import ThemeSwitcherDropdown from '@/components/ui/ThemeSwitcherDropdown';
 import ThemePreviewModal from '@/components/ui/ThemePreviewModal';
@@ -98,14 +99,14 @@ export default function Header() {
             id="header-logo-link"
             className="flex items-center gap-2.5 group"
           >
-            <div className="w-7 h-7 bg-[#3ECF8E] rounded flex items-center justify-center text-black font-extrabold text-sm shadow-sm group-hover:scale-105 transition-transform">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            <div className="w-8 h-8 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+              <ViztrLogoMark className="w-8 h-8" />
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-base font-bold tracking-tight text-[#FAFAFA]">
+              <span className="text-base font-bold tracking-tight text-[#FAFAFA] font-serif">
                 VizTR
               </span>
-              <span className="hidden sm:inline-flex px-1.5 py-0.5 bg-[#18181B] text-[#3ECF8E] text-[10px] font-mono font-bold rounded border border-[#27272A]">
+              <span className="hidden sm:inline-flex px-1.5 py-0.5 bg-[#18181B] text-[#e2c073] text-[10px] font-mono font-bold rounded border border-[#27272A]">
                 STUDIO v2.4
               </span>
             </div>

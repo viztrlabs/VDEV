@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  coturn:
+    image: coturn/coturn:latest
+    container_name: viztr-turn
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - TURN_SERVER_NAME=viztr.io
+      - TURN_REALM=viztr.io
+      - TURN_USERNAME=viztr
+      - TURN_PASSWORD=your_secure_password_here
+      - TURN_PORT=3478
+      - TURN_TLS_PORT=5349
+      - TURN_MIN_PORT=49152
+      - TURN_MAX_PORT=65535
+      - TURN_EXTERNAL_IP=${EXTERNAL_IP}
+    command: >
+      -n
+      -r viztr.io
+      -u viztr:your_secure_password_here
+      -p 3478
+      --min-port=49152
+      --max-port=65535
+      --external-ip=${EXTERNAL_IP}
+      --verbose
+      --fingerprint
+      --lt-cred-mech
+      --realm=viztr.io
+      --server-name=viztr.io
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# Run with: EXTERNAL_IP=$(curl -s ifconfig.me) docker compose up -d

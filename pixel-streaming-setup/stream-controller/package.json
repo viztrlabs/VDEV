@@ -1,0 +1,16 @@
+{
+  "name": "viztr-stream-controller",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GPU-PC sidecar that launches/stops Unreal Engine 5 Pixel Streaming builds and reports session state to the VizTR Next.js backend.",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {}
+}

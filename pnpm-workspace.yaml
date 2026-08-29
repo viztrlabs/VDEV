@@ -1,0 +1,3 @@
+packages: []
+minimumReleaseAgeExclude:
+  - '@testing-library/react@16.3.3'

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useAppStore } from '@/lib/store';
 import { Mail, Phone, MapPin, Send, CheckCircle2, Instagram, Linkedin, Twitter, Youtube, ArrowRight, Palette } from 'lucide-react';
 import { useTheme } from '@/lib/theme-provider';
+import { ViztrFooterLogo } from '@/components/ui/Logo';
 
 export default function Footer() {
   const { showToast } = useAppStore();
@@ -49,13 +50,8 @@ export default function Footer() {
           
           {/* COLUMN 1: Brand & Bio */}
           <div className="space-y-3">
-            <Link href="/" className="inline-flex items-center gap-2">
-              <div className="w-6 h-6 rounded bg-[#3ECF8E] flex items-center justify-center text-black font-extrabold text-xs">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-              </div>
-              <span className="text-lg font-bold tracking-tight text-[#FAFAFA]">
-                VizTR
-              </span>
+            <Link href="/" className="inline-block group" aria-label="VizTR Home">
+              <ViztrFooterLogo className="w-48 sm:w-56 h-auto transition-transform group-hover:scale-[1.02]" />
             </Link>
             <p className="text-xs text-[#A1A1AA] leading-relaxed">
               High-density architectural rendering, real-time WebXR spatial computing, and scalable cloud Unreal Engine 5 pixel streaming.

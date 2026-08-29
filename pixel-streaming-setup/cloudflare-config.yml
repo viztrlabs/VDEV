@@ -1,0 +1,29 @@
+# VizTR Pixel Streaming — Cloudflare Tunnel ingress config
+#
+# IMPORTANT: The credentials-file path is OS-specific.
+#   - Windows: C:\Users\<you>\.cloudflared\viztr-pixel.json
+#   - Linux:   /root/.cloudflared/viztr-pixel.json
+#
+# `setup-tunnel.bat` (Windows) and `setup-tunnel.sh` (Linux) auto-rewrite
+# this file with the correct absolute path during `cloudflared tunnel create`.
+# If you run the tunnel manually, set credentials-file to the path printed
+# by `cloudflared tunnel create viztr-pixel`.
+
+tunnel: viztr-pixel
+credentials-file: __CREDENTIALS_PATH__
+
+ingress:
+  # WebSocket for Pixel Streaming (Cirrus SFU) — primary stream entry
+  - hostname: stream.viztr.io
+    service: ws://localhost:8889
+    originRequest:
+      noTLSVerify: true
+
+  # HTTP for Cirrus web interface (stats, player)
+  - hostname: stream.viztr.io
+    service: http://localhost:80
+    originRequest:
+      noTLSVerify: true
+
+  # Catch-all
+  - service: http_status:404

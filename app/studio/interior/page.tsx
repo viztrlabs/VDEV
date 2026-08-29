@@ -67,7 +67,7 @@ export default function InteriorStudioPage() {
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-              {data.capabilities.map((cap, idx) => (
+              {data.capabilities?.map((cap, idx) => (
                 <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
                   <CheckCircle2 className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
                   <span className="text-xs font-medium text-zinc-800 dark:text-zinc-200">{cap}</span>
@@ -109,39 +109,41 @@ export default function InteriorStudioPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {data.gallery.map((img, idx) => (
-              <div
-                key={idx}
-                onClick={() =>
-                  openLightbox(
-                    data.gallery.map((g) => ({
-                      url: g,
-                      title: `Interior Render Sample 0${idx + 1}`,
-                      type: 'image'
-                    })),
-                    idx
-                  )
-                }
-                className="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all bg-zinc-900"
-              >
-                <Image
-                  src={img}
-                  alt={`Interior sample ${idx + 1}`}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  referrerPolicy="no-referrer"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <div className="px-4 py-2 rounded-xl bg-white/90 text-zinc-900 text-xs font-bold flex items-center gap-1.5 shadow-lg">
-                    <Eye className="w-4 h-4" />
-                    <span>Inspect 8K Detail</span>
+          {data.gallery && data.gallery.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {data.gallery.map((img, idx) => (
+                <div
+                  key={idx}
+                  onClick={() =>
+                    openLightbox(
+                      data.gallery!.map((g) => ({
+                        url: g,
+                        title: `Interior Render Sample 0${idx + 1}`,
+                        type: 'image'
+                      })),
+                      idx
+                    )
+                  }
+                  className="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all bg-zinc-900"
+                >
+                  <Image
+                    src={img}
+                    alt={`Interior sample ${idx + 1}`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    referrerPolicy="no-referrer"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <div className="px-4 py-2 rounded-xl bg-white/90 text-zinc-900 text-xs font-bold flex items-center gap-1.5 shadow-lg">
+                      <Eye className="w-4 h-4" />
+                      <span>Inspect 8K Detail</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* PROCESS */}
@@ -156,7 +158,7 @@ export default function InteriorStudioPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {data.process.map((p, idx) => (
+            {data.process?.map((p, idx) => (
               <div key={idx} className="p-5 rounded-2xl bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 space-y-2">
                 <div className="text-2xl font-bold font-mono text-rose-600 dark:text-rose-400">
                   0{idx + 1}

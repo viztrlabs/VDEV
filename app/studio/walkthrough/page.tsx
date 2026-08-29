@@ -7,7 +7,7 @@ import ContactForm from '@/components/forms/ContactForm';
 import { ArrowRight, CheckCircle2, Play, Film, Sliders, Music, Zap } from 'lucide-react';
 
 export default function WalkthroughStudioPage() {
-  const data = servicePagesData.walkthrough;
+  const data = servicePagesData['walkthrough'];
 
   return (
     <main className="flex-1 w-full pb-20">
@@ -57,7 +57,7 @@ export default function WalkthroughStudioPage() {
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-              {data.capabilities.map((cap, idx) => (
+              {data.capabilities?.map((cap, idx) => (
                 <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
                   <CheckCircle2 className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
                   <span className="text-xs font-medium text-zinc-800 dark:text-zinc-200">{cap}</span>
@@ -100,7 +100,7 @@ export default function WalkthroughStudioPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {data.process.map((p, idx) => (
+            {data.process?.map((p, idx) => (
               <div key={idx} className="p-5 rounded-2xl bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 space-y-2">
                 <div className="text-2xl font-bold font-mono text-rose-600 dark:text-rose-400">
                   0{idx + 1}

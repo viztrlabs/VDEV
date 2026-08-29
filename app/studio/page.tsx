@@ -26,7 +26,7 @@ export default function StudioHubPage() {
         
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
           <span className="px-3.5 py-1 rounded-full bg-rose-600/30 border border-rose-500/40 text-rose-400 text-xs font-bold uppercase tracking-widest inline-block">
-            {data.heroBadge}
+            {data.badge}
           </span>
           <h1 className="text-4xl sm:text-6xl font-bold tracking-tight font-display">
             {data.title}
@@ -39,7 +39,7 @@ export default function StudioHubPage() {
 
       {/* 3 SUB-SERVICES BREAKDOWN */}
       <section className="py-20 px-6 max-w-[1280px] mx-auto space-y-20">
-        {data.services.map((svc, idx) => (
+        {data.services?.map((svc, idx) => (
           <div
             key={svc.id}
             className={`flex flex-col ${

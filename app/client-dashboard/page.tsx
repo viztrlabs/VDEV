@@ -13,6 +13,7 @@ import {
   Eye,
   Play,
   Clock,
+  Calendar,
   CheckCircle2,
   AlertCircle,
   FileCode,
@@ -1097,6 +1098,7 @@ export default function ClientDashboardPage() {
                       : 'text-[#A1A1AA] hover:text-white hover:bg-[#27272A]'
                   }`}
                 >
+                  <Layers className="w-3 h-3" />
                   <span>All</span>
                   <span
                     className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono ${
@@ -1117,6 +1119,7 @@ export default function ClientDashboardPage() {
                       : 'text-[#A1A1AA] hover:text-white hover:bg-[#27272A]'
                   }`}
                 >
+                  <Clock className="w-3 h-3" />
                   <span>In Production</span>
                   <span
                     className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono ${
@@ -1137,6 +1140,7 @@ export default function ClientDashboardPage() {
                       : 'text-[#A1A1AA] hover:text-white hover:bg-[#27272A]'
                   }`}
                 >
+                  <Eye className="w-3 h-3" />
                   <span>Client Review</span>
                   <span
                     className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono ${
@@ -1157,6 +1161,7 @@ export default function ClientDashboardPage() {
                       : 'text-[#A1A1AA] hover:text-white hover:bg-[#27272A]'
                   }`}
                 >
+                  <CheckCircle2 className="w-3 h-3" />
                   <span>Completed</span>
                   <span
                     className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono ${
@@ -1411,13 +1416,29 @@ export default function ClientDashboardPage() {
                         <div
                           role="status"
                           aria-label={`Current phase status: ${project.status}`}
-                          className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
+                          className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold flex items-center gap-1 shadow-sm ${
                             project.status === 'Completed'
-                              ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-800'
-                              : 'bg-[#3ECF8E]/20 text-[#3ECF8E] border border-[#3ECF8E]/40'
+                              ? 'bg-emerald-950/85 text-emerald-300 border border-emerald-700/80'
+                              : project.status === 'In Production'
+                              ? 'bg-sky-950/85 text-sky-300 border border-sky-700/80'
+                              : project.status === 'Client Review'
+                              ? 'bg-amber-950/85 text-amber-300 border border-amber-700/80'
+                              : 'bg-purple-950/85 text-purple-300 border border-purple-700/80'
                           }`}
                         >
-                          {project.status}
+                          {project.status === 'Completed' && (
+                            <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+                          )}
+                          {project.status === 'In Production' && (
+                            <Clock className="w-3 h-3 text-sky-400 shrink-0" />
+                          )}
+                          {project.status === 'Client Review' && (
+                            <Eye className="w-3 h-3 text-amber-400 shrink-0" />
+                          )}
+                          {project.status === 'Final Delivery' && (
+                            <Sparkles className="w-3 h-3 text-purple-400 shrink-0" />
+                          )}
+                          <span>{project.status}</span>
                         </div>
                       </div>
 
@@ -1538,6 +1559,33 @@ export default function ClientDashboardPage() {
                   <span>COMMISSION DETAIL</span>
                   <span>•</span>
                   <span>{selectedProject.id}</span>
+                  <span>•</span>
+                  <span
+                    role="status"
+                    className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold inline-flex items-center gap-1 shadow-sm ${
+                      selectedProject.status === 'Completed'
+                        ? 'bg-emerald-950/85 text-emerald-300 border border-emerald-700/80'
+                        : selectedProject.status === 'In Production'
+                        ? 'bg-sky-950/85 text-sky-300 border border-sky-700/80'
+                        : selectedProject.status === 'Client Review'
+                        ? 'bg-amber-950/85 text-amber-300 border border-amber-700/80'
+                        : 'bg-purple-950/85 text-purple-300 border border-purple-700/80'
+                    }`}
+                  >
+                    {selectedProject.status === 'Completed' && (
+                      <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+                    )}
+                    {selectedProject.status === 'In Production' && (
+                      <Clock className="w-3 h-3 text-sky-400 shrink-0" />
+                    )}
+                    {selectedProject.status === 'Client Review' && (
+                      <Eye className="w-3 h-3 text-amber-400 shrink-0" />
+                    )}
+                    {selectedProject.status === 'Final Delivery' && (
+                      <Sparkles className="w-3 h-3 text-purple-400 shrink-0" />
+                    )}
+                    <span>{selectedProject.status}</span>
+                  </span>
                 </div>
                 <h2 className="text-xl sm:text-2xl font-bold font-display text-white">
                   {selectedProject.name}
@@ -1545,6 +1593,16 @@ export default function ClientDashboardPage() {
                 <p className="text-xs text-[#A1A1AA]">
                   Lead Architectural Contact: {selectedProject.leadArchitect}
                 </p>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2.5 text-[11px] font-mono text-[#A1A1AA]">
+                  <span className="flex items-center gap-1.5" id="project-created-at-display">
+                    <Calendar className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                    <span>Created: <strong className="text-white font-semibold">{selectedProject.roadmapStages[0]?.actualDate || 'N/A'}</strong></span>
+                  </span>
+                  <span className="flex items-center gap-1.5" id="project-last-modified-display">
+                    <Clock className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                    <span>Last Modified: <strong className="text-white font-semibold">{selectedProject.lastUpdate}</strong></span>
+                  </span>
+                </div>
               </div>
 
               {/* ACTION LAUNCHERS */}

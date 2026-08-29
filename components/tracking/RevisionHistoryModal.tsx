@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   History,
@@ -806,10 +807,12 @@ export default function RevisionHistoryModal({
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
                           {item.imageUrl && (
                             <div className="relative rounded-lg overflow-hidden border border-[#27272A] bg-black aspect-video group/img">
-                              <img
+                              <Image
                                 src={item.imageUrl}
                                 alt={item.title}
-                                className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-300"
+                                fill
+                                className="object-cover group-hover/img:scale-105 transition-transform duration-300"
+                                referrerPolicy="no-referrer"
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-2">
                                 <span className="text-[10px] font-mono text-zinc-300 font-semibold truncate">

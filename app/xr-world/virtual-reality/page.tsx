@@ -58,7 +58,7 @@ export default function VRServicePage() {
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-              {data.capabilities.map((cap, idx) => (
+              {data.capabilities?.map((cap, idx) => (
                 <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
                   <CheckCircle2 className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
                   <span className="text-xs font-medium text-zinc-800 dark:text-zinc-200">{cap}</span>

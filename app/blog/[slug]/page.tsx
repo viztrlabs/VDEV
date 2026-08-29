@@ -130,7 +130,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
 
         {/* ARTICLE BODY */}
         <div className="p-6 sm:p-10 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-6 text-[#E4E4E7] text-sm sm:text-base leading-relaxed">
-          {post.content.split('\n\n').map((paragraph, index) => {
+          {post.content.map((paragraph: string, index: number) => {
             if (paragraph.startsWith('### ')) {
               return (
                 <h3

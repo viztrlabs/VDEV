@@ -13,7 +13,8 @@ import {
   Compass,
   Cpu,
   CheckCircle2,
-  Play
+  Play,
+  Brain
 } from 'lucide-react';
 
 export default function XRWorldHubPage() {
@@ -32,6 +33,8 @@ export default function XRWorldHubPage() {
         return Compass;
       case 'pixel-streaming':
         return Cpu;
+      case 'gaussian-splat':
+        return Brain;
       default:
         return Box;
     }
@@ -90,7 +93,7 @@ export default function XRWorldHubPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {data.services.map((svc) => {
+          {data.services?.map((svc) => {
             const Icon = getIcon(svc.id);
             const isFlagship = svc.id === 'pixel-streaming';
 

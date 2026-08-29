@@ -1,0 +1,36 @@
+{
+  "name": "xr-world",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "@mkkellogg/gaussian-splats-3d": "^0.4.7",
+    "marzipano": "^0.10.2",
+    "playcanvas": "^2.21.4",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "next": "^15.1.6"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/playcanvas": "^1.23.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "tailwindcss": "^4.1.11",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "15.1.6"
+  },
+  "pnpm": {
+    "overrides": {
+      "three": "^0.0.0"
+    }
+  }
+}

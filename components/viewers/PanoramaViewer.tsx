@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAppStore } from '@/lib/store';
+import { useTourPreferences, useTheme, useReducedMotion } from '@/hooks/use-tour-preferences';
+import { useScenePreloader } from '@/hooks/use-lazy-image';
 import {
   X,
   Compass,
@@ -30,8 +32,20 @@ import {
   RotateCcw,
   MapPin,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Share2,
+  Search,
+  Settings,
   Flame,
-  Volume2
+  Volume2,
+  Play,
+  Pause,
+  Upload,
+  Music,
+  Bot,
+  Image as ImageIcon,
+  Globe,
 } from 'lucide-react';
 
 export type HotspotType = 'metadata' | 'room_link';
@@ -174,6 +188,70 @@ export const TOUR_ROOMS: TourRoom[] = [
         targetYaw: 90,
         icon: 'door',
         color: 'violet',
+        pulseStyle: 'radar'
+      },
+      {
+        id: 'hp-salon-portal-wine',
+        xPercent: 50,
+        yPercent: 70,
+        title: 'Descend to Wine Vault',
+        type: 'room_link',
+        category: 'portal',
+        description: 'Private climate-controlled wine cellar with 2,000+ bottle collection and tasting room.',
+        targetRoomId: 'room-wine-cellar',
+        targetRoomName: 'Climate-Controlled Wine Vault',
+        targetPanoramaUrl: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=2400&q=85',
+        targetYaw: 90,
+        icon: 'door',
+        color: 'amber',
+        pulseStyle: 'radar'
+      },
+      {
+        id: 'hp-salon-portal-gym',
+        xPercent: 75,
+        yPercent: 65,
+        title: 'Private Fitness Center',
+        type: 'room_link',
+        category: 'portal',
+        description: 'Full private gym with Technogym equipment, infrared sauna, and recovery zone.',
+        targetRoomId: 'room-home-gym',
+        targetRoomName: 'Private Fitness & Wellness Center',
+        targetPanoramaUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2400&q=85',
+        targetYaw: 270,
+        icon: 'door',
+        color: 'emerald',
+        pulseStyle: 'radar'
+      },
+      {
+        id: 'hp-salon-portal-library',
+        xPercent: 25,
+        yPercent: 65,
+        title: 'Two-Story Library',
+        type: 'room_link',
+        category: 'portal',
+        description: 'Private library with 5,000+ rare volumes, mahogany shelving, and reading lounge.',
+        targetRoomId: 'room-library',
+        targetRoomName: 'Two-Story Private Library',
+        targetPanoramaUrl: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=2400&q=85',
+        targetYaw: 0,
+        icon: 'door',
+        color: 'violet',
+        pulseStyle: 'radar'
+      },
+      {
+        id: 'hp-salon-portal-cinema',
+        xPercent: 8,
+        yPercent: 45,
+        title: 'Private Home Cinema',
+        type: 'room_link',
+        category: 'portal',
+        description: 'Dolby Atmos 4K laser projection theater with reference-grade acoustics.',
+        targetRoomId: 'room-cinema',
+        targetRoomName: 'Private Home Cinema',
+        targetPanoramaUrl: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=2400&q=85',
+        targetYaw: 180,
+        icon: 'door',
+        color: 'cyan',
         pulseStyle: 'radar'
       }
     ]
@@ -400,17 +478,268 @@ export const TOUR_ROOMS: TourRoom[] = [
         pulseStyle: 'radar'
       }
     ]
+  },
+  {
+    id: 'room-wine-cellar',
+    name: 'Climate-Controlled Wine Vault',
+    subtitle: 'Private Collection · 2000+ Bottles',
+    panoramaUrl: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=2400&q=85',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=400&q=80',
+    initialYaw: 90,
+    initialPitch: 0,
+    defaultHotspots: [
+      {
+        id: 'hp-wine-1',
+        xPercent: 40,
+        yPercent: 50,
+        title: 'Oak Wine Rack System',
+        type: 'metadata',
+        category: 'material',
+        description: 'Handcrafted American white oak wine racks with individual bottle compartments, LED accent lighting, and humidity-controlled environment.',
+        specs: [
+          { label: 'Capacity', value: '2,000 Bottles' },
+          { label: 'Temperature', value: '13°C ± 1°C' },
+          { label: 'Humidity', value: '65% RH Controlled' }
+        ],
+        icon: 'box',
+        color: 'amber',
+        pulseStyle: 'subtle'
+      },
+      {
+        id: 'hp-wine-2',
+        xPercent: 70,
+        yPercent: 45,
+        title: 'Tasting Table & Glassware',
+        type: 'metadata',
+        category: 'furniture',
+        description: 'Hand-forged iron and marble tasting table with Riedel Sommeliers glassware collection and decanting station.',
+        specs: [
+          { label: 'Material', value: 'Carrara Marble Top' },
+          { label: 'Seating', value: '8 Guests' }
+        ],
+        icon: 'sparkles',
+        color: 'violet',
+        pulseStyle: 'glowing'
+      },
+      {
+        id: 'hp-wine-portal-salon',
+        xPercent: 15,
+        yPercent: 55,
+        title: 'Return to Grand Salon',
+        type: 'room_link',
+        category: 'portal',
+        description: 'Ascend back to the main living pavilion.',
+        targetRoomId: 'room-grand-salon',
+        targetRoomName: 'The Solarium Sky Penthouse - Grand Salon',
+        targetPanoramaUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2400&q=85',
+        targetYaw: 180,
+        icon: 'door',
+        color: 'rose',
+        pulseStyle: 'radar'
+      }
+    ]
+  },
+  {
+    id: 'room-home-gym',
+    name: 'Private Fitness & Wellness Center',
+    subtitle: 'Full Gym · Sauna · Recovery',
+    panoramaUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2400&q=85',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=400&q=80',
+    initialYaw: 270,
+    initialPitch: 0,
+    defaultHotspots: [
+      {
+        id: 'hp-gym-1',
+        xPercent: 35,
+        yPercent: 55,
+        title: 'Technogym Equipment Suite',
+        type: 'metadata',
+        category: 'furniture',
+        description: 'Full Technogym Artis line including treadmill, bike, elliptical, and strength training zone with integrated touchscreen consoles.',
+        specs: [
+          { label: 'Equipment', value: 'Technogym Artis' },
+          { label: 'Flooring', value: 'Rubber Athletic Surface' }
+        ],
+        icon: 'zap',
+        color: 'emerald',
+        pulseStyle: 'glowing'
+      },
+      {
+        id: 'hp-gym-2',
+        xPercent: 65,
+        yPercent: 40,
+        title: 'Infrared Sauna Cabin',
+        type: 'metadata',
+        category: 'spatial',
+        description: 'Two-person full-spectrum infrared sauna with Canadian cedar interior, chromotherapy lighting, and Bluetooth audio.',
+        specs: [
+          { label: 'Type', value: 'Full-Spectrum Infrared' },
+          { label: 'Capacity', value: '2 Persons' }
+        ],
+        icon: 'flame',
+        color: 'amber',
+        pulseStyle: 'radar'
+      },
+      {
+        id: 'hp-gym-portal-salon',
+        xPercent: 85,
+        yPercent: 50,
+        title: 'Return to Grand Salon',
+        type: 'room_link',
+        category: 'portal',
+        description: 'Return to the main living pavilion.',
+        targetRoomId: 'room-grand-salon',
+        targetRoomName: 'The Solarium Sky Penthouse - Grand Salon',
+        targetPanoramaUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2400&q=85',
+        targetYaw: 180,
+        icon: 'door',
+        color: 'rose',
+        pulseStyle: 'radar'
+      }
+    ]
+  },
+  {
+    id: 'room-library',
+    name: 'Two-Story Private Library',
+    subtitle: 'Rare Books · Reading Lounge · Fireplace',
+    panoramaUrl: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=2400&q=85',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=400&q=80',
+    initialYaw: 0,
+    initialPitch: 0,
+    defaultHotspots: [
+      {
+        id: 'hp-lib-1',
+        xPercent: 30,
+        yPercent: 45,
+        title: 'Floor-to-Ceiling Mahogany Shelving',
+        type: 'metadata',
+        category: 'material',
+        description: 'Handcrafted Honduras mahogany bookcases with rolling brass library ladder, housing over 5,000 rare volumes and first editions.',
+        specs: [
+          { label: 'Capacity', value: '5,000+ Volumes' },
+          { label: 'Wood', value: 'Honduras Mahogany' }
+        ],
+        icon: 'layers',
+        color: 'amber',
+        pulseStyle: 'subtle'
+      },
+      {
+        id: 'hp-lib-2',
+        xPercent: 60,
+        yPercent: 50,
+        title: 'Chesterfield Reading Lounge',
+        type: 'metadata',
+        category: 'furniture',
+        description: 'Button-tufted British Chesterfield sofa in oxblood leather with matching ottoman and brass reading lamp.',
+        specs: [
+          { label: 'Material', value: 'Full-Grain Leather' },
+          { label: 'Style', value: 'Victorian Chesterfield' }
+        ],
+        icon: 'sparkles',
+        color: 'violet',
+        pulseStyle: 'glowing'
+      },
+      {
+        id: 'hp-lib-portal-salon',
+        xPercent: 80,
+        yPercent: 55,
+        title: 'Return to Grand Salon',
+        type: 'room_link',
+        category: 'portal',
+        description: 'Return to the main living pavilion.',
+        targetRoomId: 'room-grand-salon',
+        targetRoomName: 'The Solarium Sky Penthouse - Grand Salon',
+        targetPanoramaUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2400&q=85',
+        targetYaw: 180,
+        icon: 'door',
+        color: 'rose',
+        pulseStyle: 'radar'
+      }
+    ]
+  },
+  {
+    id: 'room-cinema',
+    name: 'Private Home Cinema',
+    subtitle: 'Dolby Atmos · 4K Laser Projection',
+    panoramaUrl: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=2400&q=85',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=400&q=80',
+    initialYaw: 180,
+    initialPitch: -5,
+    defaultHotspots: [
+      {
+        id: 'hp-cinema-1',
+        xPercent: 50,
+        yPercent: 35,
+        title: 'Sony VPL-GTZ380 4K Laser Projector',
+        type: 'metadata',
+        category: 'spatial',
+        description: 'Native 4K SXRD laser projector with 10,000-lumen output, HDR10 support, and motorized anamorphic lens for 2.35:1 cinemascope.',
+        specs: [
+          { label: 'Resolution', value: '4096 x 2160 Native' },
+          { label: 'Brightness', value: '10,000 Lumens' }
+        ],
+        icon: 'sparkles',
+        color: 'cyan',
+        pulseStyle: 'glowing'
+      },
+      {
+        id: 'hp-cinema-2',
+        xPercent: 25,
+        yPercent: 55,
+        title: 'Dolby Atmos 9.4.6 Speaker Array',
+        type: 'metadata',
+        category: 'acoustic',
+        description: 'Reference-grade Dolby Atmos system with 9 earround channels, 4 subwoofers, and 6 overhead speakers in acoustically treated room.',
+        specs: [
+          { label: 'Configuration', value: '9.4.6 Channel' },
+          { label: 'Treatment', value: 'Full Acoustic Paneling' }
+        ],
+        icon: 'volume2',
+        color: 'violet',
+        pulseStyle: 'radar'
+      },
+      {
+        id: 'hp-cinema-portal-salon',
+        xPercent: 10,
+        yPercent: 50,
+        title: 'Return to Grand Salon',
+        type: 'room_link',
+        category: 'portal',
+        description: 'Return to the main living pavilion.',
+        targetRoomId: 'room-grand-salon',
+        targetRoomName: 'The Solarium Sky Penthouse - Grand Salon',
+        targetPanoramaUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2400&q=85',
+        targetYaw: 180,
+        icon: 'door',
+        color: 'rose',
+        pulseStyle: 'radar'
+      }
+    ]
   }
 ];
 
-export default function PanoramaViewer() {
+export interface PanoramaViewerProps {
+  activePanoramaUrl?: string;
+  activePanoramaTitle?: string;
+}
+
+export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUrl, activePanoramaTitle: propActivePanoramaTitle }: PanoramaViewerProps = {}) {
   const {
     panoramaModalOpen,
-    activePanoramaUrl,
-    activePanoramaTitle,
+    activePanoramaUrl: storeActivePanoramaUrl,
+    activePanoramaTitle: storeActivePanoramaTitle,
     closePanorama,
     showToast
+
   } = useAppStore();
+
+  // Use props if provided, otherwise fall back to store values
+  const activePanoramaUrl = propActivePanoramaUrl ?? storeActivePanoramaUrl;
+  const activePanoramaTitle = propActivePanoramaTitle ?? storeActivePanoramaTitle;
+
+  // In standalone mode (props provided), always render. In modal mode, only render when open.
+  const isStandalone = propActivePanoramaUrl !== undefined || propActivePanoramaTitle !== undefined;
+  const isViewerActive = isStandalone || panoramaModalOpen;
 
   // Determine initial room
   const initialRoom = TOUR_ROOMS.find(
@@ -426,6 +755,126 @@ export default function PanoramaViewer() {
     });
     return initial;
   });
+
+  // URL deep-linking: read ?scene=room-id on mount
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const sceneId = params.get('scene');
+    if (sceneId) {
+      const found = TOUR_ROOMS.find((r) => r.id === sceneId);
+      if (found) {
+        setCurrentRoom(found);
+        setYaw(found.initialYaw);
+        setPitch(found.initialPitch);
+      }
+    }
+  }, []);
+
+  // URL deep-linking: track room navigation history
+  const [roomHistory, setRoomHistory] = useState<string[]>([]);
+  const [roomHistoryIndex, setRoomHistoryIndex] = useState(-1);
+
+  // Update URL when room changes
+  const updateUrlWithScene = (roomId: string) => {
+    if (typeof window === 'undefined') return;
+    const url = new URL(window.location.href);
+    url.searchParams.set('scene', roomId);
+    window.history.replaceState(null, '', url.toString());
+  };
+
+  // Navigate to room with history tracking
+  const navigateToRoomWithHistory = (room: TourRoom, targetYaw?: number) => {
+    setIsTeleporting(true);
+    setActiveHotspot(null);
+
+    setTimeout(() => {
+      setCurrentRoom(room);
+      setYaw(targetYaw !== undefined ? targetYaw : room.initialYaw);
+      setPitch(room.initialPitch);
+
+      // Update history
+      setRoomHistory((prev) => {
+        const newHistory = prev.slice(0, roomHistoryIndex + 1);
+        newHistory.push(room.id);
+        return newHistory;
+      });
+      setRoomHistoryIndex((prev) => prev + 1);
+
+      // Update URL
+      updateUrlWithScene(room.id);
+
+      showToast(`Teleported to ${room.name}`, 'success');
+      setIsTeleporting(false);
+    }, 400);
+  };
+
+  // Back navigation
+  const goBack = () => {
+    if (roomHistoryIndex > 0) {
+      const prevRoomId = roomHistory[roomHistoryIndex - 1];
+      const prevRoom = TOUR_ROOMS.find((r) => r.id === prevRoomId);
+      if (prevRoom) {
+        setIsTeleporting(true);
+        setActiveHotspot(null);
+        setTimeout(() => {
+          setCurrentRoom(prevRoom);
+          setYaw(prevRoom.initialYaw);
+          setPitch(prevRoom.initialPitch);
+          setRoomHistoryIndex((prev) => prev - 1);
+          updateUrlWithScene(prevRoom.id);
+          showToast(`Returned to ${prevRoom.name}`, 'success');
+          setIsTeleporting(false);
+        }, 400);
+      }
+    }
+  };
+
+  // Forward navigation
+  const goForward = () => {
+    if (roomHistoryIndex < roomHistory.length - 1) {
+      const nextRoomId = roomHistory[roomHistoryIndex + 1];
+      const nextRoom = TOUR_ROOMS.find((r) => r.id === nextRoomId);
+      if (nextRoom) {
+        setIsTeleporting(true);
+        setActiveHotspot(null);
+        setTimeout(() => {
+          setCurrentRoom(nextRoom);
+          setYaw(nextRoom.initialYaw);
+          setPitch(nextRoom.initialPitch);
+          setRoomHistoryIndex((prev) => prev + 1);
+          updateUrlWithScene(nextRoom.id);
+          showToast(`Teleported to ${nextRoom.name}`, 'success');
+          setIsTeleporting(false);
+        }, 400);
+      }
+    }
+  };
+
+  // Share URL
+  const getShareUrl = () => {
+    if (typeof window === 'undefined') return '';
+    const url = new URL(window.location.href);
+    url.searchParams.set('scene', currentRoom.id);
+    return url.toString();
+  };
+
+  const handleShare = () => {
+    setShowShareDialog(true);
+    setShareCopied(false);
+  };
+
+  const handleCopyShareUrl = async () => {
+    const url = getShareUrl();
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareCopied(true);
+      showToast('Link copied to clipboard!', 'success');
+      setTimeout(() => setShareCopied(false), 2000);
+    } catch {
+      showToast('Failed to copy link', 'error');
+    }
+  };
 
   // Track if activePanoramaUrl prop changes from outside
   const [lastPropUrl, setLastPropUrl] = useState(activePanoramaUrl);
@@ -449,8 +898,147 @@ export default function PanoramaViewer() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showHotspots, setShowHotspots] = useState(true);
 
+  // Bottom-center controls auto-hide on proximity
+  const [showBottomControls, setShowBottomControls] = useState(true);
+  const [bottomControlsVisible, setBottomControlsVisible] = useState(true);
+  const bottomControlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Bottom-right hotspot list panel
+   const [showHotspotListPanel, setShowHotspotListPanel] = useState(false);
+   const audioRef = useRef<HTMLAudioElement>(null);
+
   // Active Hotspot Popup state
   const [activeHotspot, setActiveHotspot] = useState<Hotspot | null>(null);
+
+  // Share dialog state
+  const [showShareDialog, setShowShareDialog] = useState<boolean>(false);
+  const [shareCopied, setShareCopied] = useState<boolean>(false);
+
+  // Tutorial/onboarding state
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return !localStorage.getItem('viztr-tutorial-seen');
+  });
+  const [tutorialStep, setTutorialStep] = useState<number>(0);
+
+  // Search panel state
+  const [showSearch, setShowSearch] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // Preferences panel state
+  const [showPreferences, setShowPreferences] = useState<boolean>(false);
+  const [settingsMenuOpen, setSettingsMenuOpen] = useState<boolean>(false);
+  const [showGoogleDrivePanel, setShowGoogleDrivePanel] = useState<boolean>(false);
+
+  // User preferences
+  const { preferences, updatePreferences } = useTourPreferences();
+  const { theme } = useTheme(preferences);
+  const { reducedMotion } = useReducedMotion(preferences);
+
+  // Sync isPlaying with preferences.autoRotate
+  const [isPlaying, setIsPlaying] = useState(preferences.autoRotate);
+
+  // Auto-rotate effect (play/pause)
+  useEffect(() => {
+    if (!isPlaying || reducedMotion) return;
+    const speed = preferences.autoRotateSpeed || 1;
+    const interval = setInterval(() => {
+      setYaw((prev) => (prev + 0.05 * speed + 360) % 360);
+    }, 50);
+    return () => clearInterval(interval);
+  }, [isPlaying, reducedMotion, preferences.autoRotateSpeed]);
+
+  // Sync autoRotate preference toggle
+  useEffect(() => {
+    if (preferences.autoRotate && !isPlaying) {
+      setIsPlaying(true);
+    }
+  }, [preferences.autoRotate]);
+
+   // Scroll-to-zoom effect (only when fullscreen)
+   useEffect(() => {
+     if (!isViewerActive || !preferences.scrollZoomEnabled) return;
+     const handleWheel = (e: WheelEvent) => {
+       e.preventDefault();
+       const delta = e.deltaY < 0 ? -1 : 1;
+       const step = preferences.scrollZoomStep || 10;
+       setFov((prev) => Math.min(100, Math.max(40, prev + delta * step)));
+     };
+     const container = containerRef.current;
+     if (!container) return;
+     container.addEventListener('wheel', handleWheel, { passive: false });
+     return () => container.removeEventListener('wheel', handleWheel);
+    }, [isViewerActive, preferences.scrollZoomEnabled, preferences.scrollZoomStep]);
+
+   // Update audio volume when preference changes
+   useEffect(() => {
+     if (audioRef.current) {
+       audioRef.current.volume = preferences.musicVolume;
+     }
+   }, [preferences.musicVolume, preferences.musicEnabled, preferences.backgroundMusicUrl]);
+
+   // Bottom-center controls auto-hide on cursor proximity
+  useEffect(() => {
+    if (!preferences.showBottomControlsOnHover) {
+      setBottomControlsVisible(true);
+      return;
+    }
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      const mouseY = e.clientY;
+      const bottomThreshold = rect.bottom - 120; // 120px from bottom
+      const isNearBottom = mouseY >= bottomThreshold;
+
+      if (isNearBottom) {
+        setBottomControlsVisible(true);
+        setShowBottomControls(true);
+        if (bottomControlsTimeoutRef.current) {
+          clearTimeout(bottomControlsTimeoutRef.current);
+        }
+        bottomControlsTimeoutRef.current = setTimeout(() => {
+          if (preferences.showBottomControlsOnHover) {
+            setBottomControlsVisible(false);
+          }
+        }, 1500);
+      } else if (bottomControlsVisible) {
+        // Fade out when moving away from bottom area
+        if (bottomControlsTimeoutRef.current) {
+          clearTimeout(bottomControlsTimeoutRef.current);
+        }
+        bottomControlsTimeoutRef.current = setTimeout(() => {
+          setBottomControlsVisible(false);
+        }, 1500);
+      }
+    };
+
+    container.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      container.removeEventListener('mousemove', handleMouseMove);
+      if (bottomControlsTimeoutRef.current) {
+        clearTimeout(bottomControlsTimeoutRef.current);
+      }
+    };
+  }, [preferences.showBottomControlsOnHover, bottomControlsVisible]);
+
+  // Close settings menu and other dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (settingsMenuOpen) {
+        const target = e.target as HTMLElement;
+        if (!target.closest('.settings-menu-trigger') && !target.closest('.settings-menu-dropdown')) {
+          setSettingsMenuOpen(false);
+        }
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [settingsMenuOpen]);
+
+  const currentSceneIndex = TOUR_ROOMS.findIndex((r) => r.id === currentRoom.id);
+  useScenePreloader(currentSceneIndex, TOUR_ROOMS, 2);
 
   // ADD HOTSPOT AUTHORING STATE
   const [isAddMode, setIsAddMode] = useState<boolean>(false);
@@ -481,9 +1069,9 @@ export default function PanoramaViewer() {
   const containerRef = useRef<HTMLDivElement>(null);
   const sphereViewportRef = useRef<HTMLDivElement>(null);
 
-  // Keyboard navigation & Shortcuts
-  useEffect(() => {
-    if (!panoramaModalOpen) return;
+   // Keyboard navigation & Shortcuts
+   useEffect(() => {
+     if (!isViewerActive) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         if (configModalOpen) {
@@ -499,10 +1087,12 @@ export default function PanoramaViewer() {
         } else {
           closePanorama();
         }
-      } else if (e.key === 'ArrowLeft') {
-        setYaw((prev) => (prev - 8 + 360) % 360);
-      } else if (e.key === 'ArrowRight') {
-        setYaw((prev) => (prev + 8) % 360);
+        } else if (e.key === 'ArrowLeft') {
+          const baseStep = e.ctrlKey && preferences.ctrlAxisRotationEnabled ? preferences.ctrlAxisRotationStep : 8;
+          setYaw((prev) => (prev - baseStep + 360) % 360);
+        } else if (e.key === 'ArrowRight') {
+          const baseStep = e.ctrlKey && preferences.ctrlAxisRotationEnabled ? preferences.ctrlAxisRotationStep : 8;
+          setYaw((prev) => (prev + baseStep) % 360);
       } else if (e.key === 'ArrowUp') {
         setPitch((prev) => Math.min(prev + 4, 45));
       } else if (e.key === 'ArrowDown') {
@@ -516,7 +1106,7 @@ export default function PanoramaViewer() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [
-    panoramaModalOpen,
+    isViewerActive,
     activeHotspot,
     isAddMode,
     configModalOpen,
@@ -525,39 +1115,29 @@ export default function PanoramaViewer() {
     showToast
   ]);
 
-  if (!panoramaModalOpen) return null;
+  // In standalone mode (props provided), always render. In modal mode, only render when open.
+  if (!isStandalone && !panoramaModalOpen) return null;
 
   const currentHotspots = roomHotspotsMap[currentRoom.id] || [];
 
-  // TELEPORT TO ROOM HANDLER
+  // TELEPORT TO ROOM HANDLER (with history tracking)
   const teleportToRoom = (targetRoomId: string, customUrl?: string, customName?: string, targetYaw?: number) => {
-    setIsTeleporting(true);
-    setActiveHotspot(null);
-
-    setTimeout(() => {
-      const target = TOUR_ROOMS.find((r) => r.id === targetRoomId);
-      if (target) {
-        setCurrentRoom(target);
-        setYaw(targetYaw !== undefined ? targetYaw : target.initialYaw);
-        setPitch(target.initialPitch);
-        showToast(`Teleported to ${target.name}`, 'success');
-      } else if (customUrl) {
-        const dynamicRoom: TourRoom = {
-          id: `room-${Date.now()}`,
-          name: customName || 'New 360 Space',
-          subtitle: 'Linked Architectural Space',
-          panoramaUrl: customUrl,
-          thumbnailUrl: customUrl,
-          initialYaw: targetYaw || 180,
-          initialPitch: 0,
-          defaultHotspots: []
-        };
-        setCurrentRoom(dynamicRoom);
-        setYaw(targetYaw || 180);
-        showToast(`Teleported to ${dynamicRoom.name}`, 'success');
-      }
-      setIsTeleporting(false);
-    }, 400);
+    const target = TOUR_ROOMS.find((r) => r.id === targetRoomId);
+    if (target) {
+      navigateToRoomWithHistory(target, targetYaw);
+    } else if (customUrl) {
+      const dynamicRoom: TourRoom = {
+        id: `room-${Date.now()}`,
+        name: customName || 'New 360 Space',
+        subtitle: 'Linked Architectural Space',
+        panoramaUrl: customUrl,
+        thumbnailUrl: customUrl,
+        initialYaw: targetYaw || 180,
+        initialPitch: 0,
+        defaultHotspots: []
+      };
+      navigateToRoomWithHistory(dynamicRoom, targetYaw);
+    }
   };
 
   // MOUSE DRAG & PANNING HANDLERS
@@ -565,6 +1145,14 @@ export default function PanoramaViewer() {
     if (isAddMode) return;
     setIsDragging(true);
     setDragStart({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (isAddMode) return;
+    const touch = e.touches[0];
+    if (!touch) return;
+    setIsDragging(true);
+    setDragStart({ x: touch.clientX, y: touch.clientY });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -577,7 +1165,24 @@ export default function PanoramaViewer() {
     setDragStart({ x: e.clientX, y: e.clientY });
   };
 
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging || isAddMode) return;
+    const touch = e.touches[0];
+    if (!touch) return;
+    e.preventDefault(); // Prevent scrolling
+    const deltaX = touch.clientX - dragStart.x;
+    const deltaY = touch.clientY - dragStart.y;
+
+    setYaw((prev) => (prev - deltaX * 0.15 + 360) % 360);
+    setPitch((prev) => Math.max(-45, Math.min(45, prev + deltaY * 0.15)));
+    setDragStart({ x: touch.clientX, y: touch.clientY });
+  };
+
   const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleTouchEnd = () => {
     setIsDragging(false);
   };
 
@@ -831,6 +1436,9 @@ export default function PanoramaViewer() {
     <div
       ref={containerRef}
       id="360-panorama-viewer-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-label="360° Virtual Tour Viewer"
       className="fixed inset-0 z-[999] bg-black text-white flex flex-col justify-between select-none animate-in fade-in duration-200"
       onMouseUp={handleMouseUp}
     >
@@ -852,10 +1460,54 @@ export default function PanoramaViewer() {
         )}
       </AnimatePresence>
 
-      {/* TOP BAR WITH TOUR ROOM SELECTOR & CONTROLS */}
-      <div className="absolute top-0 inset-x-0 z-30 px-4 py-2.5 bg-[#09090B]/95 border-b border-[#27272A] flex flex-wrap items-center justify-between gap-3 pointer-events-auto backdrop-blur-md">
-        {/* LEFT: ROOM NODE SELECTOR */}
-        <div className="flex items-center gap-3 relative">
+      {/* TOP BAR WITH TOUR ROOM SELECTOR & CONTROLS (admin/editing mode only) */}
+      {!preferences.hideTopBar && (
+      <div className="absolute top-0 left-0 right-0 z-30 px-4 py-2.5 bg-[var(--glass-bg)] border-b border-[var(--glass-border)] flex flex-wrap items-center justify-between gap-3 pointer-events-auto backdrop-blur-md">
+        {/* LEFT: Floor Plan Navigator (logos are positioned separately at top corners) */}
+        <div className="flex items-center gap-4">
+          {/* Floor Plan Live Location Navigator */}
+          {preferences.showFloorPlan && preferences.floorPlanImageUrl && (
+            <div className="flex items-center gap-2.5">
+              <div className="relative w-20 h-20 sm:w-28 sm:h-28 rounded-xl overflow-hidden border-2 border-[#3ECF8E] bg-[#09090B]">
+                <img
+                  src={preferences.floorPlanImageUrl}
+                  alt="Floor Plan"
+                  className="w-full h-full object-cover"
+                />
+                {/* Live location dot */}
+                <div
+                  className="absolute rounded-full bg-[#3ECF8E] shadow-[0_0_8px_rgba(62,207,142,0.8)] animate-pulse"
+                  style={{
+                    width: '10px',
+                    height: '10px',
+                    left: `${(yaw / 360) * 80 + 10}%`,
+                    top: `${((pitch + 45) / 90) * 80 + 10}%`,
+                  }}
+                />
+              </div>
+              {/* Floor Plan Upload (admin only) */}
+              {!preferences.hideTopBar && (
+                <label className="cursor-pointer p-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#71717A] hover:text-white transition-colors">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const url = URL.createObjectURL(file);
+                        updatePreferences({ floorPlanImageUrl: url });
+                        showToast('Floor plan uploaded.', 'success');
+                      }
+                    }}
+                  />
+                  <ImageIcon className="w-3.5 h-3.5" />
+                </label>
+              )}
+            </div>
+          )}
+
+          {/* ROOM NODE SELECTOR */}
           <div className="flex items-center gap-2 px-2.5 py-1 rounded bg-[#18181B] border border-[#27272A] text-[#3ECF8E] text-[10px] font-mono font-bold uppercase tracking-wider">
             <Compass className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '10s' }} />
             <span>360° TOUR</span>
@@ -935,7 +1587,7 @@ export default function PanoramaViewer() {
             }}
             className={`px-3 py-1.5 rounded-xl font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer shadow-lg ${
               isAddMode
-                ? 'bg-amber-400 text-black animate-pulse ring-2 ring-amber-300'
+                ? 'bg-amber-400 text-black ' + (reducedMotion ? '' : 'animate-pulse') + ' ring-2 ring-amber-300'
                 : 'bg-rose-600 hover:bg-rose-500 text-white'
             }`}
             title="Place a new hotspot in 360 space (H)"
@@ -991,11 +1643,65 @@ export default function PanoramaViewer() {
             <Smartphone className="w-3.5 h-3.5" />
           </button>
 
+          {/* ROOM NAVIGATION (back/forward/share/search) */}
+          <div className="hidden sm:flex items-center bg-[#18181B] border border-[#27272A] rounded-xl p-0.5 gap-0.5">
+            <button
+              onClick={goBack}
+              disabled={roomHistoryIndex <= 0}
+              className="p-1 hover:text-white cursor-pointer text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
+              aria-label="Previous Room"
+              title="Previous Room"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+            </button>
+            <span className="text-[10px] font-mono text-[#3ECF8E] px-1 min-w-[28px] text-center" aria-label="Current scene">
+              {TOUR_ROOMS.findIndex((r) => r.id === currentRoom.id) + 1}/{TOUR_ROOMS.length}
+            </span>
+            <button
+              onClick={goForward}
+              disabled={roomHistoryIndex >= roomHistory.length - 1}
+              className="p-1 hover:text-white cursor-pointer text-zinc-300 disabled:opacity-30 disabled:cursor-not-allowed"
+              aria-label="Next Room"
+              title="Next Room"
+            >
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={handleShare}
+              className="p-1 hover:text-white cursor-pointer text-zinc-300"
+              aria-label="Share Room Link"
+              title="Share Room Link"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => setShowSearch(true)}
+              className="p-1 hover:text-white cursor-pointer text-zinc-300"
+              aria-label="Search Rooms"
+              title="Search Rooms"
+            >
+              <Search className="w-3.5 h-3.5" />
+</button>
+          </div>
+
+          {/* PREFERENCES */}
+          <div className="hidden sm:flex items-center bg-[#18181B] border border-[#27272A] rounded-xl p-0.5">
+            <button
+              onClick={() => setShowPreferences(true)}
+              className="p-1 hover:text-white cursor-pointer text-zinc-300"
+              aria-label="Preferences"
+              title="Preferences"
+            >
+              <Settings className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
           {/* ZOOM CONTROLS */}
           <div className="hidden sm:flex items-center bg-[#18181B] border border-[#27272A] rounded-xl p-0.5">
             <button
               onClick={() => setFov((prev) => Math.max(prev - 10, 45))}
               className="p-1 hover:text-white cursor-pointer text-zinc-300"
+              aria-label="Zoom In"
               title="Zoom In"
             >
               <ZoomIn className="w-3.5 h-3.5" />
@@ -1003,6 +1709,7 @@ export default function PanoramaViewer() {
             <button
               onClick={() => setFov((prev) => Math.min(prev + 10, 100))}
               className="p-1 hover:text-white cursor-pointer text-zinc-300"
+              aria-label="Zoom Out"
               title="Zoom Out"
             >
               <ZoomOut className="w-3.5 h-3.5" />
@@ -1012,7 +1719,8 @@ export default function PanoramaViewer() {
           <button
             onClick={toggleFullscreen}
             className="p-1.5 rounded-xl bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#FAFAFA] transition-colors cursor-pointer"
-            title="Toggle Fullscreen"
+            aria-label={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+            title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
           >
             {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
           </button>
@@ -1020,11 +1728,76 @@ export default function PanoramaViewer() {
           <button
             onClick={closePanorama}
             className="p-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white transition-colors cursor-pointer ml-1"
+            aria-label="Exit 360 Viewer"
             title="Exit 360 Viewer (Esc)"
           >
             <X className="w-4 h-4" />
-          </button>
-        </div>
+           </button>
+         </div>
+       </div>
+             )}
+
+      {/* CLIENT LOGO - Top Left (separate from nav bar) */}
+      <div className="absolute top-4 left-4 z-40 flex items-center gap-2.5">
+        {preferences.clientLogoUrl ? (
+          <img
+            src={preferences.clientLogoUrl}
+            alt="Client Logo"
+            className="h-10 w-auto object-contain drop-shadow-xl"
+          />
+        ) : (
+          <div className="h-10 w-28 rounded-lg bg-[#18181B]/90 border border-[#27272A] flex items-center justify-center text-xs font-mono text-[#71717A] backdrop-blur-md">
+            Client Logo
+          </div>
+        )}
+        {/* Logo Upload (admin only) */}
+        <label className="cursor-pointer p-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#71717A] hover:text-white transition-colors backdrop-blur-md">
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                const url = URL.createObjectURL(file);
+                updatePreferences({ clientLogoUrl: url });
+                showToast('Client logo uploaded.', 'success');
+              }
+            }}
+          />
+          <Upload className="w-3.5 h-3.5" />
+        </label>
+      </div>
+
+      {/* VIZTR LOGO - Top Right (separate from nav bar) */}
+      <div className="absolute top-4 right-4 z-40 flex items-center gap-2.5">
+        {preferences.viztrLogoUrl ? (
+          <img
+            src={preferences.viztrLogoUrl}
+            alt="VizTR Logo"
+            className="h-8 w-auto object-contain drop-shadow-xl"
+          />
+        ) : (
+          <div className="h-8 w-20 rounded-lg bg-[#18181B]/90 border border-[#27272A] flex items-center justify-center text-xs font-mono font-bold text-[#3ECF8E] backdrop-blur-md">
+            VIZTR
+          </div>
+        )}
+        <label className="cursor-pointer p-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#71717A] hover:text-white transition-colors backdrop-blur-md">
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                const url = URL.createObjectURL(file);
+                updatePreferences({ viztrLogoUrl: url });
+                showToast('VizTR logo uploaded.', 'success');
+              }
+            }}
+          />
+          <Upload className="w-3.5 h-3.5" />
+        </label>
       </div>
 
       {/* PLACEMENT MODE BANNER WHEN ADDING HOTSPOT */}
@@ -1051,9 +1824,14 @@ export default function PanoramaViewer() {
         }`}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         onClick={handleCanvasClick}
         style={{
           perspective: `${fov * 10}px`,
+          touchAction: 'none',
         }}
       >
         {/* Equirectangular Projection Layer */}
@@ -1075,7 +1853,7 @@ export default function PanoramaViewer() {
             if (diff < -50) diff += 100;
             if (diff > 50) diff -= 100;
 
-            const relativeX = 50 + diff * (100 / (fov / 360 * 100));
+            const relativeX = 50 + diff * (fov / 360);
             const relativeY = Math.max(12, Math.min(88, hp.yPercent + pitch * 0.65));
 
             const isVisible = relativeX >= 5 && relativeX <= 95;
@@ -1104,13 +1882,14 @@ export default function PanoramaViewer() {
                     className={`absolute -inset-4 rounded-full opacity-30 ${colorStyle.bg}`}
                   />
 
-                  {/* HOTSPOT TRIGGER BUTTON */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (isAddMode) return;
-                      setActiveHotspot(activeHotspot?.id === hp.id ? null : hp);
-                    }}
+                   {/* HOTSPOT TRIGGER BUTTON */}
+                   <button
+                     onMouseDown={(e) => e.stopPropagation()}
+                     onClick={(e) => {
+                       e.stopPropagation();
+                       if (isAddMode) return;
+                       setActiveHotspot(activeHotspot?.id === hp.id ? null : hp);
+                     }}
                     className={`relative flex items-center justify-center p-3 rounded-full text-white transition-all transform hover:scale-125 shadow-2xl cursor-pointer ${
                       colorStyle.bg
                     } ${colorStyle.glow} ${
@@ -1140,7 +1919,7 @@ export default function PanoramaViewer() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 15, scale: 0.95 }}
               transition={{ duration: 0.18 }}
-              className="absolute bottom-20 left-1/2 -translate-x-1/2 z-40 max-w-lg w-[92vw] p-5 rounded-3xl bg-[#121215]/95 border border-[#27272A] backdrop-blur-2xl shadow-2xl font-mono pointer-events-auto"
+              className="absolute bottom-20 left-1/2 -translate-x-1/2 z-40 max-w-lg w-[92vw] p-5 rounded-3xl bg-[var(--glass-bg)] border border-[var(--glass-border)] backdrop-blur-2xl shadow-2xl font-mono pointer-events-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {/* CARD HEADER */}
@@ -1235,35 +2014,478 @@ export default function PanoramaViewer() {
         </AnimatePresence>
       </div>
 
-      {/* BOTTOM HUD / RADAR COMPASS */}
+      {/* BOTTOM HUD - Three sections: left controls, center transport, right hotspots */}
+      {preferences.showBottomControls && (
       <div className="absolute bottom-4 inset-x-4 z-30 flex flex-wrap items-end justify-between gap-3 pointer-events-none">
-        {/* Navigation Instructions */}
-        <div className="hidden md:flex items-center gap-2 text-xs text-zinc-400 bg-black/75 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/10 pointer-events-auto">
-          <Navigation className="w-3.5 h-3.5 text-rose-500" />
-          <span>Click & Drag to look around • Click &quot;Add Hotspot&quot; or press [H] to drop interactive pins</span>
-        </div>
+        {/* BOTTOM-LEFT: Orientation widget */}
+        <div className="flex flex-wrap items-end gap-3 pointer-events-auto">
+          {/* RADAR COMPASS WIDGET (Orientation - moved from old location) */}
+           <div className="flex items-center gap-3 bg-[var(--glass-bg)] backdrop-blur-md p-2.5 sm:p-3 rounded-2xl border border-[var(--glass-border)] pointer-events-auto">
+            <div className="relative w-11 h-11 rounded-full border-2 border-rose-500/40 bg-zinc-900/80 flex items-center justify-center shrink-0">
+              <span className="absolute top-0.5 text-[9px] font-bold text-rose-500">N</span>
+              <div
+                className="w-0.5 h-7 bg-gradient-to-t from-transparent via-rose-500 to-white rounded-full transition-transform duration-75"
+                style={{ transform: `rotate(${yaw}deg)` }}
+              />
+            </div>
+            <div className="text-left font-mono">
+              <div className="text-[10px] font-bold text-white uppercase tracking-wider">
+                Orientation
+              </div>
+              <div className="text-[10px] text-zinc-400">
+                Yaw: {Math.round(yaw)}° · Pitch: {Math.round(pitch)}°
+              </div>
+            </div>
+          </div>
 
-        {/* RADAR COMPASS WIDGET */}
-        <div className="flex items-center gap-3 bg-black/80 backdrop-blur-md p-2.5 sm:p-3 rounded-2xl border border-white/10 pointer-events-auto">
-          <div className="relative w-11 h-11 rounded-full border-2 border-rose-500/40 bg-zinc-900/80 flex items-center justify-center shrink-0">
-            <span className="absolute top-0.5 text-[9px] font-bold text-rose-500">N</span>
-            <div
-              className="w-0.5 h-7 bg-gradient-to-t from-transparent via-rose-500 to-white rounded-full transition-transform duration-75"
-              style={{ transform: `rotate(${yaw}deg)` }}
-            />
-          </div>
-          <div className="text-left font-mono">
-            <div className="text-[10px] font-bold text-white uppercase tracking-wider">
-              Orientation
-            </div>
-            <div className="text-[10px] text-zinc-400">
-              Yaw: {Math.round(yaw)}° · Pitch: {Math.round(pitch)}°
-            </div>
-          </div>
+          {/* REMAINING SETTINGS: Share, Search, Preferences, Hotspot Drawer (bottom-left) */}
+          <div className="flex items-center gap-1.5 bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] rounded-full p-1">
+            <button
+              onClick={handleShare}
+              className="w-10 h-10 rounded-full flex items-center justify-center text-zinc-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              aria-label="Share Room Link"
+              title="Share Room Link"
+            >
+              <Share2 className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setShowSearch(true)}
+              className="w-10 h-10 rounded-full flex items-center justify-center text-zinc-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              aria-label="Search Rooms"
+              title="Search Rooms"
+            >
+              <Search className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setShowPreferences(true)}
+              className="w-10 h-10 rounded-full flex items-center justify-center text-zinc-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              aria-label="Preferences"
+              title="Preferences"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setHotspotDrawerOpen(!hotspotDrawerOpen)}
+              className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
+                hotspotDrawerOpen
+                  ? 'bg-[#3ECF8E] text-black'
+                  : 'text-zinc-300 hover:text-white hover:bg-white/10'
+              }`}
+              aria-label="Manage Room Hotspots"
+              title="Manage Room Hotspots"
+            >
+              <Layers className="w-4 h-4" />
+            </button>
+
+            {/* SETTINGS MENU (Music, AI Assistant, Google Drive) */}
+            <div className="relative">
+              <button
+                onClick={() => setSettingsMenuOpen(!settingsMenuOpen)}
+                className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors cursor-pointer settings-menu-trigger ${
+                  settingsMenuOpen
+                    ? 'bg-[#3ECF8E] text-black'
+                    : 'text-zinc-300 hover:text-white hover:bg-white/10'
+                }`}
+                aria-label="Settings Menu"
+                title="Settings Menu"
+              >
+                <Settings className="w-4 h-4" />
+              </button>
+
+               {/* SETTINGS MENU DROPDOWN */}
+          <AnimatePresence>
+            {settingsMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+                 className="absolute bottom-full right-0 mb-3 w-72 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl shadow-2xl p-3 font-mono text-xs z-50 settings-menu-dropdown backdrop-blur-xl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="text-[9px] text-[#71717A] uppercase font-bold tracking-wider mb-3">
+                  Settings Menu
+                </div>
+
+                {/* MUSIC TOGGLE */}
+                <div className="flex items-center justify-between py-2 border-b border-[#27272A]">
+                  <div className="flex items-center gap-2">
+                    <Music className="w-4 h-4 text-[#3ECF8E]" />
+                    <span className="text-xs text-white">Background Music</span>
+                  </div>
+                  <button
+                    onClick={() => updatePreferences({ musicEnabled: !preferences.musicEnabled })}
+                    className={`relative w-10 h-5 rounded-full transition-colors ${
+                      preferences.musicEnabled ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+                    }`}
+                    role="switch"
+                    aria-checked={preferences.musicEnabled}
+                  >
+                    <span
+                      className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-md transition-transform duration-200 ${
+                        preferences.musicEnabled ? 'translate-x-5' : 'translate-x-0.5'
+                      }`}
+                    />
+                    {preferences.musicEnabled && preferences.backgroundMusicUrl && (
+                      <audio
+                        ref={audioRef}
+                        src={preferences.backgroundMusicUrl}
+                        autoPlay
+                        loop
+                        style={{ display: 'none' }}
+                      />
+                    )}
+                  </button>
+                </div>
+
+                {/* MUSIC UPLOAD */}
+                <div className="py-2 border-b border-[#27272A]">
+                  <label className="flex items-center gap-2 text-xs text-white cursor-pointer">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Upload Music</span>
+                    <input
+                      type="file"
+                      accept="audio/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const url = URL.createObjectURL(file);
+                          updatePreferences({ backgroundMusicUrl: url, musicEnabled: true });
+                          showToast('Background music uploaded.', 'success');
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
+
+                {/* MUSIC VOLUME SLIDER */}
+                <div className="py-2 border-b border-[#27272A]">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Volume2 className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                    <span className="text-xs text-white">Music Volume: {Math.round(preferences.musicVolume * 100)}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.05"
+                    value={preferences.musicVolume}
+                    onChange={(e) => updatePreferences({ musicVolume: parseFloat(e.target.value) })}
+                    className="w-full h-1.5 bg-[#27272A] rounded-full appearance-none cursor-pointer accent-[#3ECF8E]"
+                  />
+                </div>
+
+                {/* AI ASSISTANT AVATAR */}
+                <div className="py-2 border-b border-[#27272A]">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Bot className="w-4 h-4 text-[#3ECF8E]" />
+                    <span className="text-xs text-white">AI Assistant</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {preferences.aiAssistantAvatarUrl ? (
+                      <img
+                        src={preferences.aiAssistantAvatarUrl}
+                        alt="AI Assistant Avatar"
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-[#18181B] border border-[#27272A] flex items-center justify-center">
+                        <Bot className="w-5 h-5 text-[#3ECF8E]" />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <label className="flex items-center gap-1 text-xs text-white cursor-pointer mb-1">
+                        <Upload className="w-3 h-3" />
+                        <span>Upload Avatar</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const url = URL.createObjectURL(file);
+                              updatePreferences({ aiAssistantAvatarUrl: url });
+                              showToast('AI assistant avatar updated.', 'success');
+                            }
+                          }}
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => updatePreferences({ aiAssistantEnabled: !preferences.aiAssistantEnabled })}
+                    className={`w-full mt-2 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                      preferences.aiAssistantEnabled
+                        ? 'bg-[#3ECF8E] text-black font-bold'
+                        : 'bg-[#18181B] text-[#A1A1AA] hover:bg-[#27272A] hover:text-white'
+                    }`}
+                  >
+                    {preferences.aiAssistantEnabled ? 'Assistant On' : 'Assistant Off'}
+                  </button>
+                </div>
+
+                {/* GOOGLE DRIVE SECTION */}
+                <div className="py-2">
+                  <div
+                    className="flex items-center justify-between cursor-pointer"
+                    onClick={() => setShowGoogleDrivePanel(!showGoogleDrivePanel)}
+                  >
+                    <div className="flex items-center gap-2 text-xs text-white">
+                      <Globe className="w-4 h-4 text-[#3ECF8E]" />
+                      <span>Google Drive Images</span>
+                    </div>
+                    <ChevronDown className={`w-3.5 h-3.5 text-[#71717A] transition-transform ${showGoogleDrivePanel ? 'rotate-180' : ''}`} />
+                  </div>
+
+                  <AnimatePresence>
+                    {showGoogleDrivePanel && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="mt-2 space-y-2 overflow-hidden"
+                      >
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            placeholder="Folder ID"
+                            value={preferences.googleDriveFolderId}
+                            onChange={(e) => updatePreferences({ googleDriveFolderId: e.target.value })}
+                            className="flex-1 px-2 py-1 rounded bg-[#09090B] border border-[#27272A] text-xs text-white focus:outline-none focus:border-[#3ECF8E]"
+                          />
+                          <button
+                            onClick={() => {
+                              updatePreferences({ showGoogleDriveSection: !preferences.showGoogleDriveSection });
+                            }}
+                            className={`px-2 py-1 rounded text-[10px] font-bold transition-colors ${
+                              preferences.showGoogleDriveSection
+                                ? 'bg-[#3ECF8E] text-black'
+                                : 'bg-[#18181B] text-[#A1A1AA] hover:text-white'
+                            }`}
+                          >
+                            {preferences.showGoogleDriveSection ? 'Hide' : 'Load'}
+                          </button>
+                        </div>
+                        {preferences.showGoogleDriveSection && preferences.googleDriveFolderId && (
+                          <div className="text-[9px] text-[#71717A]">
+                            Google Drive folder: {preferences.googleDriveFolderId}
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Arrow */}
+                <div className="absolute top-full right-6 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-[#121215]" />
+              </motion.div>
+            )}
+           </AnimatePresence>
+        </div>
         </div>
       </div>
 
-      {/* HOTSPOT LIST DRAWER (SLIDE-OVER PANEL) */}
+        {/* BOTTOM-CENTER: Glassmorphisim circular transport buttons */}
+        <div
+          className="pointer-events-auto"
+          onMouseEnter={() => {
+            setShowBottomControls(true);
+            setBottomControlsVisible(true);
+            if (bottomControlsTimeoutRef.current) clearTimeout(bottomControlsTimeoutRef.current);
+          }}
+          onMouseLeave={() => {
+            if (preferences.showBottomControlsOnHover) {
+              bottomControlsTimeoutRef.current = setTimeout(() => {
+                setBottomControlsVisible(false);
+              }, 1500);
+            }
+          }}
+        >
+          <div
+             className={`flex items-center gap-2 sm:gap-3 px-3 py-2 rounded-full transition-all duration-500 ${
+               bottomControlsVisible
+                 ? 'opacity-100 translate-y-0'
+                 : 'opacity-0 translate-y-4 pointer-events-none'
+             } bg-[var(--glass-bg)] border border-[var(--glass-border)] backdrop-blur-xl shadow-2xl`}
+          >
+            {/* PLAY / PAUSE */}
+            <button
+              onClick={() => {
+                setIsPlaying((prev) => {
+                  const next = !prev;
+                  updatePreferences({ autoRotate: next });
+                  return next;
+                });
+              }}
+              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${
+                isPlaying
+                  ? 'bg-[#3ECF8E] text-black hover:bg-[#34b27b] scale-105'
+                  : 'bg-white/10 text-white hover:bg-white/20'
+              }`}
+              aria-label={isPlaying ? 'Pause auto-rotate' : 'Play auto-rotate'}
+              title={isPlaying ? 'Pause Auto-Rotate' : 'Play Auto-Rotate'}
+            >
+              {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+            </button>
+
+            {/* PREVIOUS ROOM */}
+            <button
+              onClick={goBack}
+              disabled={roomHistoryIndex <= 0}
+              className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
+              aria-label="Previous Room"
+              title="Previous Room"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {/* SCENE COUNTER */}
+            {preferences.showSceneCounter && (
+              <div className="px-2 py-0.5 text-[10px] font-mono text-[#3ECF8E] bg-black/40 rounded-full">
+                {TOUR_ROOMS.findIndex((r) => r.id === currentRoom.id) + 1}/{TOUR_ROOMS.length}
+              </div>
+            )}
+
+            {/* NEXT ROOM */}
+            <button
+              onClick={goForward}
+              disabled={roomHistoryIndex >= roomHistory.length - 1}
+              className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
+              aria-label="Next Room"
+              title="Next Room"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* BOTTOM-RIGHT: Hotspot button + zoom + fullscreen */}
+        <div className="flex items-center gap-3 pointer-events-auto">
+          {/* HOTSPOT LIST BUTTON (bottom-right, opens with image previews) */}
+          {preferences.showHotspotButton && (
+            <div className="relative">
+              <button
+                onClick={() => setShowHotspotListPanel(!showHotspotListPanel)}
+                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${
+                  showHotspotListPanel
+                    ? 'bg-[#3ECF8E] text-black scale-105'
+                    : 'bg-white/10 hover:bg-white/20 text-white'
+                }} border border-white/10 backdrop-blur-xl shadow-xl`}
+                aria-label="Toggle Hotspot List"
+                title="Hotspot List"
+              >
+                <Layers className="w-5 h-5" />
+                {currentHotspots.length > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-rose-600 text-[9px] font-bold flex items-center justify-center">
+                    {currentHotspots.length}
+                  </span>
+                )}
+              </button>
+
+              {/* HOTSPOT LIST POPOVER (bottom-right, image previews) */}
+              <AnimatePresence>
+                {showHotspotListPanel && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                    transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+                    className="absolute bottom-full right-0 mb-3 w-64 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl shadow-2xl p-3 font-mono text-xs z-50 backdrop-blur-xl"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="text-[9px] text-[#71717A] uppercase font-bold tracking-wider mb-2">
+                      {currentRoom.name} Hotspots ({currentHotspots.length})
+                    </div>
+                    <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+                      {currentHotspots.length === 0 ? (
+                        <div className="text-[10px] text-[#71717A] py-4 text-center">
+                          No hotspots in this room.
+                        </div>
+                      ) : (
+                        currentHotspots.map((hp) => {
+                          const colorStyle = getColorClasses(hp.color);
+                          return (
+                            <div
+                              key={hp.id}
+                              className="flex items-center gap-2.5 p-2 rounded-xl bg-[#09090B] border border-[#27272A] hover:border-[#3ECF8E]/30 transition-all"
+                            >
+                              <div
+                                className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${colorStyle.bg} text-white`}
+                              >
+                                {getHotspotIcon(hp.icon, hp.type)}
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <div className="text-xs font-bold text-white truncate">{hp.title}</div>
+                                <div className="text-[9px] text-[#71717A] truncate">
+                                  {hp.type === 'room_link' ? 'Room Link' : hp.category}
+                                </div>
+                              </div>
+                              <div className="text-[9px] text-[#71717A]">
+                                X:{Math.round(hp.xPercent)}% Y:{Math.round(hp.yPercent)}%
+                              </div>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                    {/* Arrow */}
+                    <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-[#121215]" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+
+          {/* ZOOM CONTROLS (bottom-right) */}
+          {preferences.showZoomControls && (
+            <div className="flex items-center gap-1 bg-white/10 backdrop-blur-xl border border-white/10 rounded-full p-0.5">
+              <button
+                onClick={() => setFov((prev) => Math.max(prev - (preferences.scrollZoomStep || 10), 40))}
+                className="w-10 h-10 rounded-full flex items-center justify-center text-white hover:bg-white/15 transition-colors cursor-pointer"
+                aria-label="Zoom In"
+                title="Zoom In"
+              >
+                <ZoomIn className="w-4 h-4" />
+              </button>
+              <span className="text-[9px] font-mono text-[#3ECF8E] w-12 text-center">{Math.round(fov)}°</span>
+              <button
+                onClick={() => setFov((prev) => Math.min(prev + (preferences.scrollZoomStep || 10), 100))}
+                className="w-10 h-10 rounded-full flex items-center justify-center text-white hover:bg-white/15 transition-colors cursor-pointer"
+                aria-label="Zoom Out"
+                title="Zoom Out"
+              >
+                <ZoomOut className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          {/* FULLSCREEN */}
+          <button
+            onClick={toggleFullscreen}
+             className="w-full h-full rounded-full flex items-center justify-center bg-[var(--glass-bg)] hover:bg-white/20 border border-[var(--glass-border)] text-white backdrop-blur-xl transition-colors cursor-pointer"
+            aria-label={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+            title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+          >
+            {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+          </button>
+
+          {/* CLOSE */}
+          <button
+            onClick={closePanorama}
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-rose-600 hover:bg-rose-500 text-white transition-colors cursor-pointer"
+            aria-label="Exit 360 Viewer"
+            title="Exit 360 Viewer (Esc)"
+          >
+            <X className="w-4 h-4" />
+           </button>
+        </div>
+      </div>
+      )}
+
+       {/* HOTSPOT LIST DRAWER (SLIDE-OVER PANEL) */}
       <AnimatePresence>
         {hotspotDrawerOpen && (
           <motion.div
@@ -1271,7 +2493,7 @@ export default function PanoramaViewer() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 250 }}
-            className="absolute top-0 right-0 bottom-0 w-full sm:w-96 bg-[#121215] border-l border-[#27272A] z-40 p-5 flex flex-col justify-between font-mono shadow-2xl pointer-events-auto overflow-y-auto"
+             className="absolute top-0 right-0 bottom-0 w-full sm:w-96 bg-[var(--glass-bg)] border-l border-[var(--glass-border)] z-40 p-5 flex flex-col justify-between font-mono shadow-2xl pointer-events-auto overflow-y-auto backdrop-blur-xl"
           >
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
@@ -1405,7 +2627,7 @@ export default function PanoramaViewer() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-xl rounded-3xl bg-[#121215] border border-[#27272A] shadow-2xl p-6 space-y-5 max-h-[90vh] overflow-y-auto"
+               className="w-full max-w-xl rounded-3xl bg-[var(--glass-bg)] border border-[var(--glass-border)] shadow-2xl p-6 space-y-5 max-h-[90vh] overflow-y-auto backdrop-blur-xl"
               onClick={(e) => e.stopPropagation()}
             >
               {/* MODAL HEADER */}
@@ -1688,6 +2910,888 @@ export default function PanoramaViewer() {
           </div>
         )}
       </AnimatePresence>
-    </div>
+
+      {/* SHARE DIALOG */}
+      <AnimatePresence>
+        {showShareDialog && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            onClick={() => setShowShareDialog(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+               className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl backdrop-blur-xl"
+               onClick={(e) => e.stopPropagation()}
+             >
+               <div className="flex items-center justify-between mb-4">
+                 <h3 className="text-lg font-display font-bold text-white flex items-center gap-2">
+                   <Share2 className="w-5 h-5 text-[#3ECF8E]" />
+                   Share This Room
+                </h3>
+                <button
+                  onClick={() => setShowShareDialog(false)}
+                  className="p-1.5 rounded-lg hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <p className="text-sm text-[#A1A1AA] mb-4">
+                Share <span className="text-[#3ECF8E] font-medium">{currentRoom.name}</span> with others. The link includes the exact room and view.
+              </p>
+
+              <div className="flex items-center gap-2 mb-4">
+                <input
+                  type="text"
+                  readOnly
+                  value={getShareUrl()}
+                  className="flex-1 px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs text-white font-mono focus:outline-none focus:border-[#3ECF8E]"
+                />
+                <button
+                  onClick={handleCopyShareUrl}
+                  className={`px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors shrink-0 ${
+                    shareCopied
+                      ? 'bg-emerald-500 text-white'
+                      : 'bg-[#3ECF8E] hover:bg-[#34b27b] text-black'
+                  }`}
+                >
+                  {shareCopied ? 'Copied!' : 'Copy'}
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2 text-[10px] text-[#71717A] font-mono">
+                <Compass className="w-3 h-3" />
+                <span>{currentRoom.subtitle}</span>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* TUTORIAL / ONBOARDING OVERLAY */}
+      <AnimatePresence>
+        {showTutorial && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="bg-[#18181B] border border-[#27272A] rounded-2xl p-6 max-w-sm w-full mx-4 shadow-2xl text-center"
+            >
+              {tutorialStep === 0 && (
+                <div className="space-y-4">
+                  <div className="w-14 h-14 rounded-2xl bg-[#3ECF8E]/20 text-[#3ECF8E] flex items-center justify-center mx-auto">
+                    <Compass className="w-7 h-7" />
+                  </div>
+                  <h3 className="text-lg font-display font-bold text-white">Welcome to the Virtual Tour</h3>
+                  <p className="text-sm text-[#A1A1AA]">
+                    Explore this architectural masterpiece in full 360°. Navigate between rooms, discover materials, and experience every detail.
+                  </p>
+                </div>
+              )}
+              {tutorialStep === 1 && (
+                <div className="space-y-4">
+                  <div className="w-14 h-14 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto">
+                    <Navigation className="w-7 h-7" />
+                  </div>
+                  <h3 className="text-lg font-display font-bold text-white">Navigation</h3>
+                  <p className="text-sm text-[#A1A1AA]">
+                    Click and drag to look around. Use arrow keys or click portal hotspots to move between rooms. Press <kbd className="px-1.5 py-0.5 rounded bg-[#27272A] text-white text-xs">H</kbd> to add your own hotspots.
+                  </p>
+                </div>
+              )}
+              {tutorialStep === 2 && (
+                <div className="space-y-4">
+                  <div className="w-14 h-14 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center mx-auto">
+                    <Sparkles className="w-7 h-7" />
+                  </div>
+                  <h3 className="text-lg font-display font-bold text-white">Discover Details</h3>
+                  <p className="text-sm text-[#A1A1AA]">
+                    Click on glowing hotspots to learn about materials, finishes, and architectural features. Each hotspot reveals detailed specifications.
+                  </p>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between mt-6">
+                <div className="flex gap-1.5">
+                  {[0, 1, 2].map((step) => (
+                    <div
+                      key={step}
+                      className={`w-2 h-2 rounded-full transition-colors ${
+                        step === tutorialStep ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  {tutorialStep > 0 && (
+                    <button
+                      onClick={() => setTutorialStep((prev) => prev - 1)}
+                      className="px-4 py-2 rounded-xl bg-[#27272A] hover:bg-[#3F3F46] text-white text-xs font-bold uppercase tracking-wider transition-colors"
+                    >
+                      Back
+                    </button>
+                  )}
+                  {tutorialStep < 2 ? (
+                    <button
+                      onClick={() => setTutorialStep((prev) => prev + 1)}
+                      className="px-4 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black text-xs font-bold uppercase tracking-wider transition-colors"
+                    >
+                      Next
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setShowTutorial(false);
+                        localStorage.setItem('viztr-tutorial-seen', 'true');
+                      }}
+                      className="px-4 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black text-xs font-bold uppercase tracking-wider transition-colors"
+                    >
+                      Start Tour
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {tutorialStep < 2 && (
+                <button
+                  onClick={() => {
+                    setShowTutorial(false);
+                    localStorage.setItem('viztr-tutorial-seen', 'true');
+                  }}
+                  className="mt-3 text-[10px] text-[#71717A] hover:text-white transition-colors font-mono"
+                >
+                  Skip tutorial
+                </button>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* SEARCH PANEL */}
+      <AnimatePresence>
+        {showSearch && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm pt-20"
+            onClick={() => setShowSearch(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: -10 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: -10 }}
+               className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-4 max-w-lg w-full mx-4 shadow-2xl max-h-[70vh] overflow-hidden flex flex-col backdrop-blur-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
+                  <input
+                    type="text"
+                    placeholder="Search rooms..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    autoFocus
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-sm text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                  />
+                </div>
+                <button
+                  onClick={() => setShowSearch(false)}
+                  className="p-2 rounded-xl hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="overflow-y-auto flex-1 space-y-2">
+                {TOUR_ROOMS.filter((room) =>
+                  room.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  room.subtitle.toLowerCase().includes(searchQuery.toLowerCase())
+                ).map((room) => (
+                  <button
+                    key={room.id}
+                    onClick={() => {
+                      navigateToRoomWithHistory(room);
+                      setShowSearch(false);
+                      setSearchQuery('');
+                    }}
+                    className={`w-full p-3 rounded-xl flex items-center gap-3 transition-colors text-left ${
+                      room.id === currentRoom.id
+                        ? 'bg-[#3ECF8E]/20 border border-[#3ECF8E]'
+                        : 'bg-[#09090B] border border-[#27272A] hover:border-[#3ECF8E]/50'
+                    }`}
+                  >
+                    <img
+                      src={room.thumbnailUrl}
+                      alt={room.name}
+                      className="w-12 h-12 rounded-lg object-cover shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-medium text-white truncate">{room.name}</div>
+                      <div className="text-[10px] text-[#71717A] truncate">{room.subtitle}</div>
+                    </div>
+                    {room.id === currentRoom.id && (
+                      <span className="text-[9px] font-mono text-[#3ECF8E] uppercase tracking-wider shrink-0">Current</span>
+                    )}
+                  </button>
+                ))}
+                {TOUR_ROOMS.filter((room) =>
+                  room.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  room.subtitle.toLowerCase().includes(searchQuery.toLowerCase())
+                ).length === 0 && (
+                  <div className="text-center py-8 text-[#71717A] text-xs">
+                    No rooms found matching "{searchQuery}"
+                  </div>
+                )}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+          {/* PREFERENCES PANEL */}
+          <AnimatePresence>
+            {showPreferences && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+                onClick={() => setShowPreferences(false)}
+              >
+                <motion.div
+                  initial={{ scale: 0.95, opacity: 0, y: -10 }}
+                  animate={{ scale: 1, opacity: 1, y: 0 }}
+                  exit={{ scale: 0.95, opacity: 0, y: -10 }}
+                   className="bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl flex flex-col max-h-[80vh] overflow-hidden backdrop-blur-xl"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-lg font-display font-bold text-white flex items-center gap-2">
+                      <Settings className="w-5 h-5 text-[#3ECF8E]" />
+                      Preferences
+                    </h3>
+                    <button
+                      onClick={() => setShowPreferences(false)}
+                      className="p-1.5 rounded-lg hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-1">
+                  {/* Motion Intensity */}
+                  <div className="space-y-3">
+                    <label className="text-sm font-medium text-white">Motion Intensity</label>
+                    <div className="flex gap-2">
+                      {(['off', 'low', 'high'] as const).map((level) => (
+                        <button
+                          key={level}
+                          onClick={() => updatePreferences({ motionIntensity: level })}
+                          className={`flex-1 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${preferences.motionIntensity === level
+                            ? 'bg-[#3ECF8E] text-black font-bold'
+                            : 'bg-[#27272A] text-[#A1A1AA] hover:bg-[#3F3F46] hover:text-white'
+                          }`}
+                        >
+                          {level.charAt(0).toUpperCase() + level.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Auto Rotate Speed */}
+                  <div className="space-y-3">
+                    <label className="text-sm font-medium text-white">Auto Rotate Speed</label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="10"
+                      step="1"
+                      value={preferences.autoRotateSpeed}
+                      onChange={(e) => updatePreferences({ autoRotateSpeed: parseInt(e.target.value) })}
+                      className="w-full h-2 bg-[#27272A] rounded-full appearance-none cursor-pointer accent-[#3ECF8E]"
+                    />
+                    <div className="flex justify-between text-[10px] text-[#71717A] font-mono">
+                      <span>Off</span>
+                      <span>{preferences.autoRotateSpeed}x</span>
+                      <span>Max</span>
+                    </div>
+                  </div>
+
+                  {/* Default Zoom */}
+                  <div className="space-y-3">
+                    <label className="text-sm font-medium text-white">Default Zoom</label>
+                    <input
+                      type="range"
+                      min="0.5"
+                      max="3"
+                      step="0.1"
+                      value={preferences.defaultZoom}
+                      onChange={(e) => updatePreferences({ defaultZoom: parseFloat(e.target.value) })}
+                      className="w-full h-2 bg-[#27272A] rounded-full appearance-none cursor-pointer accent-[#3ECF8E]"
+                    />
+                    <div className="flex justify-between text-[10px] text-[#71717A] font-mono">
+                      <span>0.5x</span>
+                      <span>{preferences.defaultZoom.toFixed(1)}x</span>
+                      <span>3x</span>
+                    </div>
+                  </div>
+
+                  {/* Theme */}
+                  <div className="space-y-3">
+                    <label className="text-sm font-medium text-white">Theme</label>
+                    <div className="flex gap-2">
+                      {(['dark', 'light', 'system'] as const).map((t) => (
+                        <button
+                          key={t}
+                          onClick={() => updatePreferences({ theme: t })}
+                          className={`flex-1 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${preferences.theme === t
+                            ? 'bg-[#3ECF8E] text-black font-bold'
+                            : 'bg-[#27272A] text-[#A1A1AA] hover:bg-[#3F3F46] hover:text-white'
+                          }`}
+                        >
+                          {t.charAt(0).toUpperCase() + t.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                    {/* Show Hotspots */}
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium text-white">Show Hotspots</label>
+                      <button
+                        onClick={() => updatePreferences({ showHotspots: !preferences.showHotspots })}
+                        className={`relative w-12 h-6 rounded-full transition-colors ${
+                          preferences.showHotspots ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+                        }`}
+                        role="switch"
+                        aria-checked={preferences.showHotspots}
+                      >
+                        <span
+                          className={`absolute top-0.5 transition-transform duration-200 ${
+                            preferences.showHotspots ? 'translate-x-6' : 'translate-x-0.5'
+                          }`}
+                        >
+                          <span className="w-5 h-5 rounded-full bg-white shadow-md" />
+                        </span>
+                      </button>
+                    </div>
+
+                    {/* Gyroscope */}
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium text-white">Gyroscope</label>
+                      <button
+                        onClick={() => updatePreferences({ gyroscopeEnabled: !preferences.gyroscopeEnabled })}
+                        className={`relative w-12 h-6 rounded-full transition-colors ${
+                          preferences.gyroscopeEnabled ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+                        }`}
+                        role="switch"
+                        aria-checked={preferences.gyroscopeEnabled}
+                      >
+                        <span
+                          className={`absolute top-0.5 transition-transform duration-200 ${
+                            preferences.gyroscopeEnabled ? 'translate-x-6' : 'translate-x-0.5'
+                          }`}
+                        >
+                          <span className="w-5 h-5 rounded-full bg-white shadow-md" />
+                        </span>
+                      </button>
+                    </div>
+
+                    {/* Language */}
+                    <div className="space-y-3">
+                      <label className="text-sm font-medium text-white">Language</label>
+                      <select
+                        value={preferences.language}
+                        onChange={(e) => updatePreferences({ language: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl bg-[#09090B] border border-[#27272A] text-sm text-white focus:outline-none focus:border-[#3ECF8E]"
+                      >
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                        <option value="zh">中文</option>
+                        <option value="ja">日本語</option>
+                      </select>
+                    </div>
+
+                    {/* LAYOUT SETTINGS SECTION */}
+                    <div className="pt-4 border-t border-[#27272A] space-y-4">
+                      <h4 className="text-xs font-bold text-[#71717A] uppercase tracking-wider">
+                        Layout & UI
+                      </h4>
+
+                      {/* Hide Top Bar */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-white">Hide Top Bar (Public)</label>
+                        <button
+                          onClick={() => updatePreferences({ hideTopBar: !preferences.hideTopBar })}
+                          className={`relative w-12 h-6 rounded-full transition-colors ${
+                            preferences.hideTopBar ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+                          }`}
+                          role="switch"
+                          aria-checked={preferences.hideTopBar}
+                        >
+                          <span
+                            className={`absolute top-0.5 transition-transform duration-200 ${
+                              preferences.hideTopBar ? 'translate-x-6' : 'translate-x-0.5'
+                            }`}
+                          >
+                            <span className="w-5 h-5 rounded-full bg-white shadow-md" />
+                          </span>
+                        </button>
+                      </div>
+
+                      {/* Show Bottom Controls */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-white">Show Bottom Controls</label>
+                        <button
+                          onClick={() => updatePreferences({ showBottomControls: !preferences.showBottomControls })}
+                          className={`relative w-12 h-6 rounded-full transition-colors ${
+                            preferences.showBottomControls ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+                          }`}
+                          role="switch"
+                          aria-checked={preferences.showBottomControls}
+                        >
+                          <span
+                            className={`absolute top-0.5 transition-transform duration-200 ${
+                              preferences.showBottomControls ? 'translate-x-6' : 'translate-x-0.5'
+                            }`}
+                          >
+                            <span className="w-5 h-5 rounded-full bg-white shadow-md" />
+                          </span>
+                        </button>
+                      </div>
+
+                      {/* Show Bottom Controls On Hover */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-white">Auto-hide on Hover</label>
+                        <button
+                          onClick={() => updatePreferences({ showBottomControlsOnHover: !preferences.showBottomControlsOnHover })}
+                          className={`relative w-12 h-6 rounded-full transition-colors ${
+                            preferences.showBottomControlsOnHover ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+                          }`}
+                          role="switch"
+                          aria-checked={preferences.showBottomControlsOnHover}
+                        >
+                          <span
+                            className={`absolute top-0.5 transition-transform duration-200 ${
+                              preferences.showBottomControlsOnHover ? 'translate-x-6' : 'translate-x-0.5'
+                            }`}
+                          >
+                            <span className="w-5 h-5 rounded-full bg-white shadow-md" />
+                          </span>
+                        </button>
+                      </div>
+
+                      {/* Show Hotspot Button */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-white">Show Hotspot Button</label>
+                        <button
+                          onClick={() => updatePreferences({ showHotspotButton: !preferences.showHotspotButton })}
+                          className={`relative w-12 h-6 rounded-full transition-colors ${
+                            preferences.showHotspotButton ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+                          }`}
+                          role="switch"
+                          aria-checked={preferences.showHotspotButton}
+                        >
+                          <span
+                            className={`absolute top-0.5 transition-transform duration-200 ${
+                              preferences.showHotspotButton ? 'translate-x-6' : 'translate-x-0.5'
+                            }`}
+                          >
+                            <span className="w-5 h-5 rounded-full bg-white shadow-md" />
+                          </span>
+                        </button>
+                      </div>
+
+                      {/* Show Zoom Controls */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-white">Show Zoom Controls</label>
+                        <button
+                          onClick={() => updatePreferences({ showZoomControls: !preferences.showZoomControls })}
+                          className={`relative w-12 h-6 rounded-full transition-colors ${
+                            preferences.showZoomControls ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+                          }`}
+                          role="switch"
+                          aria-checked={preferences.showZoomControls}
+                        >
+                          <span
+                            className={`absolute top-0.5 transition-transform duration-200 ${
+                              preferences.showZoomControls ? 'translate-x-6' : 'translate-x-0.5'
+                            }`}
+                          >
+                            <span className="w-5 h-5 rounded-full bg-white shadow-md" />
+                          </span>
+                        </button>
+                      </div>
+
+                      {/* Show Scene Counter */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-white">Show Scene Counter</label>
+                        <button
+                          onClick={() => updatePreferences({ showSceneCounter: !preferences.showSceneCounter })}
+                          className={`relative w-12 h-6 rounded-full transition-colors ${
+                            preferences.showSceneCounter ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+                          }`}
+                          role="switch"
+                          aria-checked={preferences.showSceneCounter}
+                        >
+                          <span
+                            className={`absolute top-0.5 transition-transform duration-200 ${
+                              preferences.showSceneCounter ? 'translate-x-6' : 'translate-x-0.5'
+                            }`}
+                          >
+                            <span className="w-5 h-5 rounded-full bg-white shadow-md" />
+                          </span>
+                        </button>
+                      </div>
+
+                      {/* CTRL Axis Rotation */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-white">Ctrl + Arrow Axis Rotation</label>
+                        <button
+                          onClick={() => updatePreferences({ ctrlAxisRotationEnabled: !preferences.ctrlAxisRotationEnabled })}
+                          className={`relative w-12 h-6 rounded-full transition-colors ${
+                            preferences.ctrlAxisRotationEnabled ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+                          }`}
+                          role="switch"
+                          aria-checked={preferences.ctrlAxisRotationEnabled}
+                        >
+                          <span
+                            className={`absolute top-0.5 transition-transform duration-200 ${
+                              preferences.ctrlAxisRotationEnabled ? 'translate-x-6' : 'translate-x-0.5'
+                            }`}
+                          >
+                            <span className="w-5 h-5 rounded-full bg-white shadow-md" />
+                          </span>
+                        </button>
+                      </div>
+
+                      {/* CTRL Axis Rotation Step */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-white">
+                          Ctrl Rotation Step: {preferences.ctrlAxisRotationStep}°
+                        </label>
+                        <input
+                          type="range"
+                          min="5"
+                          max="30"
+                          step="1"
+                          value={preferences.ctrlAxisRotationStep}
+                          onChange={(e) => updatePreferences({ ctrlAxisRotationStep: parseInt(e.target.value) })}
+                          className="w-full h-2 bg-[#27272A] rounded-full appearance-none cursor-pointer accent-[#3ECF8E]"
+                        />
+                      </div>
+
+                      {/* Scroll Zoom */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-white">Mouse Scroll Zoom</label>
+                        <button
+                          onClick={() => updatePreferences({ scrollZoomEnabled: !preferences.scrollZoomEnabled })}
+                          className={`relative w-12 h-6 rounded-full transition-colors ${
+                            preferences.scrollZoomEnabled ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+                          }`}
+                          role="switch"
+                          aria-checked={preferences.scrollZoomEnabled}
+                        >
+                          <span
+                            className={`absolute top-0.5 transition-transform duration-200 ${
+                              preferences.scrollZoomEnabled ? 'translate-x-6' : 'translate-x-0.5'
+                            }`}
+                          >
+                            <span className="w-5 h-5 rounded-full bg-white shadow-md" />
+                          </span>
+                        </button>
+                      </div>
+
+                      {/* Scroll Zoom Step */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-white">
+                          Scroll Zoom Step: {preferences.scrollZoomStep}°
+                        </label>
+                        <input
+                          type="range"
+                          min="5"
+                          max="20"
+                          step="1"
+                          value={preferences.scrollZoomStep}
+                          onChange={(e) => updatePreferences({ scrollZoomStep: parseInt(e.target.value) })}
+                          className="w-full h-2 bg-[#27272A] rounded-full appearance-none cursor-pointer accent-[#3ECF8E]"
+                         />
+                      </div>
+                      </div>
+
+                    {/* BRANDING & ASSETS SECTION */}
+                    <div className="pt-4 border-t border-[#27272A] space-y-4">
+                      <h4 className="text-xs font-bold text-[#71717A] uppercase tracking-wider">
+                        Branding & Assets
+                      </h4>
+
+                      {/* Client Logo Upload */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-white">Client Logo</label>
+                        <div className="flex items-center gap-2">
+                          <label className="cursor-pointer p-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#71717A] hover:text-white transition-colors">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const url = URL.createObjectURL(file);
+                                  updatePreferences({ clientLogoUrl: url });
+                                  showToast('Client logo uploaded.', 'success');
+                                }
+                              }}
+                            />
+                            <Upload className="w-3.5 h-3.5" />
+                          </label>
+                          {preferences.clientLogoUrl && (
+                            <span className="text-[9px] text-[#3ECF8E]">✓</span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* VizTR Logo Upload */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-white">VizTR Logo</label>
+                        <div className="flex items-center gap-2">
+                          <label className="cursor-pointer p-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#71717A] hover:text-white transition-colors">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const url = URL.createObjectURL(file);
+                                  updatePreferences({ viztrLogoUrl: url });
+                                  showToast('VizTR logo uploaded.', 'success');
+                                }
+                              }}
+                            />
+                            <Upload className="w-3.5 h-3.5" />
+                          </label>
+                          {preferences.viztrLogoUrl && (
+                            <span className="text-[9px] text-[#3ECF8E]">✓</span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Floor Plan Upload */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-white">Floor Plan</label>
+                        <div className="flex items-center gap-2">
+                          <label className="cursor-pointer p-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#71717A] hover:text-white transition-colors">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const url = URL.createObjectURL(file);
+                                  updatePreferences({ floorPlanImageUrl: url });
+                                  showToast('Floor plan uploaded.', 'success');
+                                }
+                              }}
+                            />
+                            <ImageIcon className="w-3.5 h-3.5" />
+                          </label>
+                          {preferences.floorPlanImageUrl && (
+                            <span className="text-[9px] text-[#3ECF8E]">✓</span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Show Floor Plan Toggle */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-white">Show Floor Plan Navigator</label>
+                        <button
+                          onClick={() => updatePreferences({ showFloorPlan: !preferences.showFloorPlan })}
+                          className={`relative w-12 h-6 rounded-full transition-colors ${
+                            preferences.showFloorPlan ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+                          }`}
+                          role="switch"
+                          aria-checked={preferences.showFloorPlan}
+                        >
+                          <span
+                            className={`absolute top-0.5 transition-transform duration-200 ${
+                              preferences.showFloorPlan ? 'translate-x-6' : 'translate-x-0.5'
+                            }`}
+                          >
+                            <span className="w-5 h-5 rounded-full bg-white shadow-md" />
+                          </span>
+                        </button>
+                      </div>
+
+                      {/* MUSIC TOGGLE */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-white">Background Music</label>
+                        <div className="flex items-center gap-2">
+                          <label className="cursor-pointer p-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#71717A] hover:text-white transition-colors">
+                            <input
+                              type="file"
+                              accept="audio/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const url = URL.createObjectURL(file);
+                                  updatePreferences({ backgroundMusicUrl: url, musicEnabled: true });
+                                  showToast('Background music uploaded.', 'success');
+                                }
+                              }}
+                            />
+                            <Upload className="w-3.5 h-3.5" />
+                          </label>
+                          <button
+                            onClick={() => updatePreferences({ musicEnabled: !preferences.musicEnabled })}
+                            className={`relative w-8 h-4 rounded-full transition-colors ${
+                              preferences.musicEnabled ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+                            }`}
+                            role="switch"
+                            aria-checked={preferences.musicEnabled}
+                          >
+                            <span
+                              className={`absolute top-0.5 w-3 h-3 rounded-full bg-white shadow-md transition-transform duration-200 ${
+                                preferences.musicEnabled ? 'translate-x-4' : 'translate-x-0.5'
+                              }`}
+                            />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Music Volume */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-white">
+                          Music Volume: {Math.round(preferences.musicVolume * 100)}%
+                        </label>
+                        <input
+                          type="range"
+                          min="0"
+                          max="1"
+                          step="0.05"
+                          value={preferences.musicVolume}
+                          onChange={(e) => updatePreferences({ musicVolume: parseFloat(e.target.value) })}
+                          className="w-full h-1.5 bg-[#27272A] rounded-full appearance-none cursor-pointer accent-[#3ECF8E]"
+                        />
+                      </div>
+
+                      {/* AI Assistant Avatar + Toggle */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <label className="cursor-pointer p-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#71717A] hover:text-white transition-colors">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const url = URL.createObjectURL(file);
+                                  updatePreferences({ aiAssistantAvatarUrl: url });
+                                  showToast('AI assistant avatar uploaded.', 'success');
+                                }
+                              }}
+                            />
+                            <Upload className="w-3.5 h-3.5" />
+                          </label>
+                          {preferences.aiAssistantAvatarUrl ? (
+                            <img
+                              src={preferences.aiAssistantAvatarUrl}
+                              alt="AI Avatar"
+                              className="w-8 h-8 rounded-full object-cover"
+                            />
+                          ) : (
+                            <Bot className="w-8 h-8 text-[#3ECF8E]" />
+                          )}
+                        </div>
+                        <button
+                          onClick={() => updatePreferences({ aiAssistantEnabled: !preferences.aiAssistantEnabled })}
+                          className={`relative w-12 h-6 rounded-full transition-colors ${
+                            preferences.aiAssistantEnabled ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+                          }`}
+                          role="switch"
+                          aria-checked={preferences.aiAssistantEnabled}
+                        >
+                          <span
+                            className={`absolute top-0.5 transition-transform duration-200 ${
+                              preferences.aiAssistantEnabled ? 'translate-x-6' : 'translate-x-0.5'
+                            }`}
+                          >
+                            <span className="w-5 h-5 rounded-full bg-white shadow-md" />
+                          </span>
+                        </button>
+                      </div>
+
+                      {/* Google Drive Folder ID */}
+                      <div className="space-y-1">
+                        <label className="text-xs text-[#71717A] uppercase font-bold">
+                          Google Drive Folder
+                        </label>
+                        <div className="flex items-center gap-1">
+                          <input
+                            type="text"
+                            placeholder="Folder ID"
+                            value={preferences.googleDriveFolderId}
+                            onChange={(e) => updatePreferences({ googleDriveFolderId: e.target.value })}
+                            className="flex-1 px-2 py-1 rounded bg-[#09090B] border border-[#27272A] text-xs text-white focus:outline-none focus:border-[#3ECF8E]"
+                          />
+                          <button
+                            onClick={() => updatePreferences({ showGoogleDriveSection: !preferences.showGoogleDriveSection })}
+                            className={`px-2 py-1 rounded text-[10px] font-bold transition-colors ${
+                              preferences.showGoogleDriveSection
+                                ? 'bg-[#3ECF8E] text-black'
+                                : 'bg-[#18181B] text-[#A1A1AA] hover:text-white'
+                            }`}
+                          >
+                            {preferences.showGoogleDriveSection ? 'Hide' : 'Load'}
+                          </button>
+                        </div>
+                        {preferences.showGoogleDriveSection && preferences.googleDriveFolderId && (
+                          <div className="text-[9px] text-[#71717A]">
+                            Drive folder: {preferences.googleDriveFolderId}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="pt-4 border-t border-[#27272A]">
+                      <div className="mb-3 text-center">
+                        <span className="text-xs text-[#71717A]">Ctrl + Arrow keys → faster axis rotation ({preferences.ctrlAxisRotationStep}°)</span>
+                      </div>
+                      <button
+                        onClick={() => {
+                          const { resetPreferences } = require('@/hooks/use-tour-preferences');
+                          resetPreferences();
+                          setShowPreferences(false);
+                        }}
+                        className="w-full px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold uppercase tracking-wider transition-colors"
+                      >
+                        Reset to Defaults
+                      </button>
+                    </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
   );
 }

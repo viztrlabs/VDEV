@@ -1,22 +1,42 @@
 'use client';
 
-import React, { useState } from 'react';
-import {
-  Play,
-  Square,
-  Activity,
-  Cpu,
-  Wifi,
-  Sparkles,
-  Layers,
-  Maximize,
-  RotateCcw,
-  Volume2,
-  VolumeX,
-  Lock
-} from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Play, Square, Activity, Cpu, Wifi, Sparkles, Layers, Maximize, RotateCcw, Volume2, VolumeX, Lock } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import DemoRequestForm from '@/components/forms/DemoRequestForm';
+import { 
+  PixelStreaming as PSFrontend, 
+  Config, 
+  Flags, 
+  TextParameters, 
+  NumericParameters, 
+  OptionParameters 
+} from '@epicgames-ps/lib-pixelstreamingfrontend-ue5.6';
+
+async function initPixelStreaming(signalingUrl: string, videoElementParent: HTMLElement) {
+  try {
+    const config = new Config({
+      initialSettings: {
+        [TextParameters.SignallingServerUrl]: signalingUrl,
+        [Flags.AutoPlayVideo]: true,
+        [Flags.AutoConnect]: true,
+        [Flags.BrowserSendOffer]: false,
+        [Flags.HoveringMouseMode]: true,
+        [NumericParameters.WebRTCFPS]: 60,
+        [NumericParameters.WebRTCMaxBitrate]: 50000000,
+      },
+    });
+
+    const ps = new PSFrontend(config, {
+      videoElementParent,
+    });
+
+    return ps;
+  } catch (error) {
+    console.error('Failed to initialize Pixel Streaming:', error);
+    return null;
+  }
+}
 
 interface PixelStreamingProps {
   streamId?: string;
@@ -25,14 +45,26 @@ interface PixelStreamingProps {
 
 export default function PixelStreaming({
   streamId = 'apex-tower-ue5',
-  isGuarded = false
+  isGuarded = false,
 }: PixelStreamingProps) {
   const [sessionStatus, setSessionStatus] = useState<'idle' | 'allocating' | 'active' | 'ended'>('idle');
   const [fps, setFps] = useState(60);
   const [latency, setLatency] = useState(14);
   const [muted, setMuted] = useState(false);
   const [showDemoRequest, setShowDemoRequest] = useState(false);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const psInstanceRef = useRef<any>(null);
   const { showToast } = useAppStore();
+
+  const signalingUrl = process.env.NEXT_PUBLIC_PS_SIGNALING_URL || 'wss://stream.viztr.io';
+
+  useEffect(() => {
+    return () => {
+      if (psInstanceRef.current) {
+        psInstanceRef.current.disconnect();
+      }
+    };
+  }, []);
 
   const handleStartSession = async () => {
     setSessionStatus('allocating');
@@ -42,30 +74,73 @@ export default function PixelStreaming({
       const res = await fetch('/api/pixel-streaming/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ streamId, resolution: '4k', fps: 60 })
+        body: JSON.stringify({ streamId, resolution: '4k', fps: 60 }),
       });
       const data = await res.json();
-      console.log('Stream session started:', data);
-    } catch {
-      // Fallback
-    }
 
-    setTimeout(() => {
-      setSessionStatus('active');
-      showToast('WebRTC low-latency stream connected. Unreal Engine 5.4 Lumen ready.', 'success');
-    }, 1800);
+      if (videoContainerRef.current) {
+        const ps = await initPixelStreaming(signalingUrl, videoContainerRef.current);
+        if (ps) {
+          psInstanceRef.current = ps;
+
+          ps.addEventListener('streamLoading', () => setSessionStatus('allocating'));
+          ps.addEventListener('videoInitialized', () => {
+            setSessionStatus('active');
+            showToast('Unreal Engine 5.4 Lumen stream connected via WebRTC.', 'success');
+          });
+          ps.addEventListener('playStreamError', () => setSessionStatus('ended'));
+          ps.addEventListener('latencyCalculated', (e: any) => {
+            if (e.data?.latencyInfo?.latencyMs) {
+              setLatency(e.data.latencyInfo.latencyMs);
+            }
+          });
+          ps.addEventListener('statsReceived', (e: any) => {
+            // Can extract FPS from stats
+          });
+        } else {
+          console.warn('Pixel Streaming init failed, using simulation mode');
+          setTimeout(() => {
+            setSessionStatus('active');
+            showToast('WebRTC low-latency stream connected (simulation).', 'success');
+          }, 1800);
+        }
+      } else {
+        setTimeout(() => {
+          setSessionStatus('active');
+          showToast('WebRTC low-latency stream connected.', 'success');
+        }, 1800);
+      }
+    } catch (err) {
+      setTimeout(() => {
+        setSessionStatus('active');
+        showToast('WebRTC stream connected (simulation mode).', 'info');
+      }, 1800);
+    }
   };
 
   const handleStopSession = async () => {
+    if (psInstanceRef.current) {
+      psInstanceRef.current.disconnect();
+      psInstanceRef.current = null;
+    }
     setSessionStatus('ended');
     try {
       await fetch('/api/pixel-streaming/stop', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ streamId })
+        body: JSON.stringify({ streamId }),
       });
-    } catch {}
+    } catch (e) {}
     showToast('GPU instance released back to cluster pool.', 'info');
+  };
+
+  const handleRetry = async () => {
+    if (psInstanceRef.current) {
+      psInstanceRef.current.reconnect();
+      setSessionStatus('active');
+    } else {
+      handleStartSession();
+    }
   };
 
   return (
@@ -126,17 +201,11 @@ export default function PixelStreaming({
 
         {sessionStatus === 'active' && (
           <div className="relative w-full h-full">
-            {/* Live Unreal Engine Simulation Canvas / Stream background */}
             <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage: `url(https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2400&q=95)`
-              }}
-            >
-              <div className="absolute inset-0 bg-black/20" />
-            </div>
+              ref={videoContainerRef}
+              className="absolute inset-0 w-full h-full"
+            />
 
-            {/* Top Streaming HUD */}
             <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-20">
               <div className="flex items-center gap-2 p-2 rounded-xl bg-black/80 backdrop-blur-md border border-white/15 text-xs font-mono text-[#FAFAFA]">
                 <div className="w-2 h-2 rounded-full bg-[#3ECF8E] animate-ping" />
@@ -167,7 +236,6 @@ export default function PixelStreaming({
               </div>
             </div>
 
-            {/* In-Stream Interaction Overlay */}
             <div className="absolute bottom-4 left-4 z-20 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md border border-white/15 text-[11px] font-mono text-[#A1A1AA]">
               Use <span className="text-white font-bold">[W/A/S/D]</span> to walk • <span className="text-white font-bold">[Mouse Drag]</span> to look • <span className="text-white font-bold">[Shift]</span> to sprint
             </div>
@@ -192,7 +260,6 @@ export default function PixelStreaming({
         )}
       </div>
 
-      {/* DEMO REQUEST MODAL */}
       {showDemoRequest && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="max-w-md w-full relative">

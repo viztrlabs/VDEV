@@ -3,6 +3,7 @@
 import React from 'react';
 import ProjectTracker from '@/components/tracking/ProjectTracker';
 import { ShieldCheck, Info, Sparkles, RefreshCw } from 'lucide-react';
+import { ViztrLogoMark } from '@/components/ui/Logo';
 
 export default function TrackProjectPage() {
   return (
@@ -12,6 +13,12 @@ export default function TrackProjectPage() {
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#f43f5e_1px,transparent_1px)] [background-size:16px_16px]" />
         
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-4">
+          <div className="flex justify-center mb-2">
+            <div className="p-3 rounded-2xl bg-[#18181B] border border-[#27272A] shadow-xl">
+              <ViztrLogoMark className="w-12 h-12" />
+            </div>
+          </div>
+
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
             <span>Live Milestone Synchronization</span>

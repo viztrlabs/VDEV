@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { servicePagesData } from '@/data/pages';
 import DemoRequestForm from '@/components/forms/DemoRequestForm';
 import { useAppStore } from '@/lib/store';
@@ -18,8 +19,14 @@ import {
   Server
 } from 'lucide-react';
 
+// Use dynamic import for client-side only components (WebRTC/browser-only)
+const PixelStreamingViewer = dynamic(
+  () => import('@/components/xr/PixelStreaming'),
+  { ssr: false }
+);
+
 export default function PixelStreamingServicePage() {
-  const data = servicePagesData.pixelStreaming;
+  const data = servicePagesData['xr-pixel-streaming'];
   const { openPixelStream } = useAppStore();
 
   return (
@@ -80,7 +87,7 @@ export default function PixelStreamingServicePage() {
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-              {data.capabilities.map((cap, idx) => (
+              {data.capabilities?.map((cap, idx) => (
                 <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
                   <CheckCircle2 className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
                   <span className="text-xs font-medium text-zinc-800 dark:text-zinc-200">{cap}</span>
@@ -89,43 +96,19 @@ export default function PixelStreamingServicePage() {
             </div>
           </div>
 
-          {/* TELEMETRY HUD CARD */}
+          {/* PIXEL STREAMING VIEWER */}
           <div id="stream-specs" className="p-8 rounded-3xl bg-zinc-950 text-white border border-rose-500/40 space-y-6 shadow-2xl relative overflow-hidden">
             <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-                <h3 className="text-lg font-bold font-display">Cloud Node Telemetry</h3>
+                <h3 className="text-lg font-bold font-display">Live Cloud GPU Stream</h3>
               </div>
               <span className="text-xs text-rose-400 font-mono">RTX 4090 Cloud Pod</span>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 text-xs font-mono">
-              <div className="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 space-y-1">
-                <div className="text-zinc-500">ENGINE</div>
-                <div className="text-sm font-bold text-white">Unreal Engine 5.4.3</div>
-              </div>
-              <div className="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 space-y-1">
-                <div className="text-zinc-500">LIGHTING & GEOM</div>
-                <div className="text-sm font-bold text-rose-400">Lumen + Nanite</div>
-              </div>
-              <div className="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 space-y-1">
-                <div className="text-zinc-500">STREAM PROTOCOL</div>
-                <div className="text-sm font-bold text-white">WebRTC Peer-to-Peer</div>
-              </div>
-              <div className="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800 space-y-1">
-                <div className="text-zinc-500">AVERAGE LATENCY</div>
-                <div className="text-sm font-bold text-emerald-400">&lt; 28ms (US/EU/Asia)</div>
-              </div>
-            </div>
-
-            <div className="pt-2">
-              <button
-                onClick={openPixelStream}
-                className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition-colors flex items-center justify-center gap-2"
-              >
-                <Play className="w-4 h-4 fill-white" />
-                <span>Open Unreal 5 Viewport</span>
-              </button>
+            {/* Real Pixel Streaming Viewer */}
+            <div className="mt-4">
+              <PixelStreamingViewer />
             </div>
           </div>
         </div>

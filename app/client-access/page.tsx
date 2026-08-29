@@ -16,6 +16,7 @@ import {
   Sparkles,
   CheckCircle2
 } from 'lucide-react';
+import { ViztrLogoMark } from '@/components/ui/Logo';
 
 export default function ClientAccessPage() {
   const router = useRouter();
@@ -90,9 +91,9 @@ export default function ClientAccessPage() {
     <main className="min-h-[85vh] flex items-center justify-center py-16 px-4 sm:px-6 bg-[#09090B] text-[#FAFAFA]">
       <div className="max-w-md w-full space-y-6">
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-xl bg-[#18181B] border border-[#27272A] flex items-center justify-center mx-auto text-[#3ECF8E] shadow-xl">
-            <Lock className="w-6 h-6" />
-          </div>
+          <Link href="/" className="inline-flex items-center justify-center p-3 rounded-2xl bg-[#18181B] border border-[#27272A] mx-auto shadow-xl hover:border-[#e2c073]/50 transition-colors group">
+            <ViztrLogoMark className="w-10 h-10 group-hover:scale-105 transition-transform" />
+          </Link>
           <h1 className="text-2xl font-bold font-display text-white tracking-tight">
             Client Access Portal
           </h1>

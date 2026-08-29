@@ -8,7 +8,7 @@ import { useAppStore } from '@/lib/store';
 import { ArrowRight, CheckCircle2, Box, Sparkles, Layers, Sliders, Smartphone } from 'lucide-react';
 
 export default function WebXRServicePage() {
-  const data = servicePagesData.webxr;
+  const data = servicePagesData.webar;
   const { openModelViewer } = useAppStore();
 
   return (

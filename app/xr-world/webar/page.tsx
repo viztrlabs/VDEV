@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { servicePagesData } from '@/data/pages';
 import ContactForm from '@/components/forms/ContactForm';
 import { useAppStore } from '@/lib/store';
-import { ArrowRight, CheckCircle2, ScanLine, QrCode, Smartphone, Sparkles } from 'lucide-react';
+import { ScanLine, QrCode, Smartphone, CheckCircle2 } from 'lucide-react';
 
 export default function WebARServicePage() {
   const data = servicePagesData.webar;
@@ -15,7 +15,10 @@ export default function WebARServicePage() {
     <main className="flex-1 w-full pb-20">
       {/* HERO */}
       <section className="relative py-28 px-6 bg-zinc-950 text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-30 bg-cover bg-center" style={{ backgroundImage: `url(${data.heroImage})` }} />
+        <div
+          className="absolute inset-0 opacity-30 bg-cover bg-center"
+          style={{ backgroundImage: `url(${data.heroImage})` }}
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-transparent" />
 
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
@@ -61,7 +64,10 @@ export default function WebARServicePage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
               {data.capabilities.map((cap, idx) => (
-                <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
+                <div
+                  key={idx}
+                  className="flex items-start gap-2.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800"
+                >
                   <CheckCircle2 className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
                   <span className="text-xs font-medium text-zinc-800 dark:text-zinc-200">{cap}</span>
                 </div>
