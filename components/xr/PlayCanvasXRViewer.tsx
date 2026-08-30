@@ -33,7 +33,12 @@ export default function PlayCanvasXRViewer() {
   const playcanvasProjectId = getCredential('PLAYCANVAS_PROJECT_ID') || process.env.NEXT_PUBLIC_PLAYCANVAS_PROJECT_ID || '';
   const [pcProject, setPcProject] = useState<{ name?: string; version?: string } | null>(null);
 
-  // Fetch PlayCanvas cloud project metadata (requires PLAYCANVAS_API_KEY on server).
+  // DORMANT PlayCanvas Cloud API integration.
+  // The engine + scenes run fully LOCAL (node_modules/playcanvas + /assets/).
+  // This only pulls a project NAME/VERSION string from the cloud editor for the
+  // HUD, and only when PLAYCANVAS_PROJECT_ID is explicitly set. Leave unset to
+  // keep the cloud API fully inactive. Activate only if syncing published builds
+  // from the PlayCanvas cloud editor.
   useEffect(() => {
     if (!playcanvasProjectId) return;
     let cancelled = false;

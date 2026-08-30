@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// PlayCanvas Cloud API integration.
-// Reads the API key from PLAYCANVAS_API_KEY (server env) and proxies a request
-// to the PlayCanvas REST API for a given project id. The project id is passed
-// via ?projectId= or falls back to PLAYCANVAS_PROJECT_ID.
+// DORMANT PlayCanvas Cloud API integration.
+// The engine + scenes run fully LOCAL (node_modules/playcanvas + /assets/), so
+// this is NOT required for the viewer to function. It only reflects a published
+// project's NAME/VERSION from the cloud editor for the HUD, and only when
+// PLAYCANVAS_API_KEY + PLAYCANVAS_PROJECT_ID are set. Leave them unset to keep
+// the cloud API fully inactive. Activate only when syncing published builds.
 //
 // Docs: https://developer.playcanvas.com/user-manual/api/
 const PLAYCANVAS_BASE = 'https://playcanvas.com/api';
