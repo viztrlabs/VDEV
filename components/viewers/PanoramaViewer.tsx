@@ -49,7 +49,7 @@ import {
   Globe,
 } from 'lucide-react';
 
-export type HotspotType = 'metadata' | 'room_link';
+export type HotspotType = 'metadata' | 'room_link' | 'image' | 'video' | 'info';
 export type HotspotCategory =
   | 'material'
   | 'furniture'
@@ -85,6 +85,8 @@ export interface Hotspot {
   pulseStyle?: 'radar' | 'glowing' | 'subtle';
   isCustom?: boolean;
   createdAt?: string;
+  mediaUrl?: string;
+  article?: string;
 }
 
 export interface TourRoom {
@@ -1115,6 +1117,11 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
   // Apply admin-controlled tour settings (live gate + feature toggles) from the
   // settings API so the operator's admin panel changes affect this public viewer.
   const [tourOffline, setTourOffline] = useState(false);
+  const [tourTheme, setTourTheme] = useState<{
+    accentColor: string;
+    logoUrl: string;
+    title: string;
+  }>({ accentColor: '#3ECF8E', logoUrl: '', title: 'VizTR Virtual Tour' });
   useEffect(() => {
     if (!isViewerActive) return;
     let cancelled = false;
@@ -1123,6 +1130,11 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
       .then((s) => {
         if (cancelled || !s) return;
         setTourOffline(!s.live);
+        if (s.theme) setTourTheme(s.theme);
+        // count a public tour view (only when published)
+        if (s.live) {
+          fetch('/api/tour/views', { method: 'POST' }).catch(() => {});
+        }
         const f = s.features || {};
         updatePreferences({
           showHotspots: f.hotspots !== false,
@@ -1667,6 +1679,7 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
       aria-modal="true"
       aria-label="360° Virtual Tour Viewer"
       className="fixed inset-0 z-[999] bg-black text-white flex flex-col justify-between select-none animate-in fade-in duration-200"
+      style={{ ['--accent' as any]: tourTheme.accentColor }}
       onMouseUp={handleMouseUp}
     >
       {/* OFFLINE / UNPUBLISHED OVERLAY (admin toggled `live` off) */}
@@ -1981,9 +1994,9 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
 
       {/* CLIENT LOGO - Top Left (separate from nav bar) */}
       <div className="absolute top-4 left-4 z-40 flex items-center gap-2.5">
-        {preferences.clientLogoUrl ? (
+        {(tourTheme.logoUrl || preferences.clientLogoUrl) ? (
           <img
-            src={preferences.clientLogoUrl}
+            src={tourTheme.logoUrl || preferences.clientLogoUrl}
             alt="Client Logo"
             className="h-10 w-auto object-contain drop-shadow-xl"
           />
@@ -1991,6 +2004,11 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
           <div className="h-10 w-28 rounded-lg bg-[#18181B]/90 border border-[#27272A] flex items-center justify-center text-xs font-mono text-[#71717A] backdrop-blur-md">
             Client Logo
           </div>
+        )}
+        {tourTheme.title && (
+          <span className="text-xs font-mono font-bold text-white/90 drop-shadow">
+            {tourTheme.title}
+          </span>
         )}
         {/* Logo Upload (admin only) */}
         <label className="cursor-pointer p-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#71717A] hover:text-white transition-colors backdrop-blur-md">
@@ -2219,6 +2237,33 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
               <p className="text-xs text-zinc-300 leading-relaxed mt-3 font-sans">
                 {activeHotspot.description}
               </p>
+
+              {/* MEDIA HOTSPOT CONTENT (image / video / info article) */}
+              {activeHotspot.type === 'image' && activeHotspot.mediaUrl && (
+                <div className="mt-3 rounded-xl overflow-hidden border border-[#27272A]">
+                  <img src={activeHotspot.mediaUrl} alt={activeHotspot.title} className="w-full object-cover max-h-56" />
+                </div>
+              )}
+              {activeHotspot.type === 'video' && activeHotspot.mediaUrl && (
+                <div className="mt-3 rounded-xl overflow-hidden border border-[#27272A] aspect-video bg-black">
+                  {/youtube\.com|youtu\.be|vimeo\.com/i.test(activeHotspot.mediaUrl) ? (
+                    <iframe
+                      src={activeHotspot.mediaUrl}
+                      title={activeHotspot.title}
+                      className="w-full h-full"
+                      allow="autoplay; fullscreen; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <video src={activeHotspot.mediaUrl} controls className="w-full h-full" />
+                  )}
+                </div>
+              )}
+              {activeHotspot.type === 'info' && activeHotspot.article && (
+                <div className="mt-3 p-3 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-zinc-300 leading-relaxed whitespace-pre-wrap">
+                  {activeHotspot.article}
+                </div>
+              )}
 
               {/* METADATA TECHNICAL SPECS */}
               {activeHotspot.specs && activeHotspot.specs.length > 0 && (

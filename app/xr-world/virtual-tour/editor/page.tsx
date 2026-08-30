@@ -34,7 +34,7 @@ interface Hotspot {
   xPercent: number;
   yPercent: number;
   title: string;
-  type: 'metadata' | 'room_link';
+  type: 'metadata' | 'room_link' | 'image' | 'video' | 'info';
   category: HotspotCategory;
   description: string;
   targetRoomId?: string;
@@ -43,6 +43,8 @@ interface Hotspot {
   targetYaw?: number;
   icon?: string;
   color?: HotspotColor;
+  mediaUrl?: string;
+  article?: string;
 }
 
 interface TourRoom {
@@ -533,24 +535,30 @@ export default function TourEditorPage() {
                     className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white resize-none"
                   />
 
-                  <label className="flex items-center gap-2 text-[10px] font-mono text-[#A1A1AA]">
-                    <input
-                      type="checkbox"
-                      checked={hp.type === 'room_link'}
-                      onChange={(e) =>
-                        e.target.checked
-                          ? setPortalTarget(hp.id, rooms.find((r) => r.id !== selected.id)?.id || '')
-                          : updateHotspot(hp.id, {
-                              type: 'metadata',
-                              category: 'custom',
-                              targetRoomId: undefined,
-                              targetRoomName: undefined,
-                              targetPanoramaUrl: undefined,
-                            })
+                  <select
+                    value={hp.type}
+                    onChange={(e) => {
+                      const t = e.target.value as Hotspot['type'];
+                      if (t === 'room_link') {
+                        setPortalTarget(hp.id, rooms.find((r) => r.id !== selected.id)?.id || '');
+                      } else {
+                        updateHotspot(hp.id, {
+                          type: t,
+                          category: 'custom',
+                          targetRoomId: undefined,
+                          targetRoomName: undefined,
+                          targetPanoramaUrl: undefined,
+                        });
                       }
-                    />
-                    Link to another node (portal)
-                  </label>
+                    }}
+                    className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                  >
+                    <option value="metadata">Metadata / Info tag</option>
+                    <option value="room_link">Portal (link to node)</option>
+                    <option value="image">Image popup</option>
+                    <option value="video">Video popup</option>
+                    <option value="info">Article / Text panel</option>
+                  </select>
 
                   {hp.type === 'room_link' && (
                     <select
@@ -566,6 +574,32 @@ export default function TourEditorPage() {
                           </option>
                         ))}
                     </select>
+                  )}
+
+                  {hp.type === 'image' && (
+                    <input
+                      value={hp.mediaUrl || ''}
+                      onChange={(e) => updateHotspot(hp.id, { mediaUrl: e.target.value })}
+                      placeholder="Image URL (https://…)"
+                      className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                    />
+                  )}
+                  {hp.type === 'video' && (
+                    <input
+                      value={hp.mediaUrl || ''}
+                      onChange={(e) => updateHotspot(hp.id, { mediaUrl: e.target.value })}
+                      placeholder="Video URL (YouTube/Vimeo/mp4)"
+                      className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                    />
+                  )}
+                  {hp.type === 'info' && (
+                    <textarea
+                      value={hp.article || ''}
+                      onChange={(e) => updateHotspot(hp.id, { article: e.target.value })}
+                      placeholder="Article / long text content"
+                      rows={3}
+                      className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white resize-none"
+                    />
                   )}
 
                   <div className="flex items-center gap-2">

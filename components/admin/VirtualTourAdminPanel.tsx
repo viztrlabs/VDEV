@@ -6,6 +6,7 @@ import {
   Eye,
   ExternalLink,
   Copy,
+  Download,
   Check,
   Radio,
   Layers,
@@ -38,7 +39,10 @@ interface TourSettings {
   live: boolean;
   publicUrl: string;
   features: TourFeatureToggles;
+  theme: { accentColor: string; logoUrl: string; title: string };
 }
+
+const DEFAULT_THEME = { accentColor: '#3ECF8E', logoUrl: '', title: 'VizTR Virtual Tour' };
 
 const DEFAULT_FEATURES: TourFeatureToggles = {
   hotspots: true,
@@ -68,6 +72,7 @@ const FEATURE_ROWS: { key: keyof TourFeatureToggles; label: string; icon: any }[
 
 export default function VirtualTourAdminPanel() {
   const [settings, setSettings] = useState<TourSettings | null>(null);
+  const [views, setViews] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -82,6 +87,7 @@ export default function VirtualTourAdminPanel() {
         live: data.live !== false,
         publicUrl: data.publicUrl || '/xr-world/virtual-tour',
         features: { ...DEFAULT_FEATURES, ...(data.features || {}) },
+        theme: { ...DEFAULT_THEME, ...(data.theme || {}) },
       });
     } catch (e: any) {
       setError(e?.message || 'failed to load settings');
@@ -93,6 +99,20 @@ export default function VirtualTourAdminPanel() {
   useEffect(() => {
     load();
   }, [load]);
+
+  const loadViews = useCallback(async () => {
+    try {
+      const res = await fetch('/api/tour/views');
+      const data = await res.json();
+      setViews(data.count ?? 0);
+    } catch {
+      setViews(0);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadViews();
+  }, [loadViews]);
 
   const persist = useCallback(
     async (next: TourSettings) => {
@@ -119,6 +139,13 @@ export default function VirtualTourAdminPanel() {
   const toggleFeature = (key: keyof TourFeatureToggles) => {
     if (!settings) return;
     const next = { ...settings, features: { ...settings.features, [key]: !settings.features[key] } };
+    setSettings(next);
+    persist(next);
+  };
+
+  const updateTheme = (patch: Partial<NonNullable<TourSettings['theme']>>) => {
+    if (!settings) return;
+    const next = { ...settings, theme: { ...settings.theme, ...patch } };
     setSettings(next);
     persist(next);
   };
@@ -157,6 +184,11 @@ export default function VirtualTourAdminPanel() {
         {saved && (
           <span className="flex items-center gap-1 text-[10px] font-mono text-[#3ECF8E]">
             <Check className="w-3 h-3" /> Saved
+          </span>
+        )}
+        {views !== null && (
+          <span className="flex items-center gap-1 text-[10px] font-mono text-[#71717A]">
+            <Eye className="w-3 h-3" /> {views} views
           </span>
         )}
       </div>
@@ -257,6 +289,48 @@ export default function VirtualTourAdminPanel() {
             })}
           </div>
 
+          {/* THEME / BRANDING */}
+          {settings && (
+          <div className="rounded-2xl border border-[#27272A] bg-[#0c0c0f] p-4 space-y-3">
+            <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A] flex items-center gap-1.5 pb-1">
+              <Palette className="w-3 h-3" /> Theme &amp; Branding
+            </div>
+            <div className="space-y-2">
+              <label className="block text-[10px] font-mono text-[#A1A1AA]">Tour Title</label>
+              <input
+                value={settings.theme.title}
+                onChange={(e) => updateTheme({ title: e.target.value })}
+                className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-[10px] font-mono text-[#A1A1AA]">Client Logo URL</label>
+              <input
+                value={settings.theme.logoUrl}
+                onChange={(e) => updateTheme({ logoUrl: e.target.value })}
+                placeholder="https://…/logo.png"
+                className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-[10px] font-mono text-[#A1A1AA]">Accent Color</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={settings.theme.accentColor}
+                  onChange={(e) => updateTheme({ accentColor: e.target.value })}
+                  className="w-9 h-8 rounded bg-[#18181B] border border-[#27272A] cursor-pointer"
+                />
+                <input
+                  value={settings.theme.accentColor}
+                  onChange={(e) => updateTheme({ accentColor: e.target.value })}
+                  className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white font-mono"
+                />
+              </div>
+            </div>
+          </div>
+          )}
+
           {/* Client link generator */}
           <div className="rounded-2xl border border-[#27272A] bg-[#0c0c0f] p-4 space-y-3">
             <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">
@@ -292,6 +366,13 @@ export default function VirtualTourAdminPanel() {
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
               >
                 <ExternalLink className="w-3.5 h-3.5" /> Preview
+              </button>
+              <button
+                onClick={() => window.open('/api/tour/export', '_blank')}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white"
+                title="Download self-hostable ZIP"
+              >
+                <Download className="w-3.5 h-3.5" /> Export ZIP
               </button>
             </div>
           </div>

@@ -19,6 +19,7 @@ export async function PUT(req: NextRequest) {
       live: !!body.live,
       publicUrl: typeof body.publicUrl === 'string' ? body.publicUrl : '/xr-world/virtual-tour',
       features: body.features || {},
+      theme: body.theme || {},
     });
     return NextResponse.json(saved);
   } catch (err: any) {

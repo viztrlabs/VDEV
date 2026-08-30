@@ -18,10 +18,17 @@ export interface TourFeatureToggles {
   search: boolean;
 }
 
+export interface TourTheme {
+  accentColor: string; // hex accent applied to public viewer UI
+  logoUrl: string; // client logo shown in the public viewer
+  title: string; // tour title shown in public viewer header
+}
+
 export interface TourSettings {
   live: boolean; // when false, the public tour shows an "unpublished" state
   publicUrl: string; // canonical public link for the client
   features: TourFeatureToggles;
+  theme: TourTheme;
 }
 
 const DEFAULT_SETTINGS: TourSettings = {
@@ -39,6 +46,11 @@ const DEFAULT_SETTINGS: TourSettings = {
     share: true,
     search: true,
   },
+  theme: {
+    accentColor: '#3ECF8E',
+    logoUrl: '',
+    title: 'VizTR Virtual Tour',
+  },
 };
 
 const DATA_DIR = path.join(process.cwd(), '.data', 'tour');
@@ -53,6 +65,7 @@ export async function getTourSettings(): Promise<TourSettings> {
       ...DEFAULT_SETTINGS,
       ...parsed,
       features: { ...DEFAULT_SETTINGS.features, ...(parsed.features || {}) },
+      theme: { ...DEFAULT_SETTINGS.theme, ...(parsed.theme || {}) },
     };
   } catch {
     return DEFAULT_SETTINGS;
@@ -65,6 +78,7 @@ export async function saveTourSettings(settings: TourSettings): Promise<TourSett
     ...DEFAULT_SETTINGS,
     ...settings,
     features: { ...DEFAULT_SETTINGS.features, ...(settings.features || {}) },
+    theme: { ...DEFAULT_SETTINGS.theme, ...(settings.theme || {}) },
   };
   await fs.writeFile(SETTINGS_FILE, JSON.stringify(merged, null, 2), 'utf8');
   return merged;
