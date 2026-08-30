@@ -60,7 +60,7 @@ const DEFAULT_PREFERENCES: TourPreferences = {
   // Branding & Assets defaults
   clientLogoUrl: '',
   viztrLogoUrl: '',
-  floorPlanImageUrl: '',
+  floorPlanImageUrl: '/tour/floorplan.svg',
   showFloorPlan: true,
   // Audio defaults
   backgroundMusicUrl: '',
