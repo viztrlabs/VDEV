@@ -61,10 +61,12 @@ export class AnalyticsEngine {
 
   private post(endpoint: string, batch: AnalyticsEvent[]) {
     if (typeof fetch === 'undefined') return;
+    // Include a snapshot of recent perf samples so the collector can store them.
+    const perf = this.perfHistory.slice(-60);
     fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionId: this.sessionId, events: batch }),
+      body: JSON.stringify({ sessionId: this.sessionId, events: batch, perf }),
       keepalive: true,
     }).catch(() => {
       /* collector unreachable — keep events queued */

@@ -9,11 +9,16 @@ import {
   PerfSample,
 } from './analyticsEngine';
 
-/** React hook binding the AnalyticsEngine to a component lifecycle. */
+/** React hook binding the AnalyticsEngine to a component lifecycle.
+ *  Defaults to shipping events to the project's /api/analytics collector. */
 export function useAnalytics(opts?: { endpoint?: string; sessionId?: string }) {
   const engineRef = useRef<AnalyticsEngine | null>(null);
   if (!engineRef.current) {
-    engineRef.current = createAnalytics({ endpoint: opts?.endpoint, sessionId: opts?.sessionId });
+    engineRef.current = createAnalytics({
+      endpoint: opts?.endpoint ?? '/api/analytics',
+      sessionId: opts?.sessionId,
+      flushIntervalMs: 5000,
+    });
   }
   const [recommendations, setRecommendations] = useState<AIRecommendation[]>([]);
 

@@ -37,15 +37,40 @@ export function CollabProvider({
   userColor?: string;
 }) {
   const clientRef = useRef<CollabClient | null>(null);
-  if (!clientRef.current) {
-    clientRef.current = createCollabClient({ url, userId, userName, userColor });
-  }
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
   const [connected, setConnected] = useState(false);
-  const [self, setSelf] = useState<Collaborator>(clientRef.current.getSelf());
+  const [self, setSelf] = useState<Collaborator | null>(null);
+
+  // Resolve the collaboration WebSocket URL (explicit prop wins; otherwise ask
+  // the API which exposes the running collab server). The client only connects
+  // once we have a URL so SSR/first paint stays safe.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      let resolved = url;
+      if (!resolved) {
+        try {
+          const res = await fetch('/api/collab');
+          const data = await res.json();
+          resolved = data.url;
+        } catch {
+          resolved = undefined;
+        }
+      }
+      if (cancelled) return;
+      clientRef.current = createCollabClient({ url: resolved, userId, userName, userColor });
+      setSelf(clientRef.current.getSelf());
+    })();
+    return () => {
+      cancelled = true;
+      clientRef.current?.dispose();
+      clientRef.current = null;
+    };
+  }, [url, userId, userName, userColor]);
 
   useEffect(() => {
-    const client = clientRef.current!;
+    const client = clientRef.current;
+    if (!client) return;
     const unsub = client.subscribe((event: CollabEvent) => {
       if (event.kind === 'presence' || event.kind === 'presence-leave' || event.kind === 'cursor') {
         setCollaborators(client.getCollaborators());
@@ -68,7 +93,7 @@ export function CollabProvider({
     () => ({
       client: clientRef.current!,
       collaborators,
-      self,
+      self: self!,
       connected,
       setStatus: (s) => clientRef.current!.updateStatus(s),
       updateCursor: (x, y, sceneId) => clientRef.current!.updateCursor(x, y, sceneId),

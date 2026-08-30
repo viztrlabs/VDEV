@@ -30,6 +30,22 @@ export default function PlayCanvasXRViewer() {
 
   const { getCredential } = useCredentialsStore();
   const streamControllerUrl = getCredential('STREAM_CONTROLLER_URL') || 'http://localhost:3001';
+  const playcanvasProjectId = getCredential('PLAYCANVAS_PROJECT_ID') || process.env.NEXT_PUBLIC_PLAYCANVAS_PROJECT_ID || '';
+  const [pcProject, setPcProject] = useState<{ name?: string; version?: string } | null>(null);
+
+  // Fetch PlayCanvas cloud project metadata (requires PLAYCANVAS_API_KEY on server).
+  useEffect(() => {
+    if (!playcanvasProjectId) return;
+    let cancelled = false;
+    fetch(`/api/playcanvas/project?projectId=${encodeURIComponent(playcanvasProjectId)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (cancelled || !d?.success) return;
+        setPcProject({ name: d.project?.name, version: d.project?.version });
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [playcanvasProjectId]);
 
   // Fetch status from stream controller
   const fetchStatus = async () => {
@@ -158,7 +174,9 @@ export default function PlayCanvasXRViewer() {
           </div>
           <div>
             <h3 className="text-sm font-bold text-white font-display">PlayCanvas Engine</h3>
-            <p className="text-[10px] text-[#A1A1AA]">WebXR Runtime</p>
+            <p className="text-[10px] text-[#A1A1AA]">
+              {pcProject?.name ? `${pcProject.name}${pcProject.version ? ` · v${pcProject.version}` : ''}` : 'WebXR Runtime'}
+            </p>
           </div>
         </div>
 

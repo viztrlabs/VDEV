@@ -82,6 +82,7 @@ export class CollabClient {
       this.ws = new WebSocket(this.opts.url);
       this.ws.onopen = () => {
         this.connected = true;
+        // Register with the server using the client protocol.
         this.send({ kind: 'presence', collaborator: this.self });
       };
       this.ws.onmessage = (ev) => {

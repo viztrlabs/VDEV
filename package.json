@@ -10,7 +10,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:component": "jest --testPathPattern=__tests__",
-    "test:ci": "jest --ci --coverage --watchAll=false"
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "collab": "node scripts/collab-server.mjs"
   },
   "dependencies": {
     "@epicgames-ps/lib-pixelstreamingfrontend-ue5.6": "^0.3.0",
@@ -40,6 +41,7 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "tailwind-merge": "^3.3.1",
+    "ws": "^8.21.3",
     "zustand": "^5.0.15"
   },
   "devDependencies": {

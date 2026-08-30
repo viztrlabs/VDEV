@@ -56,6 +56,27 @@ const DEFAULT_CREDENTIALS: CredentialField[] = [
     value: '',
   },
   {
+    key: 'PLAYCANVAS_API_KEY',
+    label: 'PlayCanvas API Key',
+    description: 'Enables PlayCanvas Cloud API (project metadata, asset sync).',
+    placeholder: 'Paste PlayCanvas API key',
+    value: '',
+  },
+  {
+    key: 'PLAYCANVAS_PROJECT_ID',
+    label: 'PlayCanvas Project ID',
+    description: 'The PlayCanvas project to pull metadata/assets from.',
+    placeholder: 'e.g. 1234567',
+    value: '',
+  },
+  {
+    key: 'COLLAB_WS_URL',
+    label: 'Collaboration WebSocket URL',
+    description: 'Optional — URL of the VizTR collaboration server (scripts/collab-server.mjs).',
+    placeholder: 'ws://localhost:4000',
+    value: '',
+  },
+  {
     key: 'STREAM_CONTROLLER_URL',
     label: 'GPU Stream Controller URL',
     description: 'URL of the GPU-PC stream controller sidecar (Phase 2F).',
