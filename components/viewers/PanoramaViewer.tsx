@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import * as THREE from 'three';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAppStore } from '@/lib/store';
 import { useTourPreferences, useTheme, useReducedMotion } from '@/hooks/use-tour-preferences';
@@ -1072,6 +1073,128 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
   const containerRef = useRef<HTMLDivElement>(null);
   const sphereViewportRef = useRef<HTMLDivElement>(null);
 
+  // Spherical 360° viewer (Three.js) — renders the equirectangular image on the
+  // INSIDE of an inverted sphere with the camera at center. True look-around +
+  // auto-rotate (camera yaw spin), not a flat looping image.
+  const sphereStateRef = useRef({ yaw, pitch, fov, url: currentRoom.panoramaUrl });
+  sphereStateRef.current = { yaw, pitch, fov, url: currentRoom.panoramaUrl };
+
+  useEffect(() => {
+    if (!isViewerActive) return;
+    const host = sphereViewportRef.current?.querySelector('#sphere-canvas-host') as HTMLDivElement | null;
+    const viewport = sphereViewportRef.current;
+    if (!host || !viewport) return;
+    let disposed = false;
+    let raf = 0;
+    let cleanupFns: Array<() => void> = [];
+
+    (async () => {
+      try {
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(
+          75,
+          viewport.clientWidth / Math.max(viewport.clientHeight, 1),
+          0.1,
+          1100
+        );
+        camera.rotation.order = 'YXZ';
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+        host.appendChild(renderer.domElement);
+        renderer.domElement.style.width = '100%';
+        renderer.domElement.style.height = '100%';
+        renderer.domElement.style.display = 'block';
+
+        const geometry = new THREE.SphereGeometry(500, 64, 40);
+        geometry.scale(1, 1, -1); // view from the inside
+
+        const material = new THREE.MeshBasicMaterial();
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+
+        const loader = new THREE.TextureLoader();
+        loader.setCrossOrigin('anonymous');
+        let loadedUrl = '';
+        const applyTexture = (url: string) => {
+          if (!url || url === loadedUrl) return;
+          loader.load(
+            url,
+            (tex) => {
+              if (disposed) return;
+              loadedUrl = url;
+              tex.colorSpace = THREE.SRGBColorSpace;
+              material.map = tex;
+              material.needsUpdate = true;
+            },
+            undefined,
+            () => {
+              /* swallow load errors — keep last frame */
+            }
+          );
+        };
+        applyTexture(sphereStateRef.current.url);
+
+        const render = () => {
+          if (disposed) return;
+          raf = requestAnimationFrame(render);
+          const s = sphereStateRef.current;
+          camera.rotation.y = THREE.MathUtils.degToRad(-s.yaw);
+          camera.rotation.x = THREE.MathUtils.degToRad(s.pitch);
+          if (camera.fov !== s.fov) {
+            camera.fov = s.fov;
+            camera.updateProjectionMatrix();
+          }
+          renderer.render(scene, camera);
+        };
+        render();
+
+        const onResize = () => {
+          if (disposed) return;
+          const w = viewport.clientWidth;
+          const h = viewport.clientHeight;
+          if (w && h) {
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h);
+          }
+        };
+        const ro = new ResizeObserver(onResize);
+        ro.observe(viewport);
+
+        // Reload texture when the room (panorama URL) changes.
+        const watch = setInterval(() => {
+          if (disposed) return;
+          if (sphereStateRef.current.url !== loadedUrl) {
+            applyTexture(sphereStateRef.current.url);
+          }
+        }, 400);
+
+        cleanupFns.push(() => {
+          cancelAnimationFrame(raf);
+          clearInterval(watch);
+          ro.disconnect();
+          geometry.dispose();
+          material.map?.dispose();
+          material.dispose();
+          renderer.dispose();
+          if (renderer.domElement.parentElement === host) {
+            host.removeChild(renderer.domElement);
+          }
+        });
+      } catch {
+        /* no-op */
+      }
+    })();
+
+    return () => {
+      disposed = true;
+      cleanupFns.forEach((f) => f());
+      cleanupFns = [];
+    };
+  }, [isViewerActive]);
+
    // Keyboard navigation & Shortcuts
    useEffect(() => {
      if (!isViewerActive) return;
@@ -1837,15 +1960,14 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
           touchAction: 'none',
         }}
       >
-        {/* Equirectangular Projection Layer */}
+        {/* Equirectangular Projection Layer — rendered on the INSIDE of a
+            sphere via Three.js (true 360° look-around). The flat CSS
+            background-image was replaced because it showed the panorama as a
+            looping flat image rather than a spherical scene. */}
         <div
-          className="absolute inset-0 bg-cover bg-center transition-all duration-75"
-          style={{
-            backgroundImage: `url(${currentRoom.panoramaUrl})`,
-            backgroundPosition: `${(yaw / 360) * 100}% ${50 - pitch * 0.8}%`,
-            backgroundSize: `${fov * 3.5}% auto`,
-            filter: 'contrast(1.05) brightness(0.98)',
-          }}
+          id="sphere-canvas-host"
+          className="absolute inset-0"
+          style={{ filter: 'contrast(1.05) brightness(0.98)' }}
         />
 
         {/* RENDERED INTERACTIVE HOTSPOTS */}
