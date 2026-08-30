@@ -11,6 +11,11 @@ import {
   DoorOpen,
   Loader2,
   CheckCircle2,
+  Upload,
+  Copy,
+  ChevronUp,
+  ChevronDown,
+  Pencil,
 } from 'lucide-react';
 
 type HotspotColor = 'rose' | 'emerald' | 'cyan' | 'amber' | 'violet' | 'blue';
@@ -57,16 +62,20 @@ export default function TourEditorPage() {
   const [selectedId, setSelectedId] = useState<string>('');
   const [addMode, setAddMode] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
+  const [draggingOver, setDraggingOver] = useState(false);
+  const [editingNodeId, setEditingNodeId] = useState<string>('');
   const imgRef = useRef<HTMLImageElement>(null);
+  const dragHpRef = useRef<string | null>(null);
 
   const load = useCallback(async () => {
     try {
       const res = await fetch('/api/tour');
       const data = await res.json();
       setRooms(data.rooms || []);
-      setSelectedId((prev) => prev || (data.rooms?.[0]?.id ?? ''));
+      setSelectedId((prev) => prev || data.rooms?.[0]?.id || '');
     } catch (e: any) {
       setError(e?.message || 'failed to load tour');
     } finally {
@@ -85,6 +94,84 @@ export default function TourEditorPage() {
     setSaved(false);
   };
 
+  // ---- Upload 360 image and create a node ----
+  const uploadFiles = async (files: FileList | File[]) => {
+    setUploading(true);
+    setError('');
+    try {
+      for (const file of Array.from(files)) {
+        const fd = new FormData();
+        fd.append('file', file);
+        const res = await fetch('/api/tour/upload', { method: 'POST', body: fd });
+        if (!res.ok) throw new Error('upload failed');
+        const { url } = await res.json();
+        const id = `node-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+        const newRoom: TourRoom = {
+          id,
+          name: file.name.replace(/\.[^.]+$/, '').slice(0, 40) || 'New Scene',
+          subtitle: 'User Upload',
+          panoramaUrl: url,
+          thumbnailUrl: url,
+          initialYaw: 180,
+          initialPitch: 0,
+          defaultHotspots: [],
+        };
+        setRooms((prev) => [...prev, newRoom]);
+        setSelectedId(id);
+      }
+      setSaved(false);
+    } catch (e: any) {
+      setError(e?.message || 'upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // ---- Node ops ----
+  const renameNode = (id: string, name: string) =>
+    updateRoom(id, (r) => ({ ...r, name }));
+
+  const deleteNode = (id: string) => {
+    setRooms((prev) => {
+      const next = prev.filter((r) => r.id !== id);
+      if (selectedId === id) setSelectedId(next[0]?.id || '');
+      return next;
+    });
+    setSaved(false);
+  };
+
+  const duplicateNode = (id: string) => {
+    const src = rooms.find((r) => r.id === id);
+    if (!src) return;
+    const copy: TourRoom = {
+      ...src,
+      id: `node-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      name: `${src.name} (copy)`,
+      defaultHotspots: src.defaultHotspots.map((h) => ({ ...h, id: `hp-${Date.now()}-${Math.random()}` })),
+    };
+    setRooms((prev) => {
+      const idx = prev.findIndex((r) => r.id === id);
+      const next = [...prev];
+      next.splice(idx + 1, 0, copy);
+      return next;
+    });
+    setSelectedId(copy.id);
+    setSaved(false);
+  };
+
+  const moveNode = (id: string, dir: -1 | 1) => {
+    setRooms((prev) => {
+      const idx = prev.findIndex((r) => r.id === id);
+      const target = idx + dir;
+      if (idx < 0 || target < 0 || target >= prev.length) return prev;
+      const next = [...prev];
+      [next[idx], next[target]] = [next[target], next[idx]];
+      return next;
+    });
+    setSaved(false);
+  };
+
+  // ---- Hotspot ops ----
   const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
     if (!addMode || !selected) return;
     const rect = imgRef.current?.getBoundingClientRect();
@@ -92,7 +179,7 @@ export default function TourEditorPage() {
     const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
     const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
     const newHp: Hotspot = {
-      id: `hp-${Date.now()}`,
+      id: `hp-${Date.now()}-${Math.random()}`,
       xPercent: Math.round(xPercent * 10) / 10,
       yPercent: Math.round(yPercent * 10) / 10,
       title: 'New Hotspot',
@@ -138,6 +225,26 @@ export default function TourEditorPage() {
       icon: 'door',
       color: 'emerald',
     });
+  };
+
+  // ---- Drag hotspot to reposition ----
+  const onHpPointerDown = (e: React.PointerEvent, hpId: string) => {
+    e.stopPropagation();
+    dragHpRef.current = hpId;
+    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
+  };
+  const onHpPointerMove = (e: React.PointerEvent) => {
+    if (!dragHpRef.current || !selected || !imgRef.current) return;
+    const rect = imgRef.current.getBoundingClientRect();
+    const xPercent = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+    const yPercent = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+    updateHotspot(dragHpRef.current, {
+      xPercent: Math.round(xPercent * 10) / 10,
+      yPercent: Math.round(yPercent * 10) / 10,
+    });
+  };
+  const onHpPointerUp = () => {
+    dragHpRef.current = null;
   };
 
   const save = async () => {
@@ -206,36 +313,131 @@ export default function TourEditorPage() {
       )}
 
       <div className="flex flex-1 min-h-0">
-        {/* Node list */}
-        <aside className="w-56 shrink-0 border-r border-[#27272A] overflow-y-auto p-2 space-y-1">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A] px-1 pb-1">
-            Nodes
+        {/* Node list + upload */}
+        <aside className="w-60 shrink-0 border-r border-[#27272A] overflow-y-auto p-2 space-y-1">
+          <div className="flex items-center justify-between px-1 pb-1">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">Nodes</span>
+            <label className="flex items-center gap-1 px-2 py-1 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#3ECF8E] text-[10px] font-mono cursor-pointer">
+              <Upload className="w-3 h-3" /> Upload
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={(e) => e.target.files && uploadFiles(e.target.files)}
+              />
+            </label>
           </div>
-          {rooms.map((r) => (
-            <button
+
+          {/* Drag-drop zone */}
+          <div
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDraggingOver(true);
+            }}
+            onDragLeave={() => setDraggingOver(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDraggingOver(false);
+              if (e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files);
+            }}
+            className={`rounded-xl border-2 border-dashed p-3 text-center text-[10px] font-mono transition-colors ${
+              draggingOver
+                ? 'border-[#3ECF8E] bg-[#3ECF8E]/10 text-[#3ECF8E]'
+                : 'border-[#27272A] text-[#71717A]'
+            }`}
+          >
+            {uploading ? (
+              <span className="flex items-center justify-center gap-1">
+                <Loader2 className="w-3 h-3 animate-spin" /> Uploading…
+              </span>
+            ) : (
+              'Drag 360° images here'
+            )}
+          </div>
+
+          {rooms.map((r, idx) => (
+            <div
               key={r.id}
-              onClick={() => setSelectedId(r.id)}
-              className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-left transition-colors ${
+              className={`group rounded-lg border transition-colors ${
                 r.id === selectedId
-                  ? 'bg-[#18181B] text-[#3ECF8E] border border-[#3ECF8E]/30'
-                  : 'hover:bg-[#18181B] text-zinc-300'
+                  ? 'bg-[#18181B] border-[#3ECF8E]/30'
+                  : 'border-transparent hover:bg-[#18181B]'
               }`}
             >
-              <div
-                className="w-8 h-8 rounded bg-cover bg-center shrink-0 border border-[#27272A]"
-                style={{ backgroundImage: `url(${r.thumbnailUrl})` }}
-              />
-              <div className="min-w-0">
-                <div className="text-xs font-medium truncate">{r.name}</div>
-                <div className="text-[10px] text-[#71717A]">{r.defaultHotspots.length} hotspots</div>
+              <div className="flex items-center gap-2 px-2 py-1.5">
+                <div
+                  className="w-8 h-8 rounded bg-cover bg-center shrink-0 border border-[#27272A] cursor-pointer"
+                  style={{ backgroundImage: `url(${r.thumbnailUrl})` }}
+                  onClick={() => setSelectedId(r.id)}
+                />
+                <div className="min-w-0 flex-1" onClick={() => setSelectedId(r.id)}>
+                  {editingNodeId === r.id ? (
+                    <input
+                      autoFocus
+                      defaultValue={r.name}
+                      onBlur={(e) => {
+                        renameNode(r.id, e.target.value || r.name);
+                        setEditingNodeId('');
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
+                      }}
+                      className="w-full bg-[#0c0c0f] border border-[#3ECF8E]/40 rounded px-1 text-xs text-white"
+                    />
+                  ) : (
+                    <div className="text-xs font-medium truncate">{r.name}</div>
+                  )}
+                  <div className="text-[10px] text-[#71717A]">{r.defaultHotspots.length} hotspots</div>
+                </div>
               </div>
-            </button>
+              {/* node action row */}
+              <div className="flex items-center justify-end gap-0.5 px-1.5 pb-1.5 opacity-60 group-hover:opacity-100">
+                <button
+                  onClick={() => setEditingNodeId(r.id)}
+                  className="p-1 rounded text-[#A1A1AA] hover:text-white hover:bg-white/10"
+                  title="Rename"
+                >
+                  <Pencil className="w-3 h-3" />
+                </button>
+                <button
+                  onClick={() => moveNode(r.id, -1)}
+                  disabled={idx === 0}
+                  className="p-1 rounded text-[#A1A1AA] hover:text-white hover:bg-white/10 disabled:opacity-20"
+                  title="Move up"
+                >
+                  <ChevronUp className="w-3 h-3" />
+                </button>
+                <button
+                  onClick={() => moveNode(r.id, 1)}
+                  disabled={idx === rooms.length - 1}
+                  className="p-1 rounded text-[#A1A1AA] hover:text-white hover:bg-white/10 disabled:opacity-20"
+                  title="Move down"
+                >
+                  <ChevronDown className="w-3 h-3" />
+                </button>
+                <button
+                  onClick={() => duplicateNode(r.id)}
+                  className="p-1 rounded text-[#A1A1AA] hover:text-white hover:bg-white/10"
+                  title="Duplicate"
+                >
+                  <Copy className="w-3 h-3" />
+                </button>
+                <button
+                  onClick={() => deleteNode(r.id)}
+                  className="p-1 rounded text-rose-400 hover:text-rose-300 hover:bg-rose-500/10"
+                  title="Delete"
+                >
+                  <Trash2 className="w-3 h-3" />
+                </button>
+              </div>
+            </div>
           ))}
         </aside>
 
         {/* Preview + placement */}
-        <main className="flex-1 flex flex-col min-w-0">
-          {selected && (
+        <main className="flex-1 flex flex-col min-w-0" onPointerMove={onHpPointerMove} onPointerUp={onHpPointerUp}>
+          {selected ? (
             <>
               <div className="relative flex-1 bg-black overflow-hidden flex items-center justify-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -249,14 +451,14 @@ export default function TourEditorPage() {
                   }`}
                   draggable={false}
                 />
-                {/* hotspot markers */}
+                {/* hotspot markers (draggable) */}
                 {selected.defaultHotspots.map((hp) => (
                   <button
                     key={hp.id}
-                    onClick={() => setSelectedId(selected.id)}
-                    className="absolute -translate-x-1/2 -translate-y-1/2 z-10"
+                    onPointerDown={(e) => onHpPointerDown(e, hp.id)}
+                    className="absolute -translate-x-1/2 -translate-y-1/2 z-10 cursor-move touch-none"
                     style={{ left: `${hp.xPercent}%`, top: `${hp.yPercent}%` }}
-                    title={hp.title}
+                    title={`${hp.title} (drag to move)`}
                   >
                     <span
                       className={`flex items-center justify-center w-5 h-5 rounded-full text-white shadow-lg ${
@@ -283,6 +485,10 @@ export default function TourEditorPage() {
                 </button>
               </div>
             </>
+          ) : (
+            <div className="flex-1 flex items-center justify-center text-xs text-[#71717A] font-mono">
+              Upload or select a node to begin.
+            </div>
           )}
         </main>
 
@@ -295,7 +501,7 @@ export default function TourEditorPage() {
               </div>
               {selected.defaultHotspots.length === 0 && (
                 <div className="text-xs text-[#71717A] font-mono">
-                  No hotspots. Click “Add Hotspot” then click the image to place one.
+                  No hotspots. Click “Add Hotspot” then click the image, or drag existing ones to move.
                 </div>
               )}
               {selected.defaultHotspots.map((hp) => (
