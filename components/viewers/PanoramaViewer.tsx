@@ -1112,6 +1112,36 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
     };
   }, [isViewerActive, roomsTick]);
 
+  // Apply admin-controlled tour settings (live gate + feature toggles) from the
+  // settings API so the operator's admin panel changes affect this public viewer.
+  const [tourOffline, setTourOffline] = useState(false);
+  useEffect(() => {
+    if (!isViewerActive) return;
+    let cancelled = false;
+    fetch('/api/tour/settings')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((s) => {
+        if (cancelled || !s) return;
+        setTourOffline(!s.live);
+        const f = s.features || {};
+        updatePreferences({
+          showHotspots: f.hotspots !== false,
+          autoRotate: f.autoRotate === true,
+          showFloorPlan: f.floorPlan !== false,
+          musicEnabled: f.music === true,
+          showZoomControls: f.zoomControls !== false,
+          showSceneCounter: f.sceneCounter !== false,
+          hideTopBar: f.branding === false,
+        });
+      })
+      .catch(() => {
+        /* ignore — default preferences stand */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isViewerActive, updatePreferences]);
+
   useEffect(() => {
     if (!isViewerActive) return;
     const host = sphereViewportRef.current?.querySelector('#sphere-canvas-host') as HTMLDivElement | null;
@@ -1639,6 +1669,21 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
       className="fixed inset-0 z-[999] bg-black text-white flex flex-col justify-between select-none animate-in fade-in duration-200"
       onMouseUp={handleMouseUp}
     >
+      {/* OFFLINE / UNPUBLISHED OVERLAY (admin toggled `live` off) */}
+      {tourOffline && (
+        <div className="absolute inset-0 z-[60] bg-[#09090B] flex flex-col items-center justify-center text-center px-6">
+          <div className="w-14 h-14 rounded-full bg-rose-500/15 border border-rose-500/40 flex items-center justify-center mb-4">
+            <span className="w-3 h-3 rounded-full bg-rose-500 animate-pulse" />
+          </div>
+          <div className="text-sm font-mono font-bold text-rose-300 uppercase tracking-widest">
+            Virtual Tour Unpublished
+          </div>
+          <p className="text-xs text-[#A1A1AA] mt-2 max-w-sm">
+            This 360° tour is currently offline. The operator can publish it from the admin dashboard.
+          </p>
+        </div>
+      )}
+
       {/* TELEPORTATION TRANSITION FLASH */}
       <AnimatePresence>
         {isTeleporting && (

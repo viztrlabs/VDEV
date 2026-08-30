@@ -55,6 +55,7 @@ import GoogleMeetAdminManager from '@/components/admin/GoogleMeetAdminManager';
 import SuperAdminProjectManager from '@/components/admin/SuperAdminProjectManager';
 import ProjectManagementSystem from '@/components/admin/ProjectManagementSystem';
 import XRLinkGenerator from '@/components/admin/XRLinkGenerator';
+import VirtualTourAdminPanel from '@/components/admin/VirtualTourAdminPanel';
 import PixelStreamingSessionControl from '@/components/admin/PixelStreamingSessionControl';
 import FileStorageManager from '@/components/admin/FileStorageManager';
 import SuperAdminCMSManager from '@/components/admin/SuperAdminCMSManager';
@@ -170,6 +171,7 @@ const SIDEBAR_SECTIONS = [
       { id: 'ar', label: 'AR QuickLook Assets', icon: Box },
       { id: 'streaming', label: 'GPU Pixel Streaming', icon: Server },
       { id: 'splat-engine', label: 'Gaussian Splat Engine', icon: Cube },
+      { id: 'virtual-tour-config', label: '360° Virtual Tour', icon: Globe },
     ],
   },
   {
@@ -1003,6 +1005,11 @@ export default function AdminDashboardPage() {
           {/* SECTION: XR LINK GENERATOR */}
           {activeSection === 'xr-links' && (
             <XRLinkGenerator projects={projectsList} />
+          )}
+
+          {/* SECTION: 360 VIRTUAL TOUR ADMIN PANEL */}
+          {activeSection === 'virtual-tour-config' && (
+            <VirtualTourAdminPanel />
           )}
 
           {/* SECTION: PIXEL STREAMING CONTROL */}

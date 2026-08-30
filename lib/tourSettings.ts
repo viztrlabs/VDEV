@@ -1,0 +1,71 @@
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+
+// Admin-controlled settings for the PUBLIC virtual tour. Separate from a visitor's
+// own localStorage preferences: this is what the tour operator toggles in the
+// admin dashboard to publish/unpublish and to show/hide public features.
+
+export interface TourFeatureToggles {
+  hotspots: boolean;
+  autoRotate: boolean;
+  floorPlan: boolean;
+  minimap: boolean;
+  music: boolean;
+  zoomControls: boolean;
+  sceneCounter: boolean;
+  branding: boolean;
+  share: boolean;
+  search: boolean;
+}
+
+export interface TourSettings {
+  live: boolean; // when false, the public tour shows an "unpublished" state
+  publicUrl: string; // canonical public link for the client
+  features: TourFeatureToggles;
+}
+
+const DEFAULT_SETTINGS: TourSettings = {
+  live: true,
+  publicUrl: '/xr-world/virtual-tour',
+  features: {
+    hotspots: true,
+    autoRotate: false,
+    floorPlan: true,
+    minimap: true,
+    music: false,
+    zoomControls: true,
+    sceneCounter: true,
+    branding: true,
+    share: true,
+    search: true,
+  },
+};
+
+const DATA_DIR = path.join(process.cwd(), '.data', 'tour');
+const SETTINGS_FILE = path.join(DATA_DIR, 'settings.json');
+
+export async function getTourSettings(): Promise<TourSettings> {
+  try {
+    const raw = await fs.readFile(SETTINGS_FILE, 'utf8');
+    const parsed = JSON.parse(raw) as Partial<TourSettings>;
+    // Merge so new fields get defaults.
+    return {
+      ...DEFAULT_SETTINGS,
+      ...parsed,
+      features: { ...DEFAULT_SETTINGS.features, ...(parsed.features || {}) },
+    };
+  } catch {
+    return DEFAULT_SETTINGS;
+  }
+}
+
+export async function saveTourSettings(settings: TourSettings): Promise<TourSettings> {
+  await fs.mkdir(DATA_DIR, { recursive: true });
+  const merged: TourSettings = {
+    ...DEFAULT_SETTINGS,
+    ...settings,
+    features: { ...DEFAULT_SETTINGS.features, ...(settings.features || {}) },
+  };
+  await fs.writeFile(SETTINGS_FILE, JSON.stringify(merged, null, 2), 'utf8');
+  return merged;
+}
