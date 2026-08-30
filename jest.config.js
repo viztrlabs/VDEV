@@ -16,7 +16,7 @@ const config = {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
   testEnvironment: 'jsdom',
-  testMatch: ['**/__tests__/**/*.tsx', '**/?(*.)+(spec|test).tsx'],
+  testMatch: ['**/__tests__/**/*.tsx', '**/__tests__/**/*.ts', '**/?(*.)+(spec|test).tsx', '**/?(*.)+(spec|test).ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/.next/'],
   transform: {

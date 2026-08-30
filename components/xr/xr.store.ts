@@ -230,7 +230,7 @@ export const useWebXRStore = create<WebXRState & WebXRActions>()(
         
         const success = await webxrService.initializeWebXR(mode);
         
-        if (success) {
+        if (success.success) {
           set(state => {
             state.session.isActive = true;
             state.session.mode = mode === 'immersive-vr' ? 'vr' : 'ar';
@@ -238,7 +238,7 @@ export const useWebXRStore = create<WebXRState & WebXRActions>()(
           });
         } else {
           set(state => {
-            state.system.error = 'Failed to initialize WebXR session';
+            state.system.error = success.error || 'Failed to initialize WebXR session';
           });
         }
 
@@ -246,7 +246,7 @@ export const useWebXRStore = create<WebXRState & WebXRActions>()(
           state.system.isLoading = false;
         });
 
-        return success;
+        return success.success;
       } catch (error) {
         set(state => {
           state.system.error = error instanceof Error ? error.message : 'Unknown error';

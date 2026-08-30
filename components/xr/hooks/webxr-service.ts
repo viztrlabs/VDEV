@@ -19,6 +19,7 @@ export interface WebXREnvironment {
   referenceSpace?: XRReferenceSpace;
   deviceCapabilities: XRDeviceCapabilities;
   error?: string;
+  available?: XRDeviceCapabilities;
 }
 
 export interface SessionStatus {
@@ -56,31 +57,32 @@ export class WebXRService {
   // Initialize WebXR session with comprehensive error handling
   public async initializeWebXR(mode: 'immersive-vr' | 'immersive-ar'): Promise<WebXREnvironment> {
     try {
-      // Check WebXR support
-      const xrSupported = this.checkWebXRSupport();
-      
-      if (!xrSupported) {
+      const xr = navigator.xr;
+      if (!xr) {
         return {
           success: false,
           error: 'WebXR not supported in this browser',
-          available: this.availableDevices
+          deviceCapabilities: this.availableDevices,
+          available: this.availableDevices,
         };
       }
 
       // Request session based on mode
-      this.xrSession = await navigator.xr.requestSession(mode);
-      return await this.setupSession(mode);
-      
+      this.xrSession = await xr.requestSession(mode);
+      return await this.setupSession(mode === 'immersive-vr' ? 'vr' : 'ar');
     } catch (vrError) {
       // Fallback to AR if VR fails
       try {
-        this.xrSession = await navigator.xr.requestSession('immersive-ar');
+        const xr = navigator.xr;
+        if (!xr) throw new Error('WebXR not supported');
+        this.xrSession = await xr.requestSession('immersive-ar');
         return await this.setupSession('ar');
       } catch (arError) {
         return {
           success: false,
-          error: `VR and AR both failed: ${arError.message}`,
-          available: this.availableDevices
+          error: `VR and AR both failed: ${arError instanceof Error ? arError.message : String(arError)}`,
+          deviceCapabilities: this.availableDevices,
+          available: this.availableDevices,
         };
       }
     }
@@ -94,7 +96,7 @@ export class WebXRService {
 
     // Create appropriate reference space based on mode
     this.referenceSpace = await this.xrSession.requestReferenceSpace(
-      mode === 'vr' ? 'viewer' : 'hit-test'
+      mode === 'vr' ? 'local-floor' : 'local'
     );
 
     // Detect comprehensive device capabilities
@@ -131,7 +133,7 @@ export class WebXRService {
 
     // Check for VR support
     try {
-      const vrSupported = await navigator.xr.isSessionSupported('immersive-vr');
+      const vrSupported = (await navigator.xr?.isSessionSupported('immersive-vr')) ?? false;
       capabilities.hasVR = vrSupported;
     } catch {
       capabilities.hasVR = false;
@@ -139,7 +141,7 @@ export class WebXRService {
 
     // Check for AR support
     try {
-      const arSupported = await navigator.xr.isSessionSupported('immersive-ar');
+      const arSupported = (await navigator.xr?.isSessionSupported('immersive-ar')) ?? false;
       capabilities.hasAR = arSupported;
     } catch {
       capabilities.hasAR = false;
@@ -147,9 +149,9 @@ export class WebXRService {
 
     // Check for hand tracking support
     try {
-      const inputSources = this.xrSession.inputSources;
+      const inputSources = Array.from(this.xrSession.inputSources);
       capabilities.supportsHandTracking = inputSources.some(
-        source => source.hand !== undefined || source.grip !== undefined
+        (source: XRInputSource) => source.hand !== undefined || (source as any).grip !== undefined
       );
     } catch {
       capabilities.supportsHandTracking = false;
@@ -158,7 +160,7 @@ export class WebXRService {
     // Check for plane detection (AR-specific)
     if (capabilities.supportsHandTracking) {
       try {
-        await this.xrSession.requestReferenceSpace('hit-test');
+        await (this.xrSession as any).requestReferenceSpace('hit-test');
         capabilities.supportsPlaneDetection = true;
       } catch {
         capabilities.supportsPlaneDetection = false;
@@ -168,7 +170,7 @@ export class WebXRService {
     // Check for anchor system (AR-specific)
     if (capabilities.supportsPlaneDetection) {
       try {
-        await this.xrSession.requestReferenceSpace('anchor-system');
+        await (this.xrSession as any).requestReferenceSpace('anchor-system');
         capabilities.supportsAnchorSystem = true;
       } catch {
         capabilities.supportsAnchorSystem = false;
@@ -177,8 +179,14 @@ export class WebXRService {
 
     // Check for depth sensing capabilities
     try {
-      const supportedFeatures = await this.xrSession.getSupportedFeatures();
-      capabilities.supportsDepthSensing = supportedFeatures.has('depth-sensing');
+      const supportedFeatures = (this.xrSession as any).getSupportedFeatures?.();
+      if (supportedFeatures) {
+        capabilities.supportsDepthSensing = !!(
+          typeof supportedFeatures.has === 'function'
+            ? supportedFeatures.has('depth-sensing')
+            : Array.isArray(supportedFeatures) && supportedFeatures.includes('depth-sensing')
+        );
+      }
     } catch {
       capabilities.supportsDepthSensing = false;
     }
@@ -191,7 +199,7 @@ export class WebXRService {
     if (!this.xrSession) return;
 
     this.xrSession.inputSources.forEach((source) => {
-      console.log(`Input source detected: ${source.targetRayMode}, hand: ${source.hand}, grip: ${source.grip}`);
+      console.log(`Input source detected: ${source.targetRayMode}, hand: ${source.hand}, grip: ${(source as any).grip}`);
     });
   }
 
@@ -263,8 +271,10 @@ export class WebXRUtils {
     }
 
     try {
-      const vrSupported = await navigator.xr.isSessionSupported('immersive-vr');
-      const arSupported = await navigator.xr.isSessionSupported('immersive-ar');
+      const xr = navigator.xr;
+      if (!xr) return false;
+      const vrSupported = await xr.isSessionSupported('immersive-vr');
+      const arSupported = await xr.isSessionSupported('immersive-ar');
       return vrSupported || arSupported;
     } catch {
       return false;
@@ -386,8 +396,9 @@ export class WebXREventManager {
     }
 
     if (this.events.onVisibilityChange) {
-      session.addEventListener('visibilitystatechange', (event: XRVisibilityStateChangeEvent) => {
-        this.events.onVisibilityChange?.(event.target.isPrimary() ? event.state === 'visible' : false);
+      session.addEventListener('visibilitystatechange', (event: any) => {
+        const target = event.target as XRSession;
+        this.events.onVisibilityChange?.(!!(target as any).isPrimary && event.state === 'visible');
       });
     }
   }

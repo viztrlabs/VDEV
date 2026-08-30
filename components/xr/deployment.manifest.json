@@ -1,0 +1,34 @@
+{
+  "name": "viztr-xr-world",
+  "version": "0.3.0",
+  "phase": "M0.3",
+  "description": "VizTR XR World — PlayCanvas WebXR renderer with advanced rendering, collaboration, Gaussian splat processing, and analytics.",
+  "runtime": {
+    "engine": "playcanvas",
+    "engineVersion": "v181",
+    "framework": "next",
+    "frameworkVersion": "15.5.24",
+    "packageManager": "pnpm"
+  },
+  "features": {
+    "advancedRendering": { "status": "implemented", "module": "components/xr/rendering" },
+    "collaboration": { "status": "implemented", "module": "components/xr/collab", "transport": "websocket" },
+    "gaussianSplat": { "status": "implemented", "module": "components/xr/hooks/splatProcessing" },
+    "analytics": { "status": "implemented", "module": "components/xr/analytics" }
+  },
+  "env": {
+    "PLAYCANVAS_API_KEY": { "required": false, "secret": true },
+    "STREAM_CONTROLLER_URL": { "required": false, "default": "http://localhost:3001" },
+    "COLLAB_WS_URL": { "required": false },
+    "ANALYTICS_ENDPOINT": { "required": false }
+  },
+  "build": {
+    "command": "pnpm build",
+    "verify": ["pnpm lint", "pnpm exec tsc --noEmit", "pnpm test"]
+  },
+  "deployment": {
+    "target": "static-export-or-node",
+    "cdnAssets": ["gaussian splat captures", "playcanvas engine"],
+    "rollout": "canary"
+  }
+}

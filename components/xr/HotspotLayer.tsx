@@ -17,15 +17,9 @@ export default function HotspotLayer({ hotspots, annotations }: HotspotLayerProp
     if (hotspot.action === 'open_info') {
       const match = annotations.find((a) => a.hotspotId === hotspot.id);
       if (match) {
-        showAnnotation(match);
+        showAnnotation(hotspot.id);
       } else {
-        showAnnotation({
-          id: `ann-${hotspot.id}`,
-          hotspotId: hotspot.id,
-          title: hotspot.title,
-          text: 'Architectural specification node: Photorealistic material reflection and lighting calibrated.',
-          style: 'glass'
-        });
+        showAnnotation(hotspot.id);
       }
     } else if (hotspot.action === 'teleport') {
       setScene(hotspot.target);

@@ -1,6 +1,15 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type {NextConfig} from 'next';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 const nextConfig: NextConfig = {
+  // Pin the workspace root to this project so Next.js does not mis-detect a
+  // stray parent lockfile (C:\Users\Arch_Viz\package-lock.json) as the root,
+  // which causes the Pages bootstrap chunk (pages/_document.js) to resolve
+  // server chunks from the wrong directory -> "Cannot find module './1095.js'".
+  outputFileTracingRoot: __dirname,
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true,

@@ -61,7 +61,7 @@ export function useEnhancedPlayCameraEngine(
   const originalResult = usePlayCameraEngine(canvasRef);
   const [state, setState] = useState<EnhancedPlayCameraState>({
     // Core PlayCamera state
-    app: originalResult.playCanvasApp,
+    app: originalResult.app,
     scene: originalResult.scene,
     camera: originalResult.camera,
     isInitialized: originalResult.isInitialized,
@@ -118,7 +118,7 @@ export function useEnhancedPlayCameraEngine(
         }));
         
         // Adjust field of view based on device capabilities
-        const adjustedFov = webxrService.calculateOptimalFOV(
+        const adjustedFov = calculateOptimalFOV(
           xrEnvironment.deviceCapabilities
         );
         setState(prev => ({ ...prev, fieldOfView: adjustedFov }));
@@ -139,8 +139,6 @@ export function useEnhancedPlayCameraEngine(
       setState(prev => ({ ...prev, isLoading: false }));
     }
   }, []);
-
-  // End WebXR session
   const endWebXRSession = useCallback(async (): Promise<boolean> => {
     try {
       const success = await webxrService.endWebXRSession();
@@ -269,7 +267,7 @@ export function useEnhancedPlayCameraEngine(
   // Return enhanced PlayCamera result
   return {
     // Original PlayCamera exports
-    playCanvasApp: originalResult.playCanvasApp,
+    playCanvasApp: originalResult.app,
     scene: originalResult.scene,
     camera: originalResult.camera,
     isInitialized: originalResult.isInitialized,

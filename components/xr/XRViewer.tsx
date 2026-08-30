@@ -8,7 +8,11 @@ import ModeManager from './ModeManager';
 import ProgressiveReveal from './ProgressiveReveal';
 import CinematicEntry from './CinematicEntry';
 import VRControls from './VRControls';
-import { Maximize, Minimize, HelpCircle, RotateCcw } from 'lucide-react';
+import { Maximize, Minimize, RotateCcw, Sparkles, Users } from 'lucide-react';
+import { useAdvancedRendering, DEFAULT_LIGHTS } from './rendering/useAdvancedRendering';
+import { CollabProvider } from './collab/CollabProvider';
+import CollabPresencePanel from './ui/CollabPresencePanel';
+import AnalyticsPanel from './ui/AnalyticsPanel';
 
 const DEFAULT_SCENES: XRScene[] = [
   {
@@ -114,8 +118,23 @@ export default function XRViewer({
     currentMode
   } = useXRStore();
 
+  const { rebuildLighting, setPostProcessing } = useAdvancedRendering();
+  const [advancedLighting, setAdvancedLighting] = useState(true);
+
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [containerRef, setContainerRef] = useState<HTMLDivElement | null>(null);
+
+  const toggleAdvancedLighting = () => {
+    const next = !advancedLighting;
+    setAdvancedLighting(next);
+    // toggle the advanced rendering rig on the engine instance
+    try {
+      if (next) rebuildLighting(DEFAULT_LIGHTS);
+      setPostProcessing({ bloom: next, bloomIntensity: 0.85, vignette: next, vignetteOffset: 1.0, vignetteDarkness: 1.1, ssao: next, fxaa: true, toneMapping: 'aces', exposure: 1.0 });
+    } catch {
+      /* engine not booted — no-op */
+    }
+  };
 
   useEffect(() => {
     setScenes(scenes);
@@ -135,31 +154,49 @@ export default function XRViewer({
   };
 
   return (
-    <div
-      ref={setContainerRef}
-      className={`relative w-full h-[600px] rounded-2xl overflow-hidden bg-black border border-[#27272A] shadow-2xl ${className}`}
+    <CollabProvider
+      userId={`user-${projectId}-${Math.random().toString(36).slice(2, 7)}`}
+      userName="You"
     >
-      {/* Cinematic Entry sequence */}
-      <CinematicEntry
-        title="The Apex Tower Spatial Showcase"
-        subtitle="Drag to look around • Click hotspots for details • Click rings to teleport"
-        onComplete={() => {}}
-      />
+      <div
+        ref={setContainerRef}
+        className={`relative w-full h-[600px] rounded-2xl overflow-hidden bg-black border border-[#27272A] shadow-2xl ${className}`}
+      >
+        {/* Cinematic Entry sequence */}
+        <CinematicEntry
+          title="The Apex Tower Spatial Showcase"
+          subtitle="Drag to look around • Click hotspots for details • Click rings to teleport"
+          onComplete={() => {}}
+        />
 
-      {/* Mode Manager (Tour / VR / AR) */}
-      <ModeManager />
+        {/* Mode Manager (Tour / VR / AR) */}
+        <ModeManager />
 
-      {/* Main Multi-Layer Scene Engine */}
-      <SceneManager currentScene={activeScene} />
+        {/* Main Multi-Layer Scene Engine */}
+        <SceneManager currentScene={activeScene} />
 
-      {/* VR Overlay Controls */}
-      <VRControls />
+        {/* VR Overlay Controls */}
+        <VRControls />
 
-      {/* Progressive Reveal for VR trigger */}
-      <ProgressiveReveal />
+        {/* Progressive Reveal for VR trigger */}
+        <ProgressiveReveal />
 
-      {/* Top Right Utility Bar */}
-      <div className="absolute top-4 right-4 z-30 flex items-center gap-2">
+        {/* Advanced rendering toggle */}
+        <button
+          onClick={toggleAdvancedLighting}
+          className="absolute top-4 left-4 z-30 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-black/80 hover:bg-white/10 border border-white/10 text-[#FAFAFA] text-xs transition-colors cursor-pointer"
+          title="Toggle advanced lighting & post-processing"
+        >
+          <Sparkles className={`w-3.5 h-3.5 ${advancedLighting ? 'text-[#3ECF8E]' : 'text-[#71717A]'}`} />
+          <span>Advanced Render: {advancedLighting ? 'ON' : 'OFF'}</span>
+        </button>
+
+        {/* Collaboration presence + analytics overlays */}
+        <CollabPresencePanel />
+        <AnalyticsPanel />
+
+        {/* Top Right Utility Bar */}
+        <div className="absolute top-4 right-4 z-30 flex items-center gap-2">
         <button
           onClick={() => setScene(scenes[0].id)}
           className="p-2 rounded-xl bg-black/80 hover:bg-white/10 border border-white/10 text-white transition-colors cursor-pointer"
@@ -183,5 +220,6 @@ export default function XRViewer({
         <span>Scene: {activeScene.name}</span>
       </div>
     </div>
+    </CollabProvider>
   );
 }

@@ -2,7 +2,8 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Loader2, Box, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Box, Eye, EyeOff, SlidersHorizontal } from 'lucide-react';
+import { useSplatProcessing } from './hooks/useSplatProcessing';
 
 interface SplatSceneDef {
   id: string;
@@ -39,6 +40,7 @@ export default function GaussianSplatViewer({
   const [error, setError] = useState<string | null>(null);
   const [activeId, setActiveId] = useState(initialSceneId ?? scenes[0]?.id ?? 'sample');
   const [visibleScenes, setVisibleScenes] = useState<Record<number, boolean>>({});
+  const { presets, preset, setPreset } = useSplatProcessing();
 
   const activeScene =
     scenes.find((s) => s.id === activeId) ?? { id: 'sample', name: 'Sample Capture', url: DEFAULT_SAMPLE };
@@ -206,6 +208,30 @@ export default function GaussianSplatViewer({
         <div className="absolute bottom-3 left-3 z-10 bg-[#09090B]/80 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-[#27272A]">
           <div className="text-xs font-mono text-[#A1A1AA]">
             {activeScene.name} Gaussian Splat {activeScene.format?.toUpperCase() ?? 'SPLAT'}
+          </div>
+        </div>
+      )}
+
+      {/* Splat processing quality preset selector */}
+      {!isLoading && (
+        <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 bg-[#09090B]/80 backdrop-blur-sm rounded-lg px-2.5 py-1.5 border border-[#27272A]">
+          <SlidersHorizontal className="w-3.5 h-3.5 text-[#3ECF8E]" />
+          <span className="text-[10px] font-mono text-[#A1A1AA]">QUALITY</span>
+          <div className="flex gap-1">
+            {presets.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => setPreset(p)}
+                className={`px-2 py-0.5 rounded text-[10px] font-mono transition-colors cursor-pointer border ${
+                  preset.id === p.id
+                    ? 'bg-[#3ECF8E]/20 border-[#3ECF8E]/50 text-[#3ECF8E]'
+                    : 'bg-transparent border-[#27272A] text-[#71717A] hover:text-[#A1A1AA]'
+                }`}
+                title={`${p.label} · max ${(p.maxSplats / 1e6).toFixed(1)}M splats`}
+              >
+                {p.label.split(' ')[0].toUpperCase()}
+              </button>
+            ))}
           </div>
         </div>
       )}
