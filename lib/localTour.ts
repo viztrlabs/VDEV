@@ -1,9 +1,9 @@
 // Local 360° Virtual Tour rooms built from real equirectangular JPGs in
 // /public/tour (copied from the user's PC: C:\Users\Arch_Viz\Desktop\Portfolio\360\JPG).
 //
-// Each node links to the next via a portal hotspot, giving genuine node-hopping
-// through the captured sequence. Swap these for authored marketing rooms when
-// real property photography is available.
+// Each node shows one capture frame. Hotspots are NOT auto-added — authors
+// place them in-app (Layers → Add Hotspot) only where needed. Navigation
+// between nodes is via the minimap / room dropdown.
 
 import type { TourRoom } from '@/components/viewers/PanoramaViewer';
 
@@ -14,28 +14,10 @@ function roomName(i: number): string {
 }
 
 function portalHotspots(): TourRoom['defaultHotspots'] {
-  const out: TourRoom['defaultHotspots'] = [];
-  // Link forward (and wrap from last -> first) so the tour is navigable.
-  for (let i = 0; i < TOTAL; i++) {
-    const next = (i + 1) % TOTAL;
-    out.push({
-      id: `lp-${String(i).padStart(2, '0')}-next`,
-      xPercent: 50,
-      yPercent: 52,
-      title: `Walk to ${roomName(next)}`,
-      type: 'room_link',
-      category: 'portal',
-      description: `Navigate forward along the captured tour sequence to node ${String(next).padStart(2, '0')}.`,
-      targetRoomId: `local-node-${String(next).padStart(2, '0')}`,
-      targetRoomName: roomName(next),
-      targetPanoramaUrl: `/tour/${String(next).padStart(2, '0')}.jpg`,
-      targetYaw: 180,
-      icon: 'door',
-      color: 'emerald',
-      pulseStyle: 'radar',
-    });
-  }
-  return out;
+  // No auto-hotspots: every capture frame starts clean. Authors place
+  // hotspots themselves in-app (Layers → Add Hotspot) only where needed,
+  // and navigation between nodes happens via the minimap / room dropdown.
+  return [];
 }
 
 export const LOCAL_TOUR_ROOMS: TourRoom[] = Array.from({ length: TOTAL }, (_, i) => {
