@@ -20,7 +20,11 @@ import {
   Share2,
   Search,
   Palette,
+  QrCode,
+  Lock,
+  RefreshCw,
 } from 'lucide-react';
+import QRCode from 'qrcode';
 
 interface TourFeatureToggles {
   hotspots: boolean;
@@ -40,6 +44,8 @@ interface TourSettings {
   publicUrl: string;
   features: TourFeatureToggles;
   theme: { accentColor: string; logoUrl: string; title: string };
+  accessLevel: 'public' | 'private';
+  version: number;
 }
 
 const DEFAULT_THEME = { accentColor: '#3ECF8E', logoUrl: '', title: 'VizTR Virtual Tour' };
@@ -73,6 +79,7 @@ const FEATURE_ROWS: { key: keyof TourFeatureToggles; label: string; icon: any }[
 export default function VirtualTourAdminPanel() {
   const [settings, setSettings] = useState<TourSettings | null>(null);
   const [views, setViews] = useState<number | null>(null);
+  const [qrCode, setQrCode] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -88,6 +95,8 @@ export default function VirtualTourAdminPanel() {
         publicUrl: data.publicUrl || '/xr-world/virtual-tour',
         features: { ...DEFAULT_FEATURES, ...(data.features || {}) },
         theme: { ...DEFAULT_THEME, ...(data.theme || {}) },
+        accessLevel: data.accessLevel === 'private' ? 'private' : 'public',
+        version: typeof data.version === 'number' ? data.version : 1,
       });
     } catch (e: any) {
       setError(e?.message || 'failed to load settings');
@@ -114,6 +123,31 @@ export default function VirtualTourAdminPanel() {
     loadViews();
   }, [loadViews]);
 
+  // Generate QR code for the public link whenever settings load
+  useEffect(() => {
+    if (settings?.publicUrl) {
+      QRCode.toDataURL(
+        typeof window !== 'undefined' ? window.location.origin + settings.publicUrl : settings.publicUrl,
+        { width: 160, margin: 1, color: { dark: '#0a0a0a', light: '#ffffff' } }
+      )
+        .then((url: string) => setQrCode(url))
+        .catch(() => setQrCode(''));
+    }
+  }, [settings?.publicUrl, settings?.live]);
+
+  const setAccessLevel = (level: 'public' | 'private') => {
+    if (!settings) return;
+    const next = { ...settings, accessLevel: level };
+    setSettings(next);
+    persist(next);
+  };
+
+  const clearCache = () => {
+    if (!settings) return;
+    const next = { ...settings, version: (settings.version || 1) + 1 };
+    setSettings(next);
+    persist(next);
+  };
   const persist = useCallback(
     async (next: TourSettings) => {
       setSaving(true);
@@ -374,6 +408,51 @@ export default function VirtualTourAdminPanel() {
               >
                 <Download className="w-3.5 h-3.5" /> Export ZIP
               </button>
+            </div>
+
+            {/* ACCESS LEVEL + CLEAR CACHE */}
+            <div className="flex items-center justify-between pt-1">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setAccessLevel(settings?.accessLevel === 'private' ? 'public' : 'private')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-mono ${
+                    settings?.accessLevel === 'private'
+                      ? 'bg-amber-500/15 border-amber-500/40 text-amber-300'
+                      : 'bg-[#18181B] hover:bg-[#27272A] border-[#27272A] text-white'
+                  }`}
+                >
+                  {settings?.accessLevel === 'private' ? <Lock className="w-3.5 h-3.5" /> : <Globe className="w-3.5 h-3.5" />}
+                  {settings?.accessLevel === 'private' ? 'Private' : 'Public'}
+                </button>
+                <button
+                  onClick={clearCache}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white"
+                  title="Bump version so visitors see fresh data"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" /> Clear Cache (v{settings?.version || 1})
+                </button>
+              </div>
+            </div>
+
+            {/* QR + EMBED */}
+            <div className="flex items-start gap-3 pt-1">
+              <div className="shrink-0 rounded-lg bg-white p-1.5">
+                {qrCode ? (
+                  <img src={qrCode} alt="Tour QR" className="w-24 h-24" />
+                ) : (
+                  <div className="w-24 h-24 flex items-center justify-center text-[#999]">
+                    <QrCode className="w-8 h-8" />
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 space-y-1">
+                <div className="text-[10px] font-mono text-[#71717A] flex items-center gap-1.5">
+                  <Share2 className="w-3 h-3" /> Embed snippet
+                </div>
+                <pre className="text-[10px] font-mono text-[#A1A1AA] bg-[#09090B] border border-[#27272A] rounded p-2 overflow-x-auto">
+{`<iframe src="${typeof window !== 'undefined' ? window.location.origin : ''}${settings?.publicUrl}" width="100%" height="600" style="border:0" allow="fullscreen"></iframe>`}
+                </pre>
+              </div>
             </div>
           </div>
         </div>

@@ -34,7 +34,7 @@ interface Hotspot {
   xPercent: number;
   yPercent: number;
   title: string;
-  type: 'metadata' | 'room_link' | 'image' | 'video' | 'info';
+  type: 'metadata' | 'room_link' | 'image' | 'video' | 'info' | 'audio' | 'link';
   category: HotspotCategory;
   description: string;
   targetRoomId?: string;
@@ -45,6 +45,8 @@ interface Hotspot {
   color?: HotspotColor;
   mediaUrl?: string;
   article?: string;
+  externalUrl?: string;
+  audioUrl?: string;
 }
 
 interface TourRoom {
@@ -56,6 +58,11 @@ interface TourRoom {
   initialYaw: number;
   initialPitch: number;
   defaultHotspots: Hotspot[];
+  featured?: boolean;
+  backgroundAudioUrl?: string;
+  nadirLogoUrl?: string;
+  brightness?: number;
+  contrast?: number;
 }
 
 export default function TourEditorPage() {
@@ -69,6 +76,8 @@ export default function TourEditorPage() {
   const [error, setError] = useState('');
   const [draggingOver, setDraggingOver] = useState(false);
   const [editingNodeId, setEditingNodeId] = useState<string>('');
+  const [sectionTab, setSectionTab] = useState<'editor' | 'design' | 'content' | 'settings'>('editor');
+  const [mediaAssets, setMediaAssets] = useState<{ name: string; url: string }[]>([]);
   const imgRef = useRef<HTMLImageElement>(null);
   const dragHpRef = useRef<string | null>(null);
 
@@ -89,11 +98,107 @@ export default function TourEditorPage() {
     load();
   }, [load]);
 
+  const loadMedia = useCallback(async () => {
+    try {
+      const res = await fetch('/api/tour/media');
+      const data = await res.json();
+      setMediaAssets(Array.isArray(data.assets) ? data.assets : []);
+    } catch {
+      setMediaAssets([]);
+    }
+  }, []);
+
+  const addFromLibrary = (url: string) => {
+    const name = url.split('/').pop()?.split('.')[0] || `Node ${rooms.length + 1}`;
+    const id = `node-${Date.now().toString(36)}`;
+    setRooms((prev) => [
+      ...prev,
+      {
+        id,
+        name,
+        subtitle: 'New scene',
+        panoramaUrl: url,
+        thumbnailUrl: url,
+        initialYaw: 0,
+        initialPitch: 0,
+        defaultHotspots: [],
+      },
+    ]);
+    setSelectedId(id);
+    setSaved(false);
+  };
+
   const selected = rooms.find((r) => r.id === selectedId) || rooms[0];
+
+  const [settings, setSettings] = useState<{
+    live: boolean;
+    publicUrl: string;
+    theme: { accentColor: string; logoUrl: string; title: string };
+    accessLevel: 'public' | 'private';
+    version: number;
+  } | null>(null);
+
+  const loadSettings = useCallback(async () => {
+    try {
+      const res = await fetch('/api/tour/settings');
+      const data = await res.json();
+      setSettings({
+        live: data.live !== false,
+        publicUrl: data.publicUrl || '/xr-world/virtual-tour',
+        theme: { ...data.theme },
+        accessLevel: data.accessLevel === 'private' ? 'private' : 'public',
+        version: typeof data.version === 'number' ? data.version : 1,
+      });
+    } catch {
+      setSettings(null);
+    }
+  }, []);
+
+  const persistSettings = useCallback(async (next: any) => {
+    await fetch('/api/tour/settings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(next),
+    });
+    setSettings(next);
+  }, []);
+
+  useEffect(() => {
+    if (sectionTab === 'design' || sectionTab === 'settings') loadSettings();
+    if (sectionTab === 'editor') loadMedia();
+  }, [sectionTab, loadSettings, loadMedia]);
 
   const updateRoom = (roomId: string, updater: (r: TourRoom) => TourRoom) => {
     setRooms((prev) => prev.map((r) => (r.id === roomId ? updater(r) : r)));
     setSaved(false);
+  };
+
+  const setRoomField = (field: keyof TourRoom, value: any) => {
+    if (!selected) return;
+    updateRoom(selected.id, (r) => ({ ...r, [field]: value }));
+  };
+
+  const setFeaturedScene = () => {
+    if (!selected) return;
+    setRooms((prev) => prev.map((r) => ({ ...r, featured: r.id === selected.id })));
+    setSaved(false);
+  };
+
+  const replacePanorama = async (file: File) => {
+    if (!selected) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/tour/upload', { method: 'POST', body: fd });
+      if (!res.ok) throw new Error('upload failed');
+      const { url } = await res.json();
+      updateRoom(selected.id, (r) => ({ ...r, panoramaUrl: url, thumbnailUrl: url }));
+    } catch (e: any) {
+      setError(e?.message || 'upload failed');
+    } finally {
+      setUploading(false);
+    }
   };
 
   // ---- Upload 360 image and create a node ----
@@ -308,12 +413,35 @@ export default function TourEditorPage() {
         </div>
       </header>
 
+      {/* SECTION NAV TABS */}
+      <div className="flex items-center gap-1 px-4 py-2 border-b border-[#27272A] bg-[#0c0c0f]">
+        {([
+          ['editor', 'Tour Editor'],
+          ['design', 'Design'],
+          ['content', 'Content'],
+          ['settings', 'Settings'],
+        ] as const).map(([tab, label]) => (
+          <button
+            key={tab}
+            onClick={() => setSectionTab(tab)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-mono ${
+              sectionTab === tab
+                ? 'bg-[#3ECF8E] text-black font-bold'
+                : 'bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA]'
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
       {error && (
         <div className="px-4 py-2 bg-rose-950/40 border-b border-rose-900 text-rose-300 text-xs font-mono">
           {error}
         </div>
       )}
 
+      {sectionTab === 'editor' ? (
       <div className="flex flex-1 min-h-0">
         {/* Node list + upload */}
         <aside className="w-60 shrink-0 border-r border-[#27272A] overflow-y-auto p-2 space-y-1">
@@ -330,6 +458,33 @@ export default function TourEditorPage() {
               />
             </label>
           </div>
+
+          {/* MEDIA LIBRARY */}
+          <details className="group">
+            <summary className="cursor-pointer text-[10px] font-mono uppercase tracking-wider text-[#71717A] px-1 py-1 select-none">
+              Media Library ({mediaAssets.length})
+            </summary>
+            <div className="mt-1 space-y-1 max-h-48 overflow-y-auto">
+              {mediaAssets.length === 0 ? (
+                <div className="text-[10px] font-mono text-[#555] px-1">No assets yet</div>
+              ) : (
+                mediaAssets.map((a) => (
+                  <button
+                    key={a.url}
+                    onClick={() => addFromLibrary(a.url)}
+                    className="w-full flex items-center gap-2 rounded border border-[#27272A] hover:border-[#3ECF8E]/40 p-1"
+                    title={`Add ${a.name} as new node`}
+                  >
+                    <div
+                      className="w-7 h-7 rounded bg-cover bg-center shrink-0 border border-[#27272A]"
+                      style={{ backgroundImage: `url(${a.url})` }}
+                    />
+                    <span className="text-[10px] font-mono text-[#A1A1AA] truncate">{a.name}</span>
+                  </button>
+                ))
+              )}
+            </div>
+          </details>
 
           {/* Drag-drop zone */}
           <div
@@ -498,6 +653,70 @@ export default function TourEditorPage() {
         <aside className="w-80 shrink-0 border-l border-[#27272A] overflow-y-auto p-3 space-y-3">
           {selected && (
             <>
+              {/* SCENE CONFIGURATION PANEL */}
+              <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-3 space-y-2">
+                <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A] flex items-center justify-between">
+                  Scene Settings
+                  <button
+                    onClick={setFeaturedScene}
+                    className={`text-[9px] px-2 py-0.5 rounded border ${
+                      selected.featured
+                        ? 'bg-[#3ECF8E]/15 border-[#3ECF8E]/40 text-[#3ECF8E]'
+                        : 'border-[#27272A] text-[#A1A1AA] hover:text-white'
+                    }`}
+                  >
+                    {selected.featured ? '★ Featured' : 'Set Featured'}
+                  </button>
+                </div>
+                <input
+                  value={selected.subtitle}
+                  onChange={(e) => setRoomField('subtitle', e.target.value)}
+                  placeholder="Subtitle"
+                  className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                />
+                <label className="block text-[10px] font-mono text-[#A1A1AA]">Replace panorama</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => e.target.files?.[0] && replacePanorama(e.target.files[0])}
+                  className="w-full text-[10px] text-[#71717A] file:mr-2 file:rounded file:border-0 file:bg-[#18181B] file:px-2 file:py-1 file:text-[#A1A1AA]"
+                />
+                <label className="block text-[10px] font-mono text-[#A1A1AA]">Per-scene background audio URL</label>
+                <input
+                  value={selected.backgroundAudioUrl || ''}
+                  onChange={(e) => setRoomField('backgroundAudioUrl', e.target.value)}
+                  placeholder="https://…/ambient.mp3"
+                  className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                />
+                <label className="block text-[10px] font-mono text-[#A1A1AA]">Nadir / floor logo URL</label>
+                <input
+                  value={selected.nadirLogoUrl || ''}
+                  onChange={(e) => setRoomField('nadirLogoUrl', e.target.value)}
+                  placeholder="https://…/logo.png (floor fix)"
+                  className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                />
+                <div className="flex items-center gap-2">
+                  <label className="block text-[10px] font-mono text-[#A1A1AA] flex-1">
+                    Brightness {Math.round((selected.brightness ?? 100))}%
+                    <input
+                      type="range" min={40} max={160} value={selected.brightness ?? 100}
+                      onChange={(e) => setRoomField('brightness', Number(e.target.value))}
+                      className="w-full"
+                    />
+                  </label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <label className="block text-[10px] font-mono text-[#A1A1AA] flex-1">
+                    Contrast {Math.round((selected.contrast ?? 100))}%
+                    <input
+                      type="range" min={40} max={160} value={selected.contrast ?? 100}
+                      onChange={(e) => setRoomField('contrast', Number(e.target.value))}
+                      className="w-full"
+                    />
+                  </label>
+                </div>
+              </div>
+
               <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">
                 Hotspots on “{selected.name}”
               </div>
@@ -558,6 +777,8 @@ export default function TourEditorPage() {
                     <option value="image">Image popup</option>
                     <option value="video">Video popup</option>
                     <option value="info">Article / Text panel</option>
+                    <option value="audio">Audio hotspot</option>
+                    <option value="link">External link / Product</option>
                   </select>
 
                   {hp.type === 'room_link' && (
@@ -601,6 +822,22 @@ export default function TourEditorPage() {
                       className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white resize-none"
                     />
                   )}
+                  {hp.type === 'audio' && (
+                    <input
+                      value={hp.audioUrl || ''}
+                      onChange={(e) => updateHotspot(hp.id, { audioUrl: e.target.value })}
+                      placeholder="Audio URL (mp3/wav)"
+                      className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                    />
+                  )}
+                  {hp.type === 'link' && (
+                    <input
+                      value={hp.externalUrl || ''}
+                      onChange={(e) => updateHotspot(hp.id, { externalUrl: e.target.value })}
+                      placeholder="https://… (product / external link)"
+                      className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                    />
+                  )}
 
                   <div className="flex items-center gap-2">
                     <select
@@ -640,6 +877,98 @@ export default function TourEditorPage() {
           )}
         </aside>
       </div>
+      ) : sectionTab === 'design' ? (
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="max-w-xl mx-auto space-y-4">
+            <h2 className="text-sm font-mono font-bold text-[#3ECF8E]">Design — Branding</h2>
+            {settings && (
+              <>
+                <label className="block text-xs font-mono text-[#A1A1AA]">Accent color</label>
+                <input
+                  type="color"
+                  value={settings.theme.accentColor}
+                  onChange={(e) => setSettings({ ...settings, theme: { ...settings.theme, accentColor: e.target.value } })}
+                  className="w-12 h-8 bg-transparent border border-[#27272A] rounded"
+                />
+                <label className="block text-xs font-mono text-[#A1A1AA]">Client logo URL</label>
+                <input
+                  value={settings.theme.logoUrl}
+                  onChange={(e) => setSettings({ ...settings, theme: { ...settings.theme, logoUrl: e.target.value } })}
+                  placeholder="https://…/logo.png"
+                  className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                />
+                <label className="block text-xs font-mono text-[#A1A1AA]">Tour title</label>
+                <input
+                  value={settings.theme.title}
+                  onChange={(e) => setSettings({ ...settings, theme: { ...settings.theme, title: e.target.value } })}
+                  className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                />
+                <button
+                  onClick={() => persistSettings(settings)}
+                  className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
+                >
+                  Save Branding
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      ) : sectionTab === 'content' ? (
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="max-w-xl mx-auto space-y-3">
+            <h2 className="text-sm font-mono font-bold text-[#3ECF8E]">Content — All Hotspots</h2>
+            {rooms.map((r) => (
+              <div key={r.id} className="rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3">
+                <div className="text-xs font-mono text-white mb-1">{r.name}</div>
+                {r.defaultHotspots.length === 0 ? (
+                  <div className="text-[10px] font-mono text-[#71717A]">No hotspots</div>
+                ) : (
+                  r.defaultHotspots.map((h) => (
+                    <div key={h.id} className="text-[10px] font-mono text-[#A1A1AA] flex justify-between">
+                      <span>{h.title || '(untitled)'}</span>
+                      <span className="text-[#71717A]">{h.type}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="max-w-xl mx-auto space-y-4">
+            <h2 className="text-sm font-mono font-bold text-[#3ECF8E]">Settings — Publish</h2>
+            {settings && (
+              <>
+                <div className="flex items-center justify-between rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3">
+                  <span className="text-xs font-mono text-white">Tour is {settings.live ? 'LIVE' : 'OFFLINE'}</span>
+                  <button
+                    onClick={() => persistSettings({ ...settings, live: !settings.live })}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold font-mono ${settings.live ? 'bg-rose-500/20 text-rose-300' : 'bg-[#3ECF8E] text-black'}`}
+                  >
+                    {settings.live ? 'Take Offline' : 'Go Live'}
+                  </button>
+                </div>
+                <div className="flex items-center justify-between rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3">
+                  <span className="text-xs font-mono text-white">Access: {settings.accessLevel}</span>
+                  <button
+                    onClick={() => persistSettings({ ...settings, accessLevel: settings.accessLevel === 'private' ? 'public' : 'private' })}
+                    className="px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-xs font-mono text-white"
+                  >
+                    Toggle {settings.accessLevel === 'private' ? 'Public' : 'Private'}
+                  </button>
+                </div>
+                <button
+                  onClick={() => persistSettings({ ...settings, version: (settings.version || 1) + 1 })}
+                  className="px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-xs font-mono text-white"
+                >
+                  Clear Cache (v{settings.version || 1})
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

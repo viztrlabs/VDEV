@@ -35,6 +35,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  ExternalLink,
   Share2,
   Search,
   Settings,
@@ -49,7 +50,7 @@ import {
   Globe,
 } from 'lucide-react';
 
-export type HotspotType = 'metadata' | 'room_link' | 'image' | 'video' | 'info';
+export type HotspotType = 'metadata' | 'room_link' | 'image' | 'video' | 'info' | 'audio' | 'link';
 export type HotspotCategory =
   | 'material'
   | 'furniture'
@@ -87,6 +88,8 @@ export interface Hotspot {
   createdAt?: string;
   mediaUrl?: string;
   article?: string;
+  externalUrl?: string;
+  audioUrl?: string;
 }
 
 export interface TourRoom {
@@ -98,6 +101,11 @@ export interface TourRoom {
   initialYaw: number;
   initialPitch: number;
   defaultHotspots: Hotspot[];
+  featured?: boolean;
+  backgroundAudioUrl?: string;
+  nadirLogoUrl?: string;
+  brightness?: number;
+  contrast?: number;
 }
 
 import { LOCAL_TOUR_ROOMS } from '@/lib/localTour';
@@ -1096,7 +1104,10 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
         TOUR_ROOMS.length = 0;
         data.rooms.forEach((r: TourRoom) => TOUR_ROOMS.push(r));
         // Re-point the active room + its hotspots to the freshly loaded version.
-        const match = TOUR_ROOMS.find((r) => r.id === currentRoom.id) || TOUR_ROOMS[0];
+        // Prefer the featured scene if one is set.
+        const featured = TOUR_ROOMS.find((r) => r.featured);
+        const match =
+          featured || TOUR_ROOMS.find((r) => r.id === currentRoom.id) || TOUR_ROOMS[0];
         if (match) {
           setCurrentRoom(match);
           setRoomHotspotsMap((prev) => ({
@@ -2101,8 +2112,30 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
         <div
           id="sphere-canvas-host"
           className="absolute inset-0"
-          style={{ filter: 'contrast(1.05) brightness(0.98)' }}
+          style={{
+            filter: `contrast(${((currentRoom.contrast ?? 100) / 100).toFixed(2)}) brightness(${((currentRoom.brightness ?? 100) / 100).toFixed(2)})`,
+          }}
         />
+
+        {/* PER-SCENE NADIR / FLOOR LOGO OVERLAY */}
+        {currentRoom.nadirLogoUrl && (
+          <img
+            src={currentRoom.nadirLogoUrl}
+            alt="Floor logo"
+            className="absolute bottom-6 left-1/2 -translate-x-1/2 w-24 h-24 object-contain opacity-90 pointer-events-none z-20"
+          />
+        )}
+
+        {/* PER-SCENE BACKGROUND AUDIO */}
+        {currentRoom.backgroundAudioUrl && (
+          <audio
+            key={currentRoom.id}
+            src={currentRoom.backgroundAudioUrl}
+            autoPlay
+            loop
+            className="hidden"
+          />
+        )}
 
         {/* RENDERED INTERACTIVE HOTSPOTS */}
         {showHotspots &&
@@ -2263,6 +2296,26 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
                 <div className="mt-3 p-3 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-zinc-300 leading-relaxed whitespace-pre-wrap">
                   {activeHotspot.article}
                 </div>
+              )}
+
+              {/* AUDIO HOTSPOT */}
+              {activeHotspot.type === 'audio' && activeHotspot.audioUrl && (
+                <div className="mt-3">
+                  <audio src={activeHotspot.audioUrl} controls className="w-full" />
+                </div>
+              )}
+
+              {/* EXTERNAL LINK / PRODUCT HOTSPOT */}
+              {activeHotspot.type === 'link' && activeHotspot.externalUrl && (
+                <a
+                  href={activeHotspot.externalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shadow-lg"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  <span>Open Link</span>
+                </a>
               )}
 
               {/* METADATA TECHNICAL SPECS */}

@@ -29,6 +29,8 @@ export interface TourSettings {
   publicUrl: string; // canonical public link for the client
   features: TourFeatureToggles;
   theme: TourTheme;
+  accessLevel: 'public' | 'private'; // private = link only, no public index
+  version: number; // bumped on "clear cache" to force viewers to refetch fresh data
 }
 
 const DEFAULT_SETTINGS: TourSettings = {
@@ -51,6 +53,8 @@ const DEFAULT_SETTINGS: TourSettings = {
     logoUrl: '',
     title: 'VizTR Virtual Tour',
   },
+  accessLevel: 'public',
+  version: 1,
 };
 
 const DATA_DIR = path.join(process.cwd(), '.data', 'tour');
@@ -66,6 +70,8 @@ export async function getTourSettings(): Promise<TourSettings> {
       ...parsed,
       features: { ...DEFAULT_SETTINGS.features, ...(parsed.features || {}) },
       theme: { ...DEFAULT_SETTINGS.theme, ...(parsed.theme || {}) },
+      accessLevel: parsed.accessLevel === 'private' ? 'private' : 'public',
+      version: typeof parsed.version === 'number' ? parsed.version : 1,
     };
   } catch {
     return DEFAULT_SETTINGS;
@@ -79,6 +85,8 @@ export async function saveTourSettings(settings: TourSettings): Promise<TourSett
     ...settings,
     features: { ...DEFAULT_SETTINGS.features, ...(settings.features || {}) },
     theme: { ...DEFAULT_SETTINGS.theme, ...(settings.theme || {}) },
+    accessLevel: settings.accessLevel === 'private' ? 'private' : 'public',
+    version: typeof settings.version === 'number' ? settings.version : 1,
   };
   await fs.writeFile(SETTINGS_FILE, JSON.stringify(merged, null, 2), 'utf8');
   return merged;

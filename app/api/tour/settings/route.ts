@@ -20,6 +20,8 @@ export async function PUT(req: NextRequest) {
       publicUrl: typeof body.publicUrl === 'string' ? body.publicUrl : '/xr-world/virtual-tour',
       features: body.features || {},
       theme: body.theme || {},
+      accessLevel: body.accessLevel === 'private' ? 'private' : 'public',
+      version: typeof body.version === 'number' ? body.version : 1,
     });
     return NextResponse.json(saved);
   } catch (err: any) {
