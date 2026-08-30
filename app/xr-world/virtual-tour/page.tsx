@@ -41,6 +41,12 @@ export default function VirtualTourServicePage() {
               <Compass className="w-4 h-4" />
               <span>Launch Live 360° Tour</span>
             </button>
+            <Link
+              href="/xr-world/virtual-tour/editor"
+              className="px-6 py-3.5 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-white font-semibold text-sm border border-[#27272A] transition-all hover:scale-105 flex items-center gap-2"
+            >
+              <span>Edit Tour</span>
+            </Link>
           </div>
         </div>
       </section>

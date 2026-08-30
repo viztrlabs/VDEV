@@ -1079,6 +1079,39 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
   const sphereStateRef = useRef({ yaw, pitch, fov, url: currentRoom.panoramaUrl });
   sphereStateRef.current = { yaw, pitch, fov, url: currentRoom.panoramaUrl };
 
+  // Load the editable tour from the persistence API when the viewer opens, so
+  // changes made in the dedicated editor (hotspots, 1->many portals) are
+  // reflected here. Falls back to the hardcoded TOUR_ROOMS if the API is empty.
+  const [roomsTick, setRoomsTick] = useState(0);
+  useEffect(() => {
+    if (!isViewerActive) return;
+    let cancelled = false;
+    fetch('/api/tour')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled || !data || !Array.isArray(data.rooms) || data.rooms.length === 0) return;
+        // Mutate the module-level array in place so all TOUR_ROOMS references see it.
+        TOUR_ROOMS.length = 0;
+        data.rooms.forEach((r: TourRoom) => TOUR_ROOMS.push(r));
+        // Re-point the active room + its hotspots to the freshly loaded version.
+        const match = TOUR_ROOMS.find((r) => r.id === currentRoom.id) || TOUR_ROOMS[0];
+        if (match) {
+          setCurrentRoom(match);
+          setRoomHotspotsMap((prev) => ({
+            ...prev,
+            [match.id]: [...match.defaultHotspots],
+          }));
+        }
+        setRoomsTick((t) => t + 1);
+      })
+      .catch(() => {
+        /* keep hardcoded rooms on failure */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isViewerActive, roomsTick]);
+
   useEffect(() => {
     if (!isViewerActive) return;
     const host = sphereViewportRef.current?.querySelector('#sphere-canvas-host') as HTMLDivElement | null;
@@ -1114,10 +1147,18 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
         const mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
 
+        // Crossfade state: track the currently-shown mesh/material + its URL.
+        let currentMesh = mesh;
+        let currentMaterial = material;
+        let loadedUrl = '';
+        let fadeRaf = 0;
+        let fadeStart = 0;
+        const FADE_MS = 600;
+
         const loader = new THREE.TextureLoader();
         loader.setCrossOrigin('anonymous');
-        let loadedUrl = '';
-        const applyTexture = (url: string) => {
+
+        const transitionTo = (url: string) => {
           if (!url || url === loadedUrl) return;
           loader.load(
             url,
@@ -1125,8 +1166,36 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
               if (disposed) return;
               loadedUrl = url;
               tex.colorSpace = THREE.SRGBColorSpace;
-              material.map = tex;
-              material.needsUpdate = true;
+              const nextMat = new THREE.MeshBasicMaterial({
+                map: tex,
+                transparent: true,
+                opacity: 0,
+              });
+              const nextMesh = new THREE.Mesh(geometry, nextMat);
+              scene.add(nextMesh);
+
+              const prevMat = currentMaterial;
+              const prevMesh = currentMesh;
+              currentMaterial = nextMat;
+              currentMesh = nextMesh;
+
+              // Animate crossfade: next 0->1, prev 1->0.
+              fadeStart = performance.now();
+              cancelAnimationFrame(fadeRaf);
+              const step = () => {
+                if (disposed) return;
+                const t = Math.min(1, (performance.now() - fadeStart) / FADE_MS);
+                nextMat.opacity = t;
+                prevMat.opacity = 1 - t;
+                if (t < 1) {
+                  fadeRaf = requestAnimationFrame(step);
+                } else {
+                  scene.remove(prevMesh);
+                  prevMat.map?.dispose();
+                  prevMat.dispose();
+                }
+              };
+              step();
             },
             undefined,
             () => {
@@ -1134,7 +1203,7 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
             }
           );
         };
-        applyTexture(sphereStateRef.current.url);
+        transitionTo(sphereStateRef.current.url);
 
         const render = () => {
           if (disposed) return;
@@ -1163,21 +1232,23 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
         const ro = new ResizeObserver(onResize);
         ro.observe(viewport);
 
-        // Reload texture when the room (panorama URL) changes.
+        // Trigger a crossfade when the room (panorama URL) changes.
         const watch = setInterval(() => {
           if (disposed) return;
           if (sphereStateRef.current.url !== loadedUrl) {
-            applyTexture(sphereStateRef.current.url);
+            transitionTo(sphereStateRef.current.url);
           }
-        }, 400);
+        }, 300);
+
 
         cleanupFns.push(() => {
           cancelAnimationFrame(raf);
+          cancelAnimationFrame(fadeRaf);
           clearInterval(watch);
           ro.disconnect();
           geometry.dispose();
-          material.map?.dispose();
-          material.dispose();
+          currentMaterial.map?.dispose();
+          currentMaterial.dispose();
           renderer.dispose();
           if (renderer.domElement.parentElement === host) {
             host.removeChild(renderer.domElement);
