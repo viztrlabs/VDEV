@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTour, saveTour } from '@/lib/tourStore';
+import { getTour, saveTour } from '@/lib/toursRepo';
 
 // GET /api/tour — return the editable tour graph (nodes + hotspots).
+// Reads from the Supabase `tours` table when configured, else the local JSON store.
 export async function GET() {
   try {
     const tour = await getTour();
@@ -18,7 +19,7 @@ export async function PUT(req: NextRequest) {
     if (!body || !Array.isArray(body.rooms)) {
       return NextResponse.json({ error: 'invalid tour payload' }, { status: 400 });
     }
-    const saved = await saveTour({ version: body.version ?? 1, rooms: body.rooms });
+    const saved = await saveTour(body.rooms, body.version ?? 1);
     return NextResponse.json(saved);
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'failed to save tour' }, { status: 500 });

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTourSettings, saveTourSettings } from '@/lib/tourSettings';
+import { getTourSettings, saveTourSettings } from '@/lib/toursRepo';
 
 // GET /api/tour/settings — admin-controlled public tour settings (live flag + feature toggles)
 export async function GET() {

@@ -53,7 +53,7 @@ create table if not exists public.tours (
   is_live boolean not null default false,
   access_level text not null default 'public' check (access_level in ('public', 'private')),
   version int not null default 1,
-  data jsonb not null default '{"rooms":[],"settings":{}}'::jsonb,
+  data jsonb not null default '{"version":1,"rooms":[],"settings":{}}'::jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
