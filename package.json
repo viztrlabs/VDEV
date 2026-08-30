@@ -11,7 +11,9 @@
     "test:watch": "jest --watch",
     "test:component": "jest --testPathPattern=__tests__",
     "test:ci": "jest --ci --coverage --watchAll=false",
-    "collab": "node scripts/collab-server.mjs"
+    "collab": "node scripts/collab-server.mjs",
+    "demo": "next build && next start -p 3000",
+    "demo:dev": "next dev -p 3000"
   },
   "dependencies": {
     "@epicgames-ps/lib-pixelstreamingfrontend-ue5.6": "^0.3.0",
