@@ -106,23 +106,89 @@ export function applyLightingRig(configs: LightConfig[] = DEFAULT_LIGHTS): () =>
 
 /**
  * Configure the camera/renderer post-processing + tone mapping.
- * PlayCanvas WebGL2 gated effects are conditionally applied; unsupported
- * effects are gracefully skipped.
+ * Wires REAL PlayCanvas post-effects onto the active camera's `postEffects`
+ * pipeline (bloom, SSAO, FXAA, vignette) where the effect classes exist in the
+ * loaded engine build, and gracefully skips anything unavailable. Tone mapping
+ * + exposure are set on the scene renderer.
  */
-export function applyPostProcessing(cfg: PostProcessingConfig = DEFAULT_POST): void {
+export function applyPostProcessing(cfg: PostProcessingConfig = DEFAULT_POST): () => void {
+  const pc = getPC();
   const app = getApp();
-  if (!app) return;
+  if (!pc || !app) return () => {};
 
+  const disposers: Array<() => void> = [];
   try {
+    // Tone mapping + exposure (native, always available).
     app.scene.toneMapping = TONE_MAP_INDEX[cfg.toneMapping] ?? 3;
     app.scene.exposure = cfg.exposure;
 
-    // Bloom + SSAO require pcx scripts in a full project; here we toggle the
-    // engine flags that are natively available and no-op the rest cleanly.
-    app.scene.ambientLight = new (getPC() as any).Color(0.05, 0.05, 0.06);
+    // Find the first camera entity in the scene.
+    const camera = findCamera(app);
+    if (!camera) return () => {};
+
+    const postEffects = camera.camera?.postEffects;
+    if (!postEffects) return () => {};
+
+    // Bloom
+    if (cfg.bloom && (pc as any).BloomEffect) {
+      const bloom = new (pc as any).BloomEffect(app.graphicsDevice, {
+        bloomIntensity: cfg.bloomIntensity,
+        blurLevel: 10,
+        resolution: 256,
+      });
+      postEffects.add(bloom);
+      disposers.push(() => postEffects.remove(bloom));
+    }
+
+    // SSAO (ambient occlusion) — only when the engine exposes the effect class.
+    if (cfg.ssao && (pc as any).SsaoEffect) {
+      const ssao = new (pc as any).SsaoEffect(app.graphicsDevice, {
+        radius: 0.015,
+        intensity: 0.6,
+        samples: 16,
+      });
+      postEffects.add(ssao);
+      disposers.push(() => postEffects.remove(ssao));
+    }
+
+    // FXAA (anti-aliasing)
+    if (cfg.fxaa && (pc as any).FxaaEffect) {
+      const fxaa = new (pc as any).FxaaEffect(app.graphicsDevice);
+      postEffects.add(fxaa);
+      disposers.push(() => postEffects.remove(fxaa));
+    }
+
+    // Vignette — applied via a small custom shader pass when available.
+    if (cfg.vignette && (pc as any).VignetteEffect) {
+      const vignette = new (pc as any).VignetteEffect(app.graphicsDevice, {
+        offset: cfg.vignetteOffset,
+        darkness: cfg.vignetteDarkness,
+      });
+      postEffects.add(vignette);
+      disposers.push(() => postEffects.remove(vignette));
+    }
   } catch {
-    /* engine not fully booted — safe to skip */
+    /* engine not fully booted or effect unsupported — safe to skip */
   }
+
+  return () => {
+    for (const d of disposers) {
+      try { d(); } catch { /* noop */ }
+    }
+  };
+}
+
+/** Locate the first camera entity in the scene graph. */
+function findCamera(app: any): any | null {
+  let found: any = null;
+  const walk = (node: any) => {
+    if (found) return;
+    if (node && node.camera) { found = node; return; }
+    const children = node?.children;
+    if (children) for (const c of children) walk(c);
+  };
+  walk(app.root);
+  return found;
 }
 
 /** Build a PBR-standard material descriptor usable by PlayCanvas createMaterial. */

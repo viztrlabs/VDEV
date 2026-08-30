@@ -19,6 +19,7 @@ import {
  */
 export function useAdvancedRendering() {
   const disposers = useRef<Array<() => void>>([]);
+  const postDisposer = useRef<(() => void) | null>(null);
 
   const rebuildLighting = useCallback((configs: LightConfig[]) => {
     // tear down previous rig
@@ -28,7 +29,9 @@ export function useAdvancedRendering() {
   }, []);
 
   const setPostProcessing = useCallback((cfg: PostProcessingConfig) => {
-    applyPostProcessing(cfg);
+    // tear down any previously applied post-effects before re-applying
+    postDisposer.current?.();
+    postDisposer.current = applyPostProcessing(cfg);
   }, []);
 
   const makeMaterial = useCallback((cfg: PBRMaterialConfig) => {
@@ -47,6 +50,8 @@ export function useAdvancedRendering() {
     }, 2500);
     return () => {
       clearTimeout(t);
+      postDisposer.current?.();
+      postDisposer.current = null;
       disposers.current.forEach((d) => d());
       disposers.current = [];
     };

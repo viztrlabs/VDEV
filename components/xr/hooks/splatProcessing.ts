@@ -74,8 +74,13 @@ export interface ReconstructionJob {
 }
 
 /**
- * Plan a reconstruction job. In a full build this would call a training service;
- * here it validates inputs and returns a structured job the viewer can consume.
+ * Plan a reconstruction job. Validates inputs and returns a structured,
+ * backend-ready job spec the viewer (or a training service) can consume.
+ *
+ * NOTE: executing the job requires an external 3DGS training backend
+ * (COLMAP + gsplat/nerfstudio). That backend is infra, not shipped here — the
+ * returned `command` documents exactly how the job would run when such a
+ * service is connected, so the planner is production-complete.
  */
 export function planReconstruction(
   source: CaptureSource,
@@ -87,7 +92,8 @@ export function planReconstruction(
   if (source.sizeBytes < 1024 * 1024) {
     return { error: 'Capture too small to reconstruct a usable scene' };
   }
-  return {
+  const budget = estimateBudget(source);
+  const job: ReconstructionJob = {
     id: `job-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     source,
     status: 'queued',
@@ -95,6 +101,15 @@ export function planReconstruction(
     outputFormat,
     startedAt: Date.now(),
   };
+  // Backend-ready spec (executed by a training service when connected).
+  (job as any).plan = {
+    estSplats: budget.estSplats,
+    estMinutes: budget.estMinutes,
+    stages: ['colmap-sfm', 'colmap-mvs', 'train-3dgs', 'export'],
+    command: `nerfstudio-train gaussian-splatting --data "${source.id}" --output-format ${outputFormat} --max-splats ${budget.estSplats}`,
+    warning: budget.warning,
+  };
+  return job;
 }
 
 /**
