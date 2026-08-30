@@ -1,6 +1,10 @@
 node_modules/
 .next/
 .data/
+# Local demo media (large binaries, kept locally for the demo — not committed)
+public/assets/*.glb
+public/tour/*.jpg
+public/pano/*.jpg
 coverage/
 .DS_Store
 *.log

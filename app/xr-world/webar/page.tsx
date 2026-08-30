@@ -38,7 +38,7 @@ export default function WebARServicePage() {
 
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <button
-              onClick={() => openModelViewer('', 'WebAR Tabletop Model')}
+              onClick={() => openModelViewer('/assets/bmw-i8.glb', 'BMW i8 — WebAR Tabletop')}
               className="px-8 py-3.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm shadow-xl shadow-rose-900/40 transition-all hover:scale-105 flex items-center gap-2 cursor-pointer"
             >
               <ScanLine className="w-4 h-4" />
@@ -87,7 +87,7 @@ export default function WebARServicePage() {
               </p>
             </div>
             <button
-              onClick={() => openModelViewer('', 'WebAR Tabletop Model')}
+              onClick={() => openModelViewer('/assets/bmw-i8.glb', 'BMW i8 — WebAR Tabletop')}
               className="px-6 py-2.5 rounded-xl bg-zinc-800 hover:bg-rose-600 text-white text-xs font-semibold transition-colors inline-flex items-center gap-2"
             >
               <Smartphone className="w-4 h-4" />

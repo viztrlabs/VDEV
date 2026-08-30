@@ -32,13 +32,13 @@ export default function VRServicePage() {
           </p>
 
           <div className="pt-2">
-            <a
-              href="#vr-brief"
+            <Link
+              href="/xr/view?mode=vr"
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm shadow-xl shadow-rose-900/40 transition-all hover:scale-105"
             >
-              <span>Request VR Experience Package</span>
+              <span>Launch VR Experience</span>
               <ArrowRight className="w-4 h-4" />
-            </a>
+            </Link>
           </div>
         </div>
       </section>

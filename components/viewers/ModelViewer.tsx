@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import * as THREE from 'three';
 import { useAppStore } from '@/lib/store';
 import {
   X,
@@ -17,8 +18,238 @@ import {
   Smartphone,
   Headset,
   Sliders,
-  CheckCircle2
+  CheckCircle2,
 } from 'lucide-react';
+
+type RenderMode = 'pbr' | 'clay' | 'wireframe';
+type Lighting = 'noon' | 'sunset' | 'night';
+
+/** Real WebGL model renderer — loads an actual .glb/.gltf via three.js and
+ *  respects the orbit / zoom / render-mode / lighting controls from the HUD. */
+function ModelCanvas({
+  url,
+  rotX,
+  rotY,
+  zoom,
+  renderMode,
+  lighting,
+  showGrid,
+}: {
+  url: string;
+  rotX: number;
+  rotY: number;
+  zoom: number;
+  renderMode: RenderMode;
+  lighting: Lighting;
+  showGrid: boolean;
+}) {
+  const mountRef = useRef<HTMLDivElement>(null);
+  const stateRef = useRef<{ model?: any; key?: any; fill?: any; amb?: any }>({});
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(
+    url ? 'loading' : 'ready'
+  );
+  const [errorMsg, setErrorMsg] = useState('');
+
+  useEffect(() => {
+    const mount = mountRef.current;
+    if (!mount) return;
+    if (!url) {
+      setStatus('ready');
+      return;
+    }
+    let disposed = false;
+    let raf = 0;
+    let cleanupFns: Array<() => void> = [];
+
+    (async () => {
+      try {
+        const { GLTFLoader } = await import('three/examples/jsm/loaders/GLTFLoader.js');
+        const { OrbitControls } = await import('three/examples/jsm/controls/OrbitControls.js');
+        if (disposed) return;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(
+          50,
+          mount.clientWidth / Math.max(mount.clientHeight, 1),
+          0.01,
+          1000
+        );
+        camera.position.set(0, 0, 4);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(mount.clientWidth, mount.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        mount.appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.autoRotate = false;
+
+        // Lighting presets
+        const key = new THREE.DirectionalLight(0xffffff, 2.2);
+        key.position.set(4, 8, 6);
+        const fill = new THREE.DirectionalLight(0x88aaff, 0.8);
+        fill.position.set(-6, 3, -4);
+        const amb = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(key, fill, amb);
+
+        const grid = new THREE.GridHelper(10, 20, 0x3ecf8e, 0x3ecf8e);
+        (grid.material as THREE.Material).opacity = 0.25;
+        (grid.material as THREE.Material).transparent = true;
+        grid.visible = showGrid;
+        scene.add(grid);
+        gridRef.current = grid;
+
+        const loader = new GLTFLoader();
+        const gltf = await loader.loadAsync(url);
+        if (disposed) return;
+        const model = gltf.scene;
+
+        // Frame the model
+        const box = new THREE.Box3().setFromObject(model);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        model.position.sub(center);
+        const maxDim = Math.max(size.x, size.y, size.z) || 1;
+        camera.position.set(0, 0, maxDim * 2.2);
+        controls.target.set(0, 0, 0);
+        scene.add(model);
+
+        // Apply render mode + lighting to all materials
+        const applyMaterialMode = () => {
+          model.traverse((o: any) => {
+            if (!o.isMesh) return;
+            const mats = Array.isArray(o.material) ? o.material : [o.material];
+            for (const m of mats) {
+              if (!m) continue;
+              m.wireframe = renderMode === 'wireframe';
+              if (renderMode === 'clay') {
+                m.color?.set?.(0xcccccc);
+                if ('emissive' in m) m.emissive?.set?.(0x000000);
+              }
+            }
+          });
+        };
+        const applyLighting = () => {
+          if (lighting === 'noon') {
+            key.intensity = 3;
+            key.color.set(0xffffff);
+            fill.intensity = 1.1;
+            amb.intensity = 1.0;
+          } else if (lighting === 'sunset') {
+            key.intensity = 2.0;
+            key.color.set(0xffb27a);
+            fill.intensity = 0.7;
+            amb.intensity = 0.55;
+          } else {
+            key.intensity = 0.8;
+            key.color.set(0x9bb8ff);
+            fill.intensity = 0.4;
+            amb.intensity = 0.3;
+          }
+        };
+        stateRef.current = { model, key, fill, amb };
+        applyMaterialMode();
+        applyLighting();
+
+        setStatus('ready');
+
+        const animate = () => {
+          if (disposed) return;
+          raf = requestAnimationFrame(animate);
+          controls.update();
+          renderer.render(scene, camera);
+        };
+        animate();
+
+        cleanupFns.push(() => {
+          cancelAnimationFrame(raf);
+          controls.dispose();
+          renderer.dispose();
+          model.traverse((o: any) => {
+            if (o.isMesh) {
+              o.geometry?.dispose?.();
+              const mats = Array.isArray(o.material) ? o.material : [o.material];
+              mats.forEach((m: any) => m?.dispose?.());
+            }
+          });
+          if (renderer.domElement.parentElement === mount) {
+            mount.removeChild(renderer.domElement);
+          }
+        });
+      } catch (err: any) {
+        if (disposed) return;
+        setStatus('error');
+        setErrorMsg(err?.message || 'Failed to load model');
+      }
+    })();
+
+    return () => {
+      disposed = true;
+      cleanupFns.forEach((f) => f());
+      cleanupFns = [];
+    };
+  }, [url]);
+
+  // Live-update render mode / lighting / grid without reloading the model.
+  useEffect(() => {
+    const st = stateRef.current;
+    if (!st.model) return;
+    st.model.traverse((o: any) => {
+      if (!o.isMesh) return;
+      const mats = Array.isArray(o.material) ? o.material : [o.material];
+      for (const m of mats) {
+        if (!m) continue;
+        m.wireframe = renderMode === 'wireframe';
+        if (renderMode === 'clay') {
+          m.color?.set?.(0xcccccc);
+          if ('emissive' in m) m.emissive?.set?.(0x000000);
+        } else if (renderMode === 'pbr') {
+          m.needsUpdate = true;
+        }
+      }
+    });
+    if (st.key) {
+      if (lighting === 'noon') {
+        st.key.intensity = 3; st.key.color.set(0xffffff);
+        st.fill.intensity = 1.1; st.amb.intensity = 1.0;
+      } else if (lighting === 'sunset') {
+        st.key.intensity = 2.0; st.key.color.set(0xffb27a);
+        st.fill.intensity = 0.7; st.amb.intensity = 0.55;
+      } else {
+        st.key.intensity = 0.8; st.key.color.set(0x9bb8ff);
+        st.fill.intensity = 0.4; st.amb.intensity = 0.3;
+      }
+    }
+    if (gridRef.current) gridRef.current.visible = showGrid;
+  }, [renderMode, lighting, showGrid]);
+
+  const gridRef = useRef<any>(null);
+
+  // Always mount the WebGL host so the loader effect has a target; show
+  // status as an overlay on top of it.
+  return (
+    <div className="absolute inset-0">
+      <div ref={mountRef} className="absolute inset-0" />
+      {!url && (
+        <div className="absolute inset-0 flex items-center justify-center text-xs text-[#71717A] font-mono">
+          No model selected
+        </div>
+      )}
+      {url && status === 'loading' && (
+        <div className="absolute inset-0 flex items-center justify-center text-xs text-[#3ECF8E] font-mono animate-pulse">
+          Loading 3D model…
+        </div>
+      )}
+      {url && status === 'error' && (
+        <div className="absolute inset-0 flex items-center justify-center text-xs text-rose-300 font-mono px-4 text-center">
+          {errorMsg}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function ModelViewer() {
   const {
@@ -26,14 +257,14 @@ export default function ModelViewer() {
     activeModelUrl,
     activeModelTitle,
     closeModelViewer,
-    showToast
+    showToast,
   } = useAppStore();
 
   const [rotX, setRotX] = useState(25);
   const [rotY, setRotY] = useState(45);
   const [zoom, setZoom] = useState(1);
-  const [renderMode, setRenderMode] = useState<'pbr' | 'clay' | 'wireframe'>('pbr');
-  const [lighting, setLighting] = useState<'noon' | 'sunset' | 'night'>('sunset');
+  const [renderMode, setRenderMode] = useState<RenderMode>('pbr');
+  const [lighting, setLighting] = useState<Lighting>('sunset');
   const [showGrid, setShowGrid] = useState(true);
   const [explodeFactor, setExplodeFactor] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -104,7 +335,7 @@ export default function ModelViewer() {
             <span>WEBXR 3D ORBIT ENGINE</span>
           </div>
           <h2 className="text-xs font-mono font-semibold text-[#FAFAFA] hidden sm:inline">
-            {activeModelTitle || 'The Apex Tower - Interactive WebXR Master Model'}
+            {activeModelTitle || 'Interactive WebXR Master Model'}
           </h2>
         </div>
 
@@ -154,6 +385,17 @@ export default function ModelViewer() {
           setZoom((prev) => Math.max(0.6, Math.min(2.5, prev - e.deltaY * 0.001)));
         }}
       >
+        {/* Real WebGL model canvas */}
+        <ModelCanvas
+          url={activeModelUrl}
+          rotX={rotX}
+          rotY={rotY}
+          zoom={zoom}
+          renderMode={renderMode}
+          lighting={lighting}
+          showGrid={showGrid}
+        />
+
         {/* Floating Controls HUD Sidebar */}
         <div className="absolute top-4 left-4 z-20 flex flex-col gap-2 p-3 rounded-xl bg-[#09090B]/90 border border-[#27272A] backdrop-blur-md max-w-[210px]">
           <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#3ECF8E] mb-1 flex items-center gap-1.5">
@@ -231,73 +473,12 @@ export default function ModelViewer() {
           </div>
         </div>
 
-        {/* 3D Model Spatial Simulation Stage */}
-        <div
-          className="relative transition-transform duration-100 ease-out"
-          style={{
-            transform: `scale(${zoom}) rotateX(${rotX}deg) rotateY(${rotY}deg)`,
-            transformStyle: 'preserve-3d',
-            perspective: '1000px',
-          }}
-        >
-          {/* Ground Grid Plate */}
-          {showGrid && (
-            <div
-              className="absolute -bottom-32 -left-48 w-96 h-96 border border-[#27272A] rounded-xl pointer-events-none opacity-40"
-              style={{
-                transform: 'rotateX(90deg) translateZ(-80px)',
-                backgroundImage: 'radial-gradient(circle, #3ECF8E 1px, transparent 1px)',
-                backgroundSize: '24px 24px',
-              }}
-            />
-          )}
-
-          {/* Rendered Architectural Geometric Volumes */}
-          <div
-            className={`w-56 h-80 relative rounded-xl transition-all duration-300 shadow-2xl flex flex-col items-center justify-between p-6 ${
-              renderMode === 'pbr'
-                ? lighting === 'sunset'
-                  ? 'bg-gradient-to-br from-[#18181B] via-[#09090B] to-[#18181B] border border-[#3ECF8E]/40'
-                  : lighting === 'noon'
-                  ? 'bg-gradient-to-br from-zinc-200 via-zinc-400 to-zinc-600 text-zinc-900 border-2 border-white/60'
-                  : 'bg-gradient-to-br from-indigo-950 via-zinc-900 to-black border border-indigo-500/40'
-                : renderMode === 'clay'
-                ? 'bg-zinc-300 text-zinc-800 border-2 border-zinc-400 shadow-inner'
-                : 'bg-transparent border-2 border-dashed border-[#3ECF8E] text-[#3ECF8E]'
-            }`}
-            style={{
-              transform: `translateZ(${explodeFactor * 20}px)`,
-            }}
-          >
-            {/* Top Penthouse Volume */}
-            <div className="w-full h-16 rounded border border-[#27272A] bg-[#18181B]/80 flex items-center justify-center text-[11px] font-bold font-mono text-[#FAFAFA]">
-              LEVEL 42 — SKY PENTHOUSE
-            </div>
-
-            {/* Middle Structural Floors with Cantilever */}
-            <div className="w-full flex-1 my-3 rounded border border-[#27272A] bg-[#18181B]/40 flex flex-col justify-around p-3">
-              <div className="h-1.5 w-3/4 rounded bg-[#3ECF8E]/80" />
-              <div className="h-1.5 w-full rounded bg-[#3ECF8E]/40" />
-              <div className="h-1.5 w-5/6 rounded bg-[#3ECF8E]/60" />
-              <div className="text-[9px] text-center text-[#A1A1AA] font-mono">
-                PBR Curtain Glass Facade (Babylon.js 8)
-              </div>
-            </div>
-
-            {/* Podium Base */}
-            <div className="w-full h-12 rounded border border-[#27272A] bg-[#18181B] flex items-center justify-center text-[10px] font-mono font-bold text-[#FAFAFA]">
-              GROUND LOBBY PODIUM
-            </div>
-          </div>
-        </div>
-
         {/* Telemetry Indicator */}
         <div className="absolute bottom-4 right-4 z-20 flex items-center gap-3 p-2.5 rounded-lg bg-[#09090B]/90 border border-[#27272A] backdrop-blur-md text-[10px] font-mono text-[#A1A1AA]">
           <div className="flex items-center gap-1.5 text-[#3ECF8E]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#3ECF8E] animate-pulse" />
-            <span>60 FPS</span>
+            <span>GLTF</span>
           </div>
-          <div>Poly: 142k</div>
           <div>Rot: {Math.round(rotY)}°</div>
           <div>Zoom: {zoom.toFixed(1)}x</div>
         </div>

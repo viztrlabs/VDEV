@@ -97,7 +97,10 @@ export interface TourRoom {
   defaultHotspots: Hotspot[];
 }
 
+import { LOCAL_TOUR_ROOMS } from '@/lib/localTour';
+
 export const TOUR_ROOMS: TourRoom[] = [
+  ...LOCAL_TOUR_ROOMS,
   {
     id: 'room-grand-salon',
     name: 'The Solarium Sky Penthouse - Grand Salon',

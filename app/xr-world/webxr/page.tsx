@@ -35,7 +35,7 @@ export default function WebXRServicePage() {
 
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <button
-              onClick={() => openModelViewer('', 'WebXR Architectural Model')}
+              onClick={() => openModelViewer('/assets/bmw-i8.glb', 'BMW i8 — WebXR Model')}
               className="px-8 py-3.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm shadow-xl shadow-rose-900/40 transition-all hover:scale-105 flex items-center gap-2 cursor-pointer"
             >
               <Box className="w-4 h-4" />
