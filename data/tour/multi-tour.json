@@ -1,0 +1,38 @@
+[
+  {
+    "id": "local-4ac6os",
+    "title": "Demo Tour 2",
+    "is_live": false,
+    "access_level": "private",
+    "updated_at": "2026-08-30T23:47:49.213Z",
+    "members": [],
+    "comments": [],
+    "tasks": [],
+    "waypoints": []
+  },
+  {
+    "id": "local-j11h8q",
+    "title": "Collab Tour",
+    "is_live": false,
+    "access_level": "private",
+    "updated_at": "2026-08-30T23:47:50.317Z",
+    "members": [
+      {
+        "id": "m-z8023",
+        "email": "team@x.com",
+        "role": "editor",
+        "status": "pending"
+      }
+    ],
+    "comments": [
+      {
+        "id": "c-7y77s",
+        "body": "Looks great",
+        "author_name": "Client",
+        "created_at": "2026-08-30T23:47:51.367Z"
+      }
+    ],
+    "tasks": [],
+    "waypoints": []
+  }
+]

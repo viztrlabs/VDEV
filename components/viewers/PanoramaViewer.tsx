@@ -32,6 +32,7 @@ import {
   Copy,
   RotateCcw,
   MapPin,
+  Map,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -969,6 +970,16 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
     }
   }, [preferences.autoRotate]);
 
+  // Guided-tour auto-play: step through rooms on a timed loop.
+  const [guidedOn, setGuidedOn] = useState(false);
+  const GUIDED_DWELL = 6000;
+  useEffect(() => {
+    if (!guidedOn) return;
+    const interval = setInterval(() => {
+      goForward();
+    }, GUIDED_DWELL);
+    return () => clearInterval(interval);
+  }, [guidedOn]);
    // Scroll-to-zoom effect (only when fullscreen)
    useEffect(() => {
      if (!isViewerActive || !preferences.scrollZoomEnabled) return;
@@ -2668,6 +2679,20 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
               title={isPlaying ? 'Pause Auto-Rotate' : 'Play Auto-Rotate'}
             >
               {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+            </button>
+
+            {/* GUIDED TOUR */}
+            <button
+              onClick={() => setGuidedOn((g) => !g)}
+              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${
+                guidedOn
+                  ? 'bg-[#3ECF8E] text-black hover:bg-[#34b27b] scale-105'
+                  : 'bg-white/10 text-white hover:bg-white/20'
+              }`}
+              aria-label="Toggle guided tour"
+              title="Guided Tour (auto-advance scenes)"
+            >
+              {guidedOn ? <MapPin className="w-4 h-4" /> : <Map className="w-4 h-4" />}
             </button>
 
             {/* PREVIOUS ROOM */}

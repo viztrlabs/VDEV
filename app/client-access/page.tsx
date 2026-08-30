@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import { useAppStore } from '@/lib/store';
 import {
   Lock,
@@ -18,14 +19,15 @@ import {
 } from 'lucide-react';
 import { ViztrLogoMark } from '@/components/ui/Logo';
 
-export default function ClientAccessPage() {
+function ClientAccessInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { setUser, showToast } = useAppStore();
-  const [activeTab, setActiveTab] = useState<'projectId' | 'email'>('projectId');
+  const [activeTab, setActiveTab] = useState<'accessCode' | 'email'>('accessCode');
 
   // Tab 1 state
-  const [projectId, setProjectId] = useState('VIZTR-882');
-  const [projectPassword, setProjectPassword] = useState('••••••••');
+  const [accessCode, setAccessCode] = useState('FST-2025-VTR');
+  const [accessCodePassword, setAccessCodePassword] = useState('••••••••');
 
   // Tab 2 state
   const [email, setEmail] = useState('elena.rostova@fosterpartners.com');
@@ -35,50 +37,77 @@ export default function ClientAccessPage() {
   const [showForgotModal, setShowForgotModal] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
 
-  const handleProjectLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  const callbackUrl = searchParams.get('callbackUrl') || '/client-dashboard';
 
-    setTimeout(() => {
+  const syncSessionToStore = async (emailStr: string, displayName: string) => {
+    try {
+      const res = await fetch('/api/auth/session');
+      if (!res.ok) return;
+      const data = await res.json();
+      const u = data?.user;
+      if (!u) return;
       setUser({
-        id: 'usr_foster_01',
-        name: 'Elena Rostova',
-        email: 'elena.rostova@fosterpartners.com',
+        id: u.id || u.email,
+        name: u.name || displayName,
+        email: u.email || emailStr,
+        role: (u.role as any) || 'CLIENT',
+        clientId: u.clientId,
+        accessCode: u.accessCode,
+        assignedDirector: u.assignedDirector,
+        clientFirm: u.clientFirm,
+      });
+    } catch {
+      // Fallback minimal user
+      setUser({
+        id: emailStr,
+        name: displayName,
+        email: emailStr,
         role: 'CLIENT',
       });
-      showToast('Client project verified. Redirecting to workspace...', 'success');
-      router.push('/client-dashboard');
-    }, 600);
+    }
   };
 
-  const handleEmailLogin = (e: React.FormEvent) => {
+  const handleAccessCodeLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
-    setTimeout(() => {
-      setUser({
-        id: 'usr_foster_01',
-        name: 'Elena Rostova',
-        email: email,
-        role: 'CLIENT',
-      });
-      showToast('Client session authenticated. Welcome back.', 'success');
-      router.push('/client-dashboard');
-    }, 600);
+    const result = await signIn('credentials', {
+      email: '',
+      accessCode: accessCode,
+      password: accessCodePassword,
+      redirect: false,
+    });
+    setLoading(false);
+    if (!result || result.error) {
+      showToast('Access code or password incorrect. Please try again.', 'error');
+      return;
+    }
+    await syncSessionToStore('', 'Client User');
+    showToast('Client project verified. Redirecting to workspace...', 'success');
+    router.push(callbackUrl);
   };
 
-  const handleGoogleLogin = () => {
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const result = await signIn('credentials', {
+      email: email,
+      password: emailPassword,
+      redirect: false,
+    });
+    setLoading(false);
+    if (!result || result.error) {
+      showToast('Invalid email or password. Please try again.', 'error');
+      return;
+    }
+    await syncSessionToStore(email, email.split('@')[0] || 'Client');
+    showToast('Client session authenticated. Welcome back.', 'success');
+    router.push(callbackUrl);
+  };
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
     showToast('Redirecting to Google Enterprise OAuth...', 'info');
-    setTimeout(() => {
-      setUser({
-        id: 'usr_google_01',
-        name: 'Marcus Sterling',
-        email: 'marcus.sterling@architects.com',
-        role: 'CLIENT',
-      });
-      showToast('Signed in via Google OAuth.', 'success');
-      router.push('/client-dashboard');
-    }, 800);
+    await signIn('google', { callbackUrl });
   };
 
   const handleForgotAccessCode = (e: React.FormEvent) => {
@@ -107,14 +136,14 @@ export default function ClientAccessPage() {
           {/* TABS */}
           <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-[#09090B] border border-[#27272A]">
             <button
-              onClick={() => setActiveTab('projectId')}
+              onClick={() => setActiveTab('accessCode')}
               className={`py-2 text-xs font-mono font-bold rounded-lg transition-all cursor-pointer ${
-                activeTab === 'projectId'
+                activeTab === 'accessCode'
                   ? 'bg-[#3ECF8E] text-black shadow-md'
                   : 'text-[#A1A1AA] hover:text-white'
               }`}
             >
-              Project ID Login
+              Access Code Login
             </button>
             <button
               onClick={() => setActiveTab('email')}
@@ -128,21 +157,21 @@ export default function ClientAccessPage() {
             </button>
           </div>
 
-          {/* TAB 1: PROJECT ID LOGIN */}
-          {activeTab === 'projectId' && (
-            <form onSubmit={handleProjectLogin} className="space-y-4">
+          {/* TAB 1: ACCESS CODE LOGIN */}
+          {activeTab === 'accessCode' && (
+            <form onSubmit={handleAccessCodeLogin} className="space-y-4">
               <div>
                 <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-[#A1A1AA] mb-1.5">
-                  Project ID *
+                  Access Code *
                 </label>
                 <div className="relative">
                   <Building className="w-4 h-4 text-[#71717A] absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     required
-                    value={projectId}
-                    onChange={(e) => setProjectId(e.target.value)}
-                    placeholder="e.g. VIZTR-882"
+                    value={accessCode}
+                    onChange={(e) => setAccessCode(e.target.value)}
+                    placeholder="e.g. FST-2025-VTR"
                     className="w-full bg-[#09090B] text-xs text-[#FAFAFA] pl-9 pr-3 py-2.5 rounded-lg border border-[#27272A] focus:outline-none focus:border-[#3ECF8E] font-mono transition-colors"
                   />
                 </div>
@@ -157,8 +186,8 @@ export default function ClientAccessPage() {
                   <input
                     type="password"
                     required
-                    value={projectPassword}
-                    onChange={(e) => setProjectPassword(e.target.value)}
+                    value={accessCodePassword}
+                    onChange={(e) => setAccessCodePassword(e.target.value)}
                     placeholder="••••••••"
                     className="w-full bg-[#09090B] text-xs text-[#FAFAFA] pl-9 pr-3 py-2.5 rounded-lg border border-[#27272A] focus:outline-none focus:border-[#3ECF8E] font-mono transition-colors"
                   />
@@ -248,7 +277,8 @@ export default function ClientAccessPage() {
 
             <button
               onClick={handleGoogleLogin}
-              className="w-full py-2.5 px-4 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-white font-mono text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              disabled={loading}
+              className="w-full py-2.5 px-4 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-white font-mono text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path
@@ -278,7 +308,7 @@ export default function ClientAccessPage() {
               >
                 Forgot access code?
               </button>
-              <Link href="/client-view/VIZTR-882" className="text-[#3ECF8E] hover:underline">
+              <Link href="/client-view/FST-2025-VTR" className="text-[#3ECF8E] hover:underline">
                 Public Shared View Demo →
               </Link>
             </div>
@@ -319,5 +349,13 @@ export default function ClientAccessPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function ClientAccessPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#09090B]" />}>
+      <ClientAccessInner />
+    </Suspense>
   );
 }

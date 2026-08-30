@@ -42,23 +42,20 @@ async function resolveTourId(serviceClient: any): Promise<string | null> {
   return data?.id ?? null;
 }
 
-export async function getTour(): Promise<SavedTour> {
+export async function getTour(tourId?: string | null): Promise<SavedTour> {
   if (isSupabaseReady()) {
     const svc = createServiceClient();
     if (svc) {
-      const { data } = await svc
-        .from(TABLE)
-        .select('data')
-        .order('updated_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
+      let query = svc.from(TABLE).select('data').order('updated_at', { ascending: false }).limit(1);
+      if (tourId) query = svc.from(TABLE).select('data').eq('id', tourId).limit(1);
+      const { data } = await query.maybeSingle();
       if (data?.data?.rooms) {
         const d = data.data as any;
         return { version: d.version ?? 1, rooms: d.rooms };
       }
       // No row yet — seed one from the local store.
       const seeded = await localGetTour();
-      await saveTour(seeded.rooms, seeded.version);
+      await saveTour(seeded.rooms, seeded.version, tourId);
       return seeded;
     }
   }
@@ -68,11 +65,16 @@ export async function getTour(): Promise<SavedTour> {
 export async function saveTour(
   rooms: SavedTour['rooms'],
   version: number,
+  tourId?: string | null,
 ): Promise<SavedTour> {
   const result = { version, rooms };
   if (isSupabaseReady()) {
     const svc = createServiceClient();
     if (svc) {
+      if (tourId) {
+        await svc.from(TABLE).update({ data: { version, rooms } }).eq('id', tourId);
+        return result;
+      }
       const existingId = await resolveTourId(svc);
       const payload = { data: { version, rooms } };
       if (existingId) {

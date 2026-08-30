@@ -63,6 +63,7 @@ interface TourRoom {
   nadirLogoUrl?: string;
   brightness?: number;
   contrast?: number;
+  modelUrl?: string;
 }
 
 export default function TourEditorPage() {
@@ -76,14 +77,15 @@ export default function TourEditorPage() {
   const [error, setError] = useState('');
   const [draggingOver, setDraggingOver] = useState(false);
   const [editingNodeId, setEditingNodeId] = useState<string>('');
-  const [sectionTab, setSectionTab] = useState<'editor' | 'design' | 'content' | 'settings'>('editor');
+  const [sectionTab, setSectionTab] = useState<'editor' | 'design' | 'content' | 'settings' | 'model' | 'marketing'>('editor');
   const [mediaAssets, setMediaAssets] = useState<{ name: string; url: string }[]>([]);
   const imgRef = useRef<HTMLImageElement>(null);
   const dragHpRef = useRef<string | null>(null);
 
   const load = useCallback(async () => {
     try {
-      const res = await fetch('/api/tour');
+      const tourId = typeof window !== 'undefined' ? localStorage.getItem('viztr_active_tour') : '';
+      const res = await fetch(`/api/tour${tourId ? `?tour=${tourId}` : ''}`);
       const data = await res.json();
       setRooms(data.rooms || []);
       setSelectedId((prev) => prev || data.rooms?.[0]?.id || '');
@@ -182,6 +184,94 @@ export default function TourEditorPage() {
     if (!selected) return;
     setRooms((prev) => prev.map((r) => ({ ...r, featured: r.id === selected.id })));
     setSaved(false);
+  };
+
+  // Non-editor tabs (settings / model / marketing) extracted to a plain
+  // function-returning-JSX to avoid deeply-nested ternary brace fragility.
+  const renderNonEditorTab = () => {
+    if (sectionTab === 'model') {
+      return (
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="max-w-xl mx-auto space-y-4">
+            <h2 className="text-sm font-mono font-bold text-[#3ECF8E]">Model — 3D Embed</h2>
+            <label className="block text-xs font-mono text-[#A1A1AA]">3D model URL (GLB/GLTF)</label>
+            <input
+              value={selected?.modelUrl || ''}
+              onChange={(e) => selected && setRoomField('modelUrl', e.target.value)}
+              placeholder="https://…/model.glb"
+              className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+            />
+            <p className="text-[10px] font-mono text-[#71717A]">
+              Attach a 3D model to the selected scene. The viewer overlays the model on the panorama.
+            </p>
+          </div>
+        </div>
+      );
+    }
+    if (sectionTab === 'marketing') {
+      return (
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="max-w-xl mx-auto space-y-4">
+            <h2 className="text-sm font-mono font-bold text-[#3ECF8E]">Marketing</h2>
+            <label className="block text-xs font-mono text-[#A1A1AA]">Public tour URL</label>
+            <input
+              value={settings?.publicUrl || '/xr-world/virtual-tour'}
+              readOnly
+              className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+            />
+            <button
+              onClick={() => {
+                const url = typeof window !== 'undefined' ? window.location.origin + (settings?.publicUrl || '/xr-world/virtual-tour') : '';
+                navigator.clipboard?.writeText(url);
+                setSaved(true);
+              }}
+              className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
+            >
+              Copy share link
+            </button>
+            <p className="text-[10px] font-mono text-[#71717A]">
+              Embed snippet is available in the admin panel publish kit.
+            </p>
+          </div>
+        </div>
+      );
+    }
+    // settings (default)
+    return (
+      <div className="flex-1 overflow-y-auto p-6">
+        <div className="max-w-xl mx-auto space-y-4">
+          <h2 className="text-sm font-mono font-bold text-[#3ECF8E]">Settings — Publish</h2>
+          {settings && (
+            <>
+              <div className="flex items-center justify-between rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3">
+                <span className="text-xs font-mono text-white">Tour is {settings.live ? 'LIVE' : 'OFFLINE'}</span>
+                <button
+                  onClick={() => persistSettings({ ...settings, live: !settings.live })}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold font-mono ${settings.live ? 'bg-rose-500/20 text-rose-300' : 'bg-[#3ECF8E] text-black'}`}
+                >
+                  {settings.live ? 'Take Offline' : 'Go Live'}
+                </button>
+              </div>
+              <div className="flex items-center justify-between rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3">
+                <span className="text-xs font-mono text-white">Access: {settings.accessLevel}</span>
+                <button
+                  onClick={() => persistSettings({ ...settings, accessLevel: settings.accessLevel === 'private' ? 'public' : 'private' })}
+                  className="px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-xs font-mono text-white"
+                >
+                  Toggle {settings.accessLevel === 'private' ? 'Public' : 'Private'}
+                </button>
+              </div>
+              <button
+                onClick={() => persistSettings({ ...settings, version: (settings.version || 1) + 1 })}
+                className="px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-xs font-mono text-white"
+              >
+                Clear Cache (v{settings.version || 1})
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    );
   };
 
   const replacePanorama = async (file: File) => {
@@ -358,7 +448,8 @@ export default function TourEditorPage() {
     setSaving(true);
     setError('');
     try {
-      const res = await fetch('/api/tour', {
+      const tourId = typeof window !== 'undefined' ? localStorage.getItem('viztr_active_tour') : '';
+      const res = await fetch(`/api/tour${tourId ? `?tour=${tourId}` : ''}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ version: 1, rooms }),
@@ -419,6 +510,8 @@ export default function TourEditorPage() {
           ['editor', 'Tour Editor'],
           ['design', 'Design'],
           ['content', 'Content'],
+          ['model', 'Model'],
+          ['marketing', 'Marketing'],
           ['settings', 'Settings'],
         ] as const).map(([tab, label]) => (
           <button
@@ -935,40 +1028,9 @@ export default function TourEditorPage() {
           </div>
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-xl mx-auto space-y-4">
-            <h2 className="text-sm font-mono font-bold text-[#3ECF8E]">Settings — Publish</h2>
-            {settings && (
-              <>
-                <div className="flex items-center justify-between rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3">
-                  <span className="text-xs font-mono text-white">Tour is {settings.live ? 'LIVE' : 'OFFLINE'}</span>
-                  <button
-                    onClick={() => persistSettings({ ...settings, live: !settings.live })}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold font-mono ${settings.live ? 'bg-rose-500/20 text-rose-300' : 'bg-[#3ECF8E] text-black'}`}
-                  >
-                    {settings.live ? 'Take Offline' : 'Go Live'}
-                  </button>
-                </div>
-                <div className="flex items-center justify-between rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3">
-                  <span className="text-xs font-mono text-white">Access: {settings.accessLevel}</span>
-                  <button
-                    onClick={() => persistSettings({ ...settings, accessLevel: settings.accessLevel === 'private' ? 'public' : 'private' })}
-                    className="px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-xs font-mono text-white"
-                  >
-                    Toggle {settings.accessLevel === 'private' ? 'Public' : 'Private'}
-                  </button>
-                </div>
-                <button
-                  onClick={() => persistSettings({ ...settings, version: (settings.version || 1) + 1 })}
-                  className="px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-xs font-mono text-white"
-                >
-                  Clear Cache (v{settings.version || 1})
-                </button>
-              </>
-            )}
-          </div>
-        </div>
+        renderNonEditorTab()
       )}
     </div>
   );
 }
+
