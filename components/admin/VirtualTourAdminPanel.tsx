@@ -23,8 +23,10 @@ import {
   QrCode,
   Lock,
   RefreshCw,
+  LogOut,
 } from 'lucide-react';
 import QRCode from 'qrcode';
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 
 interface TourFeatureToggles {
   hotspots: boolean;
@@ -148,6 +150,13 @@ export default function VirtualTourAdminPanel() {
     setSettings(next);
     persist(next);
   };
+
+  const signOut = async () => {
+    const supabase = createClient();
+    if (!supabase) return;
+    await supabase.auth.signOut();
+    window.location.href = '/login';
+  };
   const persist = useCallback(
     async (next: TourSettings) => {
       setSaving(true);
@@ -224,6 +233,15 @@ export default function VirtualTourAdminPanel() {
           <span className="flex items-center gap-1 text-[10px] font-mono text-[#71717A]">
             <Eye className="w-3 h-3" /> {views} views
           </span>
+        )}
+        {isSupabaseConfigured && (
+          <button
+            onClick={signOut}
+            className="flex items-center gap-1 text-[10px] font-mono text-[#71717A] hover:text-rose-300"
+            title="Sign out"
+          >
+            <LogOut className="w-3 h-3" /> Sign out
+          </button>
         )}
       </div>
 
