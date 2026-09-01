@@ -56,6 +56,22 @@ export interface TourRoom {
   // Floor plan coordinates for this room (optional)
   floorPlanX?: number;   // percentage position on floor plan (0-100)
   floorPlanY?: number;   // percentage position on floor plan (0-100)
+  // Editor-only VTED extensions (all optional, additive non-breaking)
+  featured?: boolean;
+  backgroundAudioUrl?: string;
+  nadirLogoUrl?: string;
+  brightness?: number;
+  contrast?: number;
+  modelUrl?: string;
+  lat?: number;
+  lng?: number;
+  // VTED sub-objects (optional, additive non-breaking)
+  viewConstraints?: Record<string, unknown>;
+  lightFilter?: Record<string, unknown>;
+  sharpenFilter?: Record<string, unknown>;
+  sunLight?: Record<string, unknown>;
+  stagingMode?: string;
+  nadirFix?: Record<string, unknown>;
 }
 
 export interface StandaloneImage {

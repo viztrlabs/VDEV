@@ -46,22 +46,25 @@ const ContentSettingsPanel = dynamic(
   () => import('@/components/editor/ContentSettingsPanel'),
   { ssr: false },
 );
+import { EditorHeader } from '@/components/editor/shell/EditorHeader';
+import { SectionTabs } from '@/components/editor/shell/SectionTabs';
+import { NodeListSidebar } from '@/components/editor/shell/NodeListSidebar';
+import { EditorRightSidebar } from '@/components/editor/shell/EditorRightSidebar';
+import PanoramaPreview from '@/components/editor/PanoramaPreview';
+import {
+  useEditorStore,
+  useEditorHistory,
+  type SectionTab,
+} from '@/lib/editorStore';
 import { useAppStore } from '@/lib/store';
 import { VTED_CONTROL_BAR_DEFAULTS } from '@/lib/vted-types';
 import {
-  ArrowLeft,
   Save,
   Plus,
-  Trash2,
   MapPin,
   DoorOpen,
   Loader2,
   CheckCircle2,
-  Upload,
-  Copy,
-  ChevronUp,
-  ChevronDown,
-  Pencil,
 } from 'lucide-react';
 
 type HotspotColor = 'rose' | 'emerald' | 'cyan' | 'amber' | 'violet' | 'blue';
@@ -118,6 +121,34 @@ interface TourRoom {
 
 export default function TourEditorPage() {
   const { showToast } = useAppStore();
+  const { undo, redo, canUndo, canRedo } = useEditorHistory();
+
+  // Keyboard shortcuts for undo/redo
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const inEditable =
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable);
+      if (inEditable) return;
+      const mod = e.ctrlKey || e.metaKey;
+      if (mod && !e.shiftKey && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        undo();
+      } else if (
+        mod &&
+        (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))
+      ) {
+        e.preventDefault();
+        redo();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [undo, redo]);
+
   const [rooms, setRooms] = useState<TourRoom[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string>('');
@@ -547,65 +578,19 @@ export default function TourEditorPage() {
 
   return (
     <div className="min-h-screen bg-[#09090B] text-white flex flex-col">
-      {/* Header */}
-      <header className="flex items-center justify-between px-4 py-3 border-b border-[#27272A] bg-[#0c0c0f]">
-        <div className="flex items-center gap-3">
-          <Link
-            href="/xr-world/virtual-tour"
-            className="flex items-center gap-1.5 text-xs font-mono text-[#A1A1AA] hover:text-white"
-          >
-            <ArrowLeft className="w-4 h-4" /> Virtual Tour
-          </Link>
-          <span className="text-sm font-bold font-mono text-[#3ECF8E]">360° TOUR EDITOR</span>
-          <span className="text-[10px] font-mono text-[#71717A]">
-            {rooms.length} nodes · {rooms.reduce((a, r) => a + r.defaultHotspots.length, 0)} hotspots
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          {saved && (
-            <span className="flex items-center gap-1 text-[10px] font-mono text-[#3ECF8E]">
-              <CheckCircle2 className="w-3.5 h-3.5" /> Saved
-            </span>
-          )}
-          <button
-            onClick={save}
-            disabled={saving}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono disabled:opacity-50"
-          >
-            {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-            Save Tour
-          </button>
-        </div>
-      </header>
+      <EditorHeader
+        roomsCount={rooms.length}
+        hotspotsCount={rooms.reduce((a, r) => a + r.defaultHotspots.length, 0)}
+        saved={saved}
+        saving={saving}
+        canUndo={canUndo}
+        canRedo={canRedo}
+        onSave={save}
+        onUndo={undo}
+        onRedo={redo}
+      />
 
-      {/* SECTION NAV TABS */}
-      <div className="flex items-center gap-1 px-4 py-2 border-b border-[#27272A] bg-[#0c0c0f] overflow-x-auto">
-        {([
-          ['editor', 'Tour Editor'],
-          ['canvas', 'Canvas'],
-          ['design', 'Design'],
-          ['components', 'Components'],
-          ['floorplan', 'Floorplan'],
-          ['map', 'Map'],
-          ['cta', 'CTA & Bar'],
-          ['content', 'Content'],
-          ['model', 'Model'],
-          ['marketing', 'Marketing'],
-          ['settings', 'Settings'],
-        ] as const).map(([tab, label]) => (
-          <button
-            key={tab}
-            onClick={() => setSectionTab(tab)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-mono ${
-              sectionTab === tab
-                ? 'bg-[#3ECF8E] text-black font-bold'
-                : 'bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA]'
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+      <SectionTabs active={sectionTab} onChange={setSectionTab} />
 
       {error && (
         <div className="px-4 py-2 bg-rose-950/40 border-b border-rose-900 text-rose-300 text-xs font-mono">
@@ -615,173 +600,72 @@ export default function TourEditorPage() {
 
       {sectionTab === 'editor' ? (
       <div className="flex flex-1 min-h-0">
-        {/* Node list + upload */}
-        <aside className="w-60 shrink-0 border-r border-[#27272A] overflow-y-auto p-2 space-y-1">
-          <div className="flex items-center justify-between px-1 pb-1">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">Nodes</span>
-            <label className="flex items-center gap-1 px-2 py-1 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#3ECF8E] text-[10px] font-mono cursor-pointer">
-              <Upload className="w-3 h-3" /> Upload
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                className="hidden"
-                onChange={(e) => e.target.files && uploadFiles(e.target.files)}
-              />
-            </label>
-          </div>
-
-          {/* MEDIA LIBRARY */}
-          <details className="group">
-            <summary className="cursor-pointer text-[10px] font-mono uppercase tracking-wider text-[#71717A] px-1 py-1 select-none">
-              Media Library ({mediaAssets.length})
-            </summary>
-            <div className="mt-1 space-y-1 max-h-48 overflow-y-auto">
-              {mediaAssets.length === 0 ? (
-                <div className="text-[10px] font-mono text-[#555] px-1">No assets yet</div>
-              ) : (
-                mediaAssets.map((a) => (
-                  <button
-                    key={a.url}
-                    onClick={() => addFromLibrary(a.url)}
-                    className="w-full flex items-center gap-2 rounded border border-[#27272A] hover:border-[#3ECF8E]/40 p-1"
-                    title={`Add ${a.name} as new node`}
-                  >
-                    <div
-                      className="w-7 h-7 rounded bg-cover bg-center shrink-0 border border-[#27272A]"
-                      style={{ backgroundImage: `url(${a.url})` }}
-                    />
-                    <span className="text-[10px] font-mono text-[#A1A1AA] truncate">{a.name}</span>
-                  </button>
-                ))
-              )}
-            </div>
-          </details>
-
-          {/* Drag-drop zone */}
-          <div
-            onDragOver={(e) => {
-              e.preventDefault();
-              setDraggingOver(true);
-            }}
-            onDragLeave={() => setDraggingOver(false)}
-            onDrop={(e) => {
-              e.preventDefault();
-              setDraggingOver(false);
-              if (e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files);
-            }}
-            className={`rounded-xl border-2 border-dashed p-3 text-center text-[10px] font-mono transition-colors ${
-              draggingOver
-                ? 'border-[#3ECF8E] bg-[#3ECF8E]/10 text-[#3ECF8E]'
-                : 'border-[#27272A] text-[#71717A]'
-            }`}
-          >
-            {uploading ? (
-              <span className="flex items-center justify-center gap-1">
-                <Loader2 className="w-3 h-3 animate-spin" /> Uploading…
-              </span>
-            ) : (
-              'Drag 360° images here'
-            )}
-          </div>
-
-          {rooms.map((r, idx) => (
-            <div
-              key={r.id}
-              className={`group rounded-lg border transition-colors ${
-                r.id === selectedId
-                  ? 'bg-[#18181B] border-[#3ECF8E]/30'
-                  : 'border-transparent hover:bg-[#18181B]'
-              }`}
-            >
-              <div className="flex items-center gap-2 px-2 py-1.5">
-                <div
-                  className="w-8 h-8 rounded bg-cover bg-center shrink-0 border border-[#27272A] cursor-pointer"
-                  style={{ backgroundImage: `url(${r.thumbnailUrl})` }}
-                  onClick={() => setSelectedId(r.id)}
-                />
-                <div className="min-w-0 flex-1" onClick={() => setSelectedId(r.id)}>
-                  {editingNodeId === r.id ? (
-                    <input
-                      autoFocus
-                      defaultValue={r.name}
-                      onBlur={(e) => {
-                        renameNode(r.id, e.target.value || r.name);
-                        setEditingNodeId('');
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
-                      }}
-                      className="w-full bg-[#0c0c0f] border border-[#3ECF8E]/40 rounded px-1 text-xs text-white"
-                    />
-                  ) : (
-                    <div className="text-xs font-medium truncate">{r.name}</div>
-                  )}
-                  <div className="text-[10px] text-[#71717A]">{r.defaultHotspots.length} hotspots</div>
-                </div>
-              </div>
-              {/* node action row */}
-              <div className="flex items-center justify-end gap-0.5 px-1.5 pb-1.5 opacity-60 group-hover:opacity-100">
-                <button
-                  onClick={() => setEditingNodeId(r.id)}
-                  className="p-1 rounded text-[#A1A1AA] hover:text-white hover:bg-white/10"
-                  title="Rename"
-                >
-                  <Pencil className="w-3 h-3" />
-                </button>
-                <button
-                  onClick={() => moveNode(r.id, -1)}
-                  disabled={idx === 0}
-                  className="p-1 rounded text-[#A1A1AA] hover:text-white hover:bg-white/10 disabled:opacity-20"
-                  title="Move up"
-                >
-                  <ChevronUp className="w-3 h-3" />
-                </button>
-                <button
-                  onClick={() => moveNode(r.id, 1)}
-                  disabled={idx === rooms.length - 1}
-                  className="p-1 rounded text-[#A1A1AA] hover:text-white hover:bg-white/10 disabled:opacity-20"
-                  title="Move down"
-                >
-                  <ChevronDown className="w-3 h-3" />
-                </button>
-                <button
-                  onClick={() => duplicateNode(r.id)}
-                  className="p-1 rounded text-[#A1A1AA] hover:text-white hover:bg-white/10"
-                  title="Duplicate"
-                >
-                  <Copy className="w-3 h-3" />
-                </button>
-                <button
-                  onClick={() => deleteNode(r.id)}
-                  className="p-1 rounded text-rose-400 hover:text-rose-300 hover:bg-rose-500/10"
-                  title="Delete"
-                >
-                  <Trash2 className="w-3 h-3" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </aside>
+        <NodeListSidebar
+          rooms={rooms}
+          selectedId={selectedId}
+          featuredId={rooms.find((r) => r.featured)?.id || ''}
+          editingNodeId={editingNodeId}
+          mediaAssets={mediaAssets}
+          draggingOver={draggingOver}
+          uploading={uploading}
+          onSelect={setSelectedId}
+          onStartRename={setEditingNodeId}
+          onCommitRename={(id, name) => renameNode(id, name)}
+          onMove={moveNode}
+          onDuplicate={duplicateNode}
+          onDelete={deleteNode}
+          onAddFromLibrary={addFromLibrary}
+          onUploadFiles={uploadFiles}
+          onSetDraggingOver={setDraggingOver}
+        />
 
         {/* Preview + placement */}
         <main className="flex-1 flex flex-col min-w-0" onPointerMove={onHpPointerMove} onPointerUp={onHpPointerUp}>
           {selected ? (
             <>
               <div className="relative flex-1 bg-black overflow-hidden flex items-center justify-center">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  ref={imgRef}
-                  src={selected.panoramaUrl}
-                  alt={selected.name}
-                  onClick={handleImageClick}
-                  className={`max-w-full max-h-full object-contain select-none ${
-                    addMode ? 'cursor-crosshair' : 'cursor-default'
-                  }`}
-                  draggable={false}
-                  style={{
-                    filter: `brightness(${(selected.brightness ?? 100) / 100}) contrast(${(selected.contrast ?? 100) / 100})`,
+                <PanoramaPreview
+                  panoramaUrl={selected.panoramaUrl}
+                  hotspots={selected.defaultHotspots.map((h) => ({
+                    id: h.id,
+                    xPercent: h.xPercent,
+                    yPercent: h.yPercent,
+                    title: h.title,
+                    type: h.type as any,
+                  }))}
+                  initialYaw={selected.initialYaw}
+                  initialPitch={selected.initialPitch}
+                  addMode={addMode}
+                  onHotspotClick={(id) => {
+                    // Scroll the hotspot into view in the inspector
+                    const el = document.querySelector(`[data-hotspot-inspector="${id}"]`);
+                    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   }}
+                  onHotspotPositionChange={(id, xPct, yPct) => {
+                    updateHotspot(id, {
+                      xPercent: xPct,
+                      yPercent: yPct,
+                    });
+                  }}
+                  onRequestAddHotspot={(xPct, yPct) => {
+                    const newHp: Hotspot = {
+                      id: `hp-${Date.now()}-${Math.random()}`,
+                      xPercent: xPct,
+                      yPercent: yPct,
+                      title: 'New Hotspot',
+                      type: 'metadata',
+                      category: 'custom',
+                      description: '',
+                      color: 'emerald',
+                      icon: 'info',
+                    };
+                    updateRoom(selected.id, (r) => ({
+                      ...r,
+                      defaultHotspots: [...r.defaultHotspots, newHp],
+                    }));
+                    setAddMode(false);
+                  }}
+                  className="w-full h-full"
                 />
 
                 {/* Phase 3: Orientation bar + mini-map overlay */}
@@ -803,32 +687,10 @@ export default function TourEditorPage() {
                     showToast('North set to 0°.', 'success');
                   }}
                 />
-                {/* hotspot markers (draggable) */}
-                {selected.defaultHotspots.map((hp) => (
-                  <button
-                    key={hp.id}
-                    onPointerDown={(e) => onHpPointerDown(e, hp.id)}
-                    className="absolute -translate-x-1/2 -translate-y-1/2 z-10 cursor-move touch-none"
-                    style={{ left: `${hp.xPercent}%`, top: `${hp.yPercent}%` }}
-                    title={`${hp.title} (drag to move)`}
-                  >
-                    <span
-                      className={`flex items-center justify-center w-5 h-5 rounded-full text-white shadow-lg ${
-                        hp.type === 'room_link' ? 'bg-[#3ECF8E]' : 'bg-[#ec4899]'
-                      }`}
-                    >
-                      {hp.type === 'room_link' ? (
-                        <DoorOpen className="w-3 h-3" />
-                      ) : (
-                        <MapPin className="w-3 h-3" />
-                      )}
-                    </span>
-                  </button>
-                ))}
 
                 <button
                   onClick={() => setAddMode((v) => !v)}
-                  className={`absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-mono font-bold shadow-xl ${
+                  className={`absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-mono font-bold shadow-xl z-30 ${
                     addMode ? 'bg-rose-600 text-white' : 'bg-[#18181B] text-[#3ECF8E] border border-[#27272A]'
                   }`}
                 >
@@ -845,180 +707,32 @@ export default function TourEditorPage() {
         </main>
 
         {/* Hotspot inspector */}
-        <aside className="w-80 shrink-0 border-l border-[#27272A] overflow-y-auto p-3 space-y-3">
-          {selected && (
-            <>
-              {/* SCENE CONFIGURATION PANEL (VTDF: Identity / Nadir / Staging / Filter) */}
-              <SceneConfigPanel
-                room={selected}
-                onUpdate={(patch) => updateRoom(selected.id, (r) => ({ ...r, ...patch }))}
-                onReplacePanorama={replacePanorama}
-                onUploadAudio={uploadAudio}
-                onSetFeatured={setFeaturedScene}
-                isFeatured={!!selected.featured}
-                uploading={uploading}
-                audioUploading={uploading}
-              />
-
-              {/* Phase 3: View Constraints */}
-              <ViewConstraintsPanel
-                value={
-                  (selected as any).viewConstraints || {
-                    top: -90,
-                    bottom: 90,
-                    left: -180,
-                    right: 180,
-                    zoomMin: 60,
-                    zoomMax: 150,
-                    mobileZoomEnabled: false,
-                  }
-                }
-                onChange={(vc) => updateRoom(selected.id, (r) => ({ ...r, viewConstraints: vc } as any))}
-              />
-
-              <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">
-                Hotspots on “{selected.name}”
-              </div>
-              {selected.defaultHotspots.length === 0 && (
-                <div className="text-xs text-[#71717A] font-mono">
-                  No hotspots. Click “Add Hotspot” then click the image, or drag existing ones to move.
-                </div>
-              )}
-              {selected.defaultHotspots.map((hp) => (
-                <div key={hp.id} className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-3 space-y-2">
-                  {/* Coordinates row */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono text-[#71717A]">
-                      {hp.xPercent}% , {hp.yPercent}%
-                    </span>
-                  </div>
-
-                  {/* VTDF Hotspot Style / Label / Point / Global tabs */}
-                  <HotspotStyleTabs
-                    hotspot={hp}
-                    onChange={(patch) => updateHotspot(hp.id, patch)}
-                    onDelete={() => deleteHotspot(hp.id)}
-                    onCopy={() => {
-                      const copy = { ...hp, id: `hp-${Date.now()}-${Math.random()}` };
-                      updateRoom(selected.id, (r) => ({
-                        ...r,
-                        defaultHotspots: [...r.defaultHotspots, copy],
-                      }));
-                    }}
-                  />
-
-                  {/* Legacy core fields (title, description, media) kept for backward compat */}
-                  <div className="pt-2 mt-2 border-t border-[#27272A] space-y-2">
-                    <input
-                      value={hp.title}
-                      onChange={(e) => updateHotspot(hp.id, { title: e.target.value })}
-                      placeholder="Title"
-                      className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                    />
-                    <textarea
-                      value={hp.description}
-                      onChange={(e) => updateHotspot(hp.id, { description: e.target.value })}
-                      placeholder="Description"
-                      rows={2}
-                      className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white resize-none"
-                    />
-
-                    {hp.type === 'room_link' && (
-                      <select
-                        value={hp.targetRoomId || ''}
-                        onChange={(e) => setPortalTarget(hp.id, e.target.value)}
-                        className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                      >
-                        {rooms
-                          .filter((r) => r.id !== selected.id)
-                          .map((r) => (
-                            <option key={r.id} value={r.id}>
-                              → {r.name}
-                            </option>
-                          ))}
-                      </select>
-                    )}
-
-                    {hp.type === 'image' && (
-                      <input
-                        value={hp.mediaUrl || ''}
-                        onChange={(e) => updateHotspot(hp.id, { mediaUrl: e.target.value })}
-                        placeholder="Image URL (https://…)"
-                        className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                      />
-                    )}
-                    {hp.type === 'video' && (
-                      <input
-                        value={hp.mediaUrl || ''}
-                        onChange={(e) => updateHotspot(hp.id, { mediaUrl: e.target.value })}
-                        placeholder="Video URL (YouTube/Vimeo/mp4)"
-                        className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                      />
-                    )}
-                    {hp.type === 'info' && (
-                      <textarea
-                        value={hp.article || ''}
-                        onChange={(e) => updateHotspot(hp.id, { article: e.target.value })}
-                        placeholder="Article / long text content"
-                        rows={3}
-                        className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white resize-none"
-                      />
-                    )}
-                    {hp.type === 'audio' && (
-                      <input
-                        value={hp.audioUrl || ''}
-                        onChange={(e) => updateHotspot(hp.id, { audioUrl: e.target.value })}
-                        placeholder="Audio URL (mp3/wav)"
-                        className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                      />
-                    )}
-                    {hp.type === 'link' && (
-                      <input
-                        value={hp.externalUrl || ''}
-                        onChange={(e) => updateHotspot(hp.id, { externalUrl: e.target.value })}
-                        placeholder="https://… (product / external link)"
-                        className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                      />
-                    )}
-
-                    <div className="flex items-center gap-2">
-                      <select
-                        value={hp.category}
-                        onChange={(e) =>
-                          updateHotspot(hp.id, { category: e.target.value as HotspotCategory })
-                        }
-                        className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                      >
-                        {(['material', 'furniture', 'spatial', 'lighting', 'architecture', 'acoustic', 'portal', 'custom'] as HotspotCategory[]).map(
-                          (c) => (
-                            <option key={c} value={c}>
-                              {c}
-                            </option>
-                          )
-                        )}
-                      </select>
-                      <select
-                        value={hp.color || 'emerald'}
-                        onChange={(e) =>
-                          updateHotspot(hp.id, { color: e.target.value as HotspotColor })
-                        }
-                        className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                      >
-                        {(['rose', 'emerald', 'cyan', 'amber', 'violet', 'blue'] as HotspotColor[]).map(
-                          (c) => (
-                            <option key={c} value={c}>
-                              {c}
-                            </option>
-                          )
-                        )}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </>
-          )}
-        </aside>
+        {selected && (
+          <EditorRightSidebar
+            selected={selected}
+            allRooms={rooms}
+            onUpdateRoom={(patch) => updateRoom(selected.id, (r) => ({ ...r, ...patch }))}
+            onReplacePanorama={replacePanorama}
+            onUploadAudio={uploadAudio}
+            onSetFeatured={setFeaturedScene}
+            uploading={uploading}
+            onUpdateHotspot={updateHotspot}
+            onDeleteHotspot={deleteHotspot}
+            onCopyHotspot={(hpId) => {
+              const hp = selected.defaultHotspots.find((h) => h.id === hpId);
+              if (hp) {
+                updateRoom(selected.id, (r) => ({
+                  ...r,
+                  defaultHotspots: [
+                    ...r.defaultHotspots,
+                    { ...hp, id: `hp-${Date.now()}-${Math.random()}` },
+                  ],
+                }));
+              }
+            }}
+            onSetPortalTarget={setPortalTarget}
+          />
+        )}
       </div>
       ) : sectionTab === 'design' ? (
         <div className="flex-1 overflow-y-auto">

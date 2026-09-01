@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkles, Loader2 } from 'lucide-react';
 
 /**
  * The discovery form has been moved into the Admin Dashboard at:
@@ -14,7 +14,7 @@ import { ArrowRight, Sparkles } from 'lucide-react';
  * the admin dashboard's ClientDiscoveryManager under the "Live Intake Form"
  * tab.
  */
-export default function DiscoveryRedirectPage() {
+function DiscoveryRedirectContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -49,5 +49,21 @@ export default function DiscoveryRedirectPage() {
         </Link>
       </div>
     </main>
+  );
+}
+
+function DiscoveryLoading() {
+  return (
+    <main className="min-h-screen bg-[#09090B] text-[#FAFAFA] flex items-center justify-center">
+      <Loader2 className="w-6 h-6 animate-spin text-[#3ECF8E]" />
+    </main>
+  );
+}
+
+export default function DiscoveryRedirectPage() {
+  return (
+    <Suspense fallback={<DiscoveryLoading />}>
+      <DiscoveryRedirectContent />
+    </Suspense>
   );
 }

@@ -238,7 +238,7 @@ export default function PlayCanvasShowcasePage() {
                         </div>
                       }
                     >
-                      <PlayCanvasXRViewer />
+      <PlayCanvasXRViewer />
                     </Suspense>
                   </div>
                 </div>

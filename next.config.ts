@@ -18,7 +18,9 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   // Tree-shake barrel files for huge icon libraries.
-  optimizePackageImports: ['lucide-react', 'motion'],
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'motion'],
+  },
   // Allow access to remote image placeholder.
   images: {
     remotePatterns: [

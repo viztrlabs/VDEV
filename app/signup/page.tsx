@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 
-export default function SignupPage() {
+function SignupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/admin/dashboard';
@@ -142,5 +142,21 @@ export default function SignupPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+function SignupLoading() {
+  return (
+    <main className="min-h-screen flex items-center justify-center bg-[#09090B] text-white">
+      <div className="text-xs font-mono text-[#71717A]">Loading…</div>
+    </main>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<SignupLoading />}>
+      <SignupContent />
+    </Suspense>
   );
 }
