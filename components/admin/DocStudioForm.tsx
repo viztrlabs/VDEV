@@ -113,6 +113,60 @@ function LineItemsEditor({ items, onChange }: LineItemsProps) {
   );
 }
 
+interface InvestmentItemsProps {
+  items: Array<{ item: string; cost: string }>;
+  onChange: (items: Array<{ item: string; cost: string }>) => void;
+}
+
+function InvestmentItemsEditor({ items, onChange }: InvestmentItemsProps) {
+  const update = (idx: number, field: 'item' | 'cost', val: string) => {
+    const updated = items.map((it, i) => 
+      i === idx ? { ...it, [field]: val } : it
+    );
+    onChange(updated);
+  };
+  
+  const add = () => onChange([...items, { item: 'New service', cost: '₹' }]);
+  
+  const remove = (idx: number) => onChange(items.filter((_, i) => i !== idx));
+  
+  return (
+    <div className="space-y-2">
+      {items.map((it, idx) => (
+        <div key={idx} className="flex gap-2 items-center">
+          <input
+            type="text"
+            value={it.item}
+            onChange={(e) => update(idx, 'item', e.target.value)}
+            placeholder="Service name"
+            className="flex-1 px-3 py-1.5 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)] text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
+          />
+          <input
+            type="text"
+            value={it.cost}
+            onChange={(e) => update(idx, 'cost', e.target.value)}
+            placeholder="Price"
+            className="w-32 px-3 py-1.5 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)] text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
+          />
+          <button
+            onClick={() => remove(idx)}
+            className="p-1.5 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)] text-[var(--text-muted)] hover:text-red-400 transition-colors"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      ))}
+      <button
+        onClick={add}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-dashed border-[var(--primary)] text-[var(--primary)] text-xs hover:bg-[var(--primary)]/10 transition-colors"
+      >
+        <Plus className="w-3.5 h-3.5" />
+        Add service
+      </button>
+    </div>
+  );
+}
+
 interface DocStudioFormProps {
   readOnly?: boolean;
 }
@@ -222,7 +276,7 @@ export default function DocStudioForm({ readOnly = false }: DocStudioFormProps) 
             onChange={(v) => updateContent({ phase2: v })}
           />
           <SectionLabel>5 · Investment</SectionLabel>
-          <LineItemsEditor
+          <InvestmentItemsEditor
             items={(content as ProposalContent).investmentItems}
             onChange={(items) => updateContent({ investmentItems: items })}
           />
