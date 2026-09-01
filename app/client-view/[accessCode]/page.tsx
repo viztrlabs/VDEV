@@ -1,6 +1,6 @@
 'use client';
 
-import React, { use } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -14,7 +14,9 @@ import {
   Lock,
   ArrowRight,
   CheckCircle2,
-  TrendingUp
+  TrendingUp,
+  AlertCircle,
+  Loader2
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import ProjectTracker from '@/components/tracking/ProjectTracker';
@@ -66,6 +68,82 @@ export default function SharedClientViewPage({ params }: { params: Promise<{ acc
   const accessCode = resolvedParams.accessCode || 'VIZTR-882';
   const cleanCode = accessCode.toUpperCase();
 
+  const [validationState, setValidationState] = useState<'pending' | 'valid' | 'invalid'>('pending');
+  const [clientName, setClientName] = useState<string>('');
+
+  useEffect(() => {
+    let cancelled = false;
+    async function validate() {
+      // Skip validation for known demo access codes (back-compat for the public read-only demo)
+      if (cleanCode.startsWith('VIZTR-')) {
+        setValidationState('valid');
+        return;
+      }
+      try {
+        const res = await fetch(`/api/clients?accessCode=${encodeURIComponent(cleanCode)}`, {
+          cache: 'no-store',
+        });
+        if (cancelled) return;
+        if (!res.ok) {
+          setValidationState('invalid');
+          return;
+        }
+        const data = await res.json();
+        if (Array.isArray(data.clients) && data.clients.length > 0) {
+          setClientName(data.clients[0].name || '');
+          setValidationState('valid');
+        } else {
+          setValidationState('invalid');
+        }
+      } catch {
+        if (!cancelled) setValidationState('invalid');
+      }
+    }
+    validate();
+    return () => {
+      cancelled = true;
+    };
+  }, [cleanCode]);
+
+  if (validationState === 'pending') {
+    return (
+      <main className="min-h-screen bg-[#09090B] text-[#FAFAFA] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="w-7 h-7 text-[#3ECF8E] animate-spin" />
+          <p className="text-xs font-mono text-[#A1A1AA] uppercase tracking-wider">Validating access token…</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (validationState === 'invalid') {
+    return (
+      <main className="min-h-screen bg-[#09090B] text-[#FAFAFA] flex items-center justify-center px-4">
+        <div className="max-w-md text-center space-y-4 p-8 rounded-2xl bg-[#18181B] border border-[#27272A]">
+          <Lock className="w-8 h-8 text-amber-400 mx-auto" />
+          <h2 className="text-lg font-bold font-display text-white">Invalid Access Token</h2>
+          <p className="text-xs text-[#A1A1AA]">
+            The access code <span className="font-mono text-white">{accessCode}</span> was not recognized. Please verify the link or contact your VizTR project lead for a valid token.
+          </p>
+          <div className="flex items-center justify-center gap-2 pt-2">
+            <Link
+              href="/client-access"
+              className="px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider"
+            >
+              Client Portal Login
+            </Link>
+            <Link
+              href="/contact"
+              className="px-4 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-white font-mono text-xs"
+            >
+              Contact Studio
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   const matchedStats: ProjectStatsData = DEFAULT_PROJECT_STATS[cleanCode] || DEFAULT_PROJECT_STATS['VIZTR-882'];
 
   return (
@@ -98,7 +176,7 @@ export default function SharedClientViewPage({ params }: { params: Promise<{ acc
                 The Apex Tower — Stakeholder Review
               </h1>
               <p className="text-xs text-[#A1A1AA]">
-                Client: Foster & Partners • Authorization Key: <span className="text-white font-mono">{accessCode}</span>
+                Client: {clientName || 'Foster & Partners'} • Authorization Key: <span className="text-white font-mono">{accessCode}</span>
               </p>
             </div>
 

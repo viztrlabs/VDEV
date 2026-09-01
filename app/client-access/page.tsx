@@ -105,9 +105,20 @@ function ClientAccessInner() {
   };
 
   const handleGoogleLogin = async () => {
-    setLoading(true);
-    showToast('Redirecting to Google Enterprise OAuth...', 'info');
-    await signIn('google', { callbackUrl });
+    try {
+      setLoading(true);
+      showToast('Redirecting to Google Enterprise OAuth...', 'info');
+      const res = await signIn('google', { callbackUrl, redirect: false });
+      if (res?.error) {
+        setLoading(false);
+        showToast('Google OAuth is not configured or client ID is invalid. Please use credentials or configure GOOGLE_CLIENT_ID.', 'error');
+      } else if (res?.url) {
+        window.location.href = res.url;
+      }
+    } catch {
+      setLoading(false);
+      showToast('Unable to connect to Google OAuth service.', 'error');
+    }
   };
 
   const handleForgotAccessCode = (e: React.FormEvent) => {

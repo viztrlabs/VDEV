@@ -31,6 +31,8 @@ export interface TourSettings {
   theme: TourTheme;
   accessLevel: 'public' | 'private'; // private = link only, no public index
   version: number; // bumped on "clear cache" to force viewers to refetch fresh data
+  // VTED additions (all optional, additive non-breaking)
+  vted?: import('./vted-types').VtedSettings;
 }
 
 const DEFAULT_SETTINGS: TourSettings = {

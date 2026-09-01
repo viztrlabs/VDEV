@@ -1,12 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { signIn } from 'next-auth/react';
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
 
 export default function SignupPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/admin/dashboard';
   const [fullName, setFullName] = useState('');
   const [orgName, setOrgName] = useState('');
   const [email, setEmail] = useState('');
@@ -26,25 +29,50 @@ export default function SignupPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
     const supabase = createClient();
     if (!supabase) {
-      setError('Auth is not configured.');
+      setError('Auth is not configured. Add your Supabase keys to enable account creation.');
       return;
     }
+
     setBusy(true);
-    const { error } = await supabase.auth.signUp({
+
+    const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: { full_name: fullName, org_name: orgName, role: 'owner' },
       },
     });
-    setBusy(false);
-    if (error) {
-      setError(error.message);
+
+    if (signUpError) {
+      setBusy(false);
+      setError(signUpError.message);
       return;
     }
-    router.push('/admin/dashboard');
+
+    if (!data.user) {
+      setBusy(false);
+      setError('Unable to create the account. Please try again.');
+      return;
+    }
+
+    const result = await signIn('credentials', {
+      email,
+      password,
+      redirect: false,
+    });
+
+    setBusy(false);
+
+    if (result?.error) {
+      setError('Account created, but there was a session issue. Please sign in manually.');
+      return;
+    }
+
+    const destination = result?.url || callbackUrl || '/admin/dashboard';
+    router.push(destination);
     router.refresh();
   };
 

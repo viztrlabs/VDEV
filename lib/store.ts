@@ -13,6 +13,10 @@ export interface UserSession {
   role: 'SUPER_ADMIN' | 'ADMIN' | 'USER' | 'CLIENT';
   avatar?: string;
   projectId?: string;
+  clientId?: string;
+  accessCode?: string;
+  assignedDirector?: string;
+  clientFirm?: string;
 }
 
 export interface InAppNotification {
@@ -32,6 +36,10 @@ interface AppState {
   user: UserSession | null;
   setUser: (user: UserSession | null) => void;
   logout: () => void;
+
+  // Client notification scope: only notifications for these project IDs will surface
+  clientProjectIds: string[];
+  setClientProjectIds: (ids: string[]) => void;
 
   // Active Lightbox / Gallery Viewer
   lightboxOpen: boolean;
@@ -95,7 +103,10 @@ interface AppState {
 export const useAppStore = create<AppState>((set, get) => ({
   user: null,
   setUser: (user) => set({ user }),
-  logout: () => set({ user: null }),
+  logout: () => set({ user: null, clientProjectIds: [] }),
+
+  clientProjectIds: [],
+  setClientProjectIds: (ids) => set({ clientProjectIds: Array.isArray(ids) ? ids : [] }),
 
   lightboxOpen: false,
   lightboxItems: [],
@@ -215,6 +226,12 @@ export const useAppStore = create<AppState>((set, get) => ({
     // Check type filters
     if (type === 'status_change' && !state.notifyStatusChanges) return;
     if (type === 'milestone_ready' && !state.notifyMilestoneReady) return;
+
+    // Scope: if a client scope is active and the projectId is not in scope, skip
+    const scope = state.clientProjectIds;
+    if (scope.length > 0 && projectId && !scope.includes(projectId)) {
+      return;
+    }
 
     // Add to in-app notification list
     const newNotif: InAppNotification = {

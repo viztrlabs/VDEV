@@ -191,7 +191,7 @@ export default function DocStudioPreview() {
               <SectionTitle>2. Proposed Solution</SectionTitle>
               <p className="text-[13px] font-sans leading-relaxed">{escapeHtml((content as ProposalContent).solutionWhat)}</p>
               <p className="text-[13px] font-sans leading-relaxed">{escapeHtml((content as ProposalContent).solutionWhy)}</p>
-              <SectionTitle>3. What's Included</SectionTitle>
+              <SectionTitle>3. What&apos;s Included</SectionTitle>
               <p className="text-[13px] font-sans font-bold mb-1">Phase 1 — Core Build</p>
               <ul className="my-2 pl-5 font-sans">
                 {(content as ProposalContent).phase1.split('\n').filter(x => x.trim()).map((line, i) => (
@@ -229,7 +229,7 @@ export default function DocStudioPreview() {
               <LogoRow profile={profile} />
               <DocHeader profile={profile} title="Service Agreement" subtitle={escapeHtml((content as AgreementContent).project || 'Untitled')} />
               <p className="text-[13px] font-sans mb-4">
-                <b>Between:</b> {escapeHtml(profile.name)} ("Studio") and {escapeHtml((content as AgreementContent).client || 'Client')} ("Client") &nbsp; <b>Date:</b> {escapeHtml((content as AgreementContent).date)}
+                <b>Between:</b> {escapeHtml(profile.name)} (&quot;Studio&quot;) and {escapeHtml((content as AgreementContent).client || 'Client')} (&quot;Client&quot;) &nbsp; <b>Date:</b> {escapeHtml((content as AgreementContent).date)}
               </p>
               <SectionTitle>1. Scope of Work</SectionTitle>
               <p className="text-[13px] font-sans leading-relaxed">{escapeHtml((content as AgreementContent).scope)}</p>
@@ -376,7 +376,7 @@ export default function DocStudioPreview() {
               <p className="text-[13px] font-sans leading-relaxed">{escapeHtml((content as CaseStudyContent).result)}</p>
               {(content as CaseStudyContent).testimonial && (
                 <QuoteBlock>
-                  "{escapeHtml((content as CaseStudyContent).testimonial)}"
+                  &ldquo;{escapeHtml((content as CaseStudyContent).testimonial)}&rdquo;
                   {content.author && <><br />— {escapeHtml((content as CaseStudyContent).author)}</>}
                 </QuoteBlock>
               )}

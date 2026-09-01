@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from '@/lib/theme-provider';
+import NextAuthProvider from '@/components/providers/NextAuthProvider';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import GalleryViewer from '@/components/viewers/GalleryViewer';
@@ -32,8 +33,32 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className="dark">
-      <body className="min-h-screen flex flex-col bg-[#ffffff] dark:bg-[#09090b] text-[#0a0a0a] dark:text-[#f4f4f5] antialiased selection:bg-rose-500 selection:text-white" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem('viztr-theme') || 'dark';
+                  var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  var mode = saved === 'system' ? (systemDark ? 'dark' : 'light') : (saved === 'light' ? 'light' : 'dark');
+                  var themeId = saved === 'system' ? (systemDark ? 'dark' : 'light') : saved;
+                  document.documentElement.classList.add(mode);
+                  document.documentElement.classList.add('theme-' + themeId);
+                  if (saved === 'system') document.documentElement.classList.add('theme-system');
+                  document.documentElement.setAttribute('data-theme', themeId);
+                  document.documentElement.setAttribute('data-theme-setting', saved);
+                  document.documentElement.setAttribute('data-theme-mode', mode);
+                  document.documentElement.style.colorScheme = mode;
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="min-h-screen flex flex-col antialiased selection:bg-[#3ECF8E] selection:text-black" suppressHydrationWarning>
+        <NextAuthProvider>
         <ThemeProvider>
           {/* Main Global Sticky Header */}
           <Header />
@@ -52,6 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ToastNotification />
           <ThemePreviewModal />
         </ThemeProvider>
+        </NextAuthProvider>
       </body>
     </html>
   );

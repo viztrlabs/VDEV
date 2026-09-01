@@ -444,7 +444,7 @@ export const DEFAULT_TOUR_CONFIG: TourConfig = {
       floorPlanY: 50
     },
     {
-      id: 'room-cinema',
+      id: 'room-screening-lounge',
       name: 'Private Screening Lounge & Cinema',
       subtitle: 'Media Sanctuary · Dolby Atmos Acoustic Array',
       panoramaUrl: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2400&q=85',

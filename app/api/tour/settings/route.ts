@@ -11,7 +11,7 @@ export async function GET() {
   }
 }
 
-// PUT /api/tour/settings — persist admin changes
+// PUT /api/tour/settings — persist admin changes (including full VTED nested object)
 export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
@@ -22,6 +22,7 @@ export async function PUT(req: NextRequest) {
       theme: body.theme || {},
       accessLevel: body.accessLevel === 'private' ? 'private' : 'public',
       version: typeof body.version === 'number' ? body.version : 1,
+      vted: body.vted || {},
     });
     return NextResponse.json(saved);
   } catch (err: any) {

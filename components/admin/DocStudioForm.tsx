@@ -210,7 +210,7 @@ export default function DocStudioForm({ readOnly = false }: DocStudioFormProps) 
             value={(content as ProposalContent).solutionWhy}
             onChange={(v) => updateContent({ solutionWhy: v })}
           />
-          <SectionLabel>3 · What's Included (Phase 1)</SectionLabel>
+          <SectionLabel>3 · What&apos;s Included (Phase 1)</SectionLabel>
           <TextArea
             label="One feature per line"
             value={(content as ProposalContent).phase1}

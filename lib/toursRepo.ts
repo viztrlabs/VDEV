@@ -118,6 +118,7 @@ export async function saveTourSettings(input: Partial<TourSettings> & {
   live?: boolean;
   accessLevel?: 'public' | 'private';
   version?: number;
+  vted?: TourSettings['vted'];
 }): Promise<TourSettings> {
   const base = await localGetSettings();
   const full: TourSettings = {
@@ -129,6 +130,7 @@ export async function saveTourSettings(input: Partial<TourSettings> & {
     accessLevel: input.accessLevel ?? base.accessLevel,
     version: input.version ?? base.version,
     publicUrl: input.publicUrl ?? base.publicUrl,
+    vted: { ...(base.vted || {}), ...(input.vted || {}) },
   };
   const merged = await localSaveSettings(full);
 
@@ -152,6 +154,7 @@ export async function saveTourSettings(input: Partial<TourSettings> & {
           theme: merged.theme,
           accessLevel: merged.accessLevel,
           version: merged.version,
+          vted: merged.vted,
         },
       };
       const patch = {

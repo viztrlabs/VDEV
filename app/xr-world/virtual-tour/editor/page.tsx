@@ -2,6 +2,52 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+import HotspotStyleTabs from '@/components/editor/HotspotStyleTabs';
+import OrientationBar from '@/components/editor/OrientationBar';
+// Code-split heavy tab panels to keep initial bundle small.
+const SceneConfigPanel = dynamic(
+  () => import('@/components/editor/SceneConfigPanel'),
+  { ssr: false, loading: () => <div className="p-3 text-[10px] font-mono text-[#71717A]">Loading scene…</div> },
+);
+const ViewConstraintsPanel = dynamic(
+  () => import('@/components/editor/ViewConstraintsPanel'),
+  { ssr: false },
+);
+const DesignTabPanel = dynamic(
+  () => import('@/components/editor/DesignTabPanel'),
+  { ssr: false, loading: () => <div className="p-4 text-[10px] font-mono text-[#71717A]">Loading design…</div> },
+);
+const ComponentStylesPanel = dynamic(
+  () => import('@/components/editor/ComponentStylesPanel'),
+  { ssr: false },
+);
+const FloorplanManager = dynamic(
+  () => import('@/components/editor/FloorplanManager'),
+  { ssr: false, loading: () => <div className="p-4 text-[10px] font-mono text-[#71717A]">Loading floorplan…</div> },
+);
+const MapManager = dynamic(
+  () => import('@/components/editor/MapManager'),
+  { ssr: false },
+);
+const CanvasTab = dynamic(
+  () => import('@/components/editor/CanvasTab'),
+  { ssr: false, loading: () => <div className="p-4 text-[10px] font-mono text-[#71717A]">Loading canvas…</div> },
+);
+const CtaControlBarPanel = dynamic(
+  () => import('@/components/editor/CtaControlBarPanel'),
+  { ssr: false },
+);
+const MarketingPanel = dynamic(
+  () => import('@/components/editor/MarketingPanel'),
+  { ssr: false, loading: () => <div className="p-4 text-[10px] font-mono text-[#71717A]">Loading marketing…</div> },
+);
+const ContentSettingsPanel = dynamic(
+  () => import('@/components/editor/ContentSettingsPanel'),
+  { ssr: false },
+);
+import { useAppStore } from '@/lib/store';
+import { VTED_CONTROL_BAR_DEFAULTS } from '@/lib/vted-types';
 import {
   ArrowLeft,
   Save,
@@ -64,9 +110,14 @@ interface TourRoom {
   brightness?: number;
   contrast?: number;
   modelUrl?: string;
+  lat?: number;
+  lng?: number;
+  floorPlanX?: number;
+  floorPlanY?: number;
 }
 
 export default function TourEditorPage() {
+  const { showToast } = useAppStore();
   const [rooms, setRooms] = useState<TourRoom[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string>('');
@@ -77,14 +128,17 @@ export default function TourEditorPage() {
   const [error, setError] = useState('');
   const [draggingOver, setDraggingOver] = useState(false);
   const [editingNodeId, setEditingNodeId] = useState<string>('');
-  const [sectionTab, setSectionTab] = useState<'editor' | 'design' | 'content' | 'settings' | 'model' | 'marketing'>('editor');
+  const [sectionTab, setSectionTab] = useState<'editor' | 'design' | 'components' | 'content' | 'settings' | 'model' | 'marketing' | 'floorplan' | 'map' | 'canvas' | 'cta'>('editor');
   const [mediaAssets, setMediaAssets] = useState<{ name: string; url: string }[]>([]);
   const imgRef = useRef<HTMLImageElement>(null);
   const dragHpRef = useRef<string | null>(null);
 
   const load = useCallback(async () => {
     try {
-      const tourId = typeof window !== 'undefined' ? localStorage.getItem('viztr_active_tour') : '';
+      const url = new URL(typeof window !== 'undefined' ? window.location.href : 'http://localhost/');
+      const queryTour = url.searchParams.get('tour');
+      const lsTour = typeof window !== 'undefined' ? localStorage.getItem('viztr_active_tour') : null;
+      const tourId = queryTour || lsTour || '';
       const res = await fetch(`/api/tour${tourId ? `?tour=${tourId}` : ''}`);
       const data = await res.json();
       setRooms(data.rooms || []);
@@ -138,6 +192,7 @@ export default function TourEditorPage() {
     theme: { accentColor: string; logoUrl: string; title: string };
     accessLevel: 'public' | 'private';
     version: number;
+    vted?: Record<string, unknown>;
   } | null>(null);
 
   const loadSettings = useCallback(async () => {
@@ -189,6 +244,32 @@ export default function TourEditorPage() {
   // Non-editor tabs (settings / model / marketing) extracted to a plain
   // function-returning-JSX to avoid deeply-nested ternary brace fragility.
   const renderNonEditorTab = () => {
+    if (sectionTab === 'marketing') {
+      return (
+        <div className="flex-1 overflow-y-auto">
+          {settings && (
+            <MarketingPanel
+              value={
+                (settings as any).vted?.marketing || {
+                  forms: [],
+                  scripts: [],
+                }
+              }
+              onChange={(marketing) => {
+                setSettings({ ...settings, vted: { ...(settings as any).vted, marketing } } as any);
+                setSaved(false);
+              }}
+              onSave={() => persistSettings(settings)}
+              saved={saved}
+              roomOptions={rooms.map((r) => ({ id: r.id, name: r.name }))}
+              hotspotOptions={rooms.flatMap((r) =>
+                r.defaultHotspots.map((h) => ({ id: h.id, name: h.title || '(untitled)' })),
+              )}
+            />
+          )}
+        </div>
+      );
+    }
     if (sectionTab === 'model') {
       return (
         <div className="flex-1 overflow-y-auto p-6">
@@ -203,34 +284,6 @@ export default function TourEditorPage() {
             />
             <p className="text-[10px] font-mono text-[#71717A]">
               Attach a 3D model to the selected scene. The viewer overlays the model on the panorama.
-            </p>
-          </div>
-        </div>
-      );
-    }
-    if (sectionTab === 'marketing') {
-      return (
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-xl mx-auto space-y-4">
-            <h2 className="text-sm font-mono font-bold text-[#3ECF8E]">Marketing</h2>
-            <label className="block text-xs font-mono text-[#A1A1AA]">Public tour URL</label>
-            <input
-              value={settings?.publicUrl || '/xr-world/virtual-tour'}
-              readOnly
-              className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-            />
-            <button
-              onClick={() => {
-                const url = typeof window !== 'undefined' ? window.location.origin + (settings?.publicUrl || '/xr-world/virtual-tour') : '';
-                navigator.clipboard?.writeText(url);
-                setSaved(true);
-              }}
-              className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
-            >
-              Copy share link
-            </button>
-            <p className="text-[10px] font-mono text-[#71717A]">
-              Embed snippet is available in the admin panel publish kit.
             </p>
           </div>
         </div>
@@ -286,6 +339,24 @@ export default function TourEditorPage() {
       updateRoom(selected.id, (r) => ({ ...r, panoramaUrl: url, thumbnailUrl: url }));
     } catch (e: any) {
       setError(e?.message || 'upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const uploadAudio = async (file: File) => {
+    if (!selected) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('kind', 'audio');
+      const res = await fetch('/api/tour/upload', { method: 'POST', body: fd });
+      if (!res.ok) throw new Error('audio upload failed');
+      const { url } = await res.json();
+      updateRoom(selected.id, (r) => ({ ...r, backgroundAudioUrl: url }));
+    } catch (e: any) {
+      setError(e?.message || 'audio upload failed');
     } finally {
       setUploading(false);
     }
@@ -448,7 +519,10 @@ export default function TourEditorPage() {
     setSaving(true);
     setError('');
     try {
-      const tourId = typeof window !== 'undefined' ? localStorage.getItem('viztr_active_tour') : '';
+      const url = new URL(typeof window !== 'undefined' ? window.location.href : 'http://localhost/');
+      const queryTour = url.searchParams.get('tour');
+      const lsTour = typeof window !== 'undefined' ? localStorage.getItem('viztr_active_tour') : null;
+      const tourId = queryTour || lsTour || '';
       const res = await fetch(`/api/tour${tourId ? `?tour=${tourId}` : ''}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -505,10 +579,15 @@ export default function TourEditorPage() {
       </header>
 
       {/* SECTION NAV TABS */}
-      <div className="flex items-center gap-1 px-4 py-2 border-b border-[#27272A] bg-[#0c0c0f]">
+      <div className="flex items-center gap-1 px-4 py-2 border-b border-[#27272A] bg-[#0c0c0f] overflow-x-auto">
         {([
           ['editor', 'Tour Editor'],
+          ['canvas', 'Canvas'],
           ['design', 'Design'],
+          ['components', 'Components'],
+          ['floorplan', 'Floorplan'],
+          ['map', 'Map'],
+          ['cta', 'CTA & Bar'],
           ['content', 'Content'],
           ['model', 'Model'],
           ['marketing', 'Marketing'],
@@ -700,6 +779,29 @@ export default function TourEditorPage() {
                     addMode ? 'cursor-crosshair' : 'cursor-default'
                   }`}
                   draggable={false}
+                  style={{
+                    filter: `brightness(${(selected.brightness ?? 100) / 100}) contrast(${(selected.contrast ?? 100) / 100})`,
+                  }}
+                />
+
+                {/* Phase 3: Orientation bar + mini-map overlay */}
+                <OrientationBar
+                  yaw={selected.initialYaw}
+                  pitch={selected.initialPitch}
+                  roll={0}
+                  initialYaw={selected.initialYaw}
+                  initialPitch={selected.initialPitch}
+                  hotspotCount={selected.defaultHotspots.length}
+                  panoramaUrl={selected.panoramaUrl}
+                  hotspots={selected.defaultHotspots.map((h) => ({ id: h.id, xPercent: h.xPercent, yPercent: h.yPercent }))}
+                  onSaveDefault={() => {
+                    showToast('Default view set to current orientation.', 'success');
+                  }}
+                  onSetNorth={() => {
+                    setRoomField('initialYaw', 0);
+                    setRoomField('initialPitch', 0);
+                    showToast('North set to 0°.', 'success');
+                  }}
                 />
                 {/* hotspot markers (draggable) */}
                 {selected.defaultHotspots.map((hp) => (
@@ -746,69 +848,33 @@ export default function TourEditorPage() {
         <aside className="w-80 shrink-0 border-l border-[#27272A] overflow-y-auto p-3 space-y-3">
           {selected && (
             <>
-              {/* SCENE CONFIGURATION PANEL */}
-              <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-3 space-y-2">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A] flex items-center justify-between">
-                  Scene Settings
-                  <button
-                    onClick={setFeaturedScene}
-                    className={`text-[9px] px-2 py-0.5 rounded border ${
-                      selected.featured
-                        ? 'bg-[#3ECF8E]/15 border-[#3ECF8E]/40 text-[#3ECF8E]'
-                        : 'border-[#27272A] text-[#A1A1AA] hover:text-white'
-                    }`}
-                  >
-                    {selected.featured ? '★ Featured' : 'Set Featured'}
-                  </button>
-                </div>
-                <input
-                  value={selected.subtitle}
-                  onChange={(e) => setRoomField('subtitle', e.target.value)}
-                  placeholder="Subtitle"
-                  className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                />
-                <label className="block text-[10px] font-mono text-[#A1A1AA]">Replace panorama</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => e.target.files?.[0] && replacePanorama(e.target.files[0])}
-                  className="w-full text-[10px] text-[#71717A] file:mr-2 file:rounded file:border-0 file:bg-[#18181B] file:px-2 file:py-1 file:text-[#A1A1AA]"
-                />
-                <label className="block text-[10px] font-mono text-[#A1A1AA]">Per-scene background audio URL</label>
-                <input
-                  value={selected.backgroundAudioUrl || ''}
-                  onChange={(e) => setRoomField('backgroundAudioUrl', e.target.value)}
-                  placeholder="https://…/ambient.mp3"
-                  className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                />
-                <label className="block text-[10px] font-mono text-[#A1A1AA]">Nadir / floor logo URL</label>
-                <input
-                  value={selected.nadirLogoUrl || ''}
-                  onChange={(e) => setRoomField('nadirLogoUrl', e.target.value)}
-                  placeholder="https://…/logo.png (floor fix)"
-                  className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                />
-                <div className="flex items-center gap-2">
-                  <label className="block text-[10px] font-mono text-[#A1A1AA] flex-1">
-                    Brightness {Math.round((selected.brightness ?? 100))}%
-                    <input
-                      type="range" min={40} max={160} value={selected.brightness ?? 100}
-                      onChange={(e) => setRoomField('brightness', Number(e.target.value))}
-                      className="w-full"
-                    />
-                  </label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <label className="block text-[10px] font-mono text-[#A1A1AA] flex-1">
-                    Contrast {Math.round((selected.contrast ?? 100))}%
-                    <input
-                      type="range" min={40} max={160} value={selected.contrast ?? 100}
-                      onChange={(e) => setRoomField('contrast', Number(e.target.value))}
-                      className="w-full"
-                    />
-                  </label>
-                </div>
-              </div>
+              {/* SCENE CONFIGURATION PANEL (VTDF: Identity / Nadir / Staging / Filter) */}
+              <SceneConfigPanel
+                room={selected}
+                onUpdate={(patch) => updateRoom(selected.id, (r) => ({ ...r, ...patch }))}
+                onReplacePanorama={replacePanorama}
+                onUploadAudio={uploadAudio}
+                onSetFeatured={setFeaturedScene}
+                isFeatured={!!selected.featured}
+                uploading={uploading}
+                audioUploading={uploading}
+              />
+
+              {/* Phase 3: View Constraints */}
+              <ViewConstraintsPanel
+                value={
+                  (selected as any).viewConstraints || {
+                    top: -90,
+                    bottom: 90,
+                    left: -180,
+                    right: 180,
+                    zoomMin: 60,
+                    zoomMax: 150,
+                    mobileZoomEnabled: false,
+                  }
+                }
+                onChange={(vc) => updateRoom(selected.id, (r) => ({ ...r, viewConstraints: vc } as any))}
+              />
 
               <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">
                 Hotspots on “{selected.name}”
@@ -820,149 +886,133 @@ export default function TourEditorPage() {
               )}
               {selected.defaultHotspots.map((hp) => (
                 <div key={hp.id} className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-3 space-y-2">
+                  {/* Coordinates row */}
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-mono text-[#71717A]">
                       {hp.xPercent}% , {hp.yPercent}%
                     </span>
-                    <button
-                      onClick={() => deleteHotspot(hp.id)}
-                      className="text-rose-400 hover:text-rose-300"
-                      title="Delete hotspot"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
                   </div>
 
-                  <input
-                    value={hp.title}
-                    onChange={(e) => updateHotspot(hp.id, { title: e.target.value })}
-                    placeholder="Title"
-                    className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                  />
-                  <textarea
-                    value={hp.description}
-                    onChange={(e) => updateHotspot(hp.id, { description: e.target.value })}
-                    placeholder="Description"
-                    rows={2}
-                    className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white resize-none"
-                  />
-
-                  <select
-                    value={hp.type}
-                    onChange={(e) => {
-                      const t = e.target.value as Hotspot['type'];
-                      if (t === 'room_link') {
-                        setPortalTarget(hp.id, rooms.find((r) => r.id !== selected.id)?.id || '');
-                      } else {
-                        updateHotspot(hp.id, {
-                          type: t,
-                          category: 'custom',
-                          targetRoomId: undefined,
-                          targetRoomName: undefined,
-                          targetPanoramaUrl: undefined,
-                        });
-                      }
+                  {/* VTDF Hotspot Style / Label / Point / Global tabs */}
+                  <HotspotStyleTabs
+                    hotspot={hp}
+                    onChange={(patch) => updateHotspot(hp.id, patch)}
+                    onDelete={() => deleteHotspot(hp.id)}
+                    onCopy={() => {
+                      const copy = { ...hp, id: `hp-${Date.now()}-${Math.random()}` };
+                      updateRoom(selected.id, (r) => ({
+                        ...r,
+                        defaultHotspots: [...r.defaultHotspots, copy],
+                      }));
                     }}
-                    className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                  >
-                    <option value="metadata">Metadata / Info tag</option>
-                    <option value="room_link">Portal (link to node)</option>
-                    <option value="image">Image popup</option>
-                    <option value="video">Video popup</option>
-                    <option value="info">Article / Text panel</option>
-                    <option value="audio">Audio hotspot</option>
-                    <option value="link">External link / Product</option>
-                  </select>
+                  />
 
-                  {hp.type === 'room_link' && (
-                    <select
-                      value={hp.targetRoomId || ''}
-                      onChange={(e) => setPortalTarget(hp.id, e.target.value)}
-                      className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                    >
-                      {rooms
-                        .filter((r) => r.id !== selected.id)
-                        .map((r) => (
-                          <option key={r.id} value={r.id}>
-                            → {r.name}
-                          </option>
-                        ))}
-                    </select>
-                  )}
-
-                  {hp.type === 'image' && (
+                  {/* Legacy core fields (title, description, media) kept for backward compat */}
+                  <div className="pt-2 mt-2 border-t border-[#27272A] space-y-2">
                     <input
-                      value={hp.mediaUrl || ''}
-                      onChange={(e) => updateHotspot(hp.id, { mediaUrl: e.target.value })}
-                      placeholder="Image URL (https://…)"
+                      value={hp.title}
+                      onChange={(e) => updateHotspot(hp.id, { title: e.target.value })}
+                      placeholder="Title"
                       className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
                     />
-                  )}
-                  {hp.type === 'video' && (
-                    <input
-                      value={hp.mediaUrl || ''}
-                      onChange={(e) => updateHotspot(hp.id, { mediaUrl: e.target.value })}
-                      placeholder="Video URL (YouTube/Vimeo/mp4)"
-                      className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                    />
-                  )}
-                  {hp.type === 'info' && (
                     <textarea
-                      value={hp.article || ''}
-                      onChange={(e) => updateHotspot(hp.id, { article: e.target.value })}
-                      placeholder="Article / long text content"
-                      rows={3}
+                      value={hp.description}
+                      onChange={(e) => updateHotspot(hp.id, { description: e.target.value })}
+                      placeholder="Description"
+                      rows={2}
                       className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white resize-none"
                     />
-                  )}
-                  {hp.type === 'audio' && (
-                    <input
-                      value={hp.audioUrl || ''}
-                      onChange={(e) => updateHotspot(hp.id, { audioUrl: e.target.value })}
-                      placeholder="Audio URL (mp3/wav)"
-                      className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                    />
-                  )}
-                  {hp.type === 'link' && (
-                    <input
-                      value={hp.externalUrl || ''}
-                      onChange={(e) => updateHotspot(hp.id, { externalUrl: e.target.value })}
-                      placeholder="https://… (product / external link)"
-                      className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                    />
-                  )}
 
-                  <div className="flex items-center gap-2">
-                    <select
-                      value={hp.category}
-                      onChange={(e) =>
-                        updateHotspot(hp.id, { category: e.target.value as HotspotCategory })
-                      }
-                      className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                    >
-                      {(['material', 'furniture', 'spatial', 'lighting', 'architecture', 'acoustic', 'portal', 'custom'] as HotspotCategory[]).map(
-                        (c) => (
-                          <option key={c} value={c}>
-                            {c}
-                          </option>
-                        )
-                      )}
-                    </select>
-                    <select
-                      value={hp.color || 'emerald'}
-                      onChange={(e) =>
-                        updateHotspot(hp.id, { color: e.target.value as HotspotColor })
-                      }
-                      className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                    >
-                      {(['rose', 'emerald', 'cyan', 'amber', 'violet', 'blue'] as HotspotColor[]).map(
-                        (c) => (
-                          <option key={c} value={c}>
-                            {c}
-                          </option>
-                        )
-                      )}
-                    </select>
+                    {hp.type === 'room_link' && (
+                      <select
+                        value={hp.targetRoomId || ''}
+                        onChange={(e) => setPortalTarget(hp.id, e.target.value)}
+                        className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                      >
+                        {rooms
+                          .filter((r) => r.id !== selected.id)
+                          .map((r) => (
+                            <option key={r.id} value={r.id}>
+                              → {r.name}
+                            </option>
+                          ))}
+                      </select>
+                    )}
+
+                    {hp.type === 'image' && (
+                      <input
+                        value={hp.mediaUrl || ''}
+                        onChange={(e) => updateHotspot(hp.id, { mediaUrl: e.target.value })}
+                        placeholder="Image URL (https://…)"
+                        className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                      />
+                    )}
+                    {hp.type === 'video' && (
+                      <input
+                        value={hp.mediaUrl || ''}
+                        onChange={(e) => updateHotspot(hp.id, { mediaUrl: e.target.value })}
+                        placeholder="Video URL (YouTube/Vimeo/mp4)"
+                        className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                      />
+                    )}
+                    {hp.type === 'info' && (
+                      <textarea
+                        value={hp.article || ''}
+                        onChange={(e) => updateHotspot(hp.id, { article: e.target.value })}
+                        placeholder="Article / long text content"
+                        rows={3}
+                        className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white resize-none"
+                      />
+                    )}
+                    {hp.type === 'audio' && (
+                      <input
+                        value={hp.audioUrl || ''}
+                        onChange={(e) => updateHotspot(hp.id, { audioUrl: e.target.value })}
+                        placeholder="Audio URL (mp3/wav)"
+                        className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                      />
+                    )}
+                    {hp.type === 'link' && (
+                      <input
+                        value={hp.externalUrl || ''}
+                        onChange={(e) => updateHotspot(hp.id, { externalUrl: e.target.value })}
+                        placeholder="https://… (product / external link)"
+                        className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                      />
+                    )}
+
+                    <div className="flex items-center gap-2">
+                      <select
+                        value={hp.category}
+                        onChange={(e) =>
+                          updateHotspot(hp.id, { category: e.target.value as HotspotCategory })
+                        }
+                        className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                      >
+                        {(['material', 'furniture', 'spatial', 'lighting', 'architecture', 'acoustic', 'portal', 'custom'] as HotspotCategory[]).map(
+                          (c) => (
+                            <option key={c} value={c}>
+                              {c}
+                            </option>
+                          )
+                        )}
+                      </select>
+                      <select
+                        value={hp.color || 'emerald'}
+                        onChange={(e) =>
+                          updateHotspot(hp.id, { color: e.target.value as HotspotColor })
+                        }
+                        className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                      >
+                        {(['rose', 'emerald', 'cyan', 'amber', 'violet', 'blue'] as HotspotColor[]).map(
+                          (c) => (
+                            <option key={c} value={c}>
+                              {c}
+                            </option>
+                          )
+                        )}
+                      </select>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -971,45 +1021,214 @@ export default function TourEditorPage() {
         </aside>
       </div>
       ) : sectionTab === 'design' ? (
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-xl mx-auto space-y-4">
-            <h2 className="text-sm font-mono font-bold text-[#3ECF8E]">Design — Branding</h2>
-            {settings && (
-              <>
-                <label className="block text-xs font-mono text-[#A1A1AA]">Accent color</label>
-                <input
-                  type="color"
-                  value={settings.theme.accentColor}
-                  onChange={(e) => setSettings({ ...settings, theme: { ...settings.theme, accentColor: e.target.value } })}
-                  className="w-12 h-8 bg-transparent border border-[#27272A] rounded"
-                />
-                <label className="block text-xs font-mono text-[#A1A1AA]">Client logo URL</label>
-                <input
-                  value={settings.theme.logoUrl}
-                  onChange={(e) => setSettings({ ...settings, theme: { ...settings.theme, logoUrl: e.target.value } })}
-                  placeholder="https://…/logo.png"
-                  className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                />
-                <label className="block text-xs font-mono text-[#A1A1AA]">Tour title</label>
-                <input
-                  value={settings.theme.title}
-                  onChange={(e) => setSettings({ ...settings, theme: { ...settings.theme, title: e.target.value } })}
-                  className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
-                />
-                <button
-                  onClick={() => persistSettings(settings)}
-                  className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
-                >
-                  Save Branding
-                </button>
-              </>
-            )}
-          </div>
+        <div className="flex-1 overflow-y-auto">
+          {settings && (
+            <DesignTabPanel
+              value={
+                (settings as any).vted?.design || {
+                  preset: 'default',
+                  primaryColor: settings.theme.accentColor,
+                  textColor: '#FAFAFA',
+                  primaryFont: 'Inter',
+                  secondaryFont: 'Inter',
+                }
+              }
+              onChange={(design) => {
+                const next = { ...settings, vted: { ...(settings as any).vted, design } } as any;
+                // Also keep the legacy `theme.accentColor` in sync
+                next.theme = { ...settings.theme, accentColor: design.primaryColor || settings.theme.accentColor };
+                setSettings(next);
+                setSaved(false);
+              }}
+              onSave={() => persistSettings(settings)}
+              saved={saved}
+            />
+          )}
+        </div>
+      ) : sectionTab === 'components' ? (
+        <div className="flex-1 overflow-y-auto">
+          {settings && (
+            <ComponentStylesPanel
+              form={
+                (settings as any).vted?.formStyle || {
+                  layout: 'dialog',
+                  position: 'right',
+                  backgroundColor: '#18181B',
+                  overlayColor: '#00000080',
+                }
+              }
+              polygon={
+                (settings as any).vted?.polygonStyle || {
+                  backgroundColor: '#FFFFFF20',
+                  backgroundHoverColor: '#FFFFFF50',
+                  borderColor: '#3ECF8E',
+                  borderHoverColor: '#3ECF8E',
+                  borderWidth: 2,
+                }
+              }
+              popup={
+                (settings as any).vted?.popupStyle || {
+                  backgroundColor: '#18181B',
+                  textColor: '#FAFAFA',
+                }
+              }
+              onChangeForm={(formStyle) => {
+                setSettings({ ...settings, vted: { ...(settings as any).vted, formStyle } } as any);
+                setSaved(false);
+              }}
+              onChangePolygon={(polygonStyle) => {
+                setSettings({ ...settings, vted: { ...(settings as any).vted, polygonStyle } } as any);
+                setSaved(false);
+              }}
+              onChangePopup={(popupStyle) => {
+                setSettings({ ...settings, vted: { ...(settings as any).vted, popupStyle } } as any);
+                setSaved(false);
+              }}
+              onSave={() => persistSettings(settings)}
+              saved={saved}
+            />
+          )}
+        </div>
+      ) : sectionTab === 'floorplan' ? (
+        <div className="flex-1 overflow-y-auto">
+          {settings && (
+            <FloorplanManager
+              display={(settings as any).vted?.floorplanDisplay}
+              onChangeDisplay={(floorplanDisplay) => {
+                setSettings({ ...settings, vted: { ...(settings as any).vted, floorplanDisplay } } as any);
+                setSaved(false);
+              }}
+              onSave={() => persistSettings(settings)}
+              saved={saved}
+            />
+          )}
+        </div>
+      ) : sectionTab === 'map' ? (
+        <div className="flex-1 overflow-y-auto">
+          {settings && (
+            <MapManager
+              rooms={rooms}
+              onUpdateRoom={(roomId, lat, lng) =>
+                updateRoom(roomId, (r) => ({ ...r, lat, lng } as any))
+              }
+              display={(settings as any).vted?.googleMap}
+              onChangeDisplay={(googleMap) => {
+                setSettings({ ...settings, vted: { ...(settings as any).vted, googleMap } } as any);
+                setSaved(false);
+              }}
+              onSave={() => persistSettings(settings)}
+              saved={saved}
+            />
+          )}
+        </div>
+      ) : sectionTab === 'canvas' ? (
+        <CanvasTab
+          rooms={rooms}
+          onUpdateRoom={(roomId, x, y) =>
+            updateRoom(roomId, (r) => ({ ...r, floorPlanX: x, floorPlanY: y } as any))
+          }
+          onAutoLink={() => {
+            // Create portal hotspots between scenes within ~0.02 degree lat/lng
+            const radius = 0.02;
+            const updates: Record<string, any> = {};
+            rooms.forEach((r) => {
+              const rLat = (r as any).lat;
+              const rLng = (r as any).lng;
+              if (typeof rLat !== 'number' || typeof rLng !== 'number') return;
+              rooms.forEach((o) => {
+                if (o.id === r.id) return;
+                const oLat = (o as any).lat;
+                const oLng = (o as any).lng;
+                if (typeof oLat !== 'number' || typeof oLng !== 'number') return;
+                const dLat = Math.abs(rLat - oLat);
+                const dLng = Math.abs(rLng - oLng);
+                if (dLat <= radius && dLng <= radius) {
+                  const existing = r.defaultHotspots.find(
+                    (h) => h.type === 'room_link' && (h as any).targetRoomId === o.id,
+                  );
+                  if (!existing) {
+                    const hp = {
+                      id: `hp-${Date.now()}-${Math.random()}`,
+                      xPercent: 50,
+                      yPercent: 50,
+                      title: `→ ${o.name}`,
+                      type: 'room_link' as const,
+                      category: 'portal' as const,
+                      description: '',
+                      targetRoomId: o.id,
+                      targetRoomName: o.name,
+                      targetPanoramaUrl: o.panoramaUrl,
+                      targetYaw: 180,
+                      icon: 'door',
+                      color: 'emerald',
+                    };
+                    updates[r.id] = {
+                      ...r,
+                      defaultHotspots: [...r.defaultHotspots, hp],
+                    };
+                  }
+                }
+              });
+            });
+            if (Object.keys(updates).length > 0) {
+              setRooms((prev) => prev.map((r) => updates[r.id] || r));
+              setSaved(false);
+              showToast(`Auto-linked ${Object.keys(updates).length} scene(s).`, 'success');
+            } else {
+              showToast('No scenes within GPS radius.', 'info');
+            }
+          }}
+          onSave={save}
+          saved={saved}
+        />
+      ) : sectionTab === 'cta' ? (
+        <div className="flex-1 overflow-y-auto">
+          {settings && (
+            <CtaControlBarPanel
+              cta={
+                (settings as any).vted?.callToAction || {
+                  layout: 'bubble',
+                  position: 'right',
+                  offsetLeft: 0,
+                  offsetRight: 24,
+                  offsetBottom: 96,
+                }
+              }
+              onChangeCta={(callToAction) => {
+                setSettings({ ...settings, vted: { ...(settings as any).vted, callToAction } } as any);
+                setSaved(false);
+              }}
+              controlBar={(settings as any).vted?.controlBar || { items: VTED_CONTROL_BAR_DEFAULTS }}
+              onChangeControlBar={(controlBar) => {
+                setSettings({ ...settings, vted: { ...(settings as any).vted, controlBar } } as any);
+                setSaved(false);
+              }}
+              onSave={() => persistSettings(settings)}
+              saved={saved}
+            />
+          )}
         </div>
       ) : sectionTab === 'content' ? (
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-xl mx-auto space-y-3">
-            <h2 className="text-sm font-mono font-bold text-[#3ECF8E]">Content — All Hotspots</h2>
+        <div className="flex-1 overflow-y-auto">
+          {settings && (
+            <ContentSettingsPanel
+              value={
+                (settings as any).vted?.content || {
+                  multiLanguage: false,
+                }
+              }
+              onChange={(content) => {
+                setSettings({ ...settings, vted: { ...(settings as any).vted, content } } as any);
+                setSaved(false);
+              }}
+              onSave={() => persistSettings(settings)}
+              saved={saved}
+              sceneOptions={rooms.map((r) => ({ id: r.id, name: r.name }))}
+            />
+          )}
+
+          <div className="max-w-3xl mx-auto px-4 pb-4 space-y-3">
+            <h2 className="text-sm font-mono font-bold text-[#3ECF8E]">All Hotspots</h2>
             {rooms.map((r) => (
               <div key={r.id} className="rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3">
                 <div className="text-xs font-mono text-white mb-1">{r.name}</div>

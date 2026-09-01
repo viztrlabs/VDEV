@@ -26,7 +26,7 @@ import ThemePreviewModal from '@/components/ui/ThemePreviewModal';
 
 export default function Header() {
   const pathname = usePathname();
-  const { theme, cycleTheme } = useTheme();
+  const { theme, setTheme, cycleTheme } = useTheme();
   const { user } = useAppStore();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -551,10 +551,55 @@ export default function Header() {
             </Link>
           </div>
 
-          <div className="pt-6 border-t border-zinc-200 dark:border-zinc-800 space-y-3">
+          <div className="pt-6 border-t border-[#27272A] space-y-4">
+            <div className="flex items-center justify-between px-1">
+              <span className="text-xs font-mono text-[#A1A1AA]">Appearance</span>
+              <div className="flex items-center gap-1 p-1 bg-[#18181B] rounded-lg border border-[#27272A]">
+                <button
+                  type="button"
+                  onClick={() => setTheme('light')}
+                  className={`px-2.5 py-1.5 rounded-md flex items-center gap-1.5 text-xs font-mono transition-all ${
+                    theme === 'light'
+                      ? 'bg-[#27272A] text-amber-400 font-bold border border-amber-500/30'
+                      : 'text-[#71717A] hover:text-white'
+                  }`}
+                  title="Light (Daylight)"
+                >
+                  <Sun className="w-3.5 h-3.5" />
+                  <span>Light</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTheme('dark')}
+                  className={`px-2.5 py-1.5 rounded-md flex items-center gap-1.5 text-xs font-mono transition-all ${
+                    theme === 'dark'
+                      ? 'bg-[#27272A] text-[#3ECF8E] font-bold border border-[#3ECF8E]/30'
+                      : 'text-[#71717A] hover:text-white'
+                  }`}
+                  title="Dark (Cyber Emerald)"
+                >
+                  <Moon className="w-3.5 h-3.5" />
+                  <span>Dark</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTheme('system')}
+                  className={`px-2.5 py-1.5 rounded-md flex items-center gap-1.5 text-xs font-mono transition-all ${
+                    theme === 'system'
+                      ? 'bg-[#27272A] text-sky-400 font-bold border border-sky-500/30'
+                      : 'text-[#71717A] hover:text-white'
+                  }`}
+                  title="System Auto"
+                >
+                  <Monitor className="w-3.5 h-3.5" />
+                  <span>System</span>
+                </button>
+              </div>
+            </div>
+
             <Link
               href="/client-access"
-              className="w-full py-3 text-center block rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-medium shadow"
+              className="w-full py-3 text-center block rounded-xl bg-[#3ECF8E] hover:bg-[#34B27B] text-black font-semibold shadow"
             >
               Client Portal Access
             </Link>

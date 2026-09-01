@@ -34,6 +34,30 @@ export const ALL_STAGES = [
 
 export const mockTrackedProjects: TrackedProject[] = [
   {
+    id: 'VIZTR-DEMO',
+    accessCode: 'DEMO-2026',
+    name: 'The Horizon Pavilion - Flagship Architectural Showcase',
+    clientName: 'Foster & Partners Studio Group',
+    clientEmail: 'commissions@fosterandpartners.com',
+    serviceCategory: 'Pixel Streaming Experience',
+    progressPercentage: 75,
+    currentStage: 4,
+    targetCompletion: 'April 10, 2026',
+    status: 'Client Review',
+    unreadUpdates: 3,
+    stages: ALL_STAGES.map((s) => ({
+      stage: s.stage,
+      name: s.name,
+      status: s.stage < 4 ? 'completed' : s.stage === 4 ? 'in-progress' : 'pending',
+      date: s.stage <= 4 ? `Feb ${s.stage * 4 + 2}, 2026` : undefined,
+      description: s.desc,
+      deliverables: s.stage === 3 ? [
+        { name: 'Horizon_Pavilion_Clay_4K.jpg', type: 'JPG', size: '6.8 MB' },
+        { name: 'Horizon_Pavilion_BIM_LOD400.ifc', type: 'IFC', size: '48.2 MB' }
+      ] : undefined
+    }))
+  },
+  {
     id: 'VZ-9021',
     accessCode: 'ALPHA-99',
     name: 'The Solarium Sky Penthouse - Triplex Visualization',

@@ -1,18 +1,8 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { useTheme, ThemeId, ThemeConfig } from '@/lib/theme-provider';
-import {
-  Palette,
-  Sun,
-  Moon,
-  Monitor,
-  Sparkles,
-  Check,
-  Eye,
-  Sliders,
-  ChevronRight
-} from 'lucide-react';
+import { useTheme, ThemeId } from '@/lib/theme-provider';
+import { Sun, Moon, Monitor, Check } from 'lucide-react';
 
 export default function ThemeSwitcherDropdown() {
   const {
@@ -20,15 +10,13 @@ export default function ThemeSwitcherDropdown() {
     previewThemeId,
     setTheme,
     previewTheme,
-    availableThemes,
-    setThemeModalOpen,
+    resolvedTheme,
   } = useTheme();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const activeConfig =
-    availableThemes.find((t) => t.id === (previewThemeId || theme)) || availableThemes[0];
+  const activeThemeId = previewThemeId || theme;
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -47,124 +35,108 @@ export default function ThemeSwitcherDropdown() {
     previewTheme(null);
   };
 
-  const getThemeIcon = (id: ThemeId) => {
-    switch (id) {
-      case 'light':
-        return <Sun className="w-4 h-4 text-amber-400" />;
-      case 'glass':
-        return <Sparkles className="w-4 h-4 text-cyan-400" />;
-      case 'system':
-        return <Monitor className="w-4 h-4 text-sky-400" />;
-      case 'dark':
-      case 'obsidian':
-      case 'bronze':
-      case 'blueprint':
-      default:
-        return <Moon className="w-4 h-4 text-[#3ECF8E]" />;
+  // Only 3 primary modes for public pages: Light, Dark, System
+  const PUBLIC_THEME_OPTIONS: Array<{
+    id: ThemeId;
+    label: string;
+    description: string;
+    icon: React.ReactNode;
+  }> = [
+    {
+      id: 'light',
+      label: 'Light',
+      description: 'Daylight Clean Mode',
+      icon: <Sun className="w-4 h-4 text-amber-500" />,
+    },
+    {
+      id: 'dark',
+      label: 'Dark',
+      description: 'Cyber Emerald Dark',
+      icon: <Moon className="w-4 h-4 text-[#3ECF8E]" />,
+    },
+    {
+      id: 'system',
+      label: 'System',
+      description: 'Automatic OS Sync',
+      icon: <Monitor className="w-4 h-4 text-sky-400" />,
+    },
+  ];
+
+  const getActiveSign = () => {
+    if (activeThemeId === 'light') {
+      return <Sun className="w-4 h-4 text-amber-500" />;
     }
+    if (activeThemeId === 'system') {
+      return <Monitor className="w-4 h-4 text-sky-400" />;
+    }
+    // Dark or any dark preset
+    return <Moon className="w-4 h-4 text-[#3ECF8E]" />;
   };
 
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* TRIGGER BUTTON - DISPLAYS ONLY THE SELECTED THEME ICON */}
+      {/* TRIGGER BUTTON - DISPLAYS ONLY THE ACTIVE SIGN (SUN / MOON / SYSTEM) */}
       <button
         id="theme-switcher-btn"
         type="button"
         onClick={() => setDropdownOpen(!dropdownOpen)}
         suppressHydrationWarning
         className="p-2 rounded-md bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/40 transition-all cursor-pointer flex items-center justify-center text-white focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]"
-        title={`Theme: ${activeConfig.name} (Click to switch Light / Dark / System / Glassmorphism)`}
-        aria-label={`Current theme is ${activeConfig.name}. Click to change theme.`}
+        title={`Theme: ${activeThemeId.toUpperCase()} (Click to switch Light / Dark / System)`}
+        aria-label={`Current theme is ${activeThemeId}. Click to switch theme.`}
       >
-        {getThemeIcon(activeConfig.id)}
+        {getActiveSign()}
       </button>
 
       {/* DROPDOWN MENU */}
       {dropdownOpen && (
         <div
           id="theme-switcher-dropdown"
-          className="absolute right-0 top-full mt-2 w-72 rounded-xl bg-[#14171F] border border-[#27272A] shadow-2xl shadow-black/80 py-2 z-[100] animate-in fade-in slide-in-from-top-2 duration-150 text-[#FAFAFA]"
+          className="absolute right-0 top-full mt-2 w-56 rounded-xl bg-[#18181B] border border-[#27272A] shadow-2xl shadow-black/80 p-1.5 z-[100] animate-in fade-in slide-in-from-top-2 duration-150 text-[#FAFAFA]"
         >
-          {/* HEADER */}
-          <div className="px-3.5 py-2 border-b border-[#27272A] flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-zinc-400">
-              <Palette className="w-3.5 h-3.5 text-[#3ECF8E]" />
-              <span>Switch Studio Theme</span>
-            </div>
-            <span className="text-[10px] font-mono text-zinc-500">{availableThemes.length} Themes</span>
+          <div className="px-2.5 py-1.5 border-b border-[#27272A] mb-1 flex items-center justify-between">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#A1A1AA]">
+              Appearance
+            </span>
+            <span className="text-[9px] font-mono text-[#71717A] capitalize">
+              {resolvedTheme} Mode
+            </span>
           </div>
 
-          {/* THEME ITEMS LIST */}
-          <div className="p-1.5 space-y-1 max-h-72 overflow-y-auto">
-            {availableThemes.map((t) => {
-              const isSelected = theme === t.id;
-              const isPreviewing = previewThemeId === t.id;
+          <div className="space-y-1">
+            {PUBLIC_THEME_OPTIONS.map((opt) => {
+              const isSelected = activeThemeId === opt.id;
 
               return (
                 <button
-                  key={t.id}
+                  key={opt.id}
                   type="button"
-                  id={`theme-option-${t.id}`}
-                  onClick={() => handleSelectTheme(t.id)}
-                  onMouseEnter={() => previewTheme(t.id)}
+                  id={`theme-option-${opt.id}`}
+                  onClick={() => handleSelectTheme(opt.id)}
+                  onMouseEnter={() => previewTheme(opt.id)}
                   onMouseLeave={() => previewTheme(null)}
                   className={`w-full px-2.5 py-2 rounded-lg text-left flex items-center justify-between transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-[#18181B] text-white border border-[#3ECF8E]/40 font-bold'
-                      : isPreviewing
-                      ? 'bg-[#18181B]/80 text-white border border-zinc-500'
-                      : 'hover:bg-[#18181B] text-zinc-300 border border-transparent'
+                      ? 'bg-[#27272A] text-white border border-[#3ECF8E]/40 font-bold'
+                      : 'hover:bg-[#27272A]/70 text-[#A1A1AA] hover:text-white border border-transparent'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    {/* Color Swatch Dot */}
-                    <div
-                      className="w-3.5 h-3.5 rounded-full border border-black/50 shadow-sm shrink-0"
-                      style={{ backgroundColor: t.colors.primary }}
-                    />
-
+                    <div className="p-1 rounded-md bg-[#09090B] border border-[#27272A] shrink-0">
+                      {opt.icon}
+                    </div>
                     <div>
-                      <div className="text-xs flex items-center gap-1.5">
-                        <span>{t.name}</span>
-                        {t.id === 'dark' && (
-                          <span className="text-[9px] font-mono text-zinc-500">Default</span>
-                        )}
-                      </div>
-                      <div className="text-[10px] font-mono text-zinc-400 line-clamp-1">
-                        {t.subtitle}
+                      <div className="text-xs font-medium text-white">{opt.label}</div>
+                      <div className="text-[10px] text-[#71717A] line-clamp-1">
+                        {opt.description}
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1.5">
-                    {isSelected ? (
-                      <Check className="w-3.5 h-3.5 text-[#3ECF8E]" />
-                    ) : isPreviewing ? (
-                      <Eye className="w-3 h-3 text-zinc-400" />
-                    ) : null}
-                  </div>
+                  {isSelected && <Check className="w-3.5 h-3.5 text-[#3ECF8E]" />}
                 </button>
               );
             })}
-          </div>
-
-          {/* FOOTER ACTION: OPEN FULL THEME STUDIO PREVIEW GALLERY */}
-          <div className="p-2 border-t border-[#27272A] bg-[#0D0F14]">
-            <button
-              type="button"
-              id="btn-open-theme-studio-modal"
-              onClick={() => {
-                setDropdownOpen(false);
-                setThemeModalOpen(true);
-              }}
-              className="w-full py-2 px-3 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/40 text-[#3ECF8E] text-xs font-mono font-bold flex items-center justify-between transition-colors cursor-pointer"
-            >
-              <div className="flex items-center gap-1.5">
-                <Sliders className="w-3.5 h-3.5" />
-                <span>Open Theme Studio & Previews</span>
-              </div>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
           </div>
         </div>
       )}

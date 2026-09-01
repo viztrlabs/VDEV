@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { listClientsSupabase, isSupabaseAdminReady } from '@/lib/supabase/repositories';
 
 export interface ClientRecord {
   id: string;
@@ -72,6 +73,16 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const tier = searchParams.get('tier');
   const query = searchParams.get('q')?.toLowerCase();
+  const accessCode = searchParams.get('accessCode');
+  const id = searchParams.get('id');
+
+  // Try Supabase first; fall back to in-memory DB if unconfigured or query fails.
+  if (isSupabaseAdminReady()) {
+    const fromDb = await listClientsSupabase({ tier: tier || undefined, query, accessCode: accessCode || undefined, id: id || undefined });
+    if (fromDb !== null) {
+      return NextResponse.json({ success: true, count: fromDb.length, clients: fromDb, source: 'supabase' });
+    }
+  }
 
   let filtered = [...CLIENTS_DB];
   if (tier && tier !== 'ALL') {
@@ -86,8 +97,15 @@ export async function GET(req: NextRequest) {
         c.portalAccessCode.toLowerCase().includes(query)
     );
   }
+  if (accessCode) {
+    const code = accessCode.toUpperCase();
+    filtered = filtered.filter((c) => c.portalAccessCode.toUpperCase() === code);
+  }
+  if (id) {
+    filtered = filtered.filter((c) => c.id === id);
+  }
 
-  return NextResponse.json({ success: true, count: filtered.length, clients: filtered });
+  return NextResponse.json({ success: true, count: filtered.length, clients: filtered, source: 'memory' });
 }
 
 export async function POST(req: NextRequest) {

@@ -1,14 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
+import { signIn } from 'next-auth/react';
+import { isSupabaseConfigured } from '@/lib/supabase/client';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/admin/dashboard';
+  const [email, setEmail] = useState('admin@viztr.com');
+  const [password, setPassword] = useState('password123');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState('');
@@ -16,7 +19,7 @@ export default function LoginPage() {
   useEffect(() => {
     if (!isSupabaseConfigured) {
       setNotice(
-        'Supabase credentials are not configured yet. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local to enable auth.',
+        'Using the built-in demo admin account. For Supabase-backed auth, add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local.',
       );
     }
   }, []);
@@ -24,19 +27,23 @@ export default function LoginPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    const supabase = createClient();
-    if (!supabase) {
-      setError('Auth is not configured.');
-      return;
-    }
     setBusy(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+    const result = await signIn('credentials', {
+      email,
+      password,
+      redirect: false,
+    });
+
     setBusy(false);
-    if (error) {
-      setError(error.message);
+
+    if (result?.error) {
+      setError('Invalid email or password. Try admin@viztr.com / password123 or a registered Supabase user.');
       return;
     }
-    router.push('/admin/dashboard');
+
+    const destination = result?.url || callbackUrl || '/admin/dashboard';
+    router.push(destination);
     router.refresh();
   };
 

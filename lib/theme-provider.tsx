@@ -245,9 +245,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const activeEffectiveId = previewThemeId || theme;
 
-  const currentConfig =
-    AVAILABLE_THEMES.find((t) => t.id === activeEffectiveId) || AVAILABLE_THEMES[0];
-
   let resolvedMode: 'light' | 'dark' = 'dark';
   if (activeEffectiveId === 'system') {
     resolvedMode = systemDark ? 'dark' : 'light';
@@ -257,31 +254,55 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     resolvedMode = 'dark';
   }
 
+  const effectiveThemeId =
+    activeEffectiveId === 'system' ? (systemDark ? 'dark' : 'light') : activeEffectiveId;
+
+  const currentConfig =
+    AVAILABLE_THEMES.find((t) => t.id === activeEffectiveId) ||
+    AVAILABLE_THEMES.find((t) => t.id === effectiveThemeId) ||
+    AVAILABLE_THEMES[0];
+
   useEffect(() => {
     const root = document.documentElement;
     
     // Remove all previous theme classes
-    root.classList.remove('light', 'dark', 'theme-dark', 'theme-light', 'theme-glass', 'theme-obsidian', 'theme-bronze', 'theme-blueprint');
+    root.classList.remove(
+      'light',
+      'dark',
+      'theme-dark',
+      'theme-light',
+      'theme-glass',
+      'theme-obsidian',
+      'theme-bronze',
+      'theme-blueprint',
+      'theme-system'
+    );
     
     // Add base resolved mode class (light/dark)
     root.classList.add(resolvedMode);
     
-    // Set data-theme attribute
-    const themeName = activeEffectiveId === 'system' ? (systemDark ? 'dark' : 'light') : activeEffectiveId;
-    root.setAttribute('data-theme', themeName);
-    root.classList.add(`theme-${themeName}`);
+    // Set data-theme attributes
+    root.setAttribute('data-theme', effectiveThemeId);
+    root.setAttribute('data-theme-setting', activeEffectiveId);
+    root.setAttribute('data-theme-mode', resolvedMode);
+    root.classList.add(`theme-${effectiveThemeId}`);
+    if (activeEffectiveId === 'system') {
+      root.classList.add('theme-system');
+    }
+    root.style.colorScheme = resolvedMode;
 
     // Update dynamic root CSS variables based on active theme
-    const themeConfig = AVAILABLE_THEMES.find((t) => t.id === themeName) || currentConfig;
-    if (themeConfig) {
-      root.style.setProperty('--bg-primary', themeConfig.colors.bg);
-      root.style.setProperty('--bg-card', themeConfig.colors.card);
-      root.style.setProperty('--border', themeConfig.colors.border);
-      root.style.setProperty('--text-primary', themeConfig.colors.text);
-      root.style.setProperty('--primary', themeConfig.colors.primary);
-      root.style.setProperty('--accent', themeConfig.colors.accent);
+    const activeColorsConfig =
+      AVAILABLE_THEMES.find((t) => t.id === effectiveThemeId) || currentConfig;
+    if (activeColorsConfig) {
+      root.style.setProperty('--bg-primary', activeColorsConfig.colors.bg);
+      root.style.setProperty('--bg-card', activeColorsConfig.colors.card);
+      root.style.setProperty('--border', activeColorsConfig.colors.border);
+      root.style.setProperty('--text-primary', activeColorsConfig.colors.text);
+      root.style.setProperty('--primary', activeColorsConfig.colors.primary);
+      root.style.setProperty('--accent', activeColorsConfig.colors.accent);
     }
-  }, [activeEffectiveId, resolvedMode, systemDark, currentConfig]);
+  }, [activeEffectiveId, effectiveThemeId, resolvedMode, systemDark, currentConfig]);
 
   const setTheme = (newTheme: ThemeId) => {
     try {

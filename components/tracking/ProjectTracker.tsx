@@ -233,18 +233,28 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
           </span>
           <div className="flex flex-wrap items-center gap-2">
             <button
+              type="button"
+              onClick={() => loadSampleCredentials('VIZTR-DEMO', 'DEMO-2026')}
+              className="px-2.5 py-1 rounded bg-[#3ECF8E]/10 hover:bg-[#3ECF8E]/20 text-[#3ECF8E] text-[10px] font-mono font-bold border border-[#3ECF8E]/40 transition-colors cursor-pointer"
+            >
+              ★ VIZTR-DEMO (Stage 4 Review)
+            </button>
+            <button
+              type="button"
               onClick={() => loadSampleCredentials('VZ-9021', 'ALPHA-99')}
               className="px-2.5 py-1 rounded bg-[#09090B] hover:border-[#3ECF8E] text-[#3ECF8E] text-[10px] font-mono border border-[#27272A] transition-colors cursor-pointer"
             >
               VZ-9021 (Stage 5 Revisions)
             </button>
             <button
+              type="button"
               onClick={() => loadSampleCredentials('VZ-8410', 'VIP-2026')}
               className="px-2.5 py-1 rounded bg-[#09090B] hover:border-[#3ECF8E] text-[#3ECF8E] text-[10px] font-mono border border-[#27272A] transition-colors cursor-pointer"
             >
               VZ-8410 (Stage 7 Completed)
             </button>
             <button
+              type="button"
               onClick={() => loadSampleCredentials('VZ-7732', 'SKY-404')}
               className="px-2.5 py-1 rounded bg-[#09090B] hover:border-[#3ECF8E] text-[#3ECF8E] text-[10px] font-mono border border-[#27272A] transition-colors cursor-pointer"
             >
