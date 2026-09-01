@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -62,6 +62,8 @@ import SuperAdminCMSManager from '@/components/admin/SuperAdminCMSManager';
 import ApiCredentialsManager from '@/components/admin/ApiCredentialsManager';
 import PlayCanvasEngineDashboardTile from '@/components/admin/PlayCanvasEngineDashboardTile';
 import SuperAdminPanel from '@/components/admin/SuperAdminPanel';
+import ClientDiscoveryManager from '@/components/admin/ClientDiscoveryManager';
+import DocStudioCRM from '@/components/admin/DocStudioCRM';
 import { ViztrLogoMark } from '@/components/ui/Logo';
 import HermesButton from '@/components/admin/HermesButton';
 import CollapsibleLeftFilterPanel from '@/components/dashboard/CollapsibleLeftFilterPanel';
@@ -76,11 +78,12 @@ import {
   PaymentStatus,
   TimesheetEntry
 } from '@/lib/projects-data';
-import { FolderKanban, QrCode } from 'lucide-react';
+import { FolderKanban, QrCode, FileCheck } from 'lucide-react';
 
 // Core Systems & Admin routes / tabs
 type ActiveSection =
   | 'dashboard'
+  | 'client-discovery'
   | 'asset-pipeline'
   | 'super-admin-panel'
   | 'super-admin-users'
@@ -121,12 +124,14 @@ type ActiveSection =
   | 'revenue'
   | 'clients'
   | 'inquiries'
+  | 'doc-studio-crm'
   | string;
 
 const SIDEBAR_SECTIONS = [
   {
     title: 'Super Admin Governance',
     items: [
+      { id: 'client-discovery', label: 'Client Discovery Form', icon: FileCheck },
       { id: 'super-admin-panel', label: 'Master Super Admin Panel', icon: Shield },
       { id: 'super-admin-users', label: 'Manage Admins & Users', icon: Users },
       { id: 'super-admin-analytics', label: 'System Analytics', icon: TrendingUp },
@@ -165,6 +170,12 @@ const SIDEBAR_SECTIONS = [
     ],
   },
   {
+    title: 'Doc Studio & CRM',
+    items: [
+      { id: 'doc-studio-crm', label: 'Doc Studio & CRM', icon: FileText },
+    ],
+  },
+  {
     title: 'XR Real-Time Engine',
     items: [
       { id: 'vr-configurator', label: 'VR Tour Builder', icon: Headset },
@@ -198,6 +209,18 @@ export default function AdminDashboardPage() {
   const [activeRoleView, setActiveRoleView] = useState<'SUPER_ADMIN' | 'ADMIN' | 'USER' | 'CLIENT'>('SUPER_ADMIN');
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  // Sync activeSection from ?section=... query param (deep-link support)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const sp = new URLSearchParams(window.location.search);
+    const section = sp.get('section');
+    if (!section) return;
+    const known = SIDEBAR_SECTIONS.some((g) => g.items.some((i) => i.id === section));
+    if (known) {
+      setActiveSection(section as ActiveSection);
+    }
+  }, []);
 
   // Managed Projects State (Super Admin / Admin CRUD)
   const [projectsList, setProjectsList] = useState<ManagedProject[]>(INITIAL_MANAGED_PROJECTS);
@@ -586,13 +609,22 @@ export default function AdminDashboardPage() {
                       </p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => setActiveSection('super-admin-panel')}
-                    className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-md cursor-pointer shrink-0"
-                  >
-                    <span>Open Super Admin Console</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setActiveSection('client-discovery')}
+                      className="px-3.5 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-md cursor-pointer shrink-0"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Send Discovery Form</span>
+                    </button>
+                    <button
+                      onClick={() => setActiveSection('super-admin-panel')}
+                      className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-md cursor-pointer shrink-0"
+                    >
+                      <span>Open Super Admin Console</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 pt-1">
@@ -973,6 +1005,11 @@ export default function AdminDashboardPage() {
             </div>
           )}
 
+          {/* SECTION: CLIENT DISCOVERY & INTAKE SUITE */}
+          {activeSection === 'client-discovery' && (
+            <ClientDiscoveryManager />
+          )}
+
           {/* SECTION: SUPER ADMIN GOVERNANCE PANEL */}
           {(activeSection === 'super-admin-panel' ||
             activeSection === 'super-admin-users' ||
@@ -1063,6 +1100,9 @@ export default function AdminDashboardPage() {
           {/* SECTION 6: GOOGLE MEET */}
           {activeSection === 'google-meet' && <GoogleMeetAdminManager isSuperAdmin={true} />}
 
+          {/* SECTION: DOC STUDIO & CRM */}
+          {activeSection === 'doc-studio-crm' && <DocStudioCRM />}
+
           {/* SECTION: PLAYCANVAS ENGINE */}
           {activeSection === 'playcanvas-engine' && (
             <div className="space-y-6">
@@ -1116,7 +1156,8 @@ export default function AdminDashboardPage() {
             activeSection !== 'seo' &&
             activeSection !== 'testimonials' &&
             activeSection !== 'navigation' &&
-            activeSection !== 'social' && (
+            activeSection !== 'social' &&
+            activeSection !== 'doc-studio-crm' && (
               <div className="p-8 rounded-2xl bg-[#18181B] border border-[#27272A] text-center space-y-4 font-mono">
                 <div className="w-12 h-12 rounded-full bg-[#3ECF8E]/10 border border-[#3ECF8E]/40 flex items-center justify-center mx-auto text-[#3ECF8E]">
                   <Settings className="w-6 h-6 animate-spin-slow" />
