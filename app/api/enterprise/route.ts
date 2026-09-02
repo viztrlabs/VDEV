@@ -144,3 +144,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 });
   }
 }
+
+export const enterpriseApi = {
+  rbac,
+  auditLogger,
+  backupService,
+  complianceEngine,
+  monitoring,
+  ssoService,
+};
+
+export default enterpriseApi;

@@ -22,4 +22,4 @@ export { backupService, DR_CONFIG } from './backupRecovery';
 export { auditLogger } from './auditLog';
 
 // Export enterprise API service
-export { default as enterpriseApi } from '../api/enterprise/route';
+export { default as enterpriseApi } from '../../app/api/enterprise/route';
