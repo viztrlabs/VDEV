@@ -199,7 +199,7 @@ class BackupService {
       record.state = 'completed';
       record.completedAt = Date.now();
       record.durationMs = record.completedAt - record.startedAt;
-      record.checksum = this.computeChecksum(data);
+      record.checksum = await this.computeChecksum(data);
 
       // Register restore point
       RESTORE_POINTS.set(record.id, {
@@ -278,7 +278,7 @@ class BackupService {
     return JSON.parse(data.toString()).resources ?? [];
   }
 
-  private computeChecksum(data: Buffer): string {
+  private async computeChecksum(data: Buffer): Promise<string> {
     const crypto = await import('node:crypto');
     return crypto.createHash('sha256').update(data).digest('hex');
   }
