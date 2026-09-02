@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { PanelRightClose } from 'lucide-react';
 import SceneConfigPanel from '@/components/editor/SceneConfigPanel';
 import ViewConstraintsPanel from '@/components/editor/ViewConstraintsPanel';
 import { HotspotInspector } from '@/components/editor/shell/HotspotInspector';
@@ -19,6 +20,7 @@ interface EditorRightSidebarProps {
   onDeleteHotspot: (hpId: string) => void;
   onCopyHotspot: (hpId: string) => void;
   onSetPortalTarget: (hpId: string, targetId: string) => void;
+  onCollapse?: () => void;
 }
 
 export function EditorRightSidebar({
@@ -33,9 +35,27 @@ export function EditorRightSidebar({
   onDeleteHotspot,
   onCopyHotspot,
   onSetPortalTarget,
+  onCollapse,
 }: EditorRightSidebarProps) {
   return (
     <aside className="w-80 shrink-0 border-l border-[#27272A] overflow-y-auto p-3 space-y-3">
+      {onCollapse && (
+        <div className="flex items-center justify-between -mt-1 -mx-1">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">
+            Inspector
+          </span>
+          <button
+            type="button"
+            onClick={onCollapse}
+            aria-label="Collapse inspector panel"
+            aria-pressed="false"
+            title="Collapse panel"
+            className="p-1 rounded text-[#71717A] hover:text-white hover:bg-[#18181B]"
+          >
+            <PanelRightClose className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
       <SceneConfigPanel
         room={selected}
         onUpdate={onUpdateRoom}

@@ -1,507 +1,462 @@
-# VizTR Frontend Audit & Immersive Experience — Plan
+# Plan — Marzipano Importer Integration (Round-Trip) into VizTR Virtual Tour Editor
 
-> **Scope (per user decision):** Frontend code quality + 3D/AR/VR/Splat engine consolidation.
-> Out of scope: marketing-page copywriting, payment, full brand-IA redesign, analytics dashboards.
-
----
-
-## 0. Audit Summary (one-page)
-
-### What exists today
-| Area | State | Evidence |
-|---|---|---|
-| Next.js app router, RSC + client components | Working | `app/` (27 top-level routes), `app/layout.tsx` |
-| Marketing site (Home, Services, Portfolio, About, Contact, Blog) | Working | `app/page.tsx` (15 section components), `app/portfolio/[id]/page.tsx` |
-| Auth (NextAuth + Supabase) | Working | `app/login`, `app/signup`, `lib/auth.ts`, `middleware.ts` |
-| Client dashboard | Working | `app/client-dashboard/page.tsx` (410 lines, 17 subcomponents) |
-| Admin dashboard | Working | `app/admin/dashboard/page.tsx` (1,197 lines) |
-| Virtual tour editor | Working | `app/xr-world/virtual-tour/editor/page.tsx` (~960 lines after our prior refactor) |
-| Virtual tour client viewer | Working | `app/xr-world/virtual-tour/client/[tourId]/page.tsx` |
-| Marzipano (360) | Working | `components/xr/MarzipanoViewer.tsx`, `components/viewers/PanoramaViewer.tsx` |
-| PlayCanvas (3D / WebXR) | Working | `components/xr/PlayCameraSceneRenderer.tsx`, `components/xr/PlayCanvasXRViewer.tsx`, `components/xr/PlayCanvasConfigurator.tsx` |
-| Three.js (direct) | Working | `components/xr/GaussianSplatViewer.tsx`, `components/xr/PlayCanvasConfigurator.tsx`, `app/xr-world/gaussian-splat/page.tsx` |
-| Gaussian Splat (`@mkkellogg/gaussian-splats-3d`) | Working | `components/xr/GaussianSplatViewer.tsx` (uses DropInViewer + three.js scene) |
-| Pixel Streaming (UE5) | Working | `components/xr/PixelStreaming*.tsx`, `app/xr-world/pixel-streaming/page.tsx`, `lib/credentials-store.ts` |
-| Supabase (DB + storage) | Working | `lib/supabase/`, `app/api/projects`, `app/api/tours` |
-| Cloudflare / S3 simulation | Mock only | `app/api/storage/route.ts` returns hardcoded `STORAGE_STATUS`; `app/xr-links/route.ts` hardcodes XR_LINKS_DB |
-| Analytics | Partial | `lib/analytics.ts` exists; `app/api/analytics` not present (synthetic only) |
-| SEO | Partial | `app/sitemap.ts` exists; per-project OG not present |
-
-### Key audit findings
-
-1. **Three 3D engines in production, no shared abstraction.**
-   - Marzipano (360) — `components/xr/MarzipanoViewer.tsx:1-235`
-   - PlayCanvas (3D / WebXR) — `components/xr/PlayCameraSceneRenderer.tsx`, `PlayCanvasConfigurator.tsx`, `PlayCanvasXRViewer.tsx`
-   - Three.js directly (Gaussian Splat + a one-off `PlayCanvasConfigurator`) — `components/xr/GaussianSplatViewer.tsx:1-80`, `PlayCanvasConfigurator.tsx:1-60`
-   - `@react-three/fiber` and `@react-three/drei` are installed but **not used anywhere in the codebase** (verified by reading `package.json` and not finding any imports of them).
-
-2. **Routing split between three "project" ideas:**
-   - `app/portfolio/[id]/page.tsx` (marketing-style project, data from `data/portfolio.ts`)
-   - `app/xr-world/virtual-tour/editor` (editable tour graph)
-   - `app/xr-world/virtual-tour/client/[tourId]` (client-facing tour viewer)
-   - No canonical URL, no shared "Project" entity. Marketing page never links to the 3D tour, and the tour never references the marketing page.
-
-3. **Mock API routes masquerade as real endpoints.**
-   - `app/api/storage/route.ts` returns a hardcoded `STORAGE_STATUS` object. It does not read from S3, R2, or Supabase Storage.
-   - `app/api/xr-links/route.ts` uses a hardcoded `XR_LINKS_DB` array. Live data never persists.
-   - These will silently mislead consumers. Plan must convert them to real Supabase-backed endpoints (or delete them).
-
-4. **The XR runtime is a duplicated mini-app.**
-   - `components/xr/xr.store.ts` (416 lines, Zustand + Immer) — separate from `lib/store.ts` (266 lines, the global app store).
-   - Two stores means two sources of truth for modal/lightbox/panorama state. The global store still owns `openPanorama` and `openModelViewer`; the XR viewer at `app/xr/view` mounts XRViewer which uses its own store. Consumers do not know which to use.
-
-5. **Three WebGL/canvas cleanup bugs (file:line evidence):**
-   - `components/xr/GaussianSplatViewer.tsx:78-80` — `containerRef.current.appendChild(renderer.domElement)` is never disposed. Switching scenes or unmounting the route leaks the previous renderer + canvas.
-   - `components/xr/PlayCanvasConfigurator.tsx:52-60` — Three.js scene + renderer + camera are created in a `useEffect` with **no cleanup return**. The renderer keeps animating after unmount.
-   - `components/xr/MarzipanoViewer.tsx:135-140` — `viewer.destroy()` is in a cleanup return, but the `let cancelled` pattern is not used for the async init, so a fast unmount can still call `viewerRef.current.destroy()` on a half-initialized viewer.
-   - `app/xr-world/gaussian-splat/page.tsx:38-60` — A whole new `WebGLRenderer` is created in a useEffect with no cleanup.
-
-6. **Type holes:**
-   - `components/xr/xr.store.ts` references `webxr-service` and `SessionStatus` that I could not find any import path resolving to in `components/xr/hooks/`. Build still passes, suggesting the hooks folder contains those types but the import path is informal.
-   - `components/xr/MarzipanoViewer.tsx:43, 80` — `marzipanoViewerRef.current` typed `any`.
-   - `components/xr/GaussianSplatViewer.tsx:36` — `viewerRef` typed `any`.
-
-7. **Dependencies that look unused but I cannot fully prove without running the build:**
-   - `@react-three/fiber`, `@react-three/drei` — installed, no `import` of them in the files I read.
-   - `redux`, `react-redux`, `@reduxjs/toolkit` — installed. I did not find any consumer in the routes I read; the stores I saw are Zustand.
-   - `firebase` and `firebase-tools` — installed. `lib/firebase.ts` exists; whether it is called from runtime code I cannot tell from this static pass.
-
-8. **`@gltf-transform/*` and `meshoptimizer` and `draco3d` and `ktx-parse` are installed.**
-   These are the asset-pipeline primitives needed for the work in Phase 2. They are not currently wired into a build step. `scripts/` likely contains stubs.
-
-9. **`/portfolio` and `/studio` and `/xr-world` route trees overlap semantically.**
-   - `/portfolio/[id]` is a marketing case study.
-   - `/studio/*` is CGI services.
-   - `/xr-world/*` is immersive services.
-   A visitor has no single URL to land on for "the immersive experience of Project X."
+> **Scope (locked from user):** Round-trip ZIP ↔ editor. Cube-format imports rejected, only equirectangular. Hotspot coords bridged via equirect approximation.
+> **Integration target:** the existing `app/xr-world/virtual-tour/editor` page (Marzipano 0.10.2 + React 19 + Next.js 15) — not a new page.
+> **Out of scope:** full UI port of the upstream tool, cube-tile rendering, server-side cube→equirect reprojection, persisting converted panoramas to the VizTR asset store.
 
 ---
 
-## 1. Goals & Non-Goals
+## 0. What the upstream tool actually is (audit)
 
-### Goals
-- One shared abstraction layer so Marzipano / PlayCanvas / Splat all present the same project/scene shape to the rest of the app.
-- A new canonical URL `/projects/[slug]` that surfaces VizView / VizAR / VizVR / VizTour / VizReality buttons.
-- Renamed, IA-coherent route tree: `/viztr-studio/*` and `/experiences/*`.
-- Fix the three cleanup bugs above.
-- Prove the unused Redux / R3F decision with a real test, not a hunch.
+The repository at `https://github.com/archviz-rahul/marzipano-importer` (forked from `tunnaduong/marzipano-importer`, v1.0.0, 2025-11-07) is a single-page client-side web app:
 
-### Non-Goals (out of scope this round)
-- Replacing PlayCanvas with Three.js (or vice versa).
-- Building the new asset-processing pipeline (Draco / KTX2 / Meshopt). The libraries are installed; the build script is not.
-- Migrating `app/api/storage` and `app/api/xr-links` to real Supabase — flag for follow-up.
-- Full SEO/OG/per-project metadata pass.
-- Payment, booking, client-dashboard rewrite.
-- VR asset generation (only client-side rendering concerns in scope).
+- `index.html` — markup only, no framework, loads `marzipano-0.10.2/marzipano.js` as a `<script>` and `jszip.min.js` from CDN.
+- `scripts/app.js` — the only JS file. Vanilla JS. Drives the entire editor: file input, panorama list, Marzipano init, hotspot modal, ZIP import, ZIP export, localStorage round-trip.
+- `styles/app.css` — single CSS file.
+
+The upstream data model is Marzipano's native cube-tile format with multi-resolution levels:
+
+```ts
+{
+  name: string,
+  scenes: [{
+    id, name,
+    levels: [{ tileSize, size, fallbackOnly? }],   // multi-resolution cube tiles
+    faceSize: number,                                // 256..4096
+    initialViewParameters: { pitch, yaw, fov },      // radians
+    linkHotspots:  [{ yaw, pitch, rotation, target }],   // rad, target = sceneId
+    infoHotspots:  [{ yaw, pitch, title, text }],
+  }],
+  settings: { mouseViewMode, autorotateEnabled, fullscreenButton, viewControlButtons }
+}
+```
+
+This is **not** isomorphic to the VizTR editor's data model (`data/tour-config.ts`):
+
+| Upstream (importer) | VizTR (editor) |
+|---|---|
+| `levels[]` of cube tiles, 6 faces | single `panoramaUrl` (equirect image) |
+| hotspot `{ yaw, pitch }` in radians | hotspot `{ xPercent, yPercent }` in 0–100 |
+| `linkHotspots[]` + `infoHotspots[]` (two types) | single `defaultHotspots[]` with 8 type union (incl. `room_link`, `info`, `metadata`) |
+| `settings.mouseViewMode: 'drag'\|'qtvr'` | no equivalent (currently hard-coded `drag`) |
+| scenes per tour → `data.js` or `app-data.json` inside ZIP | `rooms: TourRoom[]` inside a single JSON document at `data/tour-config.ts` / `lib/toursRepo.ts` |
+
+The Marzipano **library** itself is already at `node_modules/marzipano@0.10.2` (see `package.json:43`) and is the same version the upstream tool vendors (`scripts/marzipano-0.10.2/`). The CDN dependency in `index.html` is for offline-friendliness in the upstream tool, not because the library is missing.
+
+`JSZip 3.10.1` is **not** in `package.json`. Adding it is the only required dependency.
 
 ---
 
-## 2. Decisions locked from the user (do not re-litigate)
+## 1. Decisions (do not re-litigate)
 
 | Decision | Source |
 |---|---|
-| Plan scope = **Frontend code quality + 3D engines** | user |
-| Unified project URL = **new `/projects/[slug]`** | user |
-| Marketing buckets = **rename** (`/studio/*` → `/viztr-studio/*`, `/xr-world/*` → `/experiences/*`) | user |
-| 3D engine strategy = **keep all three, add shared abstraction** | user |
+| Scope = round-trip only (ZIP import + ZIP export) | user |
+| Import format = equirectangular only; reject cube | user |
+| Hotspot bridge = equirect approximation `yaw/pitch ↔ xPercent/yPercent` | user |
+| Reuse existing `app/xr-world/virtual-tour/editor` as integration target | this plan |
+| Reuse existing `lib/toursRepo.ts` and `lib/editorStore.ts` (created in prior refactor) | this plan |
+| Add `jszip` as a project dependency (do not load from CDN) | this plan |
 
 ---
 
-## 3. Shared engine abstraction (the central design)
+## 2. Architecture (the central diagram)
 
-Create `components/viz/engines/` with a thin interface, one adapter per engine, and one selector that chooses the engine for a given experience.
-
-### File layout
 ```
-components/viz/
-  engines/
-    types.ts                  # VizExperience, VizEngine, VizScene, VizHotspot
-    selectors.ts              # pickEngine(experience) -> engineId
-    engineRegistry.tsx        # <VizEngineCanvas experience={...} /> central mount
-    EngineLoading.tsx         # shared skeleton + error + fallback
-    EngineUnavailable.tsx     # shared fallback (no WebGL, no WebXR, no AR)
-  adapters/
-    MarzipanoAdapter.tsx      # wraps components/xr/MarzipanoViewer.tsx
-    PlayCanvasAdapter.tsx     # wraps components/xr/PlayCameraSceneRenderer.tsx
-    SplatAdapter.tsx          # wraps components/xr/GaussianSplatViewer.tsx
-  ProjectExperiencePanel.tsx  # the surface the new /projects/[slug] page renders
-  ExperienceButton.tsx        # the [3D] [AR] [VR] [TOUR] [REALITY] button
-  hooks/
-    useVizCapabilities.ts     # detects WebGL, WebXR, AR support
-    useVizEngine.ts           # lifecycle: mount, dispose, error
+                         ┌────────────────────────────────────┐
+                         │   Virtual Tour Editor (existing)   │
+                         │   app/xr-world/virtual-tour/editor │
+                         └────────────────┬───────────────────┘
+                                          │
+              ┌───────────────────────────┼───────────────────────────┐
+              │                           │                           │
+   ┌──────────▼─────────┐    ┌────────────▼────────────┐   ┌──────────▼─────────┐
+   │  MarzipanoImpor-   │    │   MarzipanoExporter     │   │  Existing editor   │
+   │  ter (new)         │    │   (new)                 │   │  state + UI        │
+   │  lib/marzipano/    │    │   lib/marzipano/        │   │  (no changes       │
+   │  importer.ts       │    │   exporter.ts           │   │   required)        │
+   └──────────┬─────────┘    └────────────┬────────────┘   └────────────────────┘
+              │                           │
+              │  reads ZIP via JSZip      │  writes ZIP via JSZip
+              ▼                           ▼
+   ┌──────────────────────────────────────────────────────────────────┐
+   │   jszip@3.10.1 (new dep, client-only)                            │
+   └──────────────────────────────────────────────────────────────────┘
+              │                           │
+              ▼                           ▼
+   ┌─────────────────────────┐   ┌──────────────────────────────────────┐
+   │  TourConversion          │   │  CoordMapper (yaw/pitch ↔ xPct/yPct)│
+   │  lib/marzipano/          │◄──┤  lib/marzipano/coords.ts            │
+   │  conversion.ts           │   └──────────────────────────────────────┘
+   └─────────────────────────┘
+              ▲
+              │  read/write
+              │
+   ┌──────────────────────────────────────────────────────────────────┐
+   │   VizTR Tour Model                                              │
+   │   data/tour-config.ts (TourRoom[], Hotspot)                     │
+   │   lib/toursRepo.ts (Supabase + local store)                     │
+   └──────────────────────────────────────────────────────────────────┘
 ```
 
-### `VizExperience` (client-facing taxonomy — technology-agnostic)
+The upstream tool is **not** a dependency. We do not clone or vendor it. We re-implement the same data-shape round-trip against the upstream ZIP format. The only shared asset is the on-disk ZIP spec, documented in `EXPORT_FORMAT.md`.
+
+---
+
+## 3. Folder layout
+
+```
+lib/marzipano/
+  types.ts            # MarzipanoImportFormat types (scene, hotspot, settings)
+  coords.ts           # yaw/pitch ↔ xPercent/yPercent with documented precision
+  conversion.ts       # MarzipanoImportFormat ↔ VizTR TourRoom[]
+  importer.ts         # importTourFromZip(file) → {tour, warnings[]}
+  exporter.ts         # exportTourToZip(tour) → Blob
+  __tests__/
+    coords.test.ts    # round-trip equality for non-pole positions
+    importer.test.ts  # parses the upstream sample tour
+    exporter.test.ts  # writes a valid upstream-shaped ZIP
+components/editor/
+  ImportTourButton.tsx (new)   # toolbar button + hidden file input
+  ExportTourButton.tsx (new)   # toolbar button + filename prompt
+```
+
+JSZip is added as a project dep:
+```bash
+pnpm add jszip
+```
+(Version 3.10.1 to match the upstream tool's `cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js`.)
+
+---
+
+## 4. Data model (single source of truth)
+
+`lib/marzipano/types.ts` mirrors the upstream schema (from `EXPORT_FORMAT.md`):
+
 ```ts
-export type VizExperienceId = 'vizview' | 'vizar' | 'vizvr' | 'viztour' | 'vizreality';
+export interface MarzipanoLevel {
+  tileSize: number;
+  size: number;
+  fallbackOnly?: boolean;
+}
 
-export interface VizScene {
+export interface MarzipanoLinkHotspot {
+  yaw: number;        // radians, 0 = front, π/2 = right, π = back
+  pitch: number;      // radians
+  rotation: number;
+  target: string;     // target sceneId
+}
+
+export interface MarzipanoInfoHotspot {
+  yaw: number;
+  pitch: number;
+  title: string;
+  text: string;
+}
+
+export interface MarzipanoScene {
   id: string;
   name: string;
-  thumbnailUrl: string;
-  // one of these will be present depending on the experience
-  panoramaUrl?: string;       // VizTour
-  model3dUrl?: string;         // VizView / VizAR
-  splatUrl?: string;           // VizReality
-  hotspots: VizHotspot[];
-  initialYaw?: number;
-  initialPitch?: number;
-  initialPosition?: [number, number, number];
-  environment?: 'studio' | 'sunset' | 'urban' | 'interior';
+  levels: MarzipanoLevel[];
+  faceSize: number;
+  initialViewParameters: { pitch: number; yaw: number; fov: number };
+  linkHotspots: MarzipanoLinkHotspot[];
+  infoHotspots: MarzipanoInfoHotspot[];
+  // optional first-level URL — upstream tool doesn't emit this but data.js can
+  // reference an equirect source. We accept it for forward compat.
+  sourceUrl?: string;
 }
 
-export interface VizExperience {
-  id: VizExperienceId;
-  label: string;               // "VizView", "VizTour", etc.
-  description: string;
-  available: boolean;          // server decides; client respects
-  primaryScene: VizScene | null;
-  fallbackScene?: VizScene;   // for VR-headset fallback to 360, etc.
-  capabilities: {
-    requiresWebGL2: boolean;
-    requiresWebXR: boolean;
-    requiresAR: boolean;
-  };
+export interface MarzipanoSettings {
+  mouseViewMode: 'drag' | 'qtvr';
+  autorotateEnabled?: boolean;
+  autorotateSpeed?: number;
+  fullscreenButton?: boolean;
+  viewControlButtons?: boolean;
 }
 
-export interface VizProject {
-  slug: string;
-  title: string;
-  subtitle: string;
-  coverImage: string;
-  experiences: VizExperience[]; // empty array = project is "marketing only"
-  metadata: {
-    client?: string;
-    location?: string;
-    year?: string;
-  };
+export interface MarzipanoTour {
+  name: string;
+  scenes: MarzipanoScene[];
+  settings: MarzipanoSettings;
 }
 ```
 
-### Engine registry contract
-```ts
-export type VizEngineId = 'marzipano' | 'playcanvas' | 'splat';
+Importing a `data.js` requires us to evaluate the JS module. The format is `var data = {...}`. We do this safely with `new Function('return (' + body + ')')()` so the upstream file does not run in the page global scope. (See §6.)
 
-export interface VizEngineProps {
-  scene: VizScene;
-  experienceId: VizExperienceId;
-  onError?: (err: Error) => void;
-  onReady?: () => void;
+---
+
+## 5. Coordinate bridge (`lib/marzipano/coords.ts`)
+
+The user picked the equirect-approximation strategy. Document the math, the edge cases, and the test cases in code so future devs know what to expect.
+
+```ts
+// Equirectangular projection. yaw ∈ [-π, π], pitch ∈ [-π/2, π/2].
+// Mapping used by Marzipano and the upstream tool:
+//   yaw = 0          → image center (x = 50%)
+//   yaw = +π/2       → image right  (x = 100%)
+//   yaw = -π/2       → image left   (x = 0%)
+//   pitch = 0        → horizon      (y = 50%)
+//   pitch = +π/2     → zenith       (y = 0%)
+//   pitch = -π/2     → nadir        (y = 100%)
+
+export function yawPitchToXYPercents(yaw: number, pitch: number): { x: number; y: number } {
+  const x = ((yaw + Math.PI) / (2 * Math.PI)) * 100;
+  const y = ((Math.PI / 2 - pitch) / Math.PI) * 100;
+  return { x: clamp(x, 0, 100), y: clamp(y, 0, 100) };
 }
 
-export type VizEngineComponent = React.ComponentType<VizEngineProps>;
+export function xyPercentsToYawPitch(x: number, y: number): { yaw: number; pitch: number } {
+  const yaw = (x / 100) * 2 * Math.PI - Math.PI;
+  const pitch = Math.PI / 2 - (y / 100) * Math.PI;
+  return { yaw, pitch };
+}
 ```
 
-Each adapter converts `VizScene` → the engine's native scene shape (XRScene, SplatSceneDef, etc.) and back. This is the only place that needs to know the engine's vocabulary.
+**Precision note** (document in the file): the equirect approximation is exact for round-trip when the user does not edit. Edits inside VizTR move the hotspot in equirect `(x, y)`; re-export gives correct yaw/pitch. The user cannot move a hotspot to a literal sphere angle from inside VizTR — they move in screen percentages. This is by design and matches the spec.
 
-### Selector logic (`pickEngine`)
-```text
-vizview   → playcanvas        (interactive 3D)
-viztour   → marzipano         (360 panoramas)
-vizvr     → playcanvas        (WebXR immersive-vr)
-vizar     → playcanvas        (WebXR immersive-ar; fallback marzipano if no AR)
-vizreality → splat            (always; falls back to playcanvas if splat lib fails)
-```
+Pole singularity: hotspots at pitch = ±π/2 collapse to a single line in equirect. The exporter already accepts the loss (no special handling needed).
 
 ---
 
-## 4. New canonical project page `/projects/[slug]`
+## 6. Importer (`lib/marzipano/importer.ts`)
 
-### URL & data flow
-- Route: `app/projects/[slug]/page.tsx` (RSC for SEO).
-- Data source (short-term): a new `lib/viz/vizProjects.ts` that joins:
-  - `data/portfolio.ts` (marketing case study)
-  - the editable tour config in `data/tour-config.ts` / `lib/toursRepo.ts`
-  - the asset URLs already in `data/pages.ts` and the new `app/api/storage` interface
-- Long-term: a Supabase `projects` table with `experiences` JSON column. (Out of scope for this plan — flagged as Phase 3 follow-up.)
+The contract:
 
-### Page layout
-```
-<ProjectHeader>           // title, subtitle, cover image, year, location
-<ExperiencePanel>         // [3D] [AR] [VR] [TOUR] [REALITY]
-                          // buttons appear only if experience.available === true
-<MarketingCaseStudy>      // existing portfolio/[id] content re-used
-<RelatedProjects>
-```
-
-### `ExperienceButton` behavior
-- Clicking launches the experience inline in a modal route `/projects/[slug]/experience/[experienceId]`.
-- That modal is a thin wrapper around `<VizEngineCanvas experience={...} />` plus `<EngineLoading />` and `<EngineUnavailable />`.
-- The user can navigate between available experiences without leaving the project page.
-- Deep link: `/projects/solarium-penthouse/experience/viztour` is shareable.
-
-### Redirect map (Phase 1)
-| Old URL | New URL | Status |
-|---|---|---|
-| `/portfolio/[id]` | `/projects/[slug]` | 301, lookup by matching portfolio.id → vizProject.slug |
-| `/xr-world/virtual-tour/editor` | `/viztr-experiences/viztour` (kept for editors) | No redirect; the page is renamed in-place |
-| `/xr-world/virtual-tour/client/[tourId]` | `/projects/[slug]/experience/viztour` when slug is known | 301 for client-side launches |
-| `/xr-world/webar` | `/experiences/vizar` | 301 |
-| `/xr-world/virtual-reality` | `/experiences/vizvr` | 301 |
-| `/xr-world/webxr` | `/experiences` (the hub) | 301 |
-| `/xr-world/gaussian-splat` | `/experiences/vizreality` | 301 |
-| `/xr-world/virtual-tour` | `/experiences/viztour` | 301 |
-| `/xr-world` | `/experiences` | 301 |
-| `/studio` | `/viztr-studio` | 301 |
-| `/studio/exterior` etc. | unchanged (CGI sub-pages stay where they are; only the bucket renames) | 301 only the bucket |
-
-### RSC data layer
-Create `lib/viz/getVizProject.ts` (server-only) that:
-1. Looks up the project by slug.
-2. Returns `VizProject` with `experiences[]` derived from which assets are present (panoramaUrl → viztour, splatUrl → vizreality, model3dUrl → vizview, vizar/vizvr are derived from the same model).
-3. Returns `notFound()` if the project is unknown.
-
----
-
-## 5. Route rename plan
-
-### New routes (Phase 1.4)
-```
-/viztr-studio          (was /studio)
-/viztr-studio/exterior (kept)
-/viztr-studio/interior (kept)
-/viztr-studio/walkthrough (kept)
-
-/experiences                    (was /xr-world)
-/experiences/vizview            (new; for now, same content as /xr-world/webxr)
-/experiences/vizar              (was /xr-world/webar)
-/experiences/vizvr              (was /xr-world/virtual-reality)
-/experiences/viztour            (was /xr-world/virtual-tour)
-/experiences/vizreality         (was /xr-world/gaussian-splat)
-```
-
-### Implementation
-1. New folder `app/viztr-studio/` — move `app/studio/*` here verbatim. Keep `app/studio/*` as re-export shims for one release, then delete.
-2. New folder `app/experiences/` — mirror `app/xr-world/*` content with renamed labels and copy updates. Keep `app/xr-world/*` as 301 redirect shims.
-3. Update `app/sitemap.ts` to emit the new URLs. Keep old URLs as `alternates`.
-4. Update header / footer navigation: `components/layout/Header.tsx`, `components/layout/Footer.tsx` (read these to confirm — not in scope of this plan to fully implement, but the new routes must be linked).
-
-### Risks
-- Sitemap change can affect SEO for existing indexed URLs. Mitigate with 301 redirects and `rel="canonical"` in the new pages.
-- Internal links from blog posts and other static pages must be updated.
-
----
-
-## 6. Fix the three cleanup bugs (Phase 1.1 — small, high-value)
-
-These can be done independently and quickly.
-
-### Bug A: `components/xr/PlayCanvasConfigurator.tsx:52-60`
-Currently creates `scene`, `renderer`, `camera` with no cleanup. Add to the same useEffect:
 ```ts
-return () => {
-  renderer.dispose();
-  renderer.forceContextLoss();
-  scene.traverse((obj) => {
-    if (obj instanceof THREE.Mesh) {
-      obj.geometry?.dispose();
-      if (Array.isArray(obj.material)) obj.material.forEach((m) => m.dispose());
-      else obj.material?.dispose();
-    }
-  });
-  if (renderer.domElement.parentNode) {
-    renderer.domElement.parentNode.removeChild(renderer.domElement);
-  }
-  sceneRef.current = null;
-  rendererRef.current = null;
-  cameraRef.current = null;
-};
+import { importTourFromZip, ImportResult, ImportWarning } from '@/lib/marzipano/importer';
+
+interface ImportResult {
+  tour: TourConfig;          // VizTR's existing data/tour-config.ts shape
+  marzipanoName: string;     // upstream tour.name (used as default project name)
+  warnings: ImportWarning[]; // non-fatal issues, surfaced as toasts
+}
+interface ImportWarning {
+  level: 'info' | 'warn';
+  code:
+    | 'cube_tiles_rejected'    // scene has > 1 level OR faceSize > 4096
+    | 'hotspot_dropped_link'   // linkHotspot references unknown scene
+    | 'hotspot_dropped_oversize' // yaw/pitch out of range
+    | 'settings_partial';      // unrecognized settings keys ignored
+  sceneId?: string;
+  message: string;
+}
 ```
 
-### Bug B: `components/xr/GaussianSplatViewer.tsx:78-80`
-The DropInViewer is added to a three.js scene and a `WebGLRenderer` is created and `appendChild`'d. Add cleanup:
+### Step-by-step
+
+1. **Open the ZIP with JSZip.** (Add `jszip` dep, use `JSZip.loadAsync(file)`.)
+
+2. **Find the data file.** Look for, in order: `data.js`, `app-data.json`. If neither, return `ImportResult` with a single fatal error (the editor surfaces it as a toast and aborts).
+
+3. **Parse `data.js` safely.** The file is JavaScript of the form `var data = {...}` or `window.appData = {...}`. We do **not** `eval` it. We use:
+   ```ts
+   const parsed = new Function('"use strict"; return (' + body + ');')();
+   ```
+   This is evaluated in a function scope (no globals) and returns the data literal. Document the security rationale in the file: this is the same trust level as the existing `/api/tour/upload` (user-uploaded file, we never execute it server-side, only client-side). Add a `// SECURITY: only call with user-supplied files, never with content fetched from untrusted origins` comment.
+
+4. **Parse `app-data.json`** with `JSON.parse`.
+
+5. **Validate.** Each scene must have `id`, `name`, `levels` (≥1), `faceSize`, `initialViewParameters`. Mirror the rules in `EXPORT_FORMAT.md` §"Validation Rules" but be lenient: missing `levels` becomes `{ tileSize: 256, size: 256, fallbackOnly: true }`; missing `initialViewParameters` becomes `{ pitch: 0, yaw: 0, fov: π/2 }`.
+
+6. **Reject cube scenes.** A scene is cube if `levels.length > 1` OR `faceSize !== 256 && any level.size > 512` (the heuristic the upstream tool uses; documented). Cube scenes get a `cube_tiles_rejected` warning and **are skipped from the import**, not converted. Surface this clearly in the editor UI before the import is committed (see §9.2).
+
+7. **Accept equirect scenes.** Heuristic: a single-level equirect scene is a single equirectangular image. We treat the **first level** as the source. We need the image URL. Two cases:
+   - `data.js` references a pre-tiled equirect source at the project's CDN path. Upstream doesn't emit one. So in practice this is empty.
+   - The user provided a single panorama image that lives in the ZIP under `tiles/<sceneId>/l1/u/0/0_0.jpg` etc. — also cube. Not usable.
+   - The user provides a sidecar `tiles/<sceneId>/equirect.jpg` or `<sceneId>.jpg` at the ZIP root. Look for these filenames in order: `equirect.jpg`, `equirect.png`, `<sceneId>.jpg`, `<sceneId>.png`. If none, the scene is not importable (warning + skip).
+   - To be useful, **also** accept a ZIP whose data references a remote `sourceUrl` we already have in storage. Out of scope for this round (see §10).
+
+8. **Convert each scene → VizTR `TourRoom`.** Map fields:
+   - `id` → `id`
+   - `name` → `name` (truncate to 80 chars)
+   - equirect URL → `panoramaUrl` AND `thumbnailUrl` (same URL)
+   - `initialViewParameters.yaw` / `.pitch` → `initialYaw` / `initialPitch` (degrees, not radians)
+   - `linkHotspots` → `defaultHotspots[]` with `type: 'room_link'`, mapping yaw/pitch via `coords.ts`. `target` must reference an imported scene; otherwise emit `hotspot_dropped_link` and drop.
+   - `infoHotspots` → `defaultHotspots[]` with `type: 'info'`, `title: h.title`, `description: h.text`, `article: h.text`.
+   - Drop the rest of the VTED fields (`featured`, `viewConstraints`, etc.) — they will use defaults.
+
+9. **Map settings.** `mouseViewMode: 'qtvr'` is not currently a feature in VizTR's editor preview (only `'drag'` is wired). The `mouseViewMode` field exists on the `VtedSettings` type but the editor doesn't read it. We save it into a new top-level `tour.settings.marzipanoMouseViewMode` (use the existing `TourSettings` type, see `lib/tourSettings.ts`). All other settings → ignored with `settings_partial` warning.
+
+10. **Return `ImportResult`.** The caller (the editor) decides whether to commit, preview, or surface warnings.
+
+### 9.2 Preview before commit (UI behavior)
+
+To avoid silently dropping scenes, the import flow has two steps:
+
+- **Step 1 — Analyze.** Run `analyzeZip(file)` which returns counts: total scenes, equirect scenes, cube scenes, link hotspots, dropped hotspots. Show a summary modal: "Found 12 scenes. 8 will be imported (equirect). 4 skipped (cube format). Continue?"
+- **Step 2 — Import.** On user confirm, run `importTourFromZip(file)` and replace the editor's `rooms` state via `useEditorStore.setRooms(...)`.
+
+This is critical because the upstream tool's default output is cube. A naive "click import → 80% of scenes vanish" experience would be unacceptable.
+
+---
+
+## 7. Exporter (`lib/marzipano/exporter.ts`)
+
+The contract:
+
 ```ts
-return () => {
-  disposed = true;
-  cancelAnimationFrame(renderCtxRef.current.raf ?? 0);
-  if (renderCtxRef.current.renderer) {
-    renderCtxRef.current.renderer.dispose();
-    const dom = renderCtxRef.current.renderer.domElement;
-    if (dom.parentNode) dom.parentNode.removeChild(dom);
-  }
-  if (viewerRef.current?.dispose) viewerRef.current.dispose();
-  viewerRef.current = null;
-};
+import { exportTourToZip } from '@/lib/marzipano/exporter';
+
+exportTourToZip(tour, options?: { tourName?: string }): Promise<Blob>;
 ```
 
-### Bug C: `app/xr-world/gaussian-splat/page.tsx:38-60`
-Same pattern. WebGLRenderer with no cleanup. Add identical disposal logic.
+Output structure (mirrors `EXPORT_FORMAT.md`):
 
-### Bug D: `components/xr/MarzipanoViewer.tsx:135-140`
-Already has a cleanup return, but the async init isn't guarded by `cancelled`. Add a `let cancelled = false;` and check it before `viewerRef.current.destroy()` in the cleanup.
-
-### Acceptance
-- Open the editor in dev, navigate away, navigate back 5×. No "WebGL context lost" toast. Memory does not grow in DevTools.
-- For Splat: navigate `/xr-world/gaussian-splat` → home → back. Only one `<canvas>` attached.
-
----
-
-## 7. Decide on Redux / R3F (don't punt, prove it)
-
-### Step 1 (Phase 1.2)
-Run a static check across the repo:
-- `grep -r "@reduxjs/toolkit" app components lib` — should be empty if truly unused.
-- `grep -r "react-redux" app components lib` — should be empty.
-- `grep -r "@react-three/fiber" app components lib` — should be empty.
-- `grep -r "@react-three/drei" app components lib` — should be empty.
-- `grep -r "from 'firebase'" app components lib` — count.
-- `grep -r "from 'next-auth'" app components lib` — confirm NextAuth is actually used at runtime.
-
-### Step 2
-- If Redux/RTK is unused → remove from `package.json` in the same PR. Saves ~50KB.
-- If R3F/drei are unused → remove from `package.json`. Saves ~200KB.
-- If firebase is used only by `lib/firebase.ts` for analytics that no one consumes → flag for follow-up, do not remove in this round.
-
----
-
-## 8. Service-page refactor (Phase 1.5)
-
-The five new `/experiences/*` pages should be re-skinned in marketing language (no "WebXR" in H1s, no "Marzipano" in capability lists). Implementation:
-
-1. Rename the five pages, keep the same body content but rewrite hero/capability copy through the `servicePagesData` map in `data/pages.ts`.
-2. Add a single shared `ExperienceServicePage` component that all five pages render with different props from `servicePagesData`. Today each page is bespoke; this is the consolidation.
-3. Each page's "Launch" button now calls the unified `openExperience(slug, experienceId)` action (see below) instead of the global `useAppStore` modals.
-
-### Store action
-Add to `lib/store.ts`:
-```ts
-openExperience: (projectSlug: string, experienceId: VizExperienceId) => void;
 ```
-which dispatches an internal modal that mounts `<VizEngineCanvas>`.
+tour.zip
+├── data.js          // var data = { name, scenes, settings }
+├── app-data.json    // same content as JSON, for tools that prefer JSON
+└── (no tile files — out of scope for this round; the upstream tool is for
+    importing pre-existing tours, not for shipping tiles from a different tool)
+```
 
-For Phase 1, **do not delete `openPanorama` / `openModelViewer`**. They are still called by the existing `app/xr-world/webar` and `app/xr-world/virtual-tour` pages. They become legacy and are removed in Phase 2 once those pages are renamed.
+Field mapping (VizTR → Marzipano):
 
----
+- `tour.rooms` → `scenes[]`.
+  - `id` → `id` (must be a valid JS identifier; reject if not, fall back to `scene_${i}`).
+  - `name` → `name`.
+  - `initialYaw` (deg) / `initialPitch` (deg) → `yaw` (rad) / `pitch` (rad).
+  - `defaultHotspots`:
+    - `type === 'room_link'` with `targetRoomId` → `linkHotspots[]` with `target: targetRoomId`, `yaw` / `pitch` from `xPercent` / `yPercent` via `coords.ts`.
+    - `type === 'info'` (or any with `article` non-empty) → `infoHotspots[]` with `title: h.title`, `text: h.description || h.article`.
+    - Other types (`metadata`, `image`, `video`, `audio`, `link`) → `infoHotspots[]` with `text: JSON.stringify(h)` so nothing is silently lost. (Round-trip will widen these when the upstream tool is extended; for now they are best-effort.)
+  - **Skip `levels[]` and `faceSize` in the exported JSON.** The upstream tool requires these; we emit placeholder values `{ tileSize: 256, size: 256, fallbackOnly: true }` and `faceSize: 256`. The exported ZIP is a "tour manifest" intended for documentation or future round-trip; it is not directly viewable in Marzipano Tool without an equirect source file. Add a clear warning toast: "Exported as tour manifest. The upstream Marzipano Tool requires pre-rendered cube tiles to view. Use 'Export VizTR tour' to share the editable project."
 
-## 9. Implementation Roadmap (ordered by dependency)
+- `settings`:
+  - Hard-code `mouseViewMode: 'drag'`, `autorotateEnabled: false`, `fullscreenButton: true`, `viewControlButtons: true`. These match the upstream tool defaults; the user can edit them in the upstream tool after import.
 
-Each phase lists: objective, files, dependencies, risk, acceptance.
+File format: write both `data.js` (as `var data = ${JSON.stringify(payload, null, 2)};`) and `app-data.json` (as the same JSON without the `var data = ` wrapper). This matches the upstream tool's dual-format behavior.
 
-### Phase 0 — Audit (done)
-This document is Phase 0.
-
-### Phase 1 — Foundation (smallest safe moves)
-
-**1.1 — Fix cleanup bugs (1-2 hours, no UX impact)**
-- Files: `components/xr/PlayCanvasConfigurator.tsx`, `components/xr/GaussianSplatViewer.tsx`, `components/xr/MarzipanoViewer.tsx`, `app/xr-world/gaussian-splat/page.tsx`
-- Dependencies: none.
-- Risk: low — disposals are additive.
-- Acceptance: no leaked canvases / contexts after route navigation. DevTools heap stays flat.
-
-**1.2 — Prove unused-dep claim (1 hour)**
-- Run the greps from §7. Document results. Remove confirmed-unused packages.
-- Risk: removing a package breaks an import I missed. Mitigate: `pnpm build` and `pnpm test` after removal.
-- Acceptance: build green, no behavioral change.
-
-**1.3 — Engine abstraction skeleton (1 day)**
-- Create `components/viz/engines/types.ts`, `selectors.ts`, `engineRegistry.tsx`, `EngineLoading.tsx`, `EngineUnavailable.tsx`.
-- Add `VizProject` / `VizExperience` / `VizScene` types.
-- Wire `useVizCapabilities` and `useVizEngine` hooks.
-- Acceptance: types compile, no consumers yet.
-
-**1.4 — Rename route tree (2 days, depends on 1.3)**
-- Move `app/studio/*` → `app/viztr-studio/*`. Add 301 redirects from `app/studio/*`.
-- Move `app/xr-world/*` → `app/experiences/*`. Add 301 redirects.
-- Update `app/sitemap.ts`, `Header.tsx`, `Footer.tsx`.
-- Risk: indexed URLs lose traffic if 301 is wrong. Verify with curl after deployment.
-- Acceptance: `/portfolio/[id]` still 200s; `/projects/[id]` (old portfolio URL) redirects to new `/projects/[slug]`. Sitemap emits new URLs only.
-
-**1.5 — Service-page refactor (1 day)**
-- Create shared `ExperienceServicePage` component.
-- Re-skin `/experiences/{vizview,vizar,vizvr,viztour,vizreality}` using `servicePagesData` map and the new shared layout.
-- Acceptance: no H1 says "WebXR" or "Marzipano". Capability lists are marketing-first.
-
-### Phase 2 — Adapters + project page
-
-**2.1 — MarzipanoAdapter (1 day)**
-- File: `components/viz/adapters/MarzipanoAdapter.tsx`
-- Converts `VizScene` → current `XRScene` shape, passes to existing `MarzipanoViewer`. Disposes on unmount.
-- Adds a typed ref so we can drop the `any` in `MarzipanoViewer.tsx` (do **not** rewrite MarzipanoViewer itself in this phase).
-- Risk: low.
-- Acceptance: opening `/projects/solarium-penthouse/experience/viztour` renders the existing tour, exits cleanly.
-
-**2.2 — PlayCanvasAdapter (1 day)**
-- Same shape, wraps `PlayCameraSceneRenderer`. Type the ref to drop `any`.
-- Acceptance: `/projects/.../vizview` and `vizvr` render, dispose cleanly.
-
-**2.3 — SplatAdapter (2 days — bigger)**
-- Wraps `GaussianSplatViewer`. **In this phase the cleanup bug fix from 1.1 is mandatory**, otherwise the adapter inherits the leak.
-- Convert `SplatSceneDef` to/from `VizScene`.
-- Add a typed ref.
-- Acceptance: `/projects/.../vizreality` renders, multiple navigations don't leak.
-
-**2.4 — `ProjectExperiencePanel` (1 day)**
-- The surface that lists the available experiences and launches the modal.
-- Reads `useVizCapabilities` to grey out buttons the device cannot run (e.g. AR on a non-AR phone).
-- Acceptance: the same project page works on Chrome desktop, Safari iPhone (no WebXR, gracefully hides VR/AR), Quest browser (shows all).
-
-**2.5 — New `/projects/[slug]/page.tsx` (2 days)**
-- RSC. Calls `getVizProject(slug)`.
-- Renders `<ProjectHeader>`, `<ProjectExperiencePanel>`, the marketing case study, related projects.
-- Acceptance: page returns 200 server-side, no client-only data fetch for the header.
-
-**2.6 — Modal route `/projects/[slug]/experience/[experienceId]/page.tsx` (1 day)**
-- Loads the experience, mounts `<VizEngineCanvas>`. Shows `<EngineLoading>` while assets load, `<EngineUnavailable>` if the engine fails.
-- Acceptance: deep link works. Closing the modal returns to the project page.
-
-### Phase 3 — Data layer
-
-**3.1 — `lib/viz/vizProjects.ts` (1 day)**
-- Joins `data/portfolio.ts` and the tour config. Returns `VizProject[]`.
-- Add a thin `getVizProject(slug)` and `listVizProjects()`.
-- Risk: `data/portfolio.ts` has 5 entries; only some have a panorama or model. The join must be opt-in: only projects that have a tour OR a model3d URL are eligible.
-- Acceptance: `solarium-penthouse` (panorama + 9 hotspots) and `nordic-monolith` (panorama) both surface viztour. `bmw-i8` test model surfaces vizview.
-
-**3.2 — `lib/viz/assetGuard.ts` (1 day)**
-- Server-side helper: given a URL, HEAD-request it (or use Supabase `storage.from(...).exists()`), return boolean.
-- Lets the project page decide which experiences are `available: true` without round-tripping on the client.
-- Risk: HEAD requests can be slow if the bucket is slow. Mitigate by caching the result for 5 minutes.
-
-**3.3 — Convert `app/api/storage` and `app/api/xr-links` to real Supabase (out of scope for this plan, flag as follow-up)**
-
-### Phase 4 — DX hardening
-
-**4.1 — Type the XR store and remove `any` (1 day)**
-- Audit `components/xr/xr.store.ts`. The 416-line Zustand store has hidden coupling to `webxr-service` and `SessionStatus`. Find where these types actually live (likely `components/xr/hooks/webxr-service.ts`) and import them properly.
-
-**4.2 — Add error boundaries around each engine adapter (1 day)**
-- One `<ErrorBoundary>` per `<VizEngineCanvas>`. On error, show `<EngineUnavailable>` with a "Report this" CTA.
-
-**4.3 — Add capability detection on first paint (1 day)**
-- `useVizCapabilities` already exists in skeleton. Make it SSR-safe (only run on the client, return a stable default during SSR).
+The Blob is handed to a `URL.createObjectURL` and downloaded via an invisible `<a download>`.
 
 ---
 
-## 10. Out-of-scope follow-ups (flagged for next plan)
+## 8. Conversion helpers (`lib/marzipano/conversion.ts`)
 
-- Real Supabase-backed `app/api/storage` and `app/api/xr-links`.
-- Asset-processing pipeline (Draco / KTX2 / Meshopt). Libraries are installed; the build script is not. This is a separate workstream.
-- Migration of `lib/firebase.ts` (only used if anything in `app/` actually imports it — confirm in Phase 1.2).
-- SEO/OG per project page.
-- Pixel Streaming deep dive (the `app/xr-world/pixel-streaming` route is a separate concern; it streams UE5, not the in-house engines).
-- Analytics dashboard in admin.
+Pure functions, no I/O. Single responsibility per function, so they are testable in isolation.
+
+- `marzipanoSceneToTourRoom(scene, panoramaUrl, allSceneIds): { room, warnings }` — per-scene conversion.
+- `tourRoomToMarzipanoScene(room): MarzipanoScene` — per-scene export.
+- `pickEquirectSource(zip, sceneId): Promise<string | null>` — looks in the ZIP for an equirect image for the scene (see §6.7).
+- `analyzeZip(file): Promise<{ sceneCount, equirectCount, cubeCount, hotspotCount, droppedLinkCount }>` — for the preview step in §6.9.
+
+All four are pure or accept already-loaded JSZip instances, so they can be unit-tested without DOM.
+
+---
+
+## 9. Editor integration
+
+### 9.1 New toolbar buttons in `app/xr-world/virtual-tour/editor/page.tsx`
+
+The editor's header already has the `EditorHeader` component with `Save Tour`, `Undo`, `Redo` (per our prior refactor, see `components/editor/shell/EditorHeader.tsx`). Add two buttons in the same header:
+
+- **Import** (folder-up icon) — opens a hidden `<input type="file" accept=".zip">`. On file change, runs `analyzeZip`. If `cubeCount > 0`, shows a confirmation modal with the summary. On confirm, runs `importTourFromZip` and commits via `useEditorStore.setRooms(rooms)`. Toasts: `"Imported X scenes, skipped Y cube scenes."` (warn) or `"Import failed: <reason>"` (error).
+- **Export (Marzipano)** (folder-down icon) — runs `exportTourToZip(rooms)` and triggers a download. Filename: `${tourName || 'tour'}-marzipano-${YYYYMMDD-HHmm}.zip`.
+
+Both buttons are disabled if `loading === true` or `saving === true`.
+
+The buttons live in `EditorHeader.tsx`. New props: `onImportTour: () => void; onExportTour: () => void;`. The page passes closures that wire the file input + handlers. The hidden file input lives in the page (because it needs the actual handler) and is triggered by a ref.
+
+**Reason for the page-level input:** EditorHeader is a memoized presentation component. Keeping the file input in the page lets us reuse the existing toast / error state without expanding the header's prop surface.
+
+### 9.2 Cube-preview modal
+
+A small modal component `components/editor/ImportPreviewModal.tsx`. Shown when the analysis step detects at least one cube scene. Displays:
+
+- "We found N panoramas in this tour."
+- "✓ M equirectangular scenes will be imported."
+- "✗ K cube-tile scenes will be skipped (not supported by VizTR)."
+
+Actions: `[Cancel]` / `[Import M scenes]`.
+
+### 9.3 State transitions
+
+Import flow is **explicit** and **reviewable**:
+1. User clicks Import.
+2. File picker opens. User selects ZIP.
+3. Analysis runs. Toast on fatal errors (not a ZIP, no data file, etc.).
+4. If mixed: preview modal. Else: skip the modal and go directly to step 5.
+5. `importTourFromZip` runs.
+6. `useEditorStore.setRooms(result.tour.rooms)` replaces the editor state. `saved` flag is set to `false` (unsaved changes), undo history is cleared (the imported tour is the new baseline).
+7. Toasts: one info toast per warning, one success toast with scene count.
+
+Export flow:
+1. User clicks Export (Marzipano).
+2. `exportTourToZip(rooms)` runs.
+3. Browser download triggered.
+4. Toast: `"Exported tour-name-marzipano-…zip"`.
+
+### 9.4 What we deliberately do NOT change
+
+- The existing `useEditorStore` (Zustand + zundo) keeps its current shape. Import is a one-shot `setRooms`. Undo history is intentionally cleared on import (the imported tour is a new baseline, not a delta).
+- The Marzipano `PanoramaPreview` component (`components/editor/PanoramaPreview.tsx`) keeps rendering equirect images exactly as today.
+- The `app/api/tour` and `app/api/tour/settings` routes are unchanged. The imported tour saves via the existing `Save Tour` button.
+
+---
+
+## 10. Out of scope (flagged for follow-up)
+
+- **Cube-format support.** Rejecting cube is the user's choice. Future work: a Sharp / cube→equirect reprojection endpoint under `/api/tour/reproject`. Out of this round.
+- **Tile export.** `exporter.ts` emits a manifest-only ZIP. Future work: render the equirect image to a 6-face cube at upload time and pack the result.
+- **Carrying yaw/pitch alongside xPercent/yPercent.** User chose the equirect approximation. Future work: a `VtedHotspot.legacyCoords?: { yaw, pitch }` extension.
+- **`mouseViewMode: 'qtvr'` in the editor.** The upstream tool supports QTVR; VizTR's `MarzipanoViewer` does not (it uses `mouseViewMode: 'drag'`). Future work: wire the existing Marzipano `qtvr` config through the editor.
+- **Importing the upstream tool's UI wholesale.** User chose round-trip only. The upstream `index.html` + `scripts/app.js` are not in this codebase and we do not vendor them.
+- **Cloud-storage round-trip.** `app/api/storage` and `app/api/xr-links` are still mocked (per the prior plan). The exporter writes a Blob in-memory; nothing is uploaded.
 
 ---
 
 ## 11. Validation plan (how we know each phase works)
 
+### Build & typecheck
 - `pnpm build` green after every phase.
-- `pnpm dev` smoke test on each renamed route.
-- Manual WebGL memory check: open DevTools, navigate to `/projects/[slug]/experience/vizreality` five times, confirm heap stabilizes.
-- Manual WebXR check (where hardware available): Quest browser launches `/projects/[slug]/experience/vizvr` into immersive-vr session.
-- Mobile Safari check: `/projects/[slug]/experience/viztour` pans, hot spots respond, no console errors.
-- Lighthouse on `/projects/[slug]` — Performance ≥ 80, Accessibility ≥ 90, SEO ≥ 90.
-- 301 redirect audit: walk every URL that was reachable before Phase 1.4 and confirm it redirects correctly.
+- `pnpm lint` clean for the new files (the existing lint allowlist is fine).
+- `pnpm test` passes; new tests added for `coords`, `importer`, `exporter`.
+
+### Unit tests
+- `coords.test.ts`: round-trip equality for known good values. Document pole cases.
+- `importer.test.ts`: parse the upstream sample tour in `examples/`. Assert the expected number of equirect scenes, expected number of dropped cube scenes, expected hotspot count.
+- `exporter.test.ts`: export a fixture tour, re-parse the resulting ZIP, assert the round-trip preserves all scene IDs, hotspot counts, and yaw/pitch values within `1e-6` radians.
+
+### Manual / smoke
+- Open the editor, click Import, select a real upstream-exported tour with 5 cube scenes. Expect: 5 cube scenes, 0 imported, modal says "0 will be imported, 5 skipped". User clicks Cancel. Nothing changes.
+- Open the editor, create 3 rooms, click Export (Marzipano). Open the resulting ZIP with `unzip -l`. Expect: `data.js` and `app-data.json`, no `tiles/`. Open `app-data.json` in a text editor. Expect: 3 scenes, xPercent/yPercent converted back to yaw/pitch.
+- Round-trip: import a ZIP, export it, import the export, compare scene counts. Expect equal.
+
+### Visual regression
+- None required. The Marzipano `PanoramaPreview` already renders equirect images; this round doesn't touch it.
 
 ---
 
-## 12. Open questions
+## 12. Risks & open questions
 
-1. **Project slug source of truth.** Today `data/portfolio.ts` has `slug` and the editable tour has `id` but no `slug`. They do not match. Confirm whether the editor should write back a `slug` to the tour config, or whether `getVizProject` does the join on `title.toLowerCase().replace(/\s+/g,'-')`.
-2. **Auth on the project page.** The marketing `/portfolio/[id]` is public. The editor route requires NextAuth. The new `/projects/[slug]` should remain public. Confirm.
-3. **Cloudflare / R2 status.** `app/api/storage` returns a hardcoded object. If R2/S3 is actually wired, that route is misleading. Decide: either wire it now or delete the route.
-4. **Pixel Streaming retention.** Pixel Streaming is a real product area but lives outside the engine abstraction. Confirm scope: keep it on its own route, do not fold into `VizEngine`.
+1. **JSZip size.** 3.10.1 is ~95KB minified. If bundle size becomes a concern, use `next/dynamic` to import the importer module only when the Import button is clicked. (The exporter is needed for the download, so it loads with the page.) Acceptable for now.
+2. **`new Function` for parsing `data.js`.** Same security model as `eval` but with a private scope. Acceptable because the file is a user upload. If security review objects, add a vendored JSON-only path that rejects `data.js` (acceptable for the long term; the upstream tool is the only known emitter of `data.js`).
+3. **Scene ID collision on round-trip.** If a user imports a tour, edits it, exports, then re-imports, the upstream-emitted scene IDs must match the VizTR-emitted ones. We use the existing VizTR scene ID verbatim. Document this.
+4. **Hotspot yPercent edge cases.** A hotspot at exactly `yPercent: 0` is the zenith; `yPercent: 100` is the nadir. Upstream data could have hotspots at exactly these values, which round-trip cleanly. Poles are lossy in equirect but we don't need to handle them specially for v1.
+5. **`autorotateSpeed`.** Not currently surfaced in the VizTR editor UI but the type exists in `VtedTourSettings`. The exporter writes the upstream default (0.5). Out of scope to wire the editor UI to it this round.
+6. **Compressed asset uploads.** The current `/api/tour/upload` accepts one file at a time. Importing a ZIP could batch-upload all panoramas in parallel. Out of scope; the importer currently sets `panoramaUrl` to the same equirect URL for all rooms (which won't exist on the local server yet). The Import button shows a follow-up "Upload panoramas" prompt if no panorama URLs resolve. Document this UX choice in the editor's `loading` toast.
 
 ---
 
-*End of plan. Implementation may begin after the user confirms and an implementation-capable agent picks this up.*
+## 13. Ordered task list (for an implementation agent)
+
+1. **Add `jszip` to `package.json`.** `pnpm add jszip`. Confirm build still passes.
+2. **Create `lib/marzipano/types.ts`.** The schema in §4. Pure types, no logic. Add a JSDoc block referencing the upstream `EXPORT_FORMAT.md`.
+3. **Create `lib/marzipano/coords.ts`.** The two functions in §5 + their unit tests in `__tests__/coords.test.ts`.
+4. **Create `lib/marzipano/conversion.ts`.** The four pure helpers in §8. Add unit tests for the two that are non-trivial (`marzipanaSceneToTourRoom` and `tourRoomToMarzipanaScene`).
+5. **Create `lib/marzipano/importer.ts`.** The flow in §6. Add a unit test that parses the upstream sample tour and asserts the expected outcome.
+6. **Create `lib/marzipano/exporter.ts`.** The flow in §7. Add a round-trip unit test.
+7. **Create `components/editor/ImportPreviewModal.tsx`.** Cube-warning modal. No state; props only.
+8. **Extend `components/editor/shell/EditorHeader.tsx`.** Add `onImportTour` and `onExportTour` props, render two new icon buttons. Default: no-ops if not provided (keeps EditorHeader reusable for the client viewer page that has its own header).
+9. **Wire the editor page.** In `app/xr-world/virtual-tour/editor/page.tsx`:
+   - Add a hidden `<input ref={fileInputRef} type="file" accept=".zip" onChange={onFileSelected} />` in a fragment.
+   - Add `onImportTour: () => fileInputRef.current?.click()` and `onExportTour: handleExport` closures.
+   - Add `handleExport` that calls `exportTourToZip({ name: projectName, rooms })` and triggers a download.
+   - Add `onFileSelected` that runs the analysis → preview modal → import flow. Wire `useEditorStore.setRooms`.
+10. **Manual smoke test.** Per §11. Test the 3-scenario flow.
+11. **Document the new feature** in `VirtualTourPhase2.md` or a new `VirtualTourPhase3.md` (don't create a doc without being asked, but flag it to the user).
+
+---
+
+*End of plan. Implementation can begin after the user confirms and an implementation-capable agent picks this up. Switch to a code-capable agent to apply the changes.*

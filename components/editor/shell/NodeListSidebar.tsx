@@ -1,7 +1,7 @@
 'use client';
 
 import React, { memo, useState } from 'react';
-import { Upload, Loader2, Pencil, ChevronUp, ChevronDown, Copy, Trash2, Star } from 'lucide-react';
+import { Upload, Loader2, Pencil, ChevronUp, ChevronDown, Copy, Trash2, Star, PanelLeftClose } from 'lucide-react';
 import type { TourRoom } from '@/data/tour-config';
 
 // ============================================================================
@@ -198,6 +198,7 @@ interface NodeListSidebarProps {
   onAddFromLibrary: (url: string) => void;
   onUploadFiles: (files: FileList | File[]) => void;
   onSetDraggingOver: (dragging: boolean) => void;
+  onCollapse?: () => void;
 }
 
 export function NodeListSidebar({
@@ -217,22 +218,37 @@ export function NodeListSidebar({
   onAddFromLibrary,
   onUploadFiles,
   onSetDraggingOver,
+  onCollapse,
 }: NodeListSidebarProps) {
   return (
     <aside className="w-60 shrink-0 border-r border-[#27272A] overflow-y-auto p-2 space-y-1">
       {/* Header */}
       <div className="flex items-center justify-between px-1 pb-1">
         <span className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">Nodes</span>
-        <label className="flex items-center gap-1 px-2 py-1 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#3ECF8E] text-[10px] font-mono cursor-pointer">
-          <Upload className="w-3 h-3" /> Upload
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={(e) => e.target.files && onUploadFiles(e.target.files)}
-          />
-        </label>
+        <div className="flex items-center gap-1">
+          <label className="flex items-center gap-1 px-2 py-1 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#3ECF8E] text-[10px] font-mono cursor-pointer">
+            <Upload className="w-3 h-3" /> Upload
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={(e) => e.target.files && onUploadFiles(e.target.files)}
+            />
+          </label>
+          {onCollapse && (
+            <button
+              type="button"
+              onClick={onCollapse}
+              aria-label="Collapse nodes panel"
+              aria-pressed="false"
+              title="Collapse panel"
+              className="p-1 rounded text-[#71717A] hover:text-white hover:bg-[#18181B]"
+            >
+              <PanelLeftClose className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
       </div>
 
       <MediaLibraryPanel assets={mediaAssets} onAdd={onAddFromLibrary} />

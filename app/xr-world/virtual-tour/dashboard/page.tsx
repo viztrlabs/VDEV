@@ -10,7 +10,6 @@ import {
   Search,
   Edit3,
   Eye,
-  Copy,
   Trash2,
   Share2,
   Calendar,
@@ -21,9 +20,10 @@ import {
   Lock,
   Clock,
   Tag,
-  EyeOff,
+  Crown,
+  Star,
 } from 'lucide-react';
-import type { VtedProject, VtedFloorplanAI } from '@/lib/vted-types';
+import type { VtedProject } from '@/lib/vted-types';
 
 const AIFloorplanWizard = dynamic(() => import('@/components/editor/AIFloorplanWizard'), {
   ssr: false,
@@ -46,7 +46,6 @@ export default function TourDashboardPage() {
   const [filter, setFilter] = useState<'all' | 'draft' | 'published'>('all');
   const [error, setError] = useState<string | null>(null);
   const [showFloorplanWizard, setShowFloorplanWizard] = useState(false);
-  const [generatedFloorplan, setGeneratedFloorplan] = useState<VtedFloorplanAI | null>(null);
 
   const fetchProjects = async () => {
     try {
@@ -98,191 +97,181 @@ export default function TourDashboardPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#09090B] text-white">
-      {/* Top Nav */}
-      <header className="flex items-center justify-between gap-3 px-4 sm:px-6 py-3 border-b border-[#27272A] bg-[#0c0c0f] sticky top-0 z-30">
-        <div className="flex items-center gap-4">
-          <Link href="/xr-world/virtual-tour" className="text-sm font-bold font-mono text-[#3ECF8E]">
-            VizTR
-          </Link>
-          <nav className="flex items-center gap-1">
-            {(['projects', 'media', 'tools', 'promotion', 'enterprise'] as Tab[]).map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => setTab(t)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono capitalize ${
-                  tab === t
-                    ? 'bg-[#18181B] text-white border border-[#27272A]'
-                    : 'text-[#A1A1AA] hover:text-white'
-                }`}
-              >
-                {t}
-              </button>
-            ))}
-          </nav>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500/15 text-amber-300 text-[10px] font-mono">
-            <Clock className="w-3 h-3" />
-            7d 9m Trial left
-          </span>
-          <select className="hidden sm:block bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-[10px] font-mono text-white">
-            <option>English</option>
-          </select>
-          <button
-            type="button"
-            onClick={createProject}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-pink-500 hover:bg-pink-600 text-white text-xs font-bold font-mono"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            New Project
-          </button>
-          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#3ECF8E] to-cyan-500 flex items-center justify-center text-[10px] font-bold">
-            R
-          </div>
-        </div>
-      </header>
+    <div className="h-screen bg-[#09090B] text-white flex flex-col">
+      {/* Content (no top nav, no footer — fills the viewport) */}
+      <div className="flex-1 min-h-0 overflow-auto">
+        {tab === 'projects' && (
+          <div className="p-4 sm:p-6 max-w-7xl mx-auto">
+            {error && (
+              <div className="mb-3 px-3 py-2 bg-rose-950/40 border border-rose-900 text-rose-300 text-xs font-mono rounded">
+                {error}
+              </div>
+            )}
 
-      {/* Content */}
-      {tab === 'projects' && (
-        <div className="p-4 sm:p-6 max-w-7xl mx-auto">
-          {error && (
-            <div className="mb-3 px-3 py-2 bg-rose-950/40 border border-rose-900 text-rose-300 text-xs font-mono rounded">
-              {error}
-            </div>
-          )}
-
-          {/* Toolbar */}
-          <div className="flex items-center justify-between mb-4 gap-2">
-            <div className="flex items-center gap-1">
-              <button
-                type="button"
-                onClick={() => setView('grid')}
-                className={`p-1.5 rounded ${view === 'grid' ? 'bg-[#3ECF8E] text-black' : 'text-[#A1A1AA] hover:text-white'}`}
-                title="Grid view"
-              >
-                <Grid3X3 className="w-4 h-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setView('list')}
-                className={`p-1.5 rounded ${view === 'list' ? 'bg-[#3ECF8E] text-black' : 'text-[#A1A1AA] hover:text-white'}`}
-                title="List view"
-              >
-                <ListIcon className="w-4 h-4" />
-              </button>
-              <select
-                value={filter}
-                onChange={(e) => setFilter(e.target.value as any)}
-                className="ml-2 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-[10px] font-mono text-white"
-              >
-                <option value="all">All</option>
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-              </select>
-            </div>
-            <div className="relative">
-              <Search className="w-3.5 h-3.5 absolute left-2 top-1/2 -translate-y-1/2 text-[#71717A]" />
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search projects…"
-                className="pl-7 pr-2 py-1.5 rounded bg-[#18181B] border border-[#27272A] text-xs font-mono text-white w-48"
-              />
-            </div>
-          </div>
-
-          {loading ? (
-            <div className="text-center text-xs font-mono text-[#71717A] py-12">Loading projects…</div>
-          ) : filtered.length === 0 ? (
-            <div className="text-center text-xs font-mono text-[#71717A] py-12 border border-dashed border-[#27272A] rounded-lg">
-              {projects.length === 0 ? 'No projects yet. Click "New Project" to start.' : 'No projects match the filter.'}
-            </div>
-          ) : view === 'grid' ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-              {filtered.map((p) => (
-                <ProjectCard key={p.id} project={p} onDelete={() => removeProject(p.id)} />
-              ))}
-            </div>
-          ) : (
-            <table className="w-full text-xs font-mono">
-              <thead>
-                <tr className="text-[#71717A] border-b border-[#27272A]">
-                  <th className="text-left p-2">Project</th>
-                  <th className="text-left p-2">Type</th>
-                  <th className="text-left p-2">Status</th>
-                  <th className="text-left p-2">Modified</th>
-                  <th className="text-right p-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((p) => (
-                  <tr key={p.id} className="border-b border-[#18181B] hover:bg-[#0c0c0f]">
-                    <td className="p-2 flex items-center gap-2">
-                      {p.thumbnailUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={p.thumbnailUrl} alt={p.name} className="w-8 h-8 rounded object-cover" />
-                      ) : (
-                        <div className="w-8 h-8 rounded bg-[#27272A]" />
-                      )}
-                      <div>
-                        <div className="text-white">{p.name}</div>
-                        <div className="text-[9px] text-[#71717A]">{p.id.slice(-8)}</div>
-                      </div>
-                    </td>
-                    <td className="p-2 text-[#A1A1AA]">
-                      <span className="px-1.5 py-0.5 rounded bg-[#27272A]">{p.sceneCount} image</span>
-                    </td>
-                    <td className="p-2">
-                      <span
-                        className={`px-1.5 py-0.5 rounded text-[10px] ${
-                          p.status === 'published'
-                            ? 'bg-[#3ECF8E]/15 text-[#3ECF8E]'
-                            : 'bg-amber-500/15 text-amber-400'
-                        }`}
-                      >
-                        {p.status === 'published' ? 'Published' : 'Draft'}
-                      </span>
-                    </td>
-                    <td className="p-2 text-[#A1A1AA]">
-                      {new Date(p.updatedAt).toLocaleString()}
-                    </td>
-                    <td className="p-2 text-right">
-                      <Link
-                        href={`/xr-world/virtual-tour/editor?tour=${p.tourId}`}
-                        className="inline-flex p-1 hover:text-[#3ECF8E]"
-                        title="Edit"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                      </Link>
-                      <Link
-                        href={`/xr-world/virtual-tour?project=${p.id}`}
-                        className="inline-flex p-1 hover:text-[#3ECF8E]"
-                        title="View"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                      </Link>
-                    </td>
-                  </tr>
+            {/* Section title + tabs */}
+            <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+              <div>
+                <h1 className="text-base font-mono font-bold text-white">Tour Projects</h1>
+                <p className="text-[10px] font-mono text-[#71717A]">Manage your 360° virtual tours</p>
+              </div>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {(['projects', 'media', 'tools', 'promotion', 'enterprise'] as Tab[]).map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setTab(t)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-mono capitalize ${
+                      tab === t
+                        ? 'bg-[#18181B] text-white border border-[#27272A]'
+                        : 'text-[#A1A1AA] hover:text-white'
+                    }`}
+                  >
+                    {t}
+                  </button>
                 ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-      )}
+              </div>
+            </div>
 
-      {tab === 'media' && <MediaSection />}
-      {tab === 'tools' && <ToolsSection />}
-      {tab === 'promotion' && <PromotionSection />}
-      {tab === 'enterprise' && <EnterpriseSection />}
+            {/* Toolbar */}
+            <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={createProject}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-pink-500 hover:bg-pink-600 text-white text-xs font-bold font-mono"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  New Project
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setView('grid')}
+                  className={`p-1.5 rounded ${view === 'grid' ? 'bg-[#3ECF8E] text-black' : 'text-[#A1A1AA] hover:text-white'}`}
+                  title="Grid view"
+                >
+                  <Grid3X3 className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setView('list')}
+                  className={`p-1.5 rounded ${view === 'list' ? 'bg-[#3ECF8E] text-black' : 'text-[#A1A1AA] hover:text-white'}`}
+                  title="List view"
+                >
+                  <ListIcon className="w-4 h-4" />
+                </button>
+                <select
+                  value={filter}
+                  onChange={(e) => setFilter(e.target.value as any)}
+                  className="ml-2 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-[10px] font-mono text-white"
+                >
+                  <option value="all">All</option>
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                </select>
+                <span className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500/15 text-amber-300 text-[10px] font-mono ml-2">
+                  <Clock className="w-3 h-3" />
+                  7d 9m Trial left
+                </span>
+              </div>
+              <div className="relative">
+                <Search className="w-3.5 h-3.5 absolute left-2 top-1/2 -translate-y-1/2 text-[#71717A]" />
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search projects…"
+                  className="pl-7 pr-2 py-1.5 rounded bg-[#18181B] border border-[#27272A] text-xs font-mono text-white w-48"
+                />
+              </div>
+            </div>
+
+            {loading ? (
+              <div className="text-center text-xs font-mono text-[#71717A] py-12">Loading projects…</div>
+            ) : filtered.length === 0 ? (
+              <div className="text-center text-xs font-mono text-[#71717A] py-12 border border-dashed border-[#27272A] rounded-lg">
+                {projects.length === 0 ? 'No projects yet. Click "New Project" to start.' : 'No projects match the filter.'}
+              </div>
+            ) : view === 'grid' ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                {filtered.map((p) => (
+                  <ProjectCard key={p.id} project={p} onDelete={() => removeProject(p.id)} />
+                ))}
+              </div>
+            ) : (
+              <table className="w-full text-xs font-mono">
+                <thead>
+                  <tr className="text-[#71717A] border-b border-[#27272A]">
+                    <th className="text-left p-2">Project</th>
+                    <th className="text-left p-2">Type</th>
+                    <th className="text-left p-2">Status</th>
+                    <th className="text-left p-2">Modified</th>
+                    <th className="text-right p-2">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((p) => (
+                    <tr key={p.id} className="border-b border-[#18181B] hover:bg-[#0c0c0f]">
+                      <td className="p-2 flex items-center gap-2">
+                        {p.thumbnailUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={p.thumbnailUrl} alt={p.name} className="w-8 h-8 rounded object-cover" />
+                        ) : (
+                          <div className="w-8 h-8 rounded bg-[#27272A]" />
+                        )}
+                        <div>
+                          <div className="text-white">{p.name}</div>
+                          <div className="text-[9px] text-[#71717A]">{p.id.slice(-8)}</div>
+                        </div>
+                      </td>
+                      <td className="p-2 text-[#A1A1AA]">
+                        <span className="px-1.5 py-0.5 rounded bg-[#27272A]">{p.sceneCount} image</span>
+                      </td>
+                      <td className="p-2">
+                        <span
+                          className={`px-1.5 py-0.5 rounded text-[10px] ${
+                            p.status === 'published'
+                              ? 'bg-[#3ECF8E]/15 text-[#3ECF8E]'
+                              : 'bg-amber-500/15 text-amber-400'
+                          }`}
+                        >
+                          {p.status === 'published' ? 'Published' : 'Draft'}
+                        </span>
+                      </td>
+                      <td className="p-2 text-[#A1A1AA]">
+                        {new Date(p.updatedAt).toLocaleString()}
+                      </td>
+                      <td className="p-2 text-right">
+                        <Link
+                          href={`/xr-world/virtual-tour/editor?tour=${p.tourId}`}
+                          className="inline-flex p-1 hover:text-[#3ECF8E]"
+                          title="Edit"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </Link>
+                        <Link
+                          href={`/xr-world/virtual-tour?project=${p.id}`}
+                          className="inline-flex p-1 hover:text-[#3ECF8E]"
+                          title="View"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        )}
+
+        {tab === 'media' && <MediaSection />}
+        {tab === 'tools' && <ToolsSection onOpenWizard={() => setShowFloorplanWizard(true)} />}
+        {tab === 'promotion' && <PromotionSection />}
+        {tab === 'enterprise' && <EnterpriseSection />}
+      </div>
 
       {showFloorplanWizard && (
         <AIFloorplanWizard
-          onGenerate={(fp) => {
-            setGeneratedFloorplan(fp);
-            setShowFloorplanWizard(false);
-          }}
+          onGenerate={() => setShowFloorplanWizard(false)}
           onCancel={() => setShowFloorplanWizard(false)}
         />
       )}
@@ -366,7 +355,7 @@ function ProjectCard({ project, onDelete }: { project: VtedProject; onDelete: ()
 }
 
 // =============== Tools ===============
-function ToolsSection() {
+function ToolsSection({ onOpenWizard }: { onOpenWizard: () => void }) {
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-4">
       <h2 className="text-base font-mono font-bold text-[#3ECF8E]">Tools</h2>
@@ -376,7 +365,7 @@ function ToolsSection() {
           title="AI Floorplan Maker"
           body="3-step wizard: select 2D floorplan → configure style → generate."
           locked={false}
-          onClick={() => setShowFloorplanWizard(true)}
+          onClick={onOpenWizard}
         />
         <ToolCard
           icon={<HardDrive className="w-5 h-5" />}
