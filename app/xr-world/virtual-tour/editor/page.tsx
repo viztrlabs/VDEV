@@ -77,6 +77,7 @@ import {
   FolderUp,
   Compass,
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 type HotspotColor = 'rose' | 'emerald' | 'cyan' | 'amber' | 'violet' | 'blue';
 type HotspotCategory =
@@ -131,6 +132,11 @@ interface TourRoom {
 }
 
 export default function TourEditorPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/under-admin/users/demo-user/projects/demo-project/editor-dashboard/virtual-tour');
+  }, [router]);
   const { showToast } = useAppStore();
   const { undo, redo, canUndo, canRedo } = useEditorHistory();
 

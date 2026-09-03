@@ -317,72 +317,68 @@ export default function ClientDashboardPage() {
                   High-poly 3D models, camera angles, and rendering pipelines
                 </p>
               </div>
+              <button
+                onClick={() => refreshProjects()}
+                className="px-3 py-1.5 rounded-lg text-xs font-mono border bg-[#09090B] border-[#27272A] hover:border-[#3ECF8E]/60 text-[#A1A1AA] hover:text-[#3ECF8E] transition-colors flex items-center gap-2 cursor-pointer"
+              >
+                Refresh
+              </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              <div className="p-5 rounded-xl bg-[#18181B] border border-[#27272A] hover:border-[#3ECF8E]/40 transition-all space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="px-2 py-0.5 rounded bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] text-[10px] font-mono font-bold">
-                    VIZTR-882
-                  </span>
-                  <span className="px-2 py-0.5 rounded bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 text-[10px] font-mono uppercase font-bold">
-                    In Production
-                  </span>
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">The Apex Tower Atrium</h3>
-                  <p className="text-xs text-[#A1A1AA] mt-1">
-                    LOD400 Exterior & Interior Lighting Calibration, 8K Walkthrough Renders
-                  </p>
-                </div>
-                <div className="pt-3 border-t border-[#27272A] flex items-center justify-between text-xs font-mono text-[#71717A]">
-                  <span>Target: Sep 15, 2026</span>
-                  <span className="text-[#3ECF8E] font-bold">75% Complete</span>
-                </div>
+            {projectsLoading && (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin w-8 h-8 border-2 border-[#3ECF8E] border-t-transparent rounded-full" />
+                <span className="ml-3 text-[#A1A1AA] text-sm font-mono">Loading projects...</span>
               </div>
+            )}
 
-              <div className="p-5 rounded-xl bg-[#18181B] border border-[#27272A] hover:border-[#3ECF8E]/40 transition-all space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="px-2 py-0.5 rounded bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] text-[10px] font-mono font-bold">
-                    VZ-9021
-                  </span>
-                  <span className="px-2 py-0.5 rounded bg-amber-950/40 text-amber-400 border border-amber-800/40 text-[10px] font-mono uppercase font-bold">
-                    Client Review
-                  </span>
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">Solarium Sky Penthouse</h3>
-                  <p className="text-xs text-[#A1A1AA] mt-1">
-                    Triplex Interior CGI & High-fidelity Unreal Engine Spatial Tour
-                  </p>
-                </div>
-                <div className="pt-3 border-t border-[#27272A] flex items-center justify-between text-xs font-mono text-[#71717A]">
-                  <span>Target: Sep 28, 2026</span>
-                  <span className="text-amber-400 font-bold">85% Complete</span>
-                </div>
+            {projectsError && (
+              <div className="p-4 rounded-xl bg-red-950/20 border border-red-800/40 text-red-400 text-sm font-mono">
+                Error: {projectsError}
               </div>
+            )}
 
-              <div className="p-5 rounded-xl bg-[#18181B] border border-[#27272A] hover:border-[#3ECF8E]/40 transition-all space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="px-2 py-0.5 rounded bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] text-[10px] font-mono font-bold">
-                    VZ-8410
-                  </span>
-                  <span className="px-2 py-0.5 rounded bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 text-[10px] font-mono uppercase font-bold">
-                    Completed
-                  </span>
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">Nordic Monolith Villa</h3>
-                  <p className="text-xs text-[#A1A1AA] mt-1">
-                    Full CGI Master Exterior Animation & 16K Panorama VR Package
-                  </p>
-                </div>
-                <div className="pt-3 border-t border-[#27272A] flex items-center justify-between text-xs font-mono text-[#71717A]">
-                  <span>Delivered: Aug 2026</span>
-                  <span className="text-emerald-400 font-bold">100% Signed</span>
-                </div>
+            {!projectsLoading && !projectsError && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {apiProjects.length === 0 ? (
+                  <div className="col-span-full p-8 text-center text-[#71717A] text-sm font-mono">
+                    No projects found. Please contact your account manager.
+                  </div>
+                ) : (
+                  apiProjects.map((project) => (
+                    <div key={project.id} className="p-5 rounded-xl bg-[#18181B] border border-[#27272A] hover:border-[#3ECF8E]/40 transition-all space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2 py-0.5 rounded bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] text-[10px] font-mono font-bold">
+                          {project.id}
+                        </span>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase font-bold border ${
+                          project.status === 'Complete' ? 'bg-emerald-950/40 text-emerald-400 border-emerald-800/40' :
+                          project.status === 'Client Review' ? 'bg-amber-950/40 text-amber-400 border-amber-800/40' :
+                          project.status === 'Work in Progress' ? 'bg-blue-950/40 text-blue-400 border-blue-800/40' :
+                          'bg-[#27272A] text-[#A1A1AA] border-[#3f3f46]'
+                        }`}>
+                          {project.status}
+                        </span>
+                      </div>
+                      <div>
+                        <h3 className="text-base font-bold text-white">{project.name}</h3>
+                        <p className="text-xs text-[#A1A1AA] mt-1">
+                          {project.projectType} • {project.category}
+                        </p>
+                      </div>
+                      <div className="pt-3 border-t border-[#27272A] flex items-center justify-between text-xs font-mono text-[#71717A]">
+                        <span>{project.lastUpdate}</span>
+                        <span className={`font-bold ${
+                          project.progress === 100 ? 'text-emerald-400' :
+                          project.progress >= 50 ? 'text-[#3ECF8E]' :
+                          'text-amber-400'
+                        }`}>{project.progress}% Complete</span>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
-            </div>
+            )}
           </div>
         )}
 

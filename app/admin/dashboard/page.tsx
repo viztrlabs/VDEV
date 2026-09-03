@@ -47,7 +47,8 @@ import {
   KeyRound,
   Zap,
   Box as Cube,
-  Download
+  Download,
+  Brain,
 } from 'lucide-react';
 import ModelManager from '@/components/admin/ModelManager';
 import GoogleDriveAdminManager from '@/components/admin/GoogleDriveAdminManager';
@@ -64,6 +65,7 @@ import PlayCanvasEngineDashboardTile from '@/components/admin/PlayCanvasEngineDa
 import SuperAdminPanel from '@/components/admin/SuperAdminPanel';
 import ClientDiscoveryManager from '@/components/admin/ClientDiscoveryManager';
 import DocStudioCRM from '@/components/admin/DocStudioCRM';
+import AIDashboardPanel from '@/components/admin/AIDashboardPanel';
 import { ViztrLogoMark } from '@/components/ui/Logo';
 import HermesButton from '@/components/admin/HermesButton';
 import CollapsibleLeftFilterPanel from '@/components/dashboard/CollapsibleLeftFilterPanel';
@@ -200,6 +202,7 @@ const SIDEBAR_SECTIONS = [
       { id: 'ai-credentials', label: 'AI & API Credentials', icon: KeyRound },
       { id: 'playcanvas-engine', label: 'PlayCanvas XR Engine', icon: Cube },
       { id: 'settings', label: 'Platform Settings', icon: Settings },
+      { id: 'ai-platform', label: 'AI Platform', icon: Brain },
     ],
   },
 ];
@@ -1117,6 +1120,23 @@ export default function AdminDashboardPage() {
                 </p>
               </div>
               <PlayCanvasEngineDashboardTile />
+            </div>
+          )}
+
+          {/* SECTION: AI PLATFORM */}
+          {activeSection === 'ai-platform' && (
+            <div className="space-y-6">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+                  <Brain className="w-4 h-4" />
+                  <span>PHASE 3 — AI / ML PLATFORM</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold font-display text-white">AI Platform Dashboard</h2>
+                <p className="text-xs text-[#A1A1AA]">
+                  Predictive analytics, NLP, automation rules, ML pipeline & AI governance — all in one place.
+                </p>
+              </div>
+              <AIDashboardPanel />
             </div>
           )}
 

@@ -10,7 +10,13 @@ import {
   CheckCircle2,
   Sparkles,
 } from 'lucide-react';
-import { VTED_THEME_PRESETS, VtedDesign, VtedThemePreset } from '@/lib/vted-types';
+import {
+  VTED_THEME_PRESETS, VtedDesign, VtedThemePreset,
+  VtedFormStyle, VtedPolygonStyle, VtedPopupStyle,
+} from '@/lib/vted-types';
+import PolygonStylePanel from './PolygonStylePanel';
+import PopupStylePanel from './PopupStylePanel';
+import FormStylePanel from './FormStylePanel';
 
 interface DesignTabPanelProps {
   value: VtedDesign;
@@ -234,6 +240,30 @@ export default function DesignTabPanel({ value, onChange, onSave, saved }: Desig
             onChange={(v) => setDisplay({ showSceneTitleInList: v })}
           />
         </div>
+      </div>
+
+      {/* Polygon style */}
+      <div className="space-y-2">
+        <label className="block text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA]">
+          Polygon Style
+        </label>
+        <PolygonStylePanel style={local.polygonStyle || {}} onChangeStyle={set} />
+      </div>
+
+      {/* Popup style */}
+      <div className="space-y-2">
+        <label className="block text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA]">
+          Popup Style
+        </label>
+        <PopupStylePanel style={local.popupStyle || {}} onChangeStyle={set} />
+      </div>
+
+      {/* Form style */}
+      <div className="space-y-2">
+        <label className="block text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA]">
+          Form Style
+        </label>
+        <FormStylePanel style={local.formStyle || {}} onChangeStyle={set} />
       </div>
 
       {/* Live preview chip */}

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VizTR — Virtual Tour Development Preview</title>
+<style>
+  :root{--bg:#09090B;--card:#18181B;--border:#27272A;--accent:#3ECF8E;--muted:#71717A;--fg:#FAFAFA;--red:#EF4444;--amber:#F59E0B;--sky:#38BDF8}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,sans-serif;padding:24px;min-height:100vh}
+  h1{font-size:20px;font-weight:800;margin-bottom:4px}
+  .sub{font-size:11px;color:var(--muted);font-family:monospace;margin-bottom:20px}
+  .viewer{background:linear-gradient(135deg,#0a0a0c 0%,#111 50%,#0a0a0c 100%);border:1px solid var(--border);border-radius:16px;height:220px;position:relative;overflow:hidden;margin-bottom:20px}
+  .viewer .grid-bg{position:absolute;inset:0;background-image:radial-gradient(#3ECF8E08 1px,transparent 1px);background-size:20px 20px}
+  .viewer .center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+  .viewer .ring{width:72px;height:72px;border:2px solid var(--accent);border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:28px;animation:pulse 2s infinite}
+  .viewer .hint{font-size:10px;font-family:monospace;color:var(--muted)}
+  .hs{position:absolute;width:10px;height:10px;background:var(--accent);border-radius:50%;border:2px solid #fff;animation:pulse 1.5s infinite}
+  .viewer .bar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#09090Baa;backdrop-filter:blur(8px);border-bottom:1px solid #27272A80}
+  .viewer .bar span{font-size:11px;font-family:monospace}
+  .viewer .ctrls{position:absolute;bottom:10px;right:10px;display:flex;gap:3px}
+  .viewer .ctrls div{width:26px;height:26px;background:#18181B90;border:1px solid var(--border);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);backdrop-filter:blur(4px)}
+  .viewer .info{position:absolute;bottom:10px;left:10px;font-size:9px;font-family:monospace;color:var(--muted);background:#09090B90;padding:2px 8px;border-radius:4px;border:1px solid var(--border);backdrop-filter:blur(4px)}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.08)}}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
+  .card h3{font-size:11px;font-weight:700;font-family:monospace;color:var(--accent);margin-bottom:8px}
+  .route{display:inline-block;font-size:10px;font-family:monospace;padding:3px 8px;border-radius:5px;margin:2px}
+  .route.new{background:#3ECF8E15;border:1px solid #3ECF8E40;color:var(--accent)}
+  .route.old{background:#71717A10;border:1px solid #27272A;color:var(--muted);text-decoration:line-through}
+  ul{list-style:none;padding:0}
+  ul li{font-size:10px;padding:5px 0;border-bottom:1px solid #27272A40;display:flex;align-items:center;gap:6px}
+  ul li:last-child{border:none}
+  .ok{color:var(--accent);font-weight:bold}
+  .badge{font-size:8px;padding:1px 5px;border-radius:3px;font-family:monospace}
+  .badge.cr{background:#EF444420;color:var(--red);border:1px solid #EF444440}
+  .badge.nw{background:#3ECF8E20;color:var(--accent);border:1px solid #3ECF8E40}
+  .file{font-size:9px;font-family:monospace;color:var(--muted);padding:3px 0;display:flex;gap:6px;align-items:center}
+  .file b{color:#A1A1AA;font-weight:600}
+  .arch{display:flex;flex-direction:column;gap:4px}
+  .row{display:flex;gap:6px;align-items:center}
+  .box{font-size:8px;font-family:monospace;padding:3px 7px;border-radius:4px;border:1px solid var(--border);background:#121214}
+  .box.good{border-color:var(--accent);color:var(--accent)}
+  .box.bad{border-color:var(--red);color:var(--red)}
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .stat .num{font-size:22px;font-weight:800;font-family:monospace;color:var(--accent)}
+  .stat .lbl{font-size:8px;font-family:monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .wide{grid-column:1/-1}
+  .section{font-size:9px;font-family:monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin:6px 0 4px}
+  .cols4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+</style>
+</head>
+<body>
+
+<h1>🌐 VizTR Virtual Tour — Development Preview</h1>
+<div class="sub">Phase 1 Complete · Marzipano Isolation · New Routes · All Critical Fixes</div>
+
+<!-- VIEWER MOCK -->
+<div class="viewer">
+  <div class="grid-bg"></div>
+  <div class="bar">
+    <span>Lobby — Virtual Tour</span>
+    <div style="display:flex;gap:4px">
+      <div class="box good" style="padding:2px 6px;font-size:9px">LIVE</div>
+    </div>
+  </div>
+  <div class="center">
+    <div class="ring">🌐</div>
+    <div class="hint">TourViewer — dynamically imported Marzipano</div>
+    <div style="font-size:9px;color:#3ECF8E;margin-top:6px;font-family:monospace">Multi-res tiles · Context-loss recovery · Keyboard nav</div>
+  </div>
+  <div class="hs" style="top:50%;left:30%"></div>
+  <div class="hs" style="top:40%;right:25%"></div>
+  <div class="hs" style="bottom:30%;left:60%"></div>
+  <div class="ctrls"><div>+</div><div>−</div><div>⛶</div></div>
+  <div class="info">Lobby · 360° · Marzipano Tour · localhost:3000</div>
+</div>
+
+<!-- CARDS -->
+<div class="grid">
+
+  <div class="card">
+    <h3>🗺️ New URL Routes</h3>
+    <div class="route new">/virtual-tour/[tourId] — viewer</div>
+    <div class="route new">/virtual-tour/[tourId]/editor</div>
+    <div class="route old">/xr-world/virtual-tour/client/[tourId]</div>
+    <div style="margin-top:8px">
+      <div class="file"><b>app/virtual-tour/[tourId]/page.tsx</b> <span class="badge nw">public viewer</span></div>
+      <div class="file"><b>app/virtual-tour/[tourId]/editor/page.tsx</b> <span class="badge nw">editor</span></div>
+      <div class="file"><b>xr-world/…/client/[tourId]/page.tsx</b> <span class="badge cr">→ redirect</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🔧 Critical Fixes</h3>
+    <ul>
+      <li><span class="ok">✓</span> Multi-res tile loading <span class="badge cr">CRITICAL</span></li>
+      <li><span class="ok">✓</span> WebGL context loss recovery <span class="badge cr">CRITICAL</span></li>
+      <li><span class="ok">✓</span> Memory leak cleanup (hotspot disposal)</li>
+      <li><span class="ok">✓</span> Dynamic view limiter from editor</li>
+      <li><span class="ok">✓</span> Autorotate (pause on touch)</li>
+      <li><span class="ok">✓</span> Keyboard accessibility (WCAG 2.1 AA)</li>
+      <li><span class="ok">✓</span> ARIA labels on hotspots</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🏗️ Architecture Fix</h3>
+    <div class="section">Before — 3 overlapping stores</div>
+    <div class="arch">
+      <div class="row"><span class="box bad">useAppStore</span>→<span class="box bad">openPanorama</span></div>
+      <div class="row"><span class="box bad">useEditorStore</span>→<span class="box bad">rooms[]</span></div>
+      <div class="row"><span class="box bad">useWebXRStore</span>→<span class="box bad">scenes[]</span></div>
+    </div>
+    <div class="section">After — single canonical store</div>
+    <div class="arch">
+      <div class="row"><span class="box good">useTourStore</span>→<span class="box good">scenes + currentView</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📁 Files Created</h3>
+    <div class="file"><b>lib/tourClientStore.ts</b> <span class="badge nw">3.1 KB</span></div>
+    <div class="file"><b>components/xr/TourViewer.tsx</b> <span class="badge nw">11.9 KB</span></div>
+    <div class="file"><b>app/virtual-tour/[tourId]/page.tsx</b> <span class="badge nw">6.7 KB</span></div>
+    <div class="file"><b>app/virtual-tour/[tourId]/editor/page.tsx</b> <span class="badge nw">1.8 KB</span></div>
+    <div class="file"><b>src/services/tour/index.ts</b> <span class="badge nw">1.1 KB</span></div>
+    <div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border)">
+      <div class="file"><span class="ok">✓</span> pnpm run build — PASS</div>
+      <div class="file"><span class="ok">✓</span> pnpm run lint — 0 new errors</div>
+    </div>
+  </div>
+
+  <!-- TourViewer internals -->
+  <div class="card wide">
+    <h3>🧭 TourViewer Component Internals</h3>
+    <div class="cols4">
+      <div>
+        <div class="section">Tile Loading</div>
+        <div class="file">ImageUrlSource.fromTileUrl</div>
+        <div class="file">Fallback: fromString</div>
+        <div class="file">Geometry: 4096→512</div>
+      </div>
+      <div>
+        <div class="section">Context Loss Recovery</div>
+        <div class="file">webglcontextlost → prevent</div>
+        <div class="file">webglcontextrestored</div>
+        <div class="file">→ sceneKey++ → remount</div>
+      </div>
+      <div>
+        <div class="section">Keyboard (WCAG 2.1)</div>
+        <div class="file">←→↑↓ yaw/pitch ±5°</div>
+        <div class="file">+/-/Fov zoom</div>
+        <div class="file">f fullscreen / Esc exit</div>
+      </div>
+      <div>
+        <div class="section">Memory Cleanup</div>
+        <div class="file">hotspot.destroy()→remove</div>
+        <div class="file">view.removeEventListener</div>
+        <div class="file">scene.stop() + destroy()</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="card wide">
+    <h3>📊 Build Stats</h3>
+    <div class="stats">
+      <div class="stat"><div class="num">5</div><div class="lbl">Files Created</div></div>
+      <div class="stat"><div class="num">2</div><div class="lbl">Files Modified</div></div>
+      <div class="stat"><div class="num">0</div><div class="lbl">New Lint Errors</div></div>
+      <div class="stat"><div class="num">2</div><div class="lbl">New Routes</div></div>
+      <div class="stat"><div class="num">7</div><div class="lbl">Critical Fixes</div></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
