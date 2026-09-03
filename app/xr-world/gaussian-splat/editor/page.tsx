@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useSplatEditorStore, useSplatEditorActiveScene } from '@/lib/splat/splat-editor-store';
-import { Box, Menu, X, ChevronDown, Download, Upload, Eye, Settings, Info } from 'lucide-react';
+import { Box, X, ChevronDown, Download, Upload, Eye, Settings, Info } from 'lucide-react';
 
 const SplatEditorCanvas = dynamic(
     () => import('@/components/editor/splat/SplatEditorCanvas').then(m => m.SplatEditorCanvas),
@@ -91,7 +91,6 @@ export default function GaussianSplatEditorPage() {
     }, [initializeEditor]);
 
     const handleNewScene = () => {
-        // Create a new empty scene or prompt for URL
         const url = prompt('Enter .splat/.ply URL (or leave empty for new scene):');
         if (url !== null) {
             const id = `scene-${Date.now()}`;
@@ -114,7 +113,6 @@ export default function GaussianSplatEditorPage() {
     const handleExport = () => {
         const format = prompt('Export format (splat/ply/ksplat):', 'splat') as 'splat' | 'ply' | 'ksplat';
         if (format && ['splat', 'ply', 'ksplat'].includes(format)) {
-            // Trigger export via events
             if (typeof window !== 'undefined' && (window as any).scene?.events) {
                 (window as any).scene.events.fire('export', format);
             }
@@ -127,7 +125,6 @@ export default function GaussianSplatEditorPage() {
 
     return (
         <div className="min-h-screen bg-[#09090B] text-white flex flex-col">
-            {/* Top Toolbar */}
             <header className="flex items-center justify-between px-4 py-2 border-b border-[#27272A] bg-[#0c0c0f] z-20">
                 <div className="flex items-center gap-3">
                     <h1 className="text-sm font-mono font-bold text-[#3ECF8E] flex items-center gap-2">
@@ -186,9 +183,7 @@ export default function GaussianSplatEditorPage() {
                 </div>
             </header>
 
-            {/* Main Content */}
             <div className="flex-1 flex overflow-hidden">
-                {/* Left Sidebar - Scene Panel */}
                 <aside className="w-64 shrink-0 border-r border-[#27272A] overflow-y-auto p-3 space-y-3 bg-[#0c0c0f]">
                     <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">
                         Scene
@@ -254,19 +249,16 @@ export default function GaussianSplatEditorPage() {
                     </div>
                 </aside>
 
-                {/* Main Canvas Area */}
                 <main className="flex-1 flex flex-col min-w-0 relative">
                     <SplatEditorCanvas className="flex-1" />
                     
-                    {/* Bottom Toolbar */}
                     <div className="absolute bottom-0 left-0 right-0 z-20 p-3 border-t border-[#27272A] bg-[#0c0c0f]">
                         <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-                            {/* Transform Tools */}
                             <div className="flex items-center gap-1 bg-[#18181B] border border-[#27272A] rounded-lg p-1">
                                 {(['move', 'rotate', 'scale'] as const).map((tool) => (
                                     <ToolButton
                                         key={tool}
-                                        icon={tool === 'move' ? Box : tool === 'rotate' ? Settings : Settings}
+                                        icon={Settings}
                                         label={tool.charAt(0).toUpperCase() + tool.slice(1)}
                                         active={activeTool === tool}
                                         onClick={() => setActiveTool(tool)}
@@ -274,9 +266,8 @@ export default function GaussianSplatEditorPage() {
                                 ))}
                             </div>
 
-                            {/* Selection Tools */}
                             <div className="flex items-center gap-1 bg-[#18181B] border border-[#27272A] rounded-lg p-1">
-                                {(['select', 'rectSelect', 'brushSelect', 'sphereBrushSelect', 'floodSelect', 'polygonSelect', 'lassoSelect'] as const).map((tool) => (
+                                {(['select', 'rectSelect', 'brushSelect', 'floodSelect'] as const).map((tool) => (
                                     <ToolButton
                                         key={tool}
                                         icon={Box}
@@ -287,9 +278,8 @@ export default function GaussianSplatEditorPage() {
                                 ))}
                             </div>
 
-                            {/* View Overlays */}
                             <div className="flex items-center gap-1 bg-[#18181B] border border-[#27272A] rounded-lg p-1">
-                                {(['Gaussians', 'Centers', 'Rings', 'Grid', 'Bound', 'Camera'] as const).map((overlay) => (
+                                {(['Gaussians', 'Centers', 'Rings', 'Grid', 'Bound'] as const).map((overlay) => (
                                     <ViewModeButton
                                         key={overlay}
                                         icon={Eye}
@@ -300,7 +290,6 @@ export default function GaussianSplatEditorPage() {
                                 ))}
                             </div>
 
-                            {/* Info & Settings */}
                             <div className="flex items-center gap-1">
                                 <button
                                     type="button"
@@ -321,7 +310,6 @@ export default function GaussianSplatEditorPage() {
                     </div>
                 </main>
 
-                {/* Right Sidebar - Properties/Appearance/Overlays */}
                 <aside className="w-80 shrink-0 border-l border-[#27272A] overflow-y-auto p-3 space-y-3 bg-[#0c0c0f]">
                     <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">
                         Properties
@@ -329,7 +317,6 @@ export default function GaussianSplatEditorPage() {
 
                     {activeScene && (
                         <div className="space-y-3">
-                            {/* Appearance */}
                             <div className="rounded-lg border border-[#27272A] bg-[#09090B] p-3 space-y-2">
                                 <div className="text-[10px] font-mono uppercase tracking-wider text-[#3ECF8E]">
                                     Appearance
@@ -351,7 +338,6 @@ export default function GaussianSplatEditorPage() {
                                 </div>
                             </div>
 
-                            {/* Overlays */}
                             <div className="rounded-lg border border-[#27272A] bg-[#09090B] p-3 space-y-2">
                                 <div className="text-[10px] font-mono uppercase tracking-wider text-[#3ECF8E]">
                                     Overlays
@@ -373,7 +359,6 @@ export default function GaussianSplatEditorPage() {
                                 </div>
                             </div>
 
-                            {/* Render Settings */}
                             <div className="rounded-lg border border-[#27272A] bg-[#09090B] p-3 space-y-2">
                                 <div className="text-[10px] font-mono uppercase tracking-wider text-[#3ECF8E]">
                                     Render
@@ -392,7 +377,6 @@ export default function GaussianSplatEditorPage() {
                                 </div>
                             </div>
 
-                            {/* Selection Stats */}
                             <div className="rounded-lg border border-[#27272A] bg-[#09090B] p-3 space-y-1">
                                 <div className="text-[10px] font-mono uppercase tracking-wider text-[#3ECF8E]">
                                     Selection

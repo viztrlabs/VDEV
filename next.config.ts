@@ -96,6 +96,14 @@ const nextConfig: NextConfig = {
       type: 'asset/source',
     });
 
+    // Mark node:os and similar node-specific imports as false for client-side
+    // (they are only used for SSR features that are protected by try-catch)
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      'node:os': false,
+      'os': false,
+    };
+
     return config;
   },
   async headers() {

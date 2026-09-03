@@ -1,8 +1,5 @@
-import { Events } from './events';
-import { Scene } from './scene';
-
 export class SplatCenters {
-    constructor(events?: Events, scene?: Scene) {
+    constructor() {
         // Splat centers visualization - placeholder
     }
 
