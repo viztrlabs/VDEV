@@ -81,6 +81,15 @@ export default function SplatShowcasePage() {
             </Link>
 
             <Link
+              href="/xr-world/super-splat"
+              className="px-8 py-3.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm shadow-xl shadow-rose-900/40 transition-all hover:scale-105 flex items-center gap-2"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>Open SuperSplat Editor</span>
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+
+            <Link
               href="/xr-world"
               className="px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/20 backdrop-blur-md transition-all flex items-center gap-2"
             >

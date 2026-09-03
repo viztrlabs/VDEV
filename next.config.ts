@@ -69,15 +69,45 @@ const nextConfig: NextConfig = {
     ],
   },
   transpilePackages: ['motion'],
-  webpack: (config, {dev}) => {
+  webpack: (config, { dev }) => {
     // HMR is disabled in AI Studio via DISABLE_HMR env var.
-    // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
+    // Do not modify—file watching is disabled to prevent flickering during agent edits.
     if (dev && process.env.DISABLE_HMR === 'true') {
       config.watchOptions = {
         ignored: /.*/,
       };
     }
+
+    // Enable WebAssembly for @playcanvas/splat-transform WebP codec
+    config.experiments = {
+      ...config.experiments,
+      asyncWebAssembly: true,
+    };
+
+    // Resolve @playcanvas/splat-transform's bundled WASM assets from public/
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'webp.wasm': path.resolve(__dirname, 'public/splat-editor/lib/webp/webp.wasm'),
+    };
+
+    // Handle WGSL shaders as raw source
+    config.module.rules.push({
+      test: /\.wgsl$/,
+      type: 'asset/source',
+    });
+
     return config;
+  },
+  async headers() {
+    return [
+      {
+        source: '/splat-editor/:path*',
+        headers: [
+          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
+          { key: 'Cross-Origin-Embedder-Policy', value: 'require-corp' },
+        ],
+      },
+    ];
   },
 };
 

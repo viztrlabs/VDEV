@@ -202,6 +202,13 @@ export default function GaussianSplatShowcasePage() {
                   <span>Launch Gaussian Splat Demo</span>
                 </button>
                 <Link
+                  href="/xr-world/super-splat"
+                  className="px-6 py-3.5 rounded-xl bg-rose-600/80 hover:bg-rose-500 text-white font-semibold text-sm border border-rose-600/50 backdrop-blur-md transition-all flex items-center gap-2"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>Open SuperSplat Editor</span>
+                </Link>
+                <Link
                   href="/xr-world"
                   className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/20 backdrop-blur-md transition-all flex items-center gap-2"
                 >

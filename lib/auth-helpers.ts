@@ -53,3 +53,27 @@ export function isClientUser(session: Session | null): boolean {
   const role = (session.user as any).role;
   return role === 'CLIENT' || role === 'SUPER_ADMIN' || role === 'ADMIN';
 }
+
+export interface UnderAdminUser {
+  id: string;
+  email: string;
+  name?: string;
+  role: 'SUPER_ADMIN' | 'ADMIN' | 'USER' | 'CLIENT';
+}
+
+export async function requireUnderAdminSession(): Promise<UnderAdminUser> {
+  const session = await getClientSession();
+  if (!session || !session.user) {
+    throw new Error('UNAUTHORIZED: No active session');
+  }
+  const role = session.user.role;
+  if (role !== 'SUPER_ADMIN' && role !== 'ADMIN') {
+    throw new Error('FORBIDDEN: Admin role required');
+  }
+  return {
+    id: session.user.id,
+    email: session.user.email,
+    name: session.user.name,
+    role,
+  };
+}

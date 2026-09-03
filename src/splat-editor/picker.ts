@@ -1,0 +1,276 @@
+import {
+    BLENDEQUATION_ADD,
+    BLENDMODE_ONE,
+    BLENDMODE_ZERO,
+    BLENDMODE_ONE_MINUS_SRC_ALPHA,
+    BlendState,
+    Color,
+    GraphicsDevice,
+    RenderPassPicker,
+    RenderTarget
+} from 'playcanvas';
+
+import { ElementType } from './element';
+import { Scene } from './scene';
+import { Splat } from './splat';
+
+const idClearColor = new Color(1, 1, 1, 1);
+const depthClearColor = new Color(0, 0, 0, 1);
+
+const float32 = new Float32Array(1);
+const uint32 = new Uint32Array(float32.buffer);
+
+const half2Float = (h: number): number => {
+    const sign = (h & 0x8000) << 16;
+    const exponent = (h & 0x7C00) >> 10;
+    const mantissa = h & 0x03FF;
+
+    if (exponent === 0) {
+        if (mantissa === 0) {
+            uint32[0] = sign;
+        } else {
+            let e = -1;
+            let m = mantissa;
+            do {
+                e++;
+                m <<= 1;
+            } while ((m & 0x0400) === 0);
+            uint32[0] = sign | ((127 - 15 - e) << 23) | ((m & 0x03FF) << 13);
+        }
+    } else if (exponent === 31) {
+        uint32[0] = sign | 0x7F800000 | (mantissa << 13);
+    } else {
+        uint32[0] = sign | ((exponent + 127 - 15) << 23) | (mantissa << 13);
+    }
+
+    return float32[0];
+};
+
+export class Picker {
+    private device: GraphicsDevice;
+    private scene: Scene;
+
+    private depthRenderTarget: RenderTarget | null = null;
+    private idRenderTarget: RenderTarget | null = null;
+
+    private renderPass: RenderPassPicker;
+
+    private depthBlendState: BlendState;
+
+    constructor(scene: Scene) {
+        this.scene = scene;
+        this.device = scene.graphicsDevice;
+
+        this.renderPass = new RenderPassPicker(this.device, this.scene.app.renderer);
+
+        this.depthBlendState = new BlendState(
+            true,
+            BLENDEQUATION_ADD, BLENDMODE_ONE, BLENDMODE_ONE_MINUS_SRC_ALPHA,
+            BLENDEQUATION_ADD, BLENDMODE_ZERO, BLENDMODE_ONE_MINUS_SRC_ALPHA
+        );
+    }
+
+    setRenderTargets(depthRT: RenderTarget, idRT: RenderTarget) {
+        this.depthRenderTarget = depthRT;
+        this.idRenderTarget = idRT;
+    }
+
+    prepareId(splat: Splat, mode: 'add' | 'remove' | 'set' | 'intersect') {
+        if (!this.idRenderTarget) {
+            return;
+        }
+
+        this.scene.projectedSplatRenderer.renderSortedForPick();
+
+        const { splatLayer } = this.scene;
+
+        const splats = this.scene.getElementsByType(ElementType.splat) as Splat[];
+        splats.forEach((s) => {
+            s.entity.enabled = s === splat;
+        });
+
+        const pickOp = mode === 'intersect' ? 'remove' : mode;
+        const pickOpIndex = ['add', 'remove', 'set'].indexOf(pickOp);
+
+        this.device.scope.resolve('pickOp').setValue(pickOpIndex);
+        this.device.scope.resolve('pickMode').setValue(0);
+        this.scene.projectedSplatRenderer.preparePick(splat, pickOpIndex, false);
+
+        const emptyMap = new Map();
+        this.renderPass.blendState = BlendState.NOBLEND;
+        this.renderPass.init(this.idRenderTarget);
+        this.renderPass.setClearColor(idClearColor);
+        this.renderPass.update(this.scene.camera.camera, this.scene.app.scene, [splatLayer], emptyMap, false);
+        this.renderPass.render();
+        this.scene.projectedSplatRenderer.finishPick();
+
+        splats.forEach((s) => {
+            s.entity.enabled = true;
+        });
+    }
+
+    async readId(x: number, y: number): Promise<number> {
+        if (!this.idRenderTarget) {
+            return -1;
+        }
+        const rt = this.idRenderTarget;
+        const ids = await this.readIds(x, y, 1 / rt.width, 1 / rt.height);
+        return ids[0];
+    }
+
+    async readIds(x: number, y: number, width: number, height: number): Promise<number[]> {
+        if (!this.idRenderTarget) {
+            return [];
+        }
+
+        const rt = this.idRenderTarget;
+        const colorBuffer = rt.colorBuffer;
+
+        const px = Math.floor(x * rt.width);
+        const py = Math.floor(y * rt.height);
+        const pw = Math.max(1, Math.ceil((x + width) * rt.width) - px);
+        const ph = Math.max(1, Math.ceil((y + height) * rt.height) - py);
+
+        const pixels = await colorBuffer.read(px, py, pw, ph, {
+            renderTarget: rt,
+            immediate: true
+        });
+
+        const result: number[] = [];
+        for (let row = 0; row < ph; ++row) {
+            const src = row * pw;
+            for (let col = 0; col < pw; ++col) {
+                const i = (src + col) * 4;
+                result.push(
+                    (pixels[i] |
+                    (pixels[i + 1] << 8) |
+                    (pixels[i + 2] << 16) |
+                    (pixels[i + 3] << 24)) >>> 0
+                );
+            }
+        }
+
+        return result;
+    }
+
+    prepareDepth(splat: Splat) {
+        if (!this.depthRenderTarget) {
+            return;
+        }
+
+        const { scene } = this;
+        const { app, camera, splatLayer } = scene;
+        const emptyMap = new Map();
+
+        const splats = scene.getElementsByType(ElementType.splat) as Splat[];
+        splats.forEach((s) => {
+            s.entity.enabled = s === splat;
+        });
+
+        this.device.scope.resolve('pickOp').setValue(2);
+        this.device.scope.resolve('pickMode').setValue(1);
+        scene.projectedSplatRenderer.preparePick(splat, 2, true);
+
+        this.renderPass.blendState = this.depthBlendState;
+        this.renderPass.init(this.depthRenderTarget);
+        this.renderPass.setClearColor(depthClearColor);
+        this.renderPass.update(camera.camera, app.scene, [splatLayer], emptyMap, false);
+        this.renderPass.render();
+        scene.projectedSplatRenderer.finishPick();
+
+        splats.forEach((s) => {
+            s.entity.enabled = true;
+        });
+    }
+
+    async readDepth(x: number, y: number): Promise<number | null> {
+        if (!this.depthRenderTarget) {
+            return null;
+        }
+
+        const rt = this.depthRenderTarget;
+        const colorBuffer = rt.colorBuffer;
+
+        if (!Number.isFinite(x) || !Number.isFinite(y) || x < 0 || x > 1 || y < 0 || y > 1 || rt.width < 1 || rt.height < 1) {
+            return null;
+        }
+
+        const px = Math.min(Math.floor(x * rt.width), rt.width - 1);
+        const py = Math.min(Math.floor(y * rt.height), rt.height - 1);
+
+        const pixels = await colorBuffer.read(px, py, 1, 1, {
+            renderTarget: rt,
+            immediate: true
+        });
+
+        return this.decodeDepth(pixels, 0);
+    }
+
+    async readDepths(points: { x: number, y: number }[]): Promise<(number | null)[]> {
+        if (!this.depthRenderTarget) {
+            return new Array(points.length).fill(null);
+        }
+
+        const rt = this.depthRenderTarget;
+        const pixelsX = new Int32Array(points.length);
+        const pixelsY = new Int32Array(points.length);
+        const result: (number | null)[] = new Array(points.length).fill(null);
+        const tiles = new Map<string, { indices: number[], minX: number, minY: number, maxX: number, maxY: number }>();
+        const tileSize = 64;
+
+        for (let i = 0; i < points.length; ++i) {
+            const { x, y } = points[i];
+            if (!Number.isFinite(x) || !Number.isFinite(y) || x < 0 || x > 1 || y < 0 || y > 1 || rt.width < 1 || rt.height < 1) {
+                continue;
+            }
+
+            const px = Math.min(Math.floor(x * rt.width), rt.width - 1);
+            const py = Math.min(Math.floor(y * rt.height), rt.height - 1);
+            pixelsX[i] = px;
+            pixelsY[i] = py;
+            const key = `${Math.floor(px / tileSize)},${Math.floor(py / tileSize)}`;
+            const tile = tiles.get(key);
+            if (tile) {
+                tile.indices.push(i);
+                tile.minX = Math.min(tile.minX, px);
+                tile.minY = Math.min(tile.minY, py);
+                tile.maxX = Math.max(tile.maxX, px);
+                tile.maxY = Math.max(tile.maxY, py);
+            } else {
+                tiles.set(key, { indices: [i], minX: px, minY: py, maxX: px, maxY: py });
+            }
+        }
+
+        for (const tile of tiles.values()) {
+            const width = tile.maxX - tile.minX + 1;
+            const height = tile.maxY - tile.minY + 1;
+            const pixels = await rt.colorBuffer.read(tile.minX, tile.minY, width, height, {
+                renderTarget: rt,
+                immediate: true
+            });
+
+            for (const index of tile.indices) {
+                const offset = ((pixelsY[index] - tile.minY) * width + pixelsX[index] - tile.minX) * 4;
+                result[index] = this.decodeDepth(pixels, offset);
+            }
+        }
+
+        return result;
+    }
+
+    private decodeDepth(pixels: any, offset: number): number | null {
+        const r = half2Float(pixels[offset]);
+        const transmittance = half2Float(pixels[offset + 3]);
+        const alpha = 1 - transmittance;
+
+        if (alpha < 1e-6) {
+            return null;
+        }
+
+        return r / alpha;
+    }
+
+    destroy() {
+        this.renderPass?.destroy();
+    }
+}

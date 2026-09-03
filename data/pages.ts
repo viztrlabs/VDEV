@@ -623,6 +623,19 @@ export const servicePagesData: Record<ServicePageKey, ServicePageData> = {
         ],
         href: '/immersive',
         image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'super-splat-editor',
+        title: 'SuperSplat Editor',
+        desc: 'Professional Gaussian Splat editor for inspecting, editing, and optimizing 3D scenes',
+        features: [
+          'WebGPU-accelerated rendering',
+          'Selection, transform, and crop tools',
+          '.splat, .ply, .ksplat format support',
+          'Web-optimized export'
+        ],
+        href: '/xr-world/super-splat',
+        image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80'
       }
     ]
   },

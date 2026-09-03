@@ -2,7 +2,7 @@
  * AI/ML Services Barrel — Phase 3
  * Re-exports all Phase 3 AI and ML modules.
  */
-export { predictiveAnalytics, buildPredictiveInsights } from './predictiveAnalytics';
+export { predictiveAnalytics } from './predictiveAnalytics';
 export type { PredictiveInsights, ChurnPrediction, ProjectRiskAssessment, EngagementMetrics } from './predictiveAnalytics';
 
 export { nlpService } from './nlpService';

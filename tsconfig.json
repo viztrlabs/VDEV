@@ -25,7 +25,8 @@
       "@/lib/*": ["lib/*"],
       "@/app/*": ["app/*"],
       "@/hooks/*": ["hooks/*"],
-      "@/types/*": ["types/*"]
+      "@/types/*": ["types/*"],
+      "@/splat-editor/*": ["src/splat-editor/*"]
     },
     "types": ["jest", "node"]
   },

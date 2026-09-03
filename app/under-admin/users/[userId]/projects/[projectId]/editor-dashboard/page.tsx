@@ -67,7 +67,7 @@ export default function EditorDashboardLauncherPage() {
       try {
         const [projectRes, servicesRes] = await Promise.all([
           fetch(`/api/projects?id=${encodeURIComponent(projectId)}`),
-          fetch('/api/services'),
+          fetch(`/api/project-services?projectId=${encodeURIComponent(projectId)}&includeService=true`),
         ]);
 
         if (!projectRes.ok) {
@@ -76,7 +76,7 @@ export default function EditorDashboardLauncherPage() {
         }
         if (!servicesRes.ok) {
           const data = await servicesRes.json().catch(() => ({}));
-          throw new Error(data.error || 'Failed to load services');
+          throw new Error(data.error || 'Failed to load project services');
         }
 
         if (cancelled) return;
@@ -90,9 +90,9 @@ export default function EditorDashboardLauncherPage() {
           status: projectData.status,
         });
 
-        const available = (servicesData.services ?? [])
-          .filter((s: any) => s.enabled !== false && s.visible !== false)
-          .map((s: any) => s.slug)
+        const available = (servicesData.projectServices ?? [])
+          .filter((ps: any) => ps.service && (ps.service.enabled !== false && ps.service.visible !== false))
+          .map((ps: any) => ps.service.slug)
           .filter((slug: string): slug is ServiceSlug => slug in SERVICE_META);
 
         setServices(available.length ? available : (Object.keys(SERVICE_META) as ServiceSlug[]));

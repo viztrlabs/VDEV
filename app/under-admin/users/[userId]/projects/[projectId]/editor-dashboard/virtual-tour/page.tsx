@@ -1,311 +1,223 @@
 'use client';
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import { ServiceEditorPanels, Tab } from '@/components/editor/service-editor-panels';
+import { EditorErrorBoundary } from '@/components/editor/editor-error-boundary';
+import { PermissionProvider } from '@/components/editor/permissions';
+import { EditorErrorBoundary } from '@/components/editor/editor-error-boundary';
+import { PermissionProvider } from '@/components/editor/permissions';
 
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { useParams, notFound } from 'next/navigation';
-import dynamic from 'next/dynamic';
-import {
-  Plus,
-  Upload,
-  ChevronLeft,
-  Settings,
-  Image as ImageIcon,
-  Wand2,
-} from 'lucide-react';
-
-const TourViewer = dynamic(() => import('@/components/xr/TourViewer'), { ssr: false });
-
-type HotspotColor = 'rose' | 'emerald' | 'cyan' | 'amber' | 'violet' | 'blue';
-type HotspotCategory =
-  | 'material'
-  | 'furniture'
-  | 'spatial'
-  | 'lighting'
-  | 'architecture'
-  | 'acoustic'
-  | 'portal'
-  | 'custom';
-
-interface Hotspot {
-  id: string;
-  xPercent: number;
-  yPercent: number;
-  title: string;
-  type: 'metadata' | 'room_link' | 'image' | 'video' | 'info' | 'audio' | 'link';
-  category: HotspotCategory;
-  description: string;
-  targetRoomId?: string;
-  targetRoomName?: string;
-  targetPanoramaUrl?: string;
-  targetYaw?: number;
-  icon?: string;
-  color?: HotspotColor;
-  mediaUrl?: string;
-  article?: string;
-  externalUrl?: string;
-  audioUrl?: string;
-}
-
-interface TourRoom {
-  id: string;
-  name: string;
-  subtitle: string;
-  panoramaUrl: string;
-  thumbnailUrl: string;
-  initialYaw: number;
-  initialPitch: number;
-  defaultHotspots: Hotspot[];
-  featured?: boolean;
-  backgroundAudioUrl?: string;
-  nadirLogoUrl?: string;
-  brightness?: number;
-  contrast?: number;
-  modelUrl?: string;
-  lat?: number;
-  lng?: number;
-  floorPlanX?: number;
-  floorPlanY?: number;
-}
-
-export default function VirtualTourEditorPage() {
+export default function VirtualEditorPage() {
   const params = useParams<{ userId: string; projectId: string }>();
-  const userId = params?.userId;
   const projectId = params?.projectId;
+  const serviceSlug = "virtual-tour";
+    
+  const tabs: Tab[] = [
+    {
+      key: 'experiences',
+      label: 'Experiences',
+      columns: [
+        { key: 'title', label: 'Title' },
+        { key: 'slug', label: 'Slug' },
+        { key: 'status', label: 'Status' },
+        { key: 'version', label: 'Version' },
+      ],
+      fields: [
+        { key: 'project_id', label: 'Project ID', type: 'text' },
+        { key: 'title', label: 'Title', type: 'text' },
+        { key: 'slug', label: 'Slug', type: 'text' },
+        { key: 'status', label: 'Status', type: 'select', options: [
+          { label: 'Draft', value: 'draft' },
+          { label: 'Published', value: 'published' },
+          { label: 'Archived', value: 'archived' },
+        ]},
+        { key: 'version', label: 'Version', type: 'number' },
+        { key: 'description', label: 'Description', type: 'textarea' },
+      ],
+      apiEndpoint: '/api/experiences',
+      rowIdField: 'id',
+    },
+    {
+      key: 'configs',
+      label: 'Configs',
+      columns: [
+        { key: 'experience_id', label: 'Experience ID' },
+        { key: 'config', label: 'Config', render: (v) => (v ? JSON.stringify(v).slice(0, 80) + '…' : '-') },
+        { key: 'settings', label: 'Settings', render: (v) => (v ? JSON.stringify(v).slice(0, 80) + '…' : '-') },
+        { key: 'assets', label: 'Assets', render: (v) => (Array.isArray(v) ? `${v.length} items` : '-') },
+      ],
+      fields: [
+        { key: 'experience_id', label: 'Experience ID', type: 'text' },
+        { key: 'config', label: 'Config', type: 'json' },
+        { key: 'settings', label: 'Settings', type: 'json' },
+        { key: 'assets', label: 'Assets', type: 'json' },
+      ],
+      apiEndpoint: '/api/experience-configs',
+      rowIdField: 'id',
+    },
+    {
+      key: 'deliverables',
+      label: 'Deliverables',
+      columns: [
+        { key: 'title', label: 'Title' },
+        { key: 'type', label: 'Type' },
+        { key: 'status', label: 'Status' },
+        {
+          key: 'url',
+          label: 'URL',
+          render: (value) =>
+            value ? (
+              <a href={value} target="_blank" rel="noreferrer" className="text-[#3ECF8E] underline">
+                Open
+              </a>
+            ) : (
+              '-'
+            ),
+        },
+      ],
+      fields: [
+        { key: 'project_id', label: 'Project ID', type: 'text' },
+        { key: 'title', label: 'Title', type: 'text' },
+        { key: 'type', label: 'Type', type: 'select', options: [
+          { label: 'Virtual Tour', value: 'virtual_tour' },
+          { label: 'Video', value: 'video' },
+          { label: 'WebAR', value: 'webar' },
+          { label: 'WebXR', value: 'webxr' },
+          { label: 'Animation', value: 'animation' },
+          { label: 'Model', value: 'model' },
+        ]},
+        { key: 'status', label: 'Status', type: 'select', options: [
+          { label: 'Processing', value: 'processing' },
+          { label: 'Ready', value: 'ready' },
+          { label: 'Delivered', value: 'delivered' },
+          { label: 'Archived', value: 'archived' },
+        ]},
+        { key: 'url', label: 'URL', type: 'text' },
+        { key: 'metadata', label: 'Metadata', type: 'json' },
+      ],
+      apiEndpoint: '/api/deliverables',
+      rowIdField: 'id',
+    },
+    {
+      key: 'assets',
+      label: 'Assets',
+      columns: [
+        { key: 'type', label: 'Type' },
+        {
+          key: 'url',
+          label: 'URL',
+          render: (value) =>
+            value ? (
+              <a href={value} target="_blank" rel="noreferrer" className="text-[#3ECF8E] underline">
+                Open
+              </a>
+            ) : (
+              '-'
+            ),
+        },
+        { key: 'mime_type', label: 'MIME' },
+        { key: 'size', label: 'Size', render: (value) => (value ? `${Number(value).toLocaleString()} B` : '-') },
+      ],
+      fields: [
+        { key: 'project_id', label: 'Project ID', type: 'text' },
+        { key: 'service', label: 'Service', type: 'text' },
+        { key: 'experience_id', label: 'Experience ID', type: 'text' },
+        { key: 'type', label: 'Type', type: 'text' },
+        { key: 'url', label: 'URL', type: 'text' },
+        { key: 'mime_type', label: 'MIME', type: 'text' },
+        { key: 'size', label: 'Size', type: 'number' },
+        { key: 'metadata', label: 'Metadata', type: 'json' },
+      ],
+      apiEndpoint: '/api/assets',
+      rowIdField: 'id',
+    },
+    {
+      key: 'members',
+      label: 'Members',
+      columns: [
+        { key: 'user_id', label: 'User ID' },
+        { key: 'email', label: 'Email' },
+        { key: 'role', label: 'Role' },
+        { key: 'status', label: 'Status' },
+      ],
+      fields: [
+        { key: 'project_id', label: 'Project ID', type: 'text' },
+        { key: 'user_id', label: 'User ID', type: 'text' },
+        { key: 'email', label: 'Email', type: 'text' },
+        { key: 'role', label: 'Role', type: 'select', options: [
+          { label: 'Owner', value: 'owner' },
+          { label: 'Editor', value: 'editor' },
+          { label: 'Viewer', value: 'viewer' },
+        ]},
+        { key: 'status', label: 'Status', type: 'select', options: [
+          { label: 'Active', value: 'active' },
+          { label: 'Invited', value: 'invited' },
+          { label: 'Archived', value: 'archived' },
+        ]},
+      ],
+      apiEndpoint: '/api/project-members',
+      rowIdField: 'id',
+    },
+  ];
 
-  const [rooms, setRooms] = useState<TourRoom[]>([]);
+  const [data, setData] = useState<Record<string, any[]>>({});
   const [loading, setLoading] = useState(true);
-  const [uploading, setUploading] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [error, setError] = useState('');
-  const [selectedId, setSelectedId] = useState('');
-  const [addMode, setAddMode] = useState(false);
-  const [mediaAssets, setMediaAssets] = useState<{ name: string; url: string }[]>([]);
-  const [viewerSettings, setViewerSettings] = useState({
-    mouseViewMode: 'drag' as 'drag' | 'qtvr',
-    autorotateEnabled: false,
-    fullscreenButton: true,
-    viewControlButtons: true,
-  });
-
-  const imgRef = React.useRef<HTMLImageElement>(null);
-  const dragHpRef = React.useRef<string | null>(null);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-
-  if (!userId || !projectId) {
-    notFound();
-  }
+  const [error, setError] = useState<string | undefined>();
 
   useEffect(() => {
+    if (!projectId) return;
     let cancelled = false;
-    setLoading(true);
-    setError('');
-
     async function load() {
+      setLoading(true);
+      setError(undefined);
       try {
-        const res = await fetch(`/api/tour?tour=${encodeURIComponent(projectId)}`);
-        if (!res.ok) throw new Error('failed to load tour');
-        const data = await res.json();
+        const [experiencesRes, configsRes, deliverablesRes, assetsRes, membersRes] = await Promise.all([
+          fetch(`/api/experiences?projectId=${encodeURIComponent(projectId)}`),
+          fetch(`/api/experience-configs?projectId=${encodeURIComponent(projectId)}`),
+          fetch(`/api/deliverables?projectId=${encodeURIComponent(projectId)}&service=${encodeURIComponent(serviceSlug)}`),
+          fetch(`/api/assets?projectId=${encodeURIComponent(projectId)}&service=${encodeURIComponent(serviceSlug)}`),
+          fetch(`/api/project-members?projectId=${encodeURIComponent(projectId)}`),
+        ]);
         if (cancelled) return;
-        const rooms = (data.rooms || []).map((r: any) => ({
-          ...r,
-          defaultHotspots: r.defaultHotspots || r.hotspots || [],
-        }));
-        setRooms(rooms);
-        setSelectedId((prev) => prev || rooms[0]?.id || '');
-        setSaved(false);
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message || 'failed to load tour');
+        const [experiences, configs, deliverables, assets, members] = await Promise.all([
+          experiencesRes.json(),
+          configsRes.json(),
+          deliverablesRes.json(),
+          assetsRes.json(),
+          membersRes.json(),
+        ]);
+        if (!experiencesRes.ok) throw new Error(experiences.error || 'Failed to load experiences');
+        if (!configsRes.ok) throw new Error(configs.error || 'Failed to load configs');
+        if (!deliverablesRes.ok) throw new Error(deliverables.error || 'Failed to load deliverables');
+        if (!assetsRes.ok) throw new Error(assets.error || 'Failed to load assets');
+        if (!membersRes.ok) throw new Error(members.error || 'Failed to load members');
+        setData({
+          experiences: experiences.experiences || [],
+          configs: configs.configs || [],
+          deliverables: deliverables.deliverables || [],
+          assets: assets.assets || [],
+          members: members.members || [],
+        });
+      } catch (err: any) {
+        setError(err?.message || 'Failed to load project data');
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
-
     load();
     return () => {
       cancelled = true;
     };
-  }, [projectId]);
-
-  useEffect(() => {
-    let cancelled = false;
-    async function loadMedia() {
-      try {
-        const res = await fetch('/api/tour/media');
-        if (!res.ok) return;
-        const data = await res.json();
-        if (!cancelled) setMediaAssets(Array.isArray(data.assets) ? data.assets : []);
-      } catch {
-        // media is optional
-      }
-    }
-    loadMedia();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const selected = rooms.find((r) => r.id === selectedId) || rooms[0];
-
-  const updateRoom = (roomId: string, updater: (r: TourRoom) => TourRoom) => {
-    setRooms((prev) => prev.map((r) => (r.id === roomId ? updater(r) : r)));
-    setSaved(false);
-  };
-
-  const persistRooms = async (nextRooms: TourRoom[]) => {
-    setRooms(nextRooms);
-    setSaved(false);
-    try {
-      const res = await fetch(`/api/tour?tour=${encodeURIComponent(projectId)}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rooms: nextRooms, version: 1 }),
-      });
-      if (!res.ok) throw new Error('save failed');
-      setSaved(true);
-    } catch (e: any) {
-      setError(e?.message || 'save failed');
-    }
-  };
-
-  const onFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    e.target.value = '';
-    if (!file || !selected) return;
-    setUploading(true);
-    try {
-      const fd = new FormData();
-      fd.append('file', file);
-      const res = await fetch('/api/tour/upload', { method: 'POST', body: fd });
-      if (!res.ok) throw new Error('upload failed');
-      const { url } = await res.json();
-      updateRoom(selected.id, (r) => ({ ...r, panoramaUrl: url, thumbnailUrl: url }));
-      await persistRooms(
-        rooms.map((r) => (r.id === selected.id ? { ...r, panoramaUrl: url, thumbnailUrl: url } : r)),
-      );
-    } catch (e: any) {
-      setError(e?.message || 'upload failed');
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
-    if (!addMode || !selected) return;
-    const rect = imgRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
-    const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
-    const newHp: Hotspot = {
-      id: `hp-${Date.now()}-${Math.random()}`,
-      xPercent: Math.round(xPercent * 10) / 10,
-      yPercent: Math.round(yPercent * 10) / 10,
-      title: 'New Hotspot',
-      type: 'metadata',
-      category: 'custom',
-      description: '',
-      color: 'emerald',
-      icon: 'info',
-    };
-    const next = rooms.map((r) =>
-      r.id === selected.id ? { ...r, defaultHotspots: [...r.defaultHotspots, newHp] } : r,
-    );
-    void persistRooms(next);
-    setAddMode(false);
-  };
+  }, [projectId, serviceSlug]);
 
   return (
     <div className="min-h-screen bg-[#09090B] text-white">
-      <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-[#27272A]">
-        <div className="flex items-center gap-3">
-          <Link
-            href={`/under-admin/users/${userId}/projects/${projectId}/editor-dashboard`}
-            className="inline-flex items-center gap-1 text-[10px] font-mono text-[#A1A1AA] hover:text-white"
-          >
-            <ChevronLeft className="w-3 h-3" />
-            Back
-          </Link>
-          <div>
-            <h1 className="text-sm font-mono font-bold text-white">Virtual Tour Editor</h1>
-            <p className="text-[10px] font-mono text-[#71717A]">
-              {userId} / {projectId} / virtual-tour
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className={`px-2 py-1 rounded text-[10px] font-mono ${saved ? 'bg-emerald-500/15 text-emerald-300' : 'bg-amber-500/15 text-amber-400'}`}>
-            {saved ? 'Saved' : 'Unsaved'}
-          </span>
-          <span className="px-2 py-1 rounded bg-amber-500/15 text-amber-400 text-[10px] font-mono">Phase 2 wired shell</span>
-        </div>
+      <div className="px-4 sm:px-6 py-3 border-b border-[#27272A]">
+        <h1 className="text-sm font-mono font-bold text-white capitalize">{serviceTitle}</h1>
+        <p className="text-[10px] font-mono text-[#71717A]">{params?.userId} / {params?.projectId} / {serviceSlug}</p>
       </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 space-y-4">
-        {error && (
-          <div className="px-3 py-2 bg-rose-950/40 border border-rose-900 text-rose-300 text-xs font-mono rounded">
-            {error}
-          </div>
-        )}
-
-        {loading ? (
-          <div className="text-center text-xs font-mono text-[#71717A] py-12">Loading virtual tour editor…</div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="rounded-lg border border-[#27272A] bg-[#0c0c0f] overflow-hidden">
-              <div className="p-3 border-b border-[#27272A] flex items-center justify-between">
-                <div className="text-xs font-mono text-[#A1A1AA]">Viewer</div>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setAddMode((v) => !v)}
-                    className={`px-3 py-1.5 rounded text-xs font-mono border ${addMode ? 'bg-[#3ECF8E] text-black border-[#3ECF8E]' : 'bg-[#18181B] border-[#27272A] text-white hover:border-[#3ECF8E]'}`}
-                  >
-                    {addMode ? 'Placing hotspot…' : 'Add hotspot'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="px-3 py-1.5 rounded bg-[#18181B] border border-[#27272A] text-xs font-mono text-white hover:border-[#3ECF8E]"
-                  >
-                    <Upload className="w-3 h-3 inline mr-1" />
-                    {uploading ? 'Uploading…' : 'Upload 360'}
-                  </button>
-                  <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={onFileSelected} />
-                </div>
-              </div>
-              <div className="aspect-video bg-black">
-                {selected && selected.panoramaUrl ? (
-                  <img
-                    ref={imgRef}
-                    src={selected.panoramaUrl}
-                    alt={selected.name}
-                    className={`w-full h-full object-contain ${addMode ? 'cursor-crosshair' : ''}`}
-                    onClick={handleImageClick}
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-[10px] font-mono text-[#71717A]">
-                    Upload a panorama or select a scene to preview.
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="rounded-lg border border-[#27272A] bg-[#0c0c0f] p-4 space-y-3">
-              <div className="text-xs font-mono text-[#A1A1AA]">Editor context</div>
-              <div className="text-[10px] font-mono text-[#71717A]">
-                User: <span className="text-white">{userId}</span>
-                <br />
-                Project: <span className="text-white">{projectId}</span>
-                <br />
-                Service: <span className="text-white">virtual-tour</span>
-                <br />
-                Scenes: <span className="text-white">{rooms.length}</span>
-              </div>
-              <div className="pt-2 text-[10px] font-mono text-[#71717A]">
-                This shell is now wired to the existing tour API. Existing `/api/tour/*` behavior is preserved; new project/service-aware APIs can replace this backend path in a later phase.
-              </div>
-            </div>
-          </div>
-        )}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        <ServiceEditorPanels tabs={tabs} tabData={data} loading={loading} error={error} />
       </div>
     </div>
   );
