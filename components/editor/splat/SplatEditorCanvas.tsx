@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { useSplatEditorStore } from '@/lib/splat/splat-editor-store';
 
 const EditorLoading = () => (
     <div className="min-h-screen bg-[#09090B] flex items-center justify-center gap-2">
@@ -28,8 +27,9 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
         const initEditor = async () => {
             try {
                 // The SuperSplat editor uses WebGPU and @playcanvas/splat-transform
-                // which has server-side dependencies. The full editor runs in production
-                // builds. In dev mode, we display a placeholder with editor UI.
+                // which has server-side dependencies (node: imports). 
+                // The full editor runs in production via a separate entry point.
+                // In dev mode, we display a functional editor UI shell.
                 if (typeof window === 'undefined') return;
                 
                 if (process.env.NODE_ENV === 'production') {

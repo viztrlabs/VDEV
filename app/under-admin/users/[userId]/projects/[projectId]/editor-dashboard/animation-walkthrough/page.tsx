@@ -2,8 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { ServiceEditorPanels, Tab } from '@/components/editor/service-editor-panels';
-import { EditorErrorBoundary } from '@/components/editor/editor-error-boundary';
-import { PermissionProvider } from '@/components/editor/permissions';
+import { Timeline } from '@/components/editor/timeline';
 import { EditorErrorBoundary } from '@/components/editor/editor-error-boundary';
 import { PermissionProvider } from '@/components/editor/permissions';
 
@@ -11,6 +10,7 @@ export default function AnimationEditorPage() {
   const params = useParams<{ userId: string; projectId: string }>();
   const projectId = params?.projectId;
   const serviceSlug = "animation-walkthrough";
+  const serviceTitle = "Animation Walkthrough";
     
   const tabs: Tab[] = [
     {
@@ -211,14 +211,19 @@ export default function AnimationEditorPage() {
   }, [projectId, serviceSlug]);
 
   return (
-    <div className="min-h-screen bg-[#09090B] text-white">
-      <div className="px-4 sm:px-6 py-3 border-b border-[#27272A]">
-        <h1 className="text-sm font-mono font-bold text-white capitalize">{serviceTitle}</h1>
-        <p className="text-[10px] font-mono text-[#71717A]">{params?.userId} / {params?.projectId} / {serviceSlug}</p>
-      </div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-        <ServiceEditorPanels tabs={tabs} tabData={data} loading={loading} error={error} />
-      </div>
-    </div>
+    <EditorErrorBoundary serviceName={serviceTitle}>
+      <PermissionProvider role="owner">
+        <div className="min-h-screen bg-[#09090B] text-white">
+          <div className="px-4 sm:px-6 py-3 border-b border-[#27272A]">
+            <h1 className="text-sm font-mono font-bold text-white capitalize">{serviceTitle}</h1>
+            <p className="text-[10px] font-mono text-[#71717A]">{params?.userId} / {params?.projectId} / {serviceSlug}</p>
+          </div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+            <ServiceEditorPanels tabs={tabs} tabData={data} loading={loading} error={error} />
+            <Timeline items={timelineItems} />
+          </div>
+        </div>
+      </PermissionProvider>
+    </EditorErrorBoundary>
   );
 }

@@ -2,11 +2,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { ServiceEditorPanels, Tab } from '@/components/editor/service-editor-panels';
+import { DeviceCompatibility } from '@/components/editor/device-compatibility';
 import { EditorErrorBoundary } from '@/components/editor/editor-error-boundary';
 import { PermissionProvider } from '@/components/editor/permissions';
-import { EditorErrorBoundary } from '@/components/editor/editor-error-boundary';
-import { PermissionProvider } from '@/components/editor/permissions';
-
 export default function PixelEditorPage() {
   const params = useParams<{ userId: string; projectId: string }>();
   const projectId = params?.projectId;
@@ -216,8 +214,9 @@ export default function PixelEditorPage() {
         <h1 className="text-sm font-mono font-bold text-white capitalize">{serviceTitle}</h1>
         <p className="text-[10px] font-mono text-[#71717A]">{params?.userId} / {params?.projectId} / {serviceSlug}</p>
       </div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
         <ServiceEditorPanels tabs={tabs} tabData={data} loading={loading} error={error} />
+        <DeviceCompatibility />
       </div>
     </div>
   );

@@ -1,8 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { RecordModal } from '@/components/editor/record-modal';
 import { usePermissions } from '@/components/editor/permissions';
+import { useAutoSave } from '@/components/editor/auto-save';
+import { useEditorHistory, useKeyboardShortcuts } from '@/components/editor/editor-history';
+import { Skeleton, TableSkeleton } from '@/components/editor/skeleton';
 
 export type Tab = {
   key: string;
@@ -18,9 +21,11 @@ type ServiceEditorPanelsProps = {
   tabData: Record<string, any[]>;
   loading?: boolean;
   error?: string;
+  onDataChange?: (next: Record<string, any[]>) => void;
+  storageKey?: string;
 };
 
-export function ServiceEditorPanels({ tabs, tabData, loading, error }: ServiceEditorPanelsProps) {
+export function ServiceEditorPanels({ tabs, tabData, loading, error, onDataChange, storageKey }: ServiceEditorPanelsProps) {
   const [active, setActive] = useState<string>(tabs[0]?.key || '');
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
@@ -30,8 +35,37 @@ export function ServiceEditorPanels({ tabs, tabData, loading, error }: ServiceEd
   const [localError, setLocalError] = useState<string | undefined>();
   const { canCreate, canEdit, canDelete } = usePermissions();
 
+  const { data: persistedData, setData: setPersistedData } = useAutoSave(tabData, {
+    storageKey: storageKey ? `${storageKey}:editor-state` : undefined,
+    enabled: false,
+  });
+
+  const history = useEditorHistory(tabData[active] || [], {
+    maxEntries: 50,
+    storageKey: storageKey ? `${storageKey}:${active}:history` : undefined,
+  });
+
+  useKeyboardShortcuts({
+    shortcuts: [
+      { key: 'z', ctrlOrMeta: true, action: history.undo },
+      { key: 'z', ctrlOrMeta: true, shift: true, action: history.redo },
+      { key: 'y', ctrlOrMeta: true, action: history.redo },
+    ],
+    enabled: !loading && !error,
+  });
+
+  const applyOptimistic = useCallback(
+    (updater: (prev: Record<string, any[]>) => Record<string, any[]>) => {
+      const next = updater({ ...tabData });
+      if (onDataChange) {
+        onDataChange(next);
+      }
+    },
+    [tabData, onDataChange],
+  );
+
   const activeTab = tabs.find((t) => t.key === active);
-  const rows = tabData[active] || [];
+  const rows = history.data;
 
   const openCreate = () => {
     const tab = tabs.find((t) => t.key === active);
@@ -63,6 +97,11 @@ export function ServiceEditorPanels({ tabs, tabData, loading, error }: ServiceEd
     setModalOpen(true);
   };
 
+  const refreshHistory = () => {
+    history.undo();
+    history.redo();
+  };
+
   const handleDelete = async (row: any) => {
     const tab = tabs.find((t) => t.key === active);
     if (!tab?.apiEndpoint || !tab?.rowIdField) return;
@@ -74,7 +113,11 @@ export function ServiceEditorPanels({ tabs, tabData, loading, error }: ServiceEd
       const res = await fetch(`${tab.apiEndpoint}?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
       const json = await res.json();
       if (!res.ok || json.success === false) throw new Error(json.error || 'Delete failed');
-      window.location.reload();
+      applyOptimistic((prev) => ({
+        ...prev,
+        [active]: (prev[active] || []).filter((item) => item[tab.rowIdField!] !== id),
+      }));
+      refreshHistory();
     } catch (err: any) {
       setLocalError(err?.message || 'Delete failed');
     } finally {
@@ -97,7 +140,9 @@ export function ServiceEditorPanels({ tabs, tabData, loading, error }: ServiceEd
       });
       const json = await res.json();
       if (!res.ok || json.success === false) throw new Error(json.error || 'Save failed');
-      window.location.reload();
+      applyOptimistic((prev) => ({ ...prev }));
+      setModalOpen(false);
+      refreshHistory();
     } catch (err: any) {
       setLocalError(err?.message || 'Save failed');
     } finally {
@@ -105,18 +150,23 @@ export function ServiceEditorPanels({ tabs, tabData, loading, error }: ServiceEd
     }
   };
 
-  if (error) {
+  if (loading) {
     return (
-      <div className="rounded border border-rose-500/40 bg-rose-500/10 p-3 text-[11px] font-mono text-rose-300">
-        {error}
+      <div className="space-y-3">
+        <div className="flex items-center gap-1 p-1 rounded-lg bg-[#09090B] border border-[#27272A]">
+          {tabs.map((tab) => (
+            <div key={tab.key} className="h-6 w-24 rounded bg-[#27272A]/60" />
+          ))}
+        </div>
+        <TableSkeleton rows={4} columns={activeTab?.columns.length || 4} />
       </div>
     );
   }
 
-  if (loading) {
+  if (error) {
     return (
-      <div className="rounded border border-[#27272A] bg-[#0c0c0f] p-4 text-[11px] font-mono text-[#71717A]">
-        Loading project data…
+      <div className="rounded border border-rose-500/40 bg-rose-500/10 p-3 text-[11px] font-mono text-rose-300">
+        {error}
       </div>
     );
   }

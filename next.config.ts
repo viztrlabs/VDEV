@@ -69,7 +69,7 @@ const nextConfig: NextConfig = {
     ],
   },
   transpilePackages: ['motion'],
-  webpack: (config, { dev }) => {
+  webpack: (config, { dev, isServer }) => {
     // HMR is disabled in AI Studio via DISABLE_HMR env var.
     // Do not modify—file watching is disabled to prevent flickering during agent edits.
     if (dev && process.env.DISABLE_HMR === 'true') {
@@ -88,6 +88,26 @@ const nextConfig: NextConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
       'webp.wasm': path.resolve(__dirname, 'public/splat-editor/lib/webp/webp.wasm'),
+      'node:worker_threads': false,
+      'node:os': false,
+      'node:module': false,
+      'node:fs': false,
+      'node:path': false,
+      'node:process': false,
+      'node:util': false,
+    };
+
+    // Mark node: imports as false for client-side
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      'node:os': false,
+      'os': false,
+      'module': false,
+      'worker_threads': false,
+      'fs': false,
+      'path': false,
+      'process': false,
+      'util': false,
     };
 
     // Handle WGSL shaders as raw source
@@ -95,14 +115,6 @@ const nextConfig: NextConfig = {
       test: /\.wgsl$/,
       type: 'asset/source',
     });
-
-    // Mark node:os and similar node-specific imports as false for client-side
-    // (they are only used for SSR features that are protected by try-catch)
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      'node:os': false,
-      'os': false,
-    };
 
     return config;
   },
