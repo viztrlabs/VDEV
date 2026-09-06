@@ -1,0 +1,185 @@
+{
+  "version": 1,
+  "rooms": [
+    {
+      "id": "local-node-00",
+      "name": "Tour Node 00",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/00.jpg",
+      "thumbnailUrl": "/tour/00.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    },
+    {
+      "id": "local-node-01",
+      "name": "Tour Node 01",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/01.jpg",
+      "thumbnailUrl": "/tour/01.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    },
+    {
+      "id": "local-node-02",
+      "name": "Tour Node 02",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/02.jpg",
+      "thumbnailUrl": "/tour/02.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    },
+    {
+      "id": "local-node-03",
+      "name": "Tour Node 03",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/03.jpg",
+      "thumbnailUrl": "/tour/03.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    },
+    {
+      "id": "local-node-04",
+      "name": "Tour Node 04",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/04.jpg",
+      "thumbnailUrl": "/tour/04.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    },
+    {
+      "id": "local-node-05",
+      "name": "Tour Node 05",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/05.jpg",
+      "thumbnailUrl": "/tour/05.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    },
+    {
+      "id": "local-node-06",
+      "name": "Tour Node 06",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/06.jpg",
+      "thumbnailUrl": "/tour/06.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    },
+    {
+      "id": "local-node-07",
+      "name": "Tour Node 07",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/07.jpg",
+      "thumbnailUrl": "/tour/07.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    },
+    {
+      "id": "local-node-08",
+      "name": "Tour Node 08",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/08.jpg",
+      "thumbnailUrl": "/tour/08.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    },
+    {
+      "id": "local-node-09",
+      "name": "Tour Node 09",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/09.jpg",
+      "thumbnailUrl": "/tour/09.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    },
+    {
+      "id": "local-node-10",
+      "name": "Tour Node 10",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/10.jpg",
+      "thumbnailUrl": "/tour/10.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    },
+    {
+      "id": "local-node-11",
+      "name": "Tour Node 11",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/11.jpg",
+      "thumbnailUrl": "/tour/11.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    },
+    {
+      "id": "local-node-12",
+      "name": "Tour Node 12",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/12.jpg",
+      "thumbnailUrl": "/tour/12.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    },
+    {
+      "id": "local-node-13",
+      "name": "Tour Node 13",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/13.jpg",
+      "thumbnailUrl": "/tour/13.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    },
+    {
+      "id": "local-node-14",
+      "name": "Tour Node 14",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/14.jpg",
+      "thumbnailUrl": "/tour/14.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    },
+    {
+      "id": "local-node-15",
+      "name": "Tour Node 15",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/15.jpg",
+      "thumbnailUrl": "/tour/15.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    },
+    {
+      "id": "local-node-16",
+      "name": "Tour Node 16",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/16.jpg",
+      "thumbnailUrl": "/tour/16.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    },
+    {
+      "id": "local-node-17",
+      "name": "Tour Node 17",
+      "subtitle": "Local 360° Capture Sequence",
+      "panoramaUrl": "/tour/17.jpg",
+      "thumbnailUrl": "/tour/17.jpg",
+      "initialYaw": 180,
+      "initialPitch": 0,
+      "defaultHotspots": []
+    }
+  ]
+}

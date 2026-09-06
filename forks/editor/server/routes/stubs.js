@@ -8,8 +8,22 @@ router.get('/users/:id', (req, res) => {
         id: 1,
         username: 'viztr-user',
         email: 'viztr@localhost',
-        plan: { id: 1, type: 'individual' },
-        flags: {},
+        flags: {
+            openedEditor: true,
+            superUser: true,
+            tips: {
+                hierarchy: true,
+                assets: true,
+                store: true,
+                dashboard: true,
+                entityInspector: true,
+                soundComponent: true,
+                mainMenu: true,
+                controls: true,
+                launch: true,
+                howdoi: true
+            }
+        },
         createdAt: new Date().toISOString()
     });
 });

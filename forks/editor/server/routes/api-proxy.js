@@ -50,7 +50,22 @@ router.get('/user', (req, res) => {
         username: 'viztr-user',
         displayName: 'VizTR User',
         email: 'viztr@local.dev',
-        flags: {},
+        flags: {
+            openedEditor: true,
+            superUser: true,
+            tips: {
+                hierarchy: true,
+                assets: true,
+                store: true,
+                dashboard: true,
+                entityInspector: true,
+                soundComponent: true,
+                mainMenu: true,
+                controls: true,
+                launch: true,
+                howdoi: true
+            }
+        },
         plan: { id: 1, type: 'individual', billing: 'free' },
         locale: 'en'
     });

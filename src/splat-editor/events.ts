@@ -6,6 +6,7 @@ class Events {
 
     // EventHandler-compatible API
     on(name: string, fn: FunctionCallback) {
+        console.log('[Events] on', name, fn);
         if (!this.handlers.has(name)) {
             this.handlers.set(name, new Set());
         }
@@ -17,6 +18,7 @@ class Events {
     }
 
     fire(name: string, ...args: any[]) {
+        console.log('[Events] fire', name, args);
         this.handlers.get(name)?.forEach(fn => fn(...args));
     }
 

@@ -9,8 +9,153 @@
 </head>
 <body>
     <script>
+        window.onerror = function(msg, url, line, col, error) {
+            console.error('[Editor Window Error]', msg, url, line, col, error);
+        };
+    </script>
+    <script>
         var config = __CONFIG__;
+        if (config && config.self) {
+            config.self.flags = config.self.flags || {};
+            config.self.flags.tips = Object.assign({
+                hierarchy: true,
+                assets: true,
+                store: true,
+                dashboard: true,
+                entityInspector: true,
+                soundComponent: true,
+                mainMenu: true,
+                controls: true,
+                launch: true,
+                howdoi: true
+            }, config.self.flags.tips || {});
+        }
     </script>
     <script src="/js/editor.js"></script>
+    <script>
+        // Ensure viewport wheel and hover work reliably across all browser environments
+        (function() {
+            window.addEventListener('wheel', function(e) {
+                if (typeof editor === 'undefined' || !editor.emit) return;
+                var canvas = document.querySelector('#canvas-3d');
+                if (!canvas) return;
+                var rect = canvas.getBoundingClientRect();
+                if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+                    editor.emit('viewport:hover', true);
+                    editor.emit('viewport:mouse:move', { x: e.clientX - rect.left, y: e.clientY - rect.top, down: false });
+                }
+            }, { capture: true, passive: false });
+
+            window.addEventListener('mousemove', function(e) {
+                if (typeof editor === 'undefined' || !editor.emit) return;
+                var canvas = document.querySelector('#canvas-3d');
+                if (!canvas) return;
+                var rect = canvas.getBoundingClientRect();
+                if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+                    editor.emit('viewport:hover', true);
+                }
+            }, { capture: true, passive: true });
+
+            // Ensure zoom sensitivity defaults to 10 for smooth natural navigation
+            window.addEventListener('load', function() {
+                setTimeout(function() {
+                    if (typeof editor !== 'undefined' && editor.call) {
+                        var userSettings = editor.call('settings:user');
+                        if (userSettings && (!userSettings.get('editor.zoomSensitivity') || userSettings.get('editor.zoomSensitivity') < 5)) {
+                            userSettings.set('editor.zoomSensitivity', 10);
+                        }
+                    }
+                }, 500);
+            });
+
+            // Real-time PlayCanvas engine asset & material bridge
+            function setupEngineAssetBridge() {
+                if (typeof editor === 'undefined' || !editor.assets) {
+                    setTimeout(setupEngineAssetBridge, 300);
+                    return;
+                }
+                var app = (typeof pc !== 'undefined' && pc.Application) ? pc.Application.getApplication() : null;
+                if (!app || !app.assets) {
+                    setTimeout(setupEngineAssetBridge, 300);
+                    return;
+                }
+
+                function syncMaterialAsset(editorAsset) {
+                    if (!editorAsset || editorAsset.get('type') !== 'material') return;
+                    var id = parseInt(editorAsset.get('id'), 10);
+                    if (!id) return;
+                    var engineAsset = app.assets.get(id);
+                    if (!engineAsset) return;
+
+                    try {
+                        engineAsset.data = JSON.parse(JSON.stringify(editorAsset.get('data') || {}));
+                    } catch (e) {}
+
+                    if (!engineAsset.loaded) {
+                        app.assets.load(engineAsset);
+                    } else {
+                        var handler = app.loader.getHandler('material');
+                        if (handler && typeof handler.patch === 'function') {
+                            handler.patch(engineAsset, app.assets);
+                        }
+                    }
+                    if (editor.call) editor.call('viewport:render');
+                }
+
+                function bindMaterialObserver(editorAsset) {
+                    if (!editorAsset || editorAsset.get('type') !== 'material') return;
+                    editorAsset.on('*:set', function(path) {
+                        if (path && (path.startsWith('data.') || path === 'data')) {
+                            syncMaterialAsset(editorAsset);
+                        }
+                    });
+                    syncMaterialAsset(editorAsset);
+                }
+
+                function bindEntityRenderBridge(entity) {
+                    if (!entity) return;
+                    entity.on('components.render.materialAssets:set', function(val) {
+                        var curApp = (typeof pc !== 'undefined' && pc.Application) ? pc.Application.getApplication() : null;
+                        if (!curApp) return;
+                        var resId = entity.get('resource_id');
+                        var engineEntity = curApp.root.findByGuid ? curApp.root.findByGuid(resId) : null;
+                        if (!engineEntity) {
+                            engineEntity = curApp.root.findByName(entity.get('name'));
+                        }
+                        if (engineEntity && engineEntity.render) {
+                            engineEntity.render.materialAssets = val;
+                        }
+                        if (editor.call) editor.call('viewport:render');
+                    });
+                }
+
+                // Bind existing assets
+                var existingAssets = editor.assets.list();
+                for (var i = 0; i < existingAssets.length; i++) {
+                    bindMaterialObserver(existingAssets[i]);
+                }
+
+                // Bind newly added assets
+                editor.assets.on('add', function(asset) {
+                    bindMaterialObserver(asset);
+                });
+
+                // Bind entity render bridge
+                if (editor.entities) {
+                    var existingEntities = editor.entities.list();
+                    for (var j = 0; j < existingEntities.length; j++) {
+                        bindEntityRenderBridge(existingEntities[j]);
+                    }
+                    editor.entities.on('add', function(ent) {
+                        bindEntityRenderBridge(ent);
+                    });
+                }
+            }
+            window.addEventListener('load', function() {
+                setTimeout(setupEngineAssetBridge, 1000);
+            });
+        })();
+    </script>
 </body>
 </html>
+

@@ -2,8 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from '@/lib/theme-provider';
 import NextAuthProvider from '@/components/providers/NextAuthProvider';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+import LayoutShell from '@/components/layout/LayoutShell';
 import GalleryViewer from '@/components/viewers/GalleryViewer';
 import PanoramaViewer from '@/components/viewers/PanoramaViewer';
 import ModelViewer from '@/components/viewers/ModelViewer';
@@ -61,14 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen flex flex-col antialiased selection:bg-[#3ECF8E] selection:text-black" suppressHydrationWarning>
         <NextAuthProvider>
         <ThemeProvider>
-          {/* Main Global Sticky Header */}
-          <Header />
-
-          {/* Main Application Page Content */}
-          <div className="flex-1 flex flex-col">{children}</div>
-
-          {/* Main Global Footer */}
-          <Footer />
+          <LayoutShell>{children}</LayoutShell>
 
           {/* Global Universal Lightboxes & Interactive Spatial Viewers */}
           <GalleryViewer />

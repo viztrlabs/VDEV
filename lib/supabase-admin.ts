@@ -83,3 +83,25 @@ export const TEMPLATES: Record<number, { name: string; entities: Record<string, 
     settings: { streaming: { enabled: true, encoder: 'h264', bitrate: 10000, framerate: 60, resolution: [1920, 1080] } },
   },
 };
+
+export async function getProject(projectId: string) {
+  if (!supabaseAdmin) return null;
+  const { data, error } = await supabaseAdmin
+    .from('editor_projects')
+    .select('*')
+    .eq('id', projectId)
+    .single();
+  if (error || !data) return null;
+  return data;
+}
+
+export async function getScenes(projectId: string) {
+  if (!supabaseAdmin) return [];
+  const { data, error } = await supabaseAdmin
+    .from('editor_scenes')
+    .select('*')
+    .eq('project_id', projectId)
+    .eq('branch_id', 'main');
+  if (error || !data) return [];
+  return data;
+}

@@ -1,4 +1,5 @@
 import alias from '@rollup/plugin-alias';
+import sass from 'sass';
 import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
@@ -29,7 +30,7 @@ export default {
     image(),
     scss({
       output: 'public/splat-editor/bundle.css',
-      sass: require('sass')
+      sass: sass
     }),
     typescript({
       tsconfig: './tsconfig.splat.json',
