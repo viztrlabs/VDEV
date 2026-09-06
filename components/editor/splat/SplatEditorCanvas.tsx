@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 const EditorLoading = () => (
     <div className="min-h-screen bg-[#09090B] flex items-center justify-center gap-2">
         <div className="w-5 h-5 border-2 border-[#3ECF8E] border-t-transparent rounded-full animate-spin" />
-        <span className="text-xs font-mono text-[#3ECF8E]">Loading SuperSplat Editor…</span>
+        <span className="text-xs font-mono text-[#3ECF8E]">Loading VizTR Splat Editor…</span>
     </div>
 );
 
@@ -17,7 +17,7 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
     const canvasRef = useRef<HTMLDivElement>(null);
     const [isInitialized, setIsInitialized] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [status, setStatus] = useState('Initializing SuperSplat Editor…');
+    const [status, setStatus] = useState('Initializing VizTR Splat Editor…');
 
     useEffect(() => {
         if (!canvasRef.current) return;
@@ -43,7 +43,7 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
                     }
                 } else {
                     // Dev mode: simulate initialization
-                    setStatus('Dev mode: showing editor UI shell');
+                    setStatus('Dev mode: showing VizTR editor UI shell');
                     setTimeout(() => {
                         if (mounted) {
                             setIsInitialized(true);
@@ -51,7 +51,7 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
                     }, 1500);
                 }
             } catch (err) {
-                console.error('Failed to initialize SuperSplat editor:', err);
+                console.error('Failed to initialize VizTR Splat editor:', err);
                 if (mounted) {
                     setError(err instanceof Error ? err.message : 'Unknown error');
                 }
@@ -72,7 +72,7 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
                     <div className="text-rose-400 text-sm font-mono mb-2">Editor Initialization Error</div>
                     <div className="text-xs text-[#A1A1AA] font-mono">{error}</div>
                     <div className="text-[10px] text-[#71717A] font-mono mt-4">
-                        The SuperSplat editor requires WebGPU support and a modern browser.
+                        The VizTR Splat editor requires WebGPU support and a modern browser.
                         See console for details.
                     </div>
                 </div>
@@ -101,7 +101,7 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
                         <span className="text-2xl font-mono text-[#3ECF8E]">3D</span>
                     </div>
                     <div className="text-center">
-                        <div className="text-lg font-mono font-bold text-[#3ECF8E] mb-1">SuperSplat Editor Initialized</div>
+                        <div className="text-lg font-mono font-bold text-[#3ECF8E] mb-1">VizTR Splat Editor Initialized</div>
                         <div className="text-xs font-mono text-[#A1A1AA]">WebGPU Graphics Device: Connected</div>
                         <div className="text-xs font-mono text-[#A1A1AA]">PlayCanvas Scene: Active</div>
                         <div className="text-xs font-mono text-[#A1A1AA]">Tools: Ready</div>

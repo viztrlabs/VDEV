@@ -10,6 +10,7 @@ import ModelViewer from '@/components/viewers/ModelViewer';
 import PixelStreamingTerminal from '@/components/viewers/PixelStreamingTerminal';
 import ToastNotification from '@/components/ui/ToastNotification';
 import ThemePreviewModal from '@/components/ui/ThemePreviewModal';
+import { PerformanceMonitor } from '@/components/analytics/performance-monitor';
 
 export const metadata: Metadata = {
   title: 'VizTR — Architecture Visualization Studio & XR World Platform',
@@ -76,6 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <PixelStreamingTerminal />
           <ToastNotification />
           <ThemePreviewModal />
+          <PerformanceMonitor />
         </ThemeProvider>
         </NextAuthProvider>
       </body>

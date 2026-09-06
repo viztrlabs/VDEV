@@ -1,0 +1,27 @@
+{
+  "id": 1788613884725,
+  "name": "VR Experience",
+  "description": "Virtual reality with teleport locomotion, hand tracking, controller input, and immersive rendering.",
+  "settings": {},
+  "fork_from": 2002,
+  "permissions": {
+    "admin": [
+      1
+    ],
+    "read": [
+      1
+    ],
+    "write": [
+      1
+    ]
+  },
+  "private": true,
+  "primaryApp": null,
+  "playUrl": "",
+  "privateAssets": false,
+  "hasPrivateSettings": false,
+  "thumbnails": {},
+  "masterBranch": "main",
+  "createdAt": "2026-09-05T13:11:24.727Z",
+  "updatedAt": "2026-09-05T13:11:24.727Z"
+}

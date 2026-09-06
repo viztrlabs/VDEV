@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VizTR Editor</title>
+    <link rel="stylesheet" href="/css/editor.css">
+    <style>
+        body { margin: 0; background: #1a1a2e; color: #fff; font-family: Inter, sans-serif; }
+        .container { max-width: 800px; margin: 100px auto; padding: 0 20px; }
+        h1 { color: #D4A843; }
+        .project-list { list-style: none; padding: 0; }
+        .project-item { padding: 16px; margin: 8px 0; background: #16213e; border-radius: 8px; cursor: pointer; border: 1px solid #333; }
+        .project-item:hover { border-color: #D4A843; }
+        .btn { background: #D4A843; color: #000; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 600; margin-top: 20px; }
+        .btn:hover { background: #e0b855; }
+        .empty { color: #666; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>VizTR Editor</h1>
+        <p>Your Projects</p>
+        <ul class="project-list" id="projects"></ul>
+        <button class="btn" onclick="createProject()">New Project</button>
+    </div>
+    <script>
+        async function loadProjects() {
+            const res = await fetch('/api/projects');
+            const projects = await res.json();
+            const list = document.getElementById('projects');
+            if (projects.length === 0) {
+                list.innerHTML = '<li class="empty">No projects yet. Create one to get started!</li>';
+                return;
+            }
+            list.innerHTML = projects.map(p =>
+                `<li class="project-item" onclick="window.location='/editor/project/${p.id}'">
+                    <strong>${p.name}</strong><br><small>${p.description || 'No description'}</small>
+                </li>`
+            ).join('');
+        }
+        async function createProject() {
+            const name = prompt('Project name:', 'Untitled Project');
+            if (!name) return;
+            const res = await fetch('/api/projects', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, description: '' })
+            });
+            const project = await res.json();
+            window.location = `/editor/project/${project.id}`;
+        }
+        loadProjects();
+    </script>
+</body>
+</html>

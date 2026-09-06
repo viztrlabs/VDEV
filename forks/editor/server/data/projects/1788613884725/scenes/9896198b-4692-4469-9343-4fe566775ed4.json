@@ -1,0 +1,98 @@
+{
+  "id": "9896198b-4692-4469-9343-4fe566775ed4",
+  "uniqueId": "9896198b-4692-4469-9343-4fe566775ed4",
+  "name": "VR Scene",
+  "projectId": 1788613884725,
+  "branchId": "main",
+  "entities": {
+    "camera-vr": {
+      "name": "VR Camera",
+      "components": {
+        "camera": {
+          "clearColor": [
+            0.1,
+            0.1,
+            0.15,
+            1
+          ],
+          "fov": 110,
+          "near": 0.01,
+          "far": 500
+        }
+      }
+    },
+    "light-sun": {
+      "name": "Sun Light",
+      "components": {
+        "light": {
+          "type": "directional",
+          "color": [
+            1,
+            0.98,
+            0.95
+          ],
+          "intensity": 1,
+          "castShadows": true
+        }
+      }
+    },
+    "light-ambient": {
+      "name": "Ambient",
+      "components": {
+        "light": {
+          "type": "ambient",
+          "color": [
+            0.3,
+            0.3,
+            0.4
+          ],
+          "intensity": 0.3
+        }
+      }
+    },
+    "floor": {
+      "name": "VR Floor",
+      "components": {
+        "model": {
+          "type": "plane",
+          "width": 20,
+          "length": 20
+        },
+        "material": {
+          "color": [
+            0.15,
+            0.15,
+            0.2
+          ]
+        }
+      }
+    },
+    "controller-left": {
+      "name": "Left Controller",
+      "components": {
+        "input": {
+          "type": "hand",
+          "hand": "left"
+        }
+      }
+    },
+    "controller-right": {
+      "name": "Right Controller",
+      "components": {
+        "input": {
+          "type": "hand",
+          "hand": "right"
+        }
+      }
+    }
+  },
+  "settings": {
+    "xr": {
+      "enabled": true,
+      "type": "vr",
+      "teleportation": true,
+      "handTracking": true,
+      "controllerModel": true
+    }
+  }
+}

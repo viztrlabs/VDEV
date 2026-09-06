@@ -35,6 +35,15 @@ export function getDemoAuthUser(email?: string, password?: string) {
     };
   }
 
+  if (normalizedEmail === 'viztr.labs@gmail.com' && password === '123456') {
+    return {
+      id: 'usr_viztr_labs_01',
+      name: 'VizTR Labs Admin',
+      email: 'viztr.labs@gmail.com',
+      role: 'SUPER_ADMIN',
+    };
+  }
+
   return null;
 }
 
