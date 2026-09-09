@@ -26,7 +26,7 @@ import {
   LogOut,
 } from 'lucide-react';
 import QRCode from 'qrcode';
-import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
+import { signOut } from 'next-auth/react';
 
 interface TourFeatureToggles {
   hotspots: boolean;
@@ -151,11 +151,8 @@ export default function VirtualTourAdminPanel() {
     persist(next);
   };
 
-  const signOut = async () => {
-    const supabase = createClient();
-    if (!supabase) return;
-    await supabase.auth.signOut();
-    window.location.href = '/login';
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: '/login' });
   };
   const persist = useCallback(
     async (next: TourSettings) => {
@@ -234,15 +231,13 @@ export default function VirtualTourAdminPanel() {
             <Eye className="w-3 h-3" /> {views} views
           </span>
         )}
-        {isSupabaseConfigured && (
-          <button
-            onClick={signOut}
-            className="flex items-center gap-1 text-[10px] font-mono text-[#71717A] hover:text-rose-300"
-            title="Sign out"
-          >
-            <LogOut className="w-3 h-3" /> Sign out
-          </button>
-        )}
+        <button
+          onClick={handleSignOut}
+          className="flex items-center gap-1 text-[10px] font-mono text-[#71717A] hover:text-rose-300"
+          title="Sign out"
+        >
+          <LogOut className="w-3 h-3" /> Sign out
+        </button>
       </div>
 
       {error && (
