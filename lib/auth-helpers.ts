@@ -1,12 +1,13 @@
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from './auth';
+import { normalizeUserRole, type UserRole } from './rbac';
 import type { Session } from 'next-auth';
 
 export interface ClientSessionUser {
   id: string;
   email: string;
   name: string;
-  role: 'SUPER_ADMIN' | 'ADMIN' | 'USER' | 'CLIENT';
+  role: UserRole;
   clientId?: string;
   accessCode?: string;
   assignedDirector?: string;
@@ -33,32 +34,33 @@ export async function requireClientSession(): Promise<ClientSessionUser> {
 
 export async function requireClientRole(): Promise<ClientSessionUser> {
   const user = await requireClientSession();
-  const allowedRoles: Array<ClientSessionUser['role']> = ['CLIENT', 'SUPER_ADMIN', 'ADMIN'];
-  if (!allowedRoles.includes(user.role)) {
+  const role = normalizeUserRole(user.role);
+  if (role !== 'client' && role !== 'super_admin' && role !== 'admin') {
     throw new Error('FORBIDDEN: Client role required');
   }
-  return user;
+  return { ...user, role };
 }
 
 export async function requireAdminRole(): Promise<ClientSessionUser> {
   const user = await requireClientSession();
-  if (user.role !== 'SUPER_ADMIN' && user.role !== 'ADMIN') {
+  const role = normalizeUserRole(user.role);
+  if (role !== 'super_admin' && role !== 'admin') {
     throw new Error('FORBIDDEN: Admin role required');
   }
-  return user;
+  return { ...user, role };
 }
 
 export function isClientUser(session: Session | null): boolean {
   if (!session?.user) return false;
-  const role = (session.user as any).role;
-  return role === 'CLIENT' || role === 'SUPER_ADMIN' || role === 'ADMIN';
+  const role = normalizeUserRole((session.user as any).role);
+  return role === 'client' || role === 'super_admin' || role === 'admin';
 }
 
 export interface UnderAdminUser {
   id: string;
   email: string;
   name?: string;
-  role: 'SUPER_ADMIN' | 'ADMIN' | 'USER' | 'CLIENT';
+  role: UserRole;
 }
 
 export async function requireUnderAdminSession(): Promise<UnderAdminUser> {
@@ -66,8 +68,8 @@ export async function requireUnderAdminSession(): Promise<UnderAdminUser> {
   if (!session || !session.user) {
     throw new Error('UNAUTHORIZED: No active session');
   }
-  const role = session.user.role;
-  if (role !== 'SUPER_ADMIN' && role !== 'ADMIN') {
+  const role = normalizeUserRole(session.user.role);
+  if (role !== 'super_admin' && role !== 'admin') {
     throw new Error('FORBIDDEN: Admin role required');
   }
   return {
