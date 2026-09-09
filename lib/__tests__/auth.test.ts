@@ -42,6 +42,20 @@ describe('Demo auth contract (lib/auth.ts)', () => {
 
     expect(getDemoAuthUser('admin@viztr.com', 'wrong-password')).toBeNull();
   });
+
+  it('rejects admin demo credentials in production', () => {
+    const prev = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+    expect(getDemoAuthUser('admin@viztr.com', 'password123')).toBeNull();
+    expect(getDemoAuthUser('manager@viztr.com', 'password123')).toBeNull();
+    process.env.NODE_ENV = prev;
+  });
+
+  it('still allows demo accounts in non-production', () => {
+    expect(getDemoAuthUser('admin@viztr.com', 'password123')).toMatchObject({
+      role: 'super_admin',
+    });
+  });
 });
 
 describe('UserSession extension (lib/store.ts)', () => {

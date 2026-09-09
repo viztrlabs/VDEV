@@ -22,7 +22,11 @@ export function getDemoAuthUser(email?: string, password?: string) {
 
   const normalizedEmail = email.toLowerCase().trim();
 
-  if (normalizedEmail === 'admin@viztr.com' && password === 'password123') {
+  if (
+    !isProduction() &&
+    normalizedEmail === 'admin@viztr.com' &&
+    password === 'password123'
+  ) {
     return {
       id: 'usr_admin_01',
       name: 'VizTR Chief Technology Officer',
@@ -32,7 +36,7 @@ export function getDemoAuthUser(email?: string, password?: string) {
   }
 
   if (
-    !isProduction &&
+    !isProduction() &&
     normalizedEmail === 'viztr.labs@gmail.com' &&
     password === '123456'
   ) {
@@ -44,7 +48,11 @@ export function getDemoAuthUser(email?: string, password?: string) {
     };
   }
 
-  if (normalizedEmail === 'manager@viztr.com' && password === 'password123') {
+  if (
+    !isProduction() &&
+    normalizedEmail === 'manager@viztr.com' &&
+    password === 'password123'
+  ) {
     return {
       id: 'usr_manager_01',
       name: 'Alexander Cross',
@@ -121,14 +129,14 @@ async function lookupClientByCredentials(
   }
 }
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = (): boolean => process.env.NODE_ENV === 'production';
 
 function getSessionSecret(): string {
   const secret = process.env.NEXTAUTH_SECRET;
   if (secret) return secret;
   // In production a missing secret would silently sign JWTs with a known,
   // publicly-readable constant, allowing admin sessions to be forged.
-  if (isProduction) {
+  if (isProduction()) {
     throw new Error(
       'NEXTAUTH_SECRET is required in production. Set it in your deployment environment.'
     );
