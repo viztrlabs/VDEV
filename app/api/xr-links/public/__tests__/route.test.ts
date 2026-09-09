@@ -90,3 +90,13 @@ describe('GET /api/xr-links/public/[slug] status branches', () => {
     expect(data.error).toBe('Link not ready');
   });
 });
+
+describe('GET /api/xr-links/public/[slug] — Next 15 params shape', () => {
+  it('resolves a slug when params is a Promise (Next 15 runtime shape)', async () => {
+    const res = await GET(
+      makeRequest('http://localhost:3000/api/xr-links/public/glass-pavilion-v1'),
+      { params: Promise.resolve({ slug: 'glass-pavilion-v1' }) } as any
+    );
+    expect(res.status).toBe(200);
+  });
+});

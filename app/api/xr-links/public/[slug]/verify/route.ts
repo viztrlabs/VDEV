@@ -4,9 +4,9 @@ import { getXRLinksFromDB, getXRLinkBySlug } from '@/lib/xr-links-store';
 
 export async function POST(
   req: NextRequest,
-  ctx: { params: { slug: string } }
+  ctx: { params: Promise<{ slug: string }> }
 ): Promise<NextResponse> {
-  const slug = ctx.params.slug;
+  const { slug } = await ctx.params;
   const links = await getXRLinksFromDB();
   const link = getXRLinkBySlug(slug, links);
 
