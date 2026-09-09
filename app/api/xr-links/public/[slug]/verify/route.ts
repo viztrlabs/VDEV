@@ -1,3 +1,4 @@
+import { timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { getXRLinksFromDB, getXRLinkBySlug } from '@/lib/xr-links-store';
 
@@ -25,7 +26,7 @@ export async function POST(
 
   const a = Buffer.from(submitted);
   const b = Buffer.from(link.accessPassword);
-  const same = a.length === b.length && a.equals(b);
+  const same = a.length === b.length && timingSafeEqual(a, b);
 
   if (!same) {
     return NextResponse.json({ success: false, error: 'Incorrect password' }, { status: 401 });
