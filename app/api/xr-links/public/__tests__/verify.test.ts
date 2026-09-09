@@ -32,4 +32,13 @@ describe('POST /api/xr-links/public/[slug]/verify', () => {
     const res = await POST(req, { params: { slug: 'client-secure-haven' } } as any);
     expect(res.status).toBe(401);
   });
+
+  it('returns 401 when the link has no password', async () => {
+    const req = makeRequest('http://localhost:3000/api/xr-links/public/glass-pavilion-v1/verify', { password: 'whatever' });
+    const res = await POST(req, { params: { slug: 'glass-pavilion-v1' } } as any);
+    expect(res.status).toBe(401);
+    const data = await res.json();
+    expect(data.success).toBe(false);
+    expect(data.error).toBe('This link has no password');
+  });
 });
