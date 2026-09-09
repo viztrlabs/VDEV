@@ -1,9 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
   listClientDirectory,
+  toPublicClient,
   CLIENTS_DB,
 } from '@/lib/client-directory';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
+import { normalizeUserRole, type UserRole } from '@/lib/rbac';
 import { isSupabaseAdminReady } from '@/lib/supabase/repositories';
+
+async function requireSessionRole(): Promise<UserRole | null> {
+  const session = await getServerSession(authOptions);
+  const role = normalizeUserRole((session?.user as any)?.role);
+  return session?.user ? role : null;
+}
 
 export interface ClientRecord {
   id: string;
@@ -23,6 +33,12 @@ export interface ClientRecord {
 }
 
 export async function GET(req: NextRequest) {
+  const role = await requireSessionRole();
+  if (!role) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+  }
+  const isAdmin = role === 'super_admin' || role === 'admin';
+
   const { searchParams } = new URL(req.url);
   const tier = searchParams.get('tier') || undefined;
   const query = searchParams.get('q')?.toLowerCase() || undefined;
@@ -31,10 +47,11 @@ export async function GET(req: NextRequest) {
   const email = searchParams.get('email') || undefined;
 
   const clients = await listClientDirectory({ tier, query, accessCode, id, email });
+  const payload = isAdmin ? clients : clients.map(toPublicClient);
   return NextResponse.json({
     success: true,
-    count: clients.length,
-    clients,
+    count: payload.length,
+    clients: payload,
     source: isSupabaseAdminReady() ? 'supabase' : 'memory',
   });
 }

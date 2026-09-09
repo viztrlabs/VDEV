@@ -4,11 +4,31 @@
 import { GET } from '@/app/api/clients/route';
 import { NextRequest } from 'next/server';
 
+jest.mock('next-auth/next', () => ({
+  getServerSession: jest.fn(),
+}));
+jest.mock('@/lib/auth', () => ({
+  authOptions: {},
+}));
+jest.mock('@/lib/supabase/repositories', () => ({
+  isSupabaseAdminReady: () => false,
+  listClientsSupabase: async () => null,
+}));
+
+import { getServerSession } from 'next-auth/next';
+
 function makeRequest(url: string): NextRequest {
   return new NextRequest(url);
 }
 
 describe('GET /api/clients', () => {
+  beforeEach(() => {
+    (getServerSession as jest.Mock).mockReset();
+    (getServerSession as jest.Mock).mockResolvedValue({
+      user: { role: 'admin' },
+    });
+  });
+
   it('returns all clients when no filters are applied', async () => {
     const res = await GET(makeRequest('http://localhost:3000/api/clients'));
     const data = await res.json();
@@ -55,5 +75,43 @@ describe('GET /api/clients', () => {
     data.clients.forEach((c: any) => {
       expect(c.tier).toBe('Enterprise VIP');
     });
+  });
+});
+
+describe('GET /api/clients — auth guard', () => {
+  beforeEach(() => {
+    (getServerSession as jest.Mock).mockReset();
+  });
+
+  it('returns 401 when unauthenticated', async () => {
+    (getServerSession as jest.Mock).mockResolvedValue(null);
+    const res = await GET(new NextRequest('http://localhost:3000/api/clients'));
+    expect(res.status).toBe(401);
+  });
+
+  it('returns full records for admins', async () => {
+    (getServerSession as jest.Mock).mockResolvedValue({
+      user: { role: 'super_admin' },
+    });
+    const res = await GET(new NextRequest('http://localhost:3000/api/clients'));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    for (const c of body.clients) {
+      expect(c).toHaveProperty('portalAccessCode');
+    }
+  });
+
+  it('strips portalAccessCode, notes, totalSpend for non-admins', async () => {
+    (getServerSession as jest.Mock).mockResolvedValue({
+      user: { role: 'user' },
+    });
+    const res = await GET(new NextRequest('http://localhost:3000/api/clients'));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    for (const c of body.clients) {
+      expect(c).not.toHaveProperty('portalAccessCode');
+      expect(c).not.toHaveProperty('notes');
+      expect(c).not.toHaveProperty('totalSpend');
+    }
   });
 });
