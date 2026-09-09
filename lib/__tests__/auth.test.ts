@@ -27,12 +27,12 @@ describe('Demo auth contract (lib/auth.ts)', () => {
   it('accepts the documented admin credentials and rejects incorrect passwords', () => {
     expect(getDemoAuthUser('admin@viztr.com', 'password123')).toMatchObject({
       email: 'admin@viztr.com',
-      role: 'SUPER_ADMIN',
+      role: 'super_admin',
     });
 
     expect(getDemoAuthUser('manager@viztr.com', 'password123')).toMatchObject({
       email: 'manager@viztr.com',
-      role: 'ADMIN',
+      role: 'admin',
     });
 
     expect(getDemoAuthUser('admin@viztr.com', 'wrong-password')).toBeNull();

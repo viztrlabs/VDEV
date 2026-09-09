@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { FeatureFlag, featureFlags, isFeatureEnabled, isEnabledServer } from './feature-flags';
+import { FeatureFlag, featureFlags, isFeatureEnabled, isEnabledServer } from '@/lib/feature-flags';
 import { Toggle, Check, X, Settings, BarChart2, Beaker, RefreshCw, Save, Loader2 } from 'lucide-react';
 
 interface FeatureFlagsDashboardProps {

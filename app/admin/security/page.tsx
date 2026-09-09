@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { FeatureFlagsDashboard } from '@/components/admin/FeatureFlagsDashboard';
-import { Shield, BarChart2, Database, Settings, Users, AlertTriangle, RefreshCw, Loader2 } from 'lucide-react';
+import { Shield, BarChart2, Database, Settings, Users, AlertTriangle, RefreshCw, Loader2, Beaker } from 'lucide-react';
 
 const tabs = [
   { id: 'security', label: 'Security & Audit', icon: Shield },
@@ -26,7 +26,7 @@ export default function AdminSecurityPage() {
           <p className="text-sm text-[#71717a] font-mono mt-1">Monitor, configure, and secure the VizTR platform</p>
         </div>
         <button
-          onClick={() => setLoading(true); setTimeout(() => setLoading(false), 1000)}
+          onClick={() => { setLoading(true); setTimeout(() => setLoading(false), 1000); }}
           disabled={loading}
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#3ecf8e] text-black text-xs font-mono font-bold hover:bg-[#34b27b] transition disabled:opacity-50"
         >
@@ -394,5 +394,3 @@ function StatCard({ icon: Icon, value, label, color, trend }: {
     </div>
   );
 }
-
-export default AdminSecurityPage;

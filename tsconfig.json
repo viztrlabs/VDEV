@@ -37,5 +37,5 @@
     "**/*.tsx",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "packages", "src/splat-editor", "tests", "src/services"]
+  "exclude": ["node_modules", "packages", "src/splat-editor", "tests", "src/services", "forks", "scripts"]
 }
