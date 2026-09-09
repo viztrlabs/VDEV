@@ -16,6 +16,8 @@ export interface ClientAuthLookup {
 
 import { normalizeUserRole } from './rbac';
 import type { UserRole } from './rbac';
+import { listClientDirectory } from './client-directory';
+import type { ClientDirectoryRecord } from './client-directory';
 
 export function getDemoAuthUser(email?: string, password?: string) {
   if (!email || !password) return null;
@@ -86,47 +88,41 @@ export function getDemoAuthUser(email?: string, password?: string) {
   return null;
 }
 
-async function lookupClientByCredentials(
+export async function lookupClientByCredentials(
   email: string | undefined,
   accessCode: string | undefined
 ): Promise<ClientAuthLookup | null> {
   if (!email && !accessCode) return null;
 
-  const params = new URLSearchParams();
-  if (email) params.set('q', email);
-  if (accessCode) params.set('accessCode', accessCode);
-
-  const baseUrl =
-    process.env.NEXTAUTH_URL ||
-    (typeof process.env.VERCEL_URL === 'string' ? `https://${process.env.VERCEL_URL}` : null) ||
-    'http://localhost:3000';
-
-  try {
-    const res = await fetch(`${baseUrl}/api/clients?${params.toString()}`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    const clients: ClientAuthLookup[] = data?.clients || [];
-    if (clients.length === 0) return null;
-
-    if (accessCode) {
-      const match = clients.find(
-        (c) => c.portalAccessCode.toUpperCase() === accessCode.toUpperCase()
-      );
-      if (match) return match;
-    }
-
-    if (email) {
-      const match = clients.find((c) => c.email.toLowerCase() === email.toLowerCase());
-      if (match) return match;
-    }
-
-    return clients[0] || null;
-  } catch (err) {
-    console.error('[auth] lookupClientByCredentials failed:', err);
-    return null;
+  const candidates = await listClientDirectory({
+    email,
+    accessCode,
+  });
+  if (accessCode) {
+    const match = candidates.find(
+      (c) => c.portalAccessCode.toUpperCase() === accessCode.toUpperCase()
+    );
+    if (match) return toClientLookup(match);
   }
+  if (email) {
+    const match = candidates.find(
+      (c) => c.email.toLowerCase() === email.toLowerCase().trim()
+    );
+    if (match) return toClientLookup(match);
+  }
+  return null;
+}
+
+function toClientLookup(c: ClientDirectoryRecord): ClientAuthLookup {
+  return {
+    id: c.id,
+    name: c.name,
+    firmName: c.firmName,
+    email: c.email,
+    portalAccessCode: c.portalAccessCode,
+    assignedDirector: c.assignedDirector,
+    status: c.status,
+  };
 }
 
 const isProduction = (): boolean => process.env.NODE_ENV === 'production';

@@ -1,10 +1,15 @@
 import { ClientRecord } from '@/app/api/clients/route';
-import { authenticateUser, getDemoAuthUser } from '@/lib/auth';
+import { authenticateUser, getDemoAuthUser, lookupClientByCredentials } from '@/lib/auth';
 
 jest.mock('@/lib/supabase', () => {
   const mock = { auth: { signInWithPassword: jest.fn() } };
   return { isSupabaseConfigured: true, supabase: mock };
 });
+
+const mockListClients = jest.fn();
+jest.mock('@/lib/client-directory', () => ({
+  listClientDirectory: (...args: unknown[]) => mockListClients(...args),
+}));
 
 describe('lib/auth.ts — ClientAuthLookup type contract', () => {
   it('exposes required fields for client authentication', () => {
@@ -45,10 +50,10 @@ describe('Demo auth contract (lib/auth.ts)', () => {
 
   it('rejects admin demo credentials in production', () => {
     const prev = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'production';
+    (process.env as { NODE_ENV?: string }).NODE_ENV = 'production';
     expect(getDemoAuthUser('admin@viztr.com', 'password123')).toBeNull();
     expect(getDemoAuthUser('manager@viztr.com', 'password123')).toBeNull();
-    process.env.NODE_ENV = prev;
+    (process.env as { NODE_ENV?: string }).NODE_ENV = prev;
   });
 
   it('still allows demo accounts in non-production', () => {
@@ -82,31 +87,22 @@ describe('UserSession extension (lib/store.ts)', () => {
 
 describe('authenticateUser — Supabase-first validation', () => {
   const supabaseMock = (require('@/lib/supabase') as any).supabase;
-  const originalFetch = global.fetch;
 
   beforeEach(() => {
     (supabaseMock.auth.signInWithPassword as jest.Mock).mockReset();
-    // Deterministic /api/clients directory response for the client-path tests.
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        clients: [
-          {
-            id: 'cli_test_1',
-            name: 'Test Client',
-            firmName: 'Test Studio',
-            email: 'client@test.com',
-            portalAccessCode: 'FST-2025-VTR',
-            assignedDirector: 'Alex',
-            status: 'Active',
-          },
-        ],
-      }),
-    }) as unknown as typeof fetch;
-  });
-
-  afterEach(() => {
-    global.fetch = originalFetch;
+    // Deterministic client directory response for the client-path tests.
+    mockListClients.mockReset();
+    mockListClients.mockResolvedValue([
+      {
+        id: 'cli_test_1',
+        name: 'Test Client',
+        firmName: 'Test Studio',
+        email: 'client@test.com',
+        portalAccessCode: 'FST-2025-VTR',
+        assignedDirector: 'Alex',
+        status: 'Active',
+      },
+    ]);
   });
 
   it('returns the Supabase user with role normalized from user_metadata', async () => {
@@ -178,11 +174,8 @@ describe('authenticateUser — Supabase-first validation', () => {
     });
 
     // Empty directory so the client-lookup path also fails for the unmatched
-    // email (the beforeEach stub would otherwise fall through to clients[0]).
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ clients: [] }),
-    }) as unknown as typeof fetch;
+    // email (the beforeEach stub would otherwise resolve a client).
+    mockListClients.mockResolvedValue([]);
 
     const user = await authenticateUser({ email: 'nobody@example.com', password: 'wrongpw' });
     expect(user).toBeNull();
@@ -237,5 +230,43 @@ describe('authenticateUser — Supabase-first validation', () => {
 
     const user = await authenticateUser({ email: 'admin@viztr.com', password: 'password123' });
     expect(user).toMatchObject({ email: 'admin@viztr.com', role: 'super_admin' });
+  });
+});
+
+describe('lookupClientByCredentials hardening', () => {
+  const matchingClient = {
+    id: 'cli_a',
+    name: 'A Sterling',
+    firmName: 'Foster + Partners London',
+    email: 'a.sterling@fosterpartners.com',
+    phone: '+44 20 7738 0455',
+    tier: 'Enterprise VIP',
+    activeProjects: 3,
+    totalSpend: '$420,000',
+    status: 'Active' as const,
+    portalAccessCode: 'FST-2025-VTR',
+    assignedDirector: 'Marcus Vance',
+    joinedDate: '2024-03-15',
+    notes: 'x',
+  };
+
+  beforeEach(() => {
+    mockListClients.mockReset();
+    mockListClients.mockResolvedValue([matchingClient]);
+  });
+
+  it('resolves an exact email match', async () => {
+    const user = await lookupClientByCredentials('A.STERLING@fosterpartners.com', undefined);
+    expect(user?.email).toBe('a.sterling@fosterpartners.com');
+  });
+
+  it('resolves an exact access-code match', async () => {
+    const user = await lookupClientByCredentials(undefined, 'fst-2025-vtr');
+    expect(user?.portalAccessCode).toBe('FST-2025-VTR');
+  });
+
+  it('returns null instead of the first client when nothing matches', async () => {
+    const user = await lookupClientByCredentials('nobody@nowhere.com', undefined);
+    expect(user).toBeNull();
   });
 });

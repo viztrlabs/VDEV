@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { listClientsSupabase, isSupabaseAdminReady } from '@/lib/supabase/repositories';
+import {
+  listClientDirectory,
+  CLIENTS_DB,
+} from '@/lib/client-directory';
+import { isSupabaseAdminReady } from '@/lib/supabase/repositories';
 
 export interface ClientRecord {
   id: string;
@@ -18,94 +22,21 @@ export interface ClientRecord {
   logoUrl?: string;
 }
 
-let CLIENTS_DB: ClientRecord[] = [
-  {
-    id: 'cli_01',
-    name: 'Alexander Sterling',
-    firmName: 'Foster + Partners London',
-    email: 'a.sterling@fosterpartners.com',
-    phone: '+44 20 7738 0455',
-    tier: 'Enterprise VIP',
-    activeProjects: 3,
-    totalSpend: '$420,000',
-    status: 'Active',
-    portalAccessCode: 'FST-2025-VTR',
-    assignedDirector: 'Marcus Vance',
-    joinedDate: '2024-03-15',
-    notes: 'Primary focus on supertall tower architectural visualization and Unreal 5.4 Lumen interactive exhibitions.',
-    logoUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=100',
-  },
-  {
-    id: 'cli_02',
-    name: 'Helena Berg',
-    firmName: 'Snøhetta Oslo',
-    email: 'h.berg@snohetta.no',
-    phone: '+47 24 15 60 00',
-    tier: 'Retainer Partner',
-    activeProjects: 2,
-    totalSpend: '$290,000',
-    status: 'Active',
-    portalAccessCode: 'SNH-2025-VTR',
-    assignedDirector: 'Sarah Lin',
-    joinedDate: '2024-06-20',
-    notes: 'Specializing in arctic and coastal biophilic structures with real-time daylight climate simulation.',
-    logoUrl: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=100',
-  },
-  {
-    id: 'cli_03',
-    name: 'Kenji Takahashi',
-    firmName: 'Kengo Kuma & Associates',
-    email: 'k.takahashi@kkaa.co.jp',
-    phone: '+81 3 5774 7722',
-    tier: 'Enterprise VIP',
-    activeProjects: 1,
-    totalSpend: '$180,000',
-    status: 'Active',
-    portalAccessCode: 'KMA-2025-VTR',
-    assignedDirector: 'David Kalu',
-    joinedDate: '2024-09-05',
-    notes: 'Parametric cedar and bamboo pavilion studies with WebXR spatial viewing for museum stakeholders.',
-    logoUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=100',
-  },
-];
-
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const tier = searchParams.get('tier');
-  const query = searchParams.get('q')?.toLowerCase();
-  const accessCode = searchParams.get('accessCode');
-  const id = searchParams.get('id');
+  const tier = searchParams.get('tier') || undefined;
+  const query = searchParams.get('q')?.toLowerCase() || undefined;
+  const accessCode = searchParams.get('accessCode') || undefined;
+  const id = searchParams.get('id') || undefined;
+  const email = searchParams.get('email') || undefined;
 
-  // Try Supabase first; fall back to in-memory DB if unconfigured or query fails.
-  if (isSupabaseAdminReady()) {
-    const fromDb = await listClientsSupabase({ tier: tier || undefined, query, accessCode: accessCode || undefined, id: id || undefined });
-    if (fromDb !== null) {
-      return NextResponse.json({ success: true, count: fromDb.length, clients: fromDb, source: 'supabase' });
-    }
-  }
-
-  let filtered = [...CLIENTS_DB];
-  if (tier && tier !== 'ALL') {
-    filtered = filtered.filter((c) => c.tier === tier);
-  }
-  if (query) {
-    filtered = filtered.filter(
-      (c) =>
-        c.name.toLowerCase().includes(query) ||
-        c.firmName.toLowerCase().includes(query) ||
-        c.email.toLowerCase().includes(query) ||
-        c.portalAccessCode.toLowerCase().includes(query)
-    );
-  }
-  if (accessCode) {
-    const code = accessCode.toUpperCase();
-    filtered = filtered.filter((c) => c.portalAccessCode.toUpperCase() === code);
-  }
-  if (id) {
-    filtered = filtered.filter((c) => c.id === id);
-  }
-
-  return NextResponse.json({ success: true, count: filtered.length, clients: filtered, source: 'memory' });
+  const clients = await listClientDirectory({ tier, query, accessCode, id, email });
+  return NextResponse.json({
+    success: true,
+    count: clients.length,
+    clients,
+    source: isSupabaseAdminReady() ? 'supabase' : 'memory',
+  });
 }
 
 export async function POST(req: NextRequest) {
@@ -166,12 +97,13 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ success: false, error: 'Client ID is required' }, { status: 400 });
   }
 
-  const initialLength = CLIENTS_DB.length;
-  CLIENTS_DB = CLIENTS_DB.filter((c) => c.id !== id);
+  const index = CLIENTS_DB.findIndex((c) => c.id === id);
 
-  if (CLIENTS_DB.length === initialLength) {
+  if (index === -1) {
     return NextResponse.json({ success: false, error: 'Client not found' }, { status: 404 });
   }
+
+  CLIENTS_DB.splice(index, 1);
 
   return NextResponse.json({ success: true, message: `Client ${id} removed successfully` });
 }
