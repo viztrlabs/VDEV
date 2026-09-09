@@ -242,6 +242,64 @@ export async function deleteXRLinkFromDB(id: string): Promise<boolean> {
   return false;
 }
 
+export interface BuildLinkParams {
+  name: string;
+  projectId: string;
+  sceneId?: string;
+  modelUrl?: string;
+  thumbnailUrl?: string;
+  slug?: string;
+  environment?: XRLinkRecord['environment'];
+  arPlacement?: XRLinkRecord['arPlacement'];
+  passwordProtected?: boolean;
+  accessPassword?: string;
+  expiresAt?: string;
+  engineType?: string;
+  entitiesCount?: number;
+  fileSizeMB?: number;
+  formats?: string[];
+  origin?: string;
+}
+
+export function buildXRLinkRecord(p: BuildLinkParams): XRLinkRecord {
+  const slug = p.slug || generateSlug(p.name);
+  const origin = p.origin || 'https://localhost:3000';
+  const shareUrl = `${origin}/xr-world/view/${slug}`;
+  const now = new Date().toISOString();
+  const expiresAt = p.expiresAt || new Date(Date.now() + 90 * 86400000).toISOString();
+  const engineType = p.engineType || 'three';
+  return {
+    id: `xr_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    name: p.name,
+    slug,
+    projectId: p.projectId,
+    sceneId: p.sceneId,
+    modelUrl: p.modelUrl || `${origin}/models/${slug}.glb`,
+    thumbnailUrl: p.thumbnailUrl,
+    shareUrl,
+    qrCodeUrl: generateQRCodeUrl(shareUrl),
+    environment: p.environment || 'studio',
+    arPlacement: p.arPlacement || 'floor',
+    passwordProtected: !!p.passwordProtected,
+    accessPassword: p.passwordProtected ? p.accessPassword : undefined,
+    viewsCount: 0,
+    uniqueVisitors: 0,
+    avgEngagementSecs: 0,
+    status: 'active',
+    expiresAt,
+    createdAt: now,
+    updatedAt: now,
+    metadata: {
+      engineType,
+      entitiesCount: p.entitiesCount || 0,
+      fileSizeMB: p.fileSizeMB || 0,
+      formats: p.formats || ['glb'],
+      arConfig: { placement: p.arPlacement || 'floor', environment: p.environment || 'studio', passwordProtected: !!p.passwordProtected },
+      delivery: { webAR: true, webXR: ['three', 'playcanvas'].includes(engineType), iOSQuickLook: true, androidAR: true },
+    },
+  };
+}
+
 export function generateSlug(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }

@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api-guard';
 import {
-  XRLinkRecord,
   XR_LINKS_DB,
   getXRLinksFromDB,
   saveXRLinkToDB,
   deleteXRLinkFromDB,
-  generateSlug,
-  generateQRCodeUrl,
+  buildXRLinkRecord,
 } from '@/lib/xr-links-store';
 
 export async function GET(req: NextRequest) {
@@ -18,6 +16,7 @@ export async function GET(req: NextRequest) {
   const projectId = searchParams.get('projectId');
   const sceneId = searchParams.get('sceneId');
   const status = searchParams.get('status');
+  const slug = searchParams.get('slug');
   const query = searchParams.get('q')?.toLowerCase();
   const limit = parseInt(searchParams.get('limit') || '50');
   const offset = parseInt(searchParams.get('offset') || '0');
@@ -35,6 +34,10 @@ export async function GET(req: NextRequest) {
   // Filter by status
   if (status && status !== 'ALL') {
     links = links.filter((x) => x.status === status);
+  }
+  // Filter by slug
+  if (slug) {
+    links = links.filter((x) => x.slug.toLowerCase() === slug.toLowerCase());
   }
   // Search query
   if (query) {
@@ -67,83 +70,25 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { 
-      name, 
-      projectId, 
-      sceneId,
-      modelUrl,
-      thumbnailUrl,
-      environment = 'studio', 
-      arPlacement = 'floor', 
-      passwordProtected = false, 
-      accessPassword = '',
-      expiresAt,
-      engineType = 'three',
-      entitiesCount = 0,
-      fileSizeMB = 0,
-      formats = ['glb'],
+    const {
+      name, projectId, sceneId, modelUrl, thumbnailUrl, slug,
+      environment, arPlacement, passwordProtected, accessPassword,
+      expiresAt, engineType, entitiesCount, fileSizeMB, formats,
     } = body;
 
-    // Validation
     if (!name || !projectId) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'name and projectId are required' 
-      }, { status: 400 });
+      return NextResponse.json({ success: false, error: 'name and projectId are required' }, { status: 400 });
     }
 
-    const id = `xr_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const slug = generateSlug(name);
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://viztr.studio';
-    const shareUrl = `${baseUrl}/xr/${slug}`;
-    
-    const now = new Date().toISOString();
-    const expiresAtDate = expiresAt || new Date(Date.now() + 90 * 86400000).toISOString();
+    const origin = process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin;
+    const newXRLink = buildXRLinkRecord({
+      name, projectId, sceneId, modelUrl, thumbnailUrl, slug,
+      environment, arPlacement, passwordProtected, accessPassword,
+      expiresAt, engineType, entitiesCount, fileSizeMB, formats, origin,
+    });
 
-    // Determine delivery capabilities based on engine
-    const deliveryCapabilities = {
-      webAR: true,
-      webXR: ['three', 'playcanvas'].includes(engineType),
-      iOSQuickLook: true,
-      androidAR: true,
-    };
-
-    const newXRLink: XRLinkRecord = {
-      id,
-      name,
-      projectId,
-      sceneId,
-      modelUrl: modelUrl || `${process.env.NEXT_PUBLIC_CDN_URL || baseUrl}/models/${slug}.glb`,
-      thumbnailUrl,
-      shareUrl,
-      qrCodeUrl: generateQRCodeUrl(shareUrl),
-      environment,
-      arPlacement,
-      passwordProtected: !!passwordProtected,
-      accessPassword: passwordProtected ? accessPassword : undefined,
-      viewsCount: 0,
-      uniqueVisitors: 0,
-      avgEngagementSecs: 0,
-      status: 'active',
-      expiresAt: expiresAtDate,
-      createdAt: now,
-      updatedAt: now,
-      metadata: {
-        engineType,
-        entitiesCount,
-        fileSizeMB,
-        formats,
-        arConfig: { placement: arPlacement, environment, passwordProtected: !!passwordProtected },
-        delivery: deliveryCapabilities,
-      }
-    };
-
-    // Save to database
     const saved = await saveXRLinkToDB(newXRLink);
-    if (!saved) {
-      // Fallback to in-memory
-      XR_LINKS_DB.unshift(newXRLink);
-    }
+    if (!saved) XR_LINKS_DB.unshift(newXRLink);
 
     return NextResponse.json({ success: true, xrLink: newXRLink }, { status: 201 });
   } catch (error: any) {
