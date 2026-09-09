@@ -44,7 +44,7 @@ function SignupContent() {
       email,
       password,
       options: {
-        data: { full_name: fullName, org_name: orgName, role: 'owner' },
+        data: { full_name: fullName, org_name: orgName, role: 'user' },
       },
     });
 
