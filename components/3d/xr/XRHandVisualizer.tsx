@@ -1,7 +1,7 @@
-"use client';
+'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useXRHandHook } from './useXRHandHook';
+import { useXRHandHook } from '@/lib/3d/xr/useXRHandHook';
 import * as PC from 'playcanvas';
 
 interface XRHandVisualizerProps {

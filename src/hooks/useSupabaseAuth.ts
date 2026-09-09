@@ -1,7 +1,7 @@
-"""
-React hook for Supabase authentication management.
-Provides authentication state and methods for user management.
-"""
+/**
+ * React hook for Supabase authentication management.
+ * Provides authentication state and methods for user management.
+ */
 
 import { useState, useEffect, useCallback } from 'react'
 import { 

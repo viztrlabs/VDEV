@@ -2,13 +2,13 @@
 
 import React, { createContext, useContext, useEffect, useState, useSyncExternalStore } from 'react';
 
-export type ThemeId = 'dark' | 'light' | 'glass' | 'obsidian' | 'bronze' | 'blueprint' | 'system';
+export type ThemeId = 'dark' | 'light' | 'system';
 
 export interface ThemeConfig {
   id: ThemeId;
   name: string;
   subtitle: string;
-  category: 'Dark Mode' | 'Light Mode' | 'Specialty' | 'Adaptive';
+  category: 'Dark Mode' | 'Light Mode' | 'Adaptive';
   description: string;
   resolvedMode: 'dark' | 'light';
   colors: {
@@ -28,143 +28,63 @@ export interface ThemeConfig {
 export const AVAILABLE_THEMES: ThemeConfig[] = [
   {
     id: 'dark',
-    name: 'Cyber Emerald',
-    subtitle: 'Default High-Density Studio',
+    name: 'Cyan Spark (Dark)',
+    subtitle: 'Electric Cyan & Deep Midnight Shadow',
     category: 'Dark Mode',
-    description: 'Deep zinc tones with electric emerald accents tuned for UE5 Lumen pipelines and spatial rendering.',
+    description: 'Deep #0A0A0B foundation with electric cyan #00F0FF primary actions, fresh green #42CF8B accents, dark blue-gray #1E293B depth, and pill-shaped geometry.',
     resolvedMode: 'dark',
     colors: {
-      bg: '#09090B',
-      card: '#18181B',
-      border: '#27272A',
-      text: '#FAFAFA',
-      primary: '#3ECF8E',
-      accent: '#34B27B',
-      badgeBg: '#18181B',
-      badgeText: '#3ECF8E',
+      bg: '#0A0A0B',
+      card: '#131314',
+      border: '#1E293B',
+      text: '#E5E2E3',
+      primary: '#00F0FF',
+      accent: '#42CF8B',
+      badgeBg: '#1E293B',
+      badgeText: '#00F0FF',
     },
-    contrastRatio: '15.8:1',
-    tags: ['Cyberpunk', 'UE5 Flagship', 'High Contrast'],
-  },
-  {
-    id: 'glass',
-    name: 'Aero Glassmorphism',
-    subtitle: 'Frosted Glass & Prismatic Cyan Glow',
-    category: 'Specialty',
-    description: 'Translucent frosted glass surfaces with high-performance backdrop blur, specular refraction edges, and glowing cyan-emerald optics.',
-    resolvedMode: 'dark',
-    colors: {
-      bg: '#080D1A',
-      card: 'rgba(15, 23, 42, 0.75)',
-      border: 'rgba(56, 189, 248, 0.28)',
-      text: '#F8FAFC',
-      primary: '#06B6D4',
-      accent: '#10B981',
-      badgeBg: 'rgba(6, 182, 212, 0.18)',
-      badgeText: '#22D3EE',
-    },
-    contrastRatio: '16.4:1',
-    tags: ['Frosted Glass', 'Backdrop Blur', 'Prismatic Refraction', 'Specular Edge'],
+    contrastRatio: '18.5:1',
+    tags: ['Cyan Spark', 'Electric Cyan', 'Fresh Green', 'Pill-Shaped'],
   },
   {
     id: 'light',
-    name: 'Architectural Daylight',
-    subtitle: 'Crisp Studio Day Mode',
+    name: 'Vibrant Sky (Light)',
+    subtitle: 'Crisp Daylight & Deep Cerulean',
     category: 'Light Mode',
-    description: 'Clean architectural titanium white and light cool grey with forest emerald branding for daylight presentations.',
+    description: 'Clean architectural titanium white and light cool grey with deep sky blue branding and high readability.',
     resolvedMode: 'light',
     colors: {
-      bg: '#F4F4F5',
-      card: '#FFFFFF',
-      border: '#D4D4D8',
-      text: '#09090B',
-      primary: '#10B981',
-      accent: '#059669',
-      badgeBg: '#E4E4E7',
-      badgeText: '#047857',
+      bg: '#F9F9FF',
+      card: '#E9EDFF',
+      border: '#BEC8CE',
+      text: '#111B2F',
+      primary: '#006686',
+      accent: '#376479',
+      badgeBg: '#E0E8FF',
+      badgeText: '#006686',
     },
-    contrastRatio: '14.2:1',
-    tags: ['Clean Studio', 'Daylight CAD', 'Editorial'],
-  },
-  {
-    id: 'obsidian',
-    name: 'Midnight Obsidian',
-    subtitle: 'OLED Pure Black & Ultraviolet',
-    category: 'Specialty',
-    description: 'Pitch-black OLED background with sleek violet and cyber-cyan optics for ultra-luxury presentations.',
-    resolvedMode: 'dark',
-    colors: {
-      bg: '#030305',
-      card: '#0D0D12',
-      border: '#1E1E28',
-      text: '#F8FAFC',
-      primary: '#8B5CF6',
-      accent: '#06B6D4',
-      badgeBg: '#181528',
-      badgeText: '#A78BFA',
-    },
-    contrastRatio: '19.4:1',
-    tags: ['OLED True Black', 'Spatial XR', 'Luxury'],
-  },
-  {
-    id: 'bronze',
-    name: 'Warm Clay & Bronze',
-    subtitle: 'Architectural Terracotta & Gold',
-    category: 'Specialty',
-    description: 'Warm earth tones, charcoal shadows, and luminous amber highlights inspired by tactile physical models and masonry.',
-    resolvedMode: 'dark',
-    colors: {
-      bg: '#120F0D',
-      card: '#1C1714',
-      border: '#2E2520',
-      text: '#FDF8F6',
-      primary: '#F59E0B',
-      accent: '#D97706',
-      badgeBg: '#2A2019',
-      badgeText: '#FBBF24',
-    },
-    contrastRatio: '16.1:1',
-    tags: ['Warm Materiality', 'Lumen Sunset', 'Tactile'],
-  },
-  {
-    id: 'blueprint',
-    name: 'Nordic Blueprint',
-    subtitle: 'Technical CAD & Deep Navy',
-    category: 'Specialty',
-    description: 'Deep navy structural canvas with neon cyan laser vectors reflecting precision engineering drawings.',
-    resolvedMode: 'dark',
-    colors: {
-      bg: '#070C18',
-      card: '#0D1629',
-      border: '#1B2C4E',
-      text: '#F0F6FC',
-      primary: '#38BDF8',
-      accent: '#0EA5E9',
-      badgeBg: '#0F2342',
-      badgeText: '#38BDF8',
-    },
-    contrastRatio: '17.2:1',
-    tags: ['CAD Blueprint', 'Structural Tech', 'Ice Vector'],
+    contrastRatio: '15.4:1',
+    tags: ['Vibrant Sky', 'Daylight Studio', 'Clean Editorial'],
   },
   {
     id: 'system',
     name: 'System Auto',
     subtitle: 'Dynamic OS Synchronization',
     category: 'Adaptive',
-    description: 'Automatically switches between Cyber Emerald (Dark) and Architectural Daylight (Light) matching device preferences.',
+    description: 'Automatically switches between Cyan Spark Dark and Light mode matching device preferences.',
     resolvedMode: 'dark',
     colors: {
-      bg: '#09090B',
-      card: '#18181B',
-      border: '#27272A',
-      text: '#FAFAFA',
-      primary: '#3ECF8E',
-      accent: '#34B27B',
-      badgeBg: '#18181B',
-      badgeText: '#3ECF8E',
+      bg: '#0A0A0B',
+      card: '#131314',
+      border: '#1E293B',
+      text: '#E5E2E3',
+      primary: '#00F0FF',
+      accent: '#42CF8B',
+      badgeBg: '#1E293B',
+      badgeText: '#00F0FF',
     },
     contrastRatio: 'Adaptive',
-    tags: ['Auto Detect', 'OS Sync', 'Responsive'],
+    tags: ['Auto Detect', 'OS Sync', 'Cyan Spark'],
   },
 ];
 
@@ -176,6 +96,8 @@ interface ThemeContextType {
   setTheme: (theme: ThemeId) => void;
   previewTheme: (theme: ThemeId | null) => void;
   cycleTheme: () => void;
+  cycleLightDarkSystem: () => void;
+  toggleTheme: () => void;
   availableThemes: ThemeConfig[];
   themeModalOpen: boolean;
   setThemeModalOpen: (open: boolean) => void;
@@ -271,10 +193,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       'dark',
       'theme-dark',
       'theme-light',
-      'theme-glass',
-      'theme-obsidian',
-      'theme-bronze',
-      'theme-blueprint',
       'theme-system'
     );
     
@@ -290,6 +208,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       root.classList.add('theme-system');
     }
     root.style.colorScheme = resolvedMode;
+
+    // Synchronize document.body theme classes
+    if (typeof document !== 'undefined' && document.body) {
+      document.body.classList.remove('light', 'dark');
+      document.body.classList.add(resolvedMode);
+    }
 
     // Update dynamic root CSS variables based on active theme
     const activeColorsConfig =
@@ -320,10 +244,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const cycleTheme = () => {
     const current = getStoredTheme();
-    const order: ThemeId[] = ['dark', 'glass', 'light', 'obsidian', 'bronze', 'blueprint', 'system'];
+    const order: ThemeId[] = ['dark', 'light', 'system'];
     const currentIndex = order.indexOf(current);
     const nextIndex = (currentIndex + 1) % order.length;
     setTheme(order[nextIndex]);
+  };
+
+  const toggleTheme = () => {
+    const next = resolvedMode === 'light' ? 'dark' : 'light';
+    setTheme(next);
+  };
+
+  const cycleLightDarkSystem = () => {
+    const next = resolvedMode === 'light' ? 'dark' : 'light';
+    setTheme(next);
   };
 
   return (
@@ -336,6 +270,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         setTheme,
         previewTheme,
         cycleTheme,
+        cycleLightDarkSystem,
+        toggleTheme,
         availableThemes: AVAILABLE_THEMES,
         themeModalOpen,
         setThemeModalOpen,

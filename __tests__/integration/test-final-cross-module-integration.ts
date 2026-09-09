@@ -31,7 +31,7 @@ describe('Final Integration Testing - Cross-Module Validation', () => {
     streamingManager.clearCache();
   });
 
-  describe('✅ COMPLETED INTEGRATION TESTS', () {
+  describe('✅ COMPLETED INTEGRATION TESTS', () => {
     test('Splat Loader & Splat Renderer Integration', async () => {
       // Test core integration between splat loader and renderer
       const splatData = await splatLoader.loadSplat('/test/splats/final-test.splat');
@@ -87,7 +87,7 @@ describe('Final Integration Testing - Cross-Module Validation', () => {
     });
   });
 
-  describe('✅ PERFORMANCE INTEGRATION TESTS', () {
+  describe('✅ PERFORMANCE INTEGRATION TESTS', () => {
     test('Rendering Performance with Final Dataset', async () => {
       const splatData = await splatLoader.loadSplat('/test/splats/final-performance-test.splat');
       await splatRenderer.initializeRenderer();
@@ -125,7 +125,7 @@ describe('Final Integration Testing - Cross-Module Validation', () => {
     });
   });
 
-  describe('✅ ERROR HANDLING INTEGRATION TESTS', () {
+  describe('✅ ERROR HANDLING INTEGRATION TESTS', () => {
     test('Network Error Recovery Integration', async () => {
       const request = streamingManager.createRequest(
         '/test/splats/final-error-test.splat',
@@ -155,7 +155,7 @@ describe('Final Integration Testing - Cross-Module Validation', () => {
     });
   });
 
-  describe('✅ REAL-WORLD SCENARIO INTEGRATION TESTS', () {
+  describe('✅ REAL-WORLD SCENARIO INTEGRATION TESTS', () => {
     test('Complete WebXR Experience Integration', async () => {
       await arSessionManager.initialize();
       

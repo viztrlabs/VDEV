@@ -3,14 +3,20 @@ import React, { useId } from 'react';
 interface LogoProps extends React.SVGProps<SVGSVGElement> {
   className?: string;
   size?: number | string;
+  variant?: 'cyan' | 'gold' | 'white';
 }
 
 /**
- * Gold Viewfinder Brand Mark Logo (300x300 viewBox)
+ * Authentic Viewfinder Brand Mark Logo (300x300 viewBox)
  */
-export function ViztrLogoMark({ className = 'w-8 h-8', size, ...props }: LogoProps) {
+export function ViztrLogoMark({ className = 'w-8 h-8', size, variant = 'cyan', ...props }: LogoProps) {
   const reactId = useId();
-  const gradId = `goldGrad_mark_${reactId.replace(/:/g, '')}`;
+  const gradId = `brandGrad_mark_${reactId.replace(/:/g, '')}`;
+
+  const isGold = variant === 'gold';
+  const isWhite = variant === 'white';
+  const startColor = isGold ? '#e2c073' : isWhite ? '#ffffff' : '#00F0FF';
+  const endColor = isGold ? '#9a7d33' : isWhite ? '#b9cacb' : '#42CF8B';
 
   return (
     <svg
@@ -22,8 +28,8 @@ export function ViztrLogoMark({ className = 'w-8 h-8', size, ...props }: LogoPro
     >
       <defs>
         <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#e2c073" />
-          <stop offset="100%" stopColor="#9a7d33" />
+          <stop offset="0%" stopColor={startColor} />
+          <stop offset="100%" stopColor={endColor} />
         </linearGradient>
       </defs>
 
@@ -98,7 +104,7 @@ export function ViztrFooterLogo({ className = 'w-full max-w-[280px] h-auto', ...
           y="0"
           textAnchor="middle"
           fill={`url(#${gradId})`}
-          fontFamily="Georgia, 'Times New Roman', serif"
+           fontFamily="ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif"
           fontSize="56"
           fontWeight="700"
           letterSpacing="1"

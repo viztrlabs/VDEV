@@ -535,11 +535,13 @@ export default function QuoteManagement({ projectId, clientId }: QuoteManagement
                     >
                       🗑️
                     </button>
-</div>
-             </div>
-           ))}
-         </div>
-       </div>
-     </div>
-   );
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

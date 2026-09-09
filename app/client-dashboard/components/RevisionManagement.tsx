@@ -20,6 +20,7 @@ interface Revision {
   changes: string[];
   attachments: RevisionAttachment[];
   comments: RevisionComment[];
+  lineItems?: { id: string; description: string; quantity: number; estimatedHours: number }[];
   approvalWorkflow: ApprovalStep[];
   currentStep: number;
   budget?: {
@@ -110,7 +111,7 @@ export default function RevisionManagement({ projectId, currentUser }: RevisionM
         dueDate: new Date('2024-12-20'),
         createdAt: new Date('2024-12-15'),
         submittedAt: new Date('2024-12-16'),
-        completedAt: new Date('2024-12-19'),
+completedAt: new Date('2024-12-19'),
         changes: [
           'Updated exterior material library',
           'Enhanced shadow calculations',
@@ -180,26 +181,26 @@ export default function RevisionManagement({ projectId, currentUser }: RevisionM
           cost: 2240,
           actualCost: 1960
         },
-scope: {
-           include: ['exterior materials', 'lighting effects', 'atmospheric effects'],
-           exclude: ['structural changes', 'new architectural elements']
-         },
-         changes: ['Updated exterior material specifications', 'Enhanced lighting fixtures'],
-         attachments: [],
-         comments: []
-       },
-      {
+        scope: {
+          include: ['exterior materials', 'lighting effects', 'atmospheric effects'],
+          exclude: ['structural changes', 'new architectural elements']
+        },
+      },
+       {
         id: 'rev_002',
         revisionNumber: 'REV-002',
         projectId: 'proj_001',
         title: 'Interior Layout Optimization',
         description: 'Optimize interior space usage and flow',
-        status: 'in-progress',
+        status: 'submitted',
         requestedBy: 'David Kim',
         assignedTo: 'Alex Martinez',
         dueDate: new Date('2024-12-25'),
         createdAt: new Date('2024-12-20'),
         submittedAt: new Date('2024-12-21'),
+        changes: ['Redesigned kitchen layout', 'Optimized bathroom layout', 'Integrated open plan living'],
+        attachments: [],
+        comments: [],
         lineItems: [
           { id: 'item1', description: 'Kitchen layout redesign', quantity: 1, estimatedHours: 8 },
           { id: 'item2', description: 'Bathroom optimization', quantity: 2, estimatedHours: 6 },
@@ -215,11 +216,11 @@ scope: {
             completedAt: new Date('2024-12-22'),
             comments: 'Solid design, good flow'
           },
-          {
+{
             id: 'step_2',
             name: 'Internal Review',
             role: 'architect',
-status: 'submitted',
+            status: 'pending',
             assignedTo: 'Emily Rodriguez',
             comments: 'Reviewing with client feedback'
           }
@@ -272,6 +273,9 @@ status: 'submitted',
           }
         ],
         currentStep: 1,
+        changes: ['Refined architectural model geometry', 'Optimized structural elements', 'Updated material assignments'],
+        attachments: [],
+        comments: [],
         budget: {
           estimatedHours: 24,
           actualHours: 0,
@@ -300,6 +304,9 @@ status: 'submitted',
       assignedTo: teamMembers[0].id,
       dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 2 weeks from now
       createdAt: new Date(),
+      changes: [],
+      attachments: [],
+      comments: [],
       approvalWorkflow: [
         {
           id: 'step_1',
@@ -354,9 +361,9 @@ status: 'submitted',
     const revision = revisions.find(r => r.id === revisionId);
     if (!revision) return;
 
-    const updatedWorkflow = revision.approvalWorkflow.map((step, index) => {
+    const updatedWorkflow: ApprovalStep[] = revision.approvalWorkflow.map((step, index) => {
       if (index === revision.currentStep) {
-        return { ...step, status: 'completed', completedAt: new Date(), comments };
+        return { ...step, status: 'completed' as const, completedAt: new Date(), comments };
       }
       return step;
     });
@@ -553,11 +560,11 @@ status: 'submitted',
                       <button
                         className="complete-step-btn"
                         onClick={() => {
-                          const updatedWorkflow = selectedRevision.approvalWorkflow?.map((s, i) => {
+                          const updatedWorkflow: ApprovalStep[] = selectedRevision.approvalWorkflow?.map((s, i) => {
                             if (i === index) {
-                              return { ...s, status: 'completed', completedAt: new Date() };
+                              return { ...s, status: 'completed' as const, completedAt: new Date() };
                             } else if (i > index) {
-                              return { ...s, status: 'pending' };
+                              return { ...s, status: 'pending' as const };
                             }
                             return s;
                           });

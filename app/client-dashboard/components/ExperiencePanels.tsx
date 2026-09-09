@@ -14,7 +14,7 @@ export default function ExperiencePanels() {
       badge: 'Realtime Cloud GPU',
       description: 'Stream the photorealistic Lumen interactive architectural walkthrough at 60fps directly in your browser.',
       icon: <Monitor className="w-5 h-5 text-[#3ECF8E]" />,
-      action: () => openPixelStream('VIZTR-882')
+      action: () => openPixelStream()
     },
     {
       id: 'exp-tour',
@@ -22,7 +22,7 @@ export default function ExperiencePanels() {
       badge: 'Spatial Hotspots',
       description: 'Explore 360° master cameras with interactive material swaps and architectural metadata overlays.',
       icon: <Sparkles className="w-5 h-5 text-cyan-400" />,
-      action: () => openPanorama('VIZTR-882')
+      action: () => openPanorama('/assets/tours/viztr-882-tour.ply', 'The Apex Tower — Panoramic Tour')
     },
     {
       id: 'exp-webxr',
@@ -30,7 +30,7 @@ export default function ExperiencePanels() {
       badge: 'Browser 3D Engine',
       description: 'Inspect LOD400 architectural geometry, BIM layers, floor isolations, and sun simulation.',
       icon: <Box className="w-5 h-5 text-amber-400" />,
-      action: () => openModelViewer('VIZTR-882')
+      action: () => openModelViewer('/assets/models/viztr-882.glb', 'The Apex Tower — WebXR Model')
     }
   ];
 

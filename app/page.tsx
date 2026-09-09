@@ -3,9 +3,10 @@
 import React from 'react';
 import HeroSection from '@/components/sections/HeroSection';
 import MarqueeSection from '@/components/sections/MarqueeSection';
-import ServiceCategories from '@/components/sections/ServiceCategories';
-import StudioPreview from '@/components/sections/StudioPreview';
-import XRPreview from '@/components/sections/XRPreview';
+import StudioSection from '@/components/sections/StudioSection';
+import XRWorldSection from '@/components/sections/XRWorldSection';
+import CreatorSection from '@/components/sections/CreatorSection';
+import SolutionsSection from '@/components/sections/SolutionsSection';
 import ShowreelSection from '@/components/sections/ShowreelSection';
 import PortfolioPreview from '@/components/sections/PortfolioPreview';
 import XRExperienceSection from '@/components/sections/XRExperienceSection';
@@ -20,49 +21,52 @@ import FinalCTASection from '@/components/sections/FinalCTASection';
 export default function HomePage() {
   return (
     <main id="viztr-homepage" className="flex-1 w-full overflow-hidden">
-      {/* SECTION 1: HERO */}
+      {/* SECTION 1: HERO - Master entry point to VizTR ecosystem */}
       <HeroSection />
 
-      {/* SECTION 2: MARQUEE */}
+      {/* SECTION 2: MARQUEE - Animated ticker */}
       <MarqueeSection />
 
-      {/* SECTION 3: SERVICE CATEGORIES (STUDIO & XR WORLD) */}
-      <ServiceCategories />
+      {/* SECTION 3: STUDIO - Section 01 */}
+      <StudioSection />
 
-      {/* SECTION 4: STUDIO SERVICES PREVIEW */}
-      <StudioPreview />
+      {/* SECTION 4: XR WORLD - Section 02 */}
+      <XRWorldSection />
 
-      {/* SECTION 5: XR WORLD SERVICES PREVIEW */}
-      <XRPreview />
+      {/* SECTION 5: CREATOR - The bridge between SaaS and XR World */}
+      <CreatorSection />
 
-      {/* SECTION 6: SHOWREEL CINEMATIC VIDEO */}
+      {/* SECTION 6: SOLUTIONS - Industry-specific solutions */}
+      <SolutionsSection />
+
+      {/* SECTION 7: SHOWREEL CINEMATIC VIDEO */}
       <ShowreelSection />
 
-      {/* SECTION 7: PORTFOLIO PREVIEW */}
+      {/* SECTION 8: PORTFOLIO PREVIEW */}
       <PortfolioPreview />
 
-      {/* SECTION 8: XR WORLD INTERACTIVE EXPERIENCE */}
+      {/* SECTION 9: XR WORLD INTERACTIVE EXPERIENCE */}
       <XRExperienceSection />
 
-      {/* SECTION 9: TRACK YOUR PROJECT */}
+      {/* SECTION 10: TRACK YOUR PROJECT */}
       <TrackProjectSection />
 
-      {/* SECTION 10: BENEFITS */}
+      {/* SECTION 11: BENEFITS */}
       <BenefitsSection />
 
-      {/* SECTION 11: HOW IT WORKS */}
+      {/* SECTION 12: HOW IT WORKS */}
       <HowItWorksSection />
 
-      {/* SECTION 12: USE CASES */}
+      {/* SECTION 13: USE CASES */}
       <UseCasesSection />
 
-      {/* SECTION 13: TESTIMONIALS & STATS */}
+      {/* SECTION 14: TESTIMONIALS & STATS */}
       <TestimonialsSection />
 
-      {/* SECTION 14: FAQ */}
+      {/* SECTION 15: FAQ */}
       <FAQSection />
 
-      {/* SECTION 15: FINAL CTA */}
+      {/* SECTION 16: FINAL CTA */}
       <FinalCTASection />
     </main>
   );

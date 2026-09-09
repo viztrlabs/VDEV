@@ -14,7 +14,8 @@ import {
   Cpu,
   CheckCircle2,
   Play,
-  Brain
+  Brain,
+  Terminal
 } from 'lucide-react';
 
 export default function XRWorldHubPage() {
@@ -35,6 +36,8 @@ export default function XRWorldHubPage() {
         return Cpu;
       case 'gaussian-splat':
         return Brain;
+      case 'xr-editor':
+        return Terminal;
       default:
         return Box;
     }
@@ -66,6 +69,14 @@ export default function XRWorldHubPage() {
               <Sparkles className="w-4 h-4" />
               <span>Launch Live Cloud GPU Demo</span>
             </button>
+
+            <Link
+              href="/xr-world/link-generator"
+              className="px-6 py-3.5 rounded-xl bg-[#00F0FF]/15 hover:bg-[#00F0FF]/25 text-[#00F0FF] font-semibold text-sm border border-[#00F0FF]/40 backdrop-blur-md transition-all flex items-center gap-2"
+            >
+              <Sparkles className="w-4 h-4 text-[#00F0FF]" />
+              <span>Spatial Link &amp; WebAR Portal</span>
+            </Link>
 
             <button
               onClick={() => openModelViewer('', 'WebXR Architecture Viewer')}

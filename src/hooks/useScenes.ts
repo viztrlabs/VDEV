@@ -1,7 +1,7 @@
-"""
-React hooks for scene management operations.
-Provides CRUD functionality for immersive scenes with real-time updates.
-"""
+/**
+ * React hooks for scene management operations.
+ * Provides CRUD functionality for immersive scenes with real-time updates.
+ */
 
 import { useState, useEffect, useCallback } from 'react'
 import { SceneService } from '../lib/supabase'

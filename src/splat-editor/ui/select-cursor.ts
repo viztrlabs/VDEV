@@ -14,3 +14,7 @@ export class SelectCursor {
         container.appendChild(cursor);
     }
 }
+
+export function registerSelectCursor(events: Events, container: HTMLElement) {
+    return new SelectCursor(events, container);
+}

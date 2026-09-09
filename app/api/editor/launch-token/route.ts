@@ -4,6 +4,19 @@ import { authOptions } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 
+// Extended session user type to include custom properties from auth callbacks
+interface ExtendedUser {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+  role?: string;
+  clientId?: string;
+  accessCode?: string;
+  assignedDirector?: string;
+  clientFirm?: string;
+}
+
 const EDITOR_LAUNCH_SECRET = process.env.EDITOR_LAUNCH_SECRET || process.env.NEXTAUTH_SECRET || 'dev-editor-launch-secret';
 const EDITOR_LAUNCH_TTL_SECONDS = Number(process.env.EDITOR_LAUNCH_TTL_SECONDS || '3600');
 
@@ -58,7 +71,9 @@ function verifyLaunchToken(token: string): Record<string, unknown> | null {
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    const userId = session?.user?.id;
+    const user = session?.user as ExtendedUser | undefined;
+    const userId = user?.id;
+    
     if (!userId) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
@@ -78,10 +93,10 @@ export async function POST(req: NextRequest) {
       iat: now,
       exp: now + EDITOR_LAUNCH_TTL_SECONDS,
       user: {
-        id: session.user.id,
-        name: session.user.name,
-        email: session.user.email,
-        role: session.user.role,
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
       },
     };
 

@@ -12,26 +12,19 @@ export interface ClientAuthLookup {
   status: string;
 }
 
+import { normalizeUserRole } from './rbac';
+
 export function getDemoAuthUser(email?: string, password?: string) {
   if (!email || !password) return null;
 
-  const normalizedEmail = email.toLowerCase();
+  const normalizedEmail = email.toLowerCase().trim();
 
   if (normalizedEmail === 'admin@viztr.com' && password === 'password123') {
     return {
       id: 'usr_admin_01',
       name: 'VizTR Chief Technology Officer',
       email: 'admin@viztr.com',
-      role: 'SUPER_ADMIN',
-    };
-  }
-
-  if (normalizedEmail === 'manager@viztr.com' && password === 'password123') {
-    return {
-      id: 'usr_manager_01',
-      name: 'Alexander Cross',
-      email: 'manager@viztr.com',
-      role: 'ADMIN',
+      role: 'super_admin',
     };
   }
 
@@ -40,7 +33,38 @@ export function getDemoAuthUser(email?: string, password?: string) {
       id: 'usr_viztr_labs_01',
       name: 'VizTR Labs Admin',
       email: 'viztr.labs@gmail.com',
-      role: 'SUPER_ADMIN',
+      role: 'super_admin',
+    };
+  }
+
+  if (normalizedEmail === 'manager@viztr.com' && password === 'password123') {
+    return {
+      id: 'usr_manager_01',
+      name: 'Alexander Cross',
+      email: 'manager@viztr.com',
+      role: 'admin',
+    };
+  }
+
+  if (normalizedEmail === 'user@viztr.com' && password === 'password123') {
+    return {
+      id: 'usr_user_01',
+      name: 'Marcus Vance',
+      email: 'user@viztr.com',
+      role: 'user',
+    };
+  }
+
+  if (normalizedEmail === 'client@viztr.com' && password === 'password123') {
+    return {
+      id: 'usr_client_01',
+      name: 'Elena Rostova',
+      email: 'client@viztr.com',
+      role: 'client',
+      clientId: 'cli_foster_01',
+      accessCode: 'FST-2025-VTR',
+      assignedDirector: 'Alexander Cross',
+      clientFirm: 'Foster + Partners',
     };
   }
 
@@ -91,8 +115,10 @@ async function lookupClientByCredentials(
 }
 
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET || 'viztr-master-jwt-session-secret-production-key',
   session: {
     strategy: 'jwt',
+    maxAge: 24 * 60 * 60, // 24 hours
   },
   pages: {
     signIn: '/client-access',
@@ -122,38 +148,6 @@ export const authOptions: NextAuthOptions = {
 
         if (!credentials?.email && !credentials?.accessCode) return null;
 
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-        if (supabaseUrl && supabaseAnonKey && credentials?.email && credentials?.password) {
-          try {
-            const { createClient } = await import('@supabase/supabase-js');
-            const supabase = createClient(supabaseUrl, supabaseAnonKey);
-            const { data, error } = await supabase.auth.signInWithPassword({
-              email: credentials.email,
-              password: credentials.password,
-            });
-
-            if (!error && data.user) {
-              return {
-                id: data.user.id,
-                name:
-                  data.user.user_metadata?.full_name ||
-                  data.user.user_metadata?.name ||
-                  data.user.email ||
-                  'Supabase User',
-                email: data.user.email || credentials.email,
-                role:
-                  (data.user.app_metadata?.role as string) ||
-                  (data.user.user_metadata?.role as string) ||
-                  'ADMIN',
-              } as any;
-            }
-          } catch (err) {
-            console.warn('[auth] Supabase credentials fallback failed:', err);
-          }
-        }
-
         const client = await lookupClientByCredentials(
           credentials.email,
           credentials.accessCode
@@ -164,7 +158,7 @@ export const authOptions: NextAuthOptions = {
             id: client.id,
             name: client.name,
             email: client.email,
-            role: 'CLIENT',
+            role: 'client',
             clientId: client.id,
             accessCode: client.portalAccessCode,
             assignedDirector: client.assignedDirector,
@@ -180,7 +174,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         const u = user as any;
-        token.role = u.role || 'CLIENT';
+        token.role = normalizeUserRole(u.role || 'client');
         token.id = u.id;
         token.clientId = u.clientId;
         token.accessCode = u.accessCode;
@@ -192,7 +186,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         const t = token as any;
-        (session.user as any).role = t.role;
+        (session.user as any).role = normalizeUserRole(t.role || 'client');
         (session.user as any).id = t.id;
         (session.user as any).clientId = t.clientId;
         (session.user as any).accessCode = t.accessCode;

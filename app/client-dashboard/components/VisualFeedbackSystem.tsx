@@ -6,6 +6,7 @@ import { Pin, MessageSquare, User, Clock, CheckCircle2, AlertCircle, MapPin, Tra
 
 interface Feedback {
   id: string;
+  assetId: string;
   assetName: string;
   assetType: 'image' | '3d-model' | 'video' | 'pdf';
   x: number;
@@ -44,7 +45,7 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
   // Mock client data
   const currentUser = {
     name: 'Sarah Chen',
-    role: 'client'
+    role: 'client' as 'client' | 'designer' | 'architect'
   };
 
   // Mock team members
@@ -57,6 +58,7 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
   const addFeedback = (feedbackData: Partial<Feedback>) => {
     const newFeedback: Feedback = {
       id: `feedback_${Date.now()}`,
+      assetId: selectedAsset,
       assetName: assets.find(a => a.id === selectedAsset)?.name || '',
       assetType: assets.find(a => a.id === selectedAsset)?.type || 'image',
       x: feedbackData.x || 0,

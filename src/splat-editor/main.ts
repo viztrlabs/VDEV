@@ -37,6 +37,11 @@ import { BoundDimensionsOverlay } from './ui/bound-dimensions-overlay';
 import { EditorUI } from './ui/editor';
 import { i18n } from './ui/localization';
 import { registerSelectCursor } from './ui/select-cursor';
+import { registerAboutPopup } from './ui/about-popup';
+import { registerProgress } from './ui/progress';
+import { registerShortcutsPopup } from './ui/shortcuts-popup';
+import { registerSpinner } from './ui/spinner';
+import { registerTimelinePanel } from './ui/timeline-panel';
 
 declare global {
     interface LaunchParams {
@@ -235,6 +240,12 @@ const main = async () => {
     editorUI.toolsContainer.dom.appendChild(maskCanvas);
 
     registerSelectCursor(events, editorUI.toolsContainer.dom);
+
+    registerAboutPopup(events);
+    registerProgress(events);
+    registerShortcutsPopup(events);
+    registerSpinner(events);
+    registerTimelinePanel(events);
 
     window.scene = scene;
 

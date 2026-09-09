@@ -1,15 +1,24 @@
 import type { Metadata } from 'next';
+import { Manrope, Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/lib/theme-provider';
 import NextAuthProvider from '@/components/providers/NextAuthProvider';
 import LayoutShell from '@/components/layout/LayoutShell';
-import GalleryViewer from '@/components/viewers/GalleryViewer';
-import PanoramaViewer from '@/components/viewers/PanoramaViewer';
-import ModelViewer from '@/components/viewers/ModelViewer';
-import PixelStreamingTerminal from '@/components/viewers/PixelStreamingTerminal';
-import ToastNotification from '@/components/ui/ToastNotification';
-import ThemePreviewModal from '@/components/ui/ThemePreviewModal';
-import { PerformanceMonitor } from '@/components/analytics/performance-monitor';
+import GlobalViewers from '@/components/layout/GlobalViewers';
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  variable: '--font-manrope',
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800'],
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+  weight: ['300', '400', '500', '600', '700'],
+});
 
 export const metadata: Metadata = {
   title: 'VizTR — Architecture Visualization Studio & XR World Platform',
@@ -33,7 +42,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={`${manrope.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -57,20 +66,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className="min-h-screen flex flex-col antialiased selection:bg-[#3ECF8E] selection:text-black" suppressHydrationWarning>
+      <body className={`${manrope.variable} ${inter.variable} min-h-screen flex flex-col antialiased bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors duration-200 selection:bg-[#00F0FF] selection:text-black`} suppressHydrationWarning>
         <NextAuthProvider>
-        <ThemeProvider>
-          <LayoutShell>{children}</LayoutShell>
+          <ThemeProvider>
+            <LayoutShell>{children}</LayoutShell>
 
-          {/* Global Universal Lightboxes & Interactive Spatial Viewers */}
-          <GalleryViewer />
-          <PanoramaViewer />
-          <ModelViewer />
-          <PixelStreamingTerminal />
-          <ToastNotification />
-          <ThemePreviewModal />
-          <PerformanceMonitor />
-        </ThemeProvider>
+            {/* Global Universal Lightboxes & Interactive Spatial Viewers */}
+            <GlobalViewers />
+          </ThemeProvider>
         </NextAuthProvider>
       </body>
     </html>

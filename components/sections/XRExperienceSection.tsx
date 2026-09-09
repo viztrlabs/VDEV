@@ -48,21 +48,21 @@ export default function XRExperienceSection() {
   ];
 
   return (
-    <section id="xr-experience-section" className="py-16 px-4 sm:px-6 bg-[#09090B] text-white border-y border-[#27272A] relative overflow-hidden">
+    <section id="xr-experience-section" className="py-16 px-4 sm:px-6 bg-[#0A0A0B] text-white border-y border-[#1E293B] relative overflow-hidden">
       <div className="max-w-[1400px] mx-auto relative z-10">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-[#27272A]">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-[#1E293B]">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#3ECF8E]" />
-              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#3ECF8E]">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#42CF8B] animate-pulse" />
+              <span className="text-[11px] font-bold uppercase tracking-widest text-[#42CF8B]">
                 LIVE INTERACTIVE RUNTIME
               </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#FAFAFA]">
+            <h2 className="text-2xl sm:text-3xl font-display font-extrabold tracking-tight text-[#FAFAFA]">
               Experience the Future of Architecture
             </h2>
           </div>
-          <p className="text-xs sm:text-sm text-[#A1A1AA] max-w-md">
+          <p className="text-xs sm:text-sm text-[#B9CACB] max-w-md">
             Test zero-install spatial modules directly in your browser with hardware-accelerated WebXR.
           </p>
         </div>
@@ -73,25 +73,25 @@ export default function XRExperienceSection() {
             return (
               <div
                 key={exp.id}
-                className="p-5 rounded-xl bg-[#18181B] border border-[#27272A] hover:border-[#3f3f46] transition-all flex flex-col justify-between"
+                className="p-6 rounded-[2rem] bg-[#131314] border border-[#1E293B] hover:border-[#00F0FF]/40 transition-all duration-300 flex flex-col justify-between group shadow-sm hover:shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
               >
                 <div>
-                  <div className="w-9 h-9 rounded bg-[#09090B] border border-[#27272A] flex items-center justify-center mb-3">
-                    <Icon className="w-4 h-4 text-[#3ECF8E]" />
+                  <div className="w-10 h-10 rounded-full bg-[#0A0A0B] border border-[#1E293B] flex items-center justify-center mb-4 text-[#00F0FF] group-hover:border-[#00F0FF]/50 transition-colors">
+                    <Icon className="w-4 h-4 text-[#00F0FF]" />
                   </div>
-                  <h3 className="text-sm font-bold text-[#FAFAFA] mb-1.5">
+                  <h3 className="text-base font-display font-bold text-[#FAFAFA] mb-2">
                     {exp.title}
                   </h3>
-                  <p className="text-xs text-[#A1A1AA] leading-relaxed">
+                  <p className="text-xs text-[#B9CACB] leading-relaxed">
                     {exp.desc}
                   </p>
                 </div>
 
-                <div className="pt-4 mt-3 border-t border-[#27272A]">
+                <div className="pt-5 mt-4 border-t border-[#1E293B]">
                   {exp.action ? (
                     <button
                       onClick={exp.action}
-                      className="w-full py-2 rounded bg-[#09090B] hover:bg-[#3ECF8E] hover:text-black text-[#FAFAFA] border border-[#27272A] text-xs font-mono font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="w-full py-2.5 rounded-full bg-[#0A0A0B] hover:bg-[#00F0FF] hover:text-black text-[#FAFAFA] border border-[#1E293B] hover:border-[#00F0FF] text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow-[0_0_16px_rgba(0,240,255,0.3)]"
                     >
                       <span>{exp.cta}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -99,7 +99,7 @@ export default function XRExperienceSection() {
                   ) : (
                     <Link
                       href={exp.href!}
-                      className="w-full py-2 rounded bg-[#09090B] hover:bg-[#3ECF8E] hover:text-black text-[#FAFAFA] border border-[#27272A] text-xs font-mono font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5"
+                      className="w-full py-2.5 rounded-full bg-[#0A0A0B] hover:bg-[#00F0FF] hover:text-black text-[#FAFAFA] border border-[#1E293B] hover:border-[#00F0FF] text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 shadow-sm hover:shadow-[0_0_16px_rgba(0,240,255,0.3)]"
                     >
                       <span>{exp.cta}</span>
                       <ArrowRight className="w-3.5 h-3.5" />

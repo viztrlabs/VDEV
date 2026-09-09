@@ -36,6 +36,8 @@ app.use((req, res, next) => {
     next();
 });
 
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 app.use((req, res, next) => {
     if (!req.url.startsWith('/editor/scene/img') && !req.url.startsWith('/css') && !req.url.startsWith('/static')) {
         console.log('[HTTP]', req.method, req.url);
@@ -140,7 +142,7 @@ app.get('/editor/scene/:id', async (req, res) => {
                 projectId = scenes[0].project_id;
             }
         }
-        const config = await generateConfig(projectId);
+        const config = await generateConfig(projectId, req.params.id);
         if (!config.project?.id) return res.status(404).send('Project not found');
         const template = readFileSync(join(__dirname, 'templates', 'editor.html'), 'utf-8');
         const html = template.replace('__CONFIG__', JSON.stringify(config));
@@ -201,11 +203,18 @@ app.use((err, req, res, next) => {
 });
 
 const server = createServer(app);
+server.on('error', (err) => {
+    console.error('[HTTP Server Error]', err);
+});
 
 // WebSocket servers with noServer
 const realtimeWss = new WebSocketServer({ noServer: true, perMessageDeflate: false });
 const messengerWss = new WebSocketServer({ noServer: true, perMessageDeflate: false });
 const relayWss = new WebSocketServer({ noServer: true, perMessageDeflate: false });
+
+realtimeWss.on('error', (err) => console.warn('[Realtime WSS Error]', err?.message));
+messengerWss.on('error', (err) => console.warn('[Messenger WSS Error]', err?.message));
+relayWss.on('error', (err) => console.warn('[Relay WSS Error]', err?.message));
 
 const wsRoutes = {
     '/ws/realtime': realtimeWss,
@@ -215,14 +224,22 @@ const wsRoutes = {
 
 // Single upgrade handler — routes to correct WS server
 server.on('upgrade', (request, socket, head) => {
-    const url = new URL(request.url, 'http://localhost');
-    const wss = wsRoutes[url.pathname];
-    if (wss) {
-        wss.handleUpgrade(request, socket, head, (ws) => {
-            wss.emit('connection', ws, request);
-        });
-    } else {
-        socket.destroy();
+    socket.on('error', (err) => {
+        console.warn('[Upgrade Socket Error]', err?.message);
+    });
+
+    try {
+        const url = new URL(request.url, 'http://localhost');
+        const wss = wsRoutes[url.pathname];
+        if (wss) {
+            wss.handleUpgrade(request, socket, head, (ws) => {
+                wss.emit('connection', ws, request);
+            });
+        } else {
+            socket.destroy();
+        }
+    } catch (e) {
+        try { socket.destroy(); } catch (err) {}
     }
 });
 
@@ -236,13 +253,19 @@ const shareDB = setupShareDB(defaultConfig);
 realtimeWss.on('connection', (ws, req) => {
     console.log('[Realtime] Client connected, port:', req?.socket?.remotePort);
 
+    ws.on('error', (err) => {
+        console.warn('[Realtime WS error]', err?.message);
+    });
+
     // Handle auth before ShareDB takes over the socket
     const onFirstMessage = (rawData) => {
         const msg = rawData.toString();
         console.log('[Realtime] First message:', msg);
         if (msg.startsWith('auth')) {
             ws.removeListener('message', onFirstMessage);
-            ws.send('auth');
+            if (ws.readyState === 1) {
+                try { ws.send('auth'); } catch (e) {}
+            }
 
             // Now hand the socket to ShareDB
             shareDB.handleConnection(ws);
@@ -257,4 +280,12 @@ relayWss.on('connection', handleRelayConnection);
 
 server.listen(PORT, () => {
     console.log(`VizTR Editor running at http://localhost:${PORT}`);
+});
+
+process.on('uncaughtException', (err) => {
+    console.error('[Editor Server UncaughtException]', err);
+});
+
+process.on('unhandledRejection', (reason) => {
+    console.error('[Editor Server UnhandledRejection]', reason);
 });

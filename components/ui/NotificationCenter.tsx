@@ -54,7 +54,7 @@ export default function NotificationCenter() {
       <button
         id="notification-center-trigger"
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+        className="relative p-2 rounded-full bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
         aria-label="Notification Center"
         title="Project Notifications & Alerts"
       >

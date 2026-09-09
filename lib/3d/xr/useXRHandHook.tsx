@@ -60,7 +60,7 @@ export function useXRHandHook(options: XRHandHookOptions = {}): {
     // Import the WebXR hand module dynamically
     const importHandModule = async () => {
       try {
-        const { WebXRHandModule } = await import('../webxr-hands');
+        const { WebXRHandModule } = await import('./webxr-hands');
         const scene = (window as any).playcanvasApp?.scene;
 
         if (!scene) {
@@ -123,7 +123,7 @@ export function useXRHandHook(options: XRHandHookOptions = {}): {
       const newHands = new Map(prev.hands);
       newHands.set(handId, hand);
       return { ...prev, hands: newHands };
-    });\n
+    });
     onHandUpdate?.(hand);
   }, [handModuleRef, handHookState.hands, onHandUpdate]);
 

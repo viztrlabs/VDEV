@@ -33,7 +33,7 @@ export default function ShowreelSection() {
   return (
     <section
       id="showreel-section"
-      className="relative w-full min-h-[65vh] flex items-center justify-center overflow-hidden bg-[#09090B] text-[#FAFAFA] border-y border-[#27272A]"
+      className="relative w-full min-h-[65vh] flex items-center justify-center overflow-hidden bg-[#0A0A0B] text-[#FAFAFA] border-y border-[#1E293B]"
     >
       {/* BACKGROUND VIDEO / POSTER */}
       <video
@@ -49,28 +49,28 @@ export default function ShowreelSection() {
       />
 
       {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#09090B] via-[#09090B]/60 to-[#09090B]/80 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/60 to-[#0A0A0B]/80 pointer-events-none" />
 
       {/* Centered Controls & Title */}
       <div className="relative z-10 text-center max-w-2xl mx-auto px-4 sm:px-6 py-14 flex flex-col items-center">
-        <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded bg-[#18181B] border border-[#27272A] text-[10px] font-mono text-[#3ECF8E] font-bold uppercase tracking-widest mb-4">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#3ECF8E] animate-pulse" />
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#131314] border border-[#1E293B] text-[10px] font-mono text-[#42CF8B] font-bold uppercase tracking-widest mb-4">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#42CF8B] animate-pulse shadow-[0_0_8px_#42CF8B]" />
           <span>CINEMATIC REEL 2026 // 4K 60FPS</span>
         </div>
 
-        <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#FAFAFA] mb-2 font-sans">
+        <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#FAFAFA] mb-2 font-display">
           {showreel.title}
         </h2>
-        <p className="text-xs sm:text-sm text-[#A1A1AA] mb-6 max-w-lg">
+        <p className="text-xs sm:text-sm text-[#B9CACB] mb-6 max-w-lg">
           {showreel.subtitle}
         </p>
 
-        {/* Play/Pause Button */}
+        {/* Play/Pause Button - Maximum pill roundedness */}
         <div className="flex items-center gap-3 mb-6">
           <button
             onClick={togglePlay}
             id="showreel-play-btn"
-            className="w-14 h-14 rounded bg-[#3ECF8E] hover:bg-[#34b27b] text-black shadow-lg shadow-[#3ECF8E]/20 flex items-center justify-center transition-all cursor-pointer"
+            className="w-16 h-16 rounded-full bg-[#00F0FF] hover:bg-[#33f3ff] text-black shadow-[0_0_28px_rgba(0,240,255,0.45)] flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95"
             aria-label={isPlaying ? 'Pause Video' : 'Play Showreel'}
           >
             {isPlaying ? (
@@ -82,17 +82,17 @@ export default function ShowreelSection() {
           
           <button
             onClick={toggleMute}
-            className="p-3 rounded bg-[#18181B] hover:bg-[#27272A] text-[#FAFAFA] border border-[#27272A] transition-colors cursor-pointer"
+            className="p-3 rounded-full bg-[#131314] hover:bg-[#1E293B] text-[#FAFAFA] border border-[#1E293B] transition-colors cursor-pointer"
             title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
           >
-            {isMuted ? <VolumeX className="w-4 h-4 text-[#3ECF8E]" /> : <Volume2 className="w-4 h-4 text-[#FAFAFA]" />}
+            {isMuted ? <VolumeX className="w-4 h-4 text-[#00F0FF]" /> : <Volume2 className="w-4 h-4 text-[#FAFAFA]" />}
           </button>
         </div>
 
         {/* View Portfolio Link */}
         <Link
           href={showreel.ctaHref}
-          className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#3ECF8E] hover:underline uppercase tracking-wider"
+          className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#00F0FF] hover:underline uppercase tracking-wider"
         >
           <span>{showreel.ctaText} →</span>
         </Link>

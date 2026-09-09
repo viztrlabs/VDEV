@@ -191,5 +191,30 @@ export default async function EditorPage({ params }: { params: Promise<{ project
     wasmModules: [],
   };
 
+  // --- Configuration Validation ---
+  const configErrors: string[] = [];
+  if (!config.project?.id) configErrors.push('project.id is missing');
+  if (!config.project?.name) configErrors.push('project.name is missing');
+  if (!config.url?.api) configErrors.push('url.api is missing');
+  if (!config.scene) configErrors.push('scene data is null — no scene found for this project');
+
+  if (configErrors.length > 0) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#1a1a2e', color: '#fff', fontFamily: 'monospace' }}>
+        <div style={{ textAlign: 'center', maxWidth: 520, padding: '2rem' }}>
+          <h1 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#f87171' }}>Editor Configuration Error</h1>
+          <p style={{ color: '#a1a1aa', marginBottom: '1.5rem' }}>
+            The editor cannot start because the configuration is incomplete for project <strong>{projectId}</strong>.
+          </p>
+          <ul style={{ textAlign: 'left', color: '#fbbf24', listStyleType: 'disc', paddingLeft: '1.5rem', lineHeight: '1.8' }}>
+            {configErrors.map((err, i) => (
+              <li key={i}>{err}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    );
+  }
+
   return <EditorClient config={config} />;
 }

@@ -29,12 +29,12 @@ export const portfolioProjects: PortfolioProject[] = [
     id: 'nordic-monolith',
     title: 'Nordic Monolith Residence',
     slug: 'nordic-monolith-residence',
-    featuredImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80',
+    featuredImage: '/images/renders/dusk-shoot.jpg',
     galleryImages: [
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80',
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80',
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80',
-      'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1600&q=80'
+      '/images/renders/dusk-shoot.jpg',
+      '/images/renders/front-dusk-view.jpg',
+      '/images/renders/aerial-master.jpg',
+      '/images/renders/side-dusk-cam.jpg'
     ],
     video: 'https://assets.mixkit.co/videos/preview/mixkit-modern-apartment-interior-living-room-4155-large.mp4',
     panorama: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=2400&q=85',
@@ -58,11 +58,12 @@ export const portfolioProjects: PortfolioProject[] = [
     id: 'solarium-penthouse',
     title: 'Solarium Sky Penthouse',
     slug: 'solarium-sky-penthouse',
-    featuredImage: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=80',
+    featuredImage: '/images/renders/living-area.jpeg',
     galleryImages: [
-      'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=80',
-      'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1600&q=80',
-      'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1600&q=80'
+      '/images/renders/living-area.jpeg',
+      '/images/renders/bar-interior.jpeg',
+      '/images/renders/bedroom-luxury.jpeg',
+      '/images/renders/lobby-entrance.jpg'
     ],
     panorama: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2400&q=85',
     category: 'interior',
@@ -85,10 +86,11 @@ export const portfolioProjects: PortfolioProject[] = [
     id: 'apex-tower-xr',
     title: 'The Apex Tower Interactive WebXR',
     slug: 'the-apex-tower-webxr',
-    featuredImage: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1600&q=80',
+    featuredImage: '/images/renders/downtown-frontview.jpg',
     galleryImages: [
-      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1600&q=80',
-      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=80'
+      '/images/renders/downtown-frontview.jpg',
+      '/images/renders/aerial-master.jpg',
+      '/images/renders/road-boulevard.jpg'
     ],
     model3d: 'glb-apex-tower',
     panorama: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=2400&q=85',
@@ -110,12 +112,13 @@ export const portfolioProjects: PortfolioProject[] = [
   },
   {
     id: 'mirage-pavilion',
-    title: 'Desert Mirage Pavilion 360',
-    slug: 'desert-mirage-pavilion-360',
-    featuredImage: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=80',
+    title: 'Oasis Club & Pool Pavilion 360',
+    slug: 'oasis-club-pool-pavilion-360',
+    featuredImage: '/images/renders/clubhouse-pool.jpg',
     galleryImages: [
-      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=80',
-      'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1600&q=80'
+      '/images/renders/clubhouse-pool.jpg',
+      '/images/renders/grand-entrance.jpg',
+      '/images/renders/landscaped-gardens.jpg'
     ],
     panorama: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=2400&q=85',
     category: '360',
@@ -123,7 +126,7 @@ export const portfolioProjects: PortfolioProject[] = [
     client: 'Al-Jazeera Hospitality Group',
     clientName: 'Al-Jazeera Hospitality Group',
     architect: 'Zaha Hadid Architects Dubai',
-    location: 'Dubai Desert Reserve, UAE',
+    location: 'Dubai Coastline, UAE',
     shortDescription: 'Multi-node 8K virtual tour featuring interactive architectural hotspots and teleportation.',
     longDescription: 'High-dynamic range 360 spherical capture rendered at 16K resolution with smooth inertia camera navigation, spatial radar map, and detailed informational annotations embedded directly into the 3D space.',
     challenge: 'Providing high-resolution 16K panoramic fidelity that loads smoothly on international investor mobile devices.',
@@ -136,12 +139,13 @@ export const portfolioProjects: PortfolioProject[] = [
   },
   {
     id: 'elysium-walkthrough',
-    title: 'Elysium Botanical Villa Walkthrough',
-    slug: 'elysium-botanical-villa-walkthrough',
-    featuredImage: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1600&q=80',
+    title: 'Elysium Masterplan Aerial Walkthrough',
+    slug: 'elysium-masterplan-aerial-walkthrough',
+    featuredImage: '/images/renders/aerial-master.jpg',
     galleryImages: [
-      'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1600&q=80',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80'
+      '/images/renders/aerial-master.jpg',
+      '/images/renders/back-day-shoot.jpg',
+      '/images/renders/top-down-masterplan.jpg'
     ],
     video: 'https://assets.mixkit.co/videos/preview/mixkit-minimalist-living-room-with-modern-furniture-4156-large.mp4',
     category: 'walkthrough',
@@ -162,24 +166,26 @@ export const portfolioProjects: PortfolioProject[] = [
   },
   {
     id: 'zenith-corporate-hq',
-    title: 'Zenith Biophilic Headquarters',
-    slug: 'zenith-biophilic-headquarters',
-    featuredImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=80',
+    title: 'Superplex Mall & Commercial Hub',
+    slug: 'superplex-mall-commercial-hub',
+    featuredImage: '/images/renders/superplex-cinema.jpg',
     galleryImages: [
-      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=80',
-      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1600&q=80'
+      '/images/renders/superplex-cinema.jpg',
+      '/images/renders/shopping-mall.jpg',
+      '/images/renders/food-court.jpg',
+      '/images/renders/parking-architecture.jpg'
     ],
     category: 'exterior',
-    tags: ['Commercial', 'Curtain Wall', 'Sustainability'],
+    tags: ['Commercial', 'Curtain Wall', 'Retail Architecture'],
     client: 'Helix Global Ventures',
     clientName: 'Helix Global Ventures',
     architect: 'WOHA Architects Singapore',
     location: 'Marina Bay, Singapore',
-    shortDescription: '42-story sustainable tower featuring double-skin facade and vertical tropical sky-gardens.',
-    longDescription: 'High-density environmental lighting simulations depicting seasonal solar heat gain mitigations and nighttime LEED-certified architectural facade illumination.',
-    challenge: 'Accurately portraying complex double-skin aerodynamic louvers and internal tropical atrium ecosystems.',
-    solution: 'Constructed custom spectral transmittance glass shaders and lush procedural vertical garden simulations.',
-    services: ['Commercial Exterior CGI', 'Sustainability Sunlight Study', 'Night Lighting Simulation'],
+    shortDescription: 'High-density commercial entertainment complex with multi-tier shopping atrium and state-of-the-art theater facade.',
+    longDescription: 'High-density environmental lighting simulations depicting seasonal solar heat gain mitigations and nighttime facade illumination.',
+    challenge: 'Accurately portraying complex curved titanium skin louvers and internal multi-story commercial lighting.',
+    solution: 'Constructed custom spectral transmittance glass shaders and physical light emissive fixtures calibrated to real-world lumens.',
+    services: ['Commercial Exterior CGI', 'Interior Atrium Lighting', 'Night Facade Simulation'],
     deliverables: ['10x 8K Exterior Images', 'Environmental Solar Video Study', 'Competition Presentation Boards'],
     featured: false,
     year: '2025',

@@ -1,174 +1,204 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { homepageData } from '@/data/homepage';
-import { useAppStore } from '@/lib/store';
 import {
   ArrowRight,
   Compass,
-  Sparkles,
-  Layers,
-  ChevronRight,
-  Calendar,
+  FileCode,
   Box,
-  Play
+  Image as ImageIcon,
+  Play,
+  ScanLine,
+  Headset,
+  Sparkles,
+  ChevronDown,
 } from 'lucide-react';
 
 export default function HeroSection() {
-  const { hero } = homepageData;
-  const { openPixelStream, openPanorama, openLightbox } = useAppStore();
+  const { hero, pipelineStages } = homepageData;
+  const [currentPipelineIndex, setCurrentPipelineIndex] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  // Auto-advance sliding hero images every 4 seconds (4000ms duration)
   useEffect(() => {
+    if (!hero.images || hero.images.length === 0) return;
     const timer = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % hero.images.length);
-    }, 6000);
+    }, 4000);
     return () => clearInterval(timer);
-  }, [hero.images.length]);
+  }, [hero.images]);
+
+  // Rotate pipeline stages smoothly
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentPipelineIndex((prev) => (prev + 1) % pipelineStages.length);
+    }, 2800);
+    return () => clearInterval(timer);
+  }, [pipelineStages.length]);
+
+  const getStageIcon = (name: string) => {
+    const icons: Record<string, React.ReactNode> = {
+      FileCode: <FileCode className="w-3.5 h-3.5" />,
+      Box: <Box className="w-3.5 h-3.5" />,
+      Image: <ImageIcon className="w-3.5 h-3.5" />,
+      Play: <Play className="w-3.5 h-3.5" />,
+      ScanLine: <ScanLine className="w-3.5 h-3.5" />,
+      Headset: <Headset className="w-3.5 h-3.5" />,
+      Sparkles: <Sparkles className="w-3.5 h-3.5" />,
+    };
+    return icons[name] || <Box className="w-3.5 h-3.5" />;
+  };
 
   return (
     <section
       id="hero-section"
-      className="relative min-h-[88vh] flex items-center justify-center overflow-hidden bg-[#09090B] text-[#FAFAFA]"
+      className="relative w-full h-screen min-h-[680px] flex flex-col justify-between items-center overflow-hidden text-white select-none transition-colors duration-300"
     >
-      {/* BACKGROUND IMAGE SLIDESHOW WITH DARK OVERLAY */}
-      {hero.images.map((img, idx) => (
-        <div
-          key={idx}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-            currentImageIndex === idx ? 'opacity-30 scale-105' : 'opacity-0 scale-100'
-          }`}
-          style={{
-            backgroundImage: `url(${img})`,
-            backgroundPosition: 'center',
-            backgroundSize: 'cover',
-            transitionProperty: 'opacity, transform',
-            transitionDuration: '1.8s',
-          }}
-        />
-      ))}
+      {/* 1. MEDIA LAYER: High-Resolution Architectural Renders sliding every 4 seconds */}
+      <div className="hero-media-layer absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        {hero.images.map((img, idx) => {
+          const isActive = currentImageIndex === idx;
+          return (
+            <div
+              key={img}
+              className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out ${
+                isActive
+                  ? 'opacity-100 scale-100 z-10'
+                  : 'opacity-0 scale-105 z-0'
+              }`}
+            >
+              <Image
+                src={img}
+                alt={`VizTR Architectural Render ${idx + 1}`}
+                fill
+                priority={idx === 0}
+                quality={90}
+                sizes="100vw"
+                className="hero-bg-image object-cover object-center render-lighting-enhanced"
+              />
+            </div>
+          );
+        })}
 
-      {/* Atmospheric Gradients */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#09090B] via-[#09090B]/60 to-[#09090B]/80 pointer-events-none" />
-      <div className="absolute inset-0 bg-radial from-[#3ECF8E]/10 via-transparent to-transparent pointer-events-none" />
+        {/* Ambient atmospheric dark gradient overlays for cinematic depth and high text contrast */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/40 to-[#0A0A0B]/65 pointer-events-none z-20" />
+        <div className="absolute inset-0 bg-radial from-transparent via-[#0A0A0B]/25 to-[#0A0A0B]/80 pointer-events-none z-20" />
+      </div>
 
-      {/* HERO CONTENT */}
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-16 text-center flex flex-col items-center">
-        
-        {/* Subtle Eyebrow / Live Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#18181B] border border-[#27272A] text-xs font-mono text-[#FAFAFA] mb-6">
-          <span className="w-2 h-2 rounded-full bg-[#3ECF8E] animate-pulse" />
-          <span className="text-[#3ECF8E] font-bold">NEXT-GEN ENGINE</span>
-          <span className="text-[#71717A]">|</span>
-          <span className="text-[#A1A1AA]">CGI Studio & Real-time WebXR</span>
+      {/* 3. TOP SPACER: Clears floating header */}
+      <div className="w-full pt-16 sm:pt-20 shrink-0" />
+
+      {/* 4. CENTER HERO CONTENT: Fluid typography, readable constraints, and pill CTAs */}
+      <div className="relative z-20 w-full container-ultrawide text-center flex flex-col items-center justify-center my-auto px-4 sm:px-6">
+        {/* Eyebrow Badge Pill */}
+        <div className="hero-eyebrow inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full backdrop-blur-xl shadow-2xl mb-6 transition-colors border border-[#1E293B]">
+          <span className="w-2 h-2 rounded-full bg-[#42CF8B] animate-pulse shadow-[0_0_8px_#42CF8B]" />
+          <span className="font-bold text-[#42CF8B] tracking-wider uppercase">NEXT-GEN SPATIAL ARCHITECTURE</span>
+          <span className="opacity-40">|</span>
+          <span className="opacity-80 hidden sm:inline">CGI Studio & Real-time WebXR</span>
         </div>
 
-        {/* Headline */}
-        <h1
-          className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#FAFAFA] leading-[1.08] mb-6 font-sans"
-        >
+        {/* Master Fluid Headline - Restored to exact original font-sans font for VIZTR only */}
+        <h1 className="hero-headline text-fluid-hero font-extrabold tracking-tight mb-3 font-sans">
           {hero.headline}
         </h1>
 
-        {/* Sub-headline */}
-        <p className="text-sm sm:text-lg text-[#A1A1AA] font-normal leading-relaxed max-w-2xl mb-8">
+        {/* Sub-headline / Tagline */}
+        <p className="hero-subheadline text-fluid-sub font-medium tracking-wide mb-4 max-w-3xl">
           {hero.subheadline}
         </p>
 
-        {/* 3 Call-To-Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-md">
-          {/* Primary CTA */}
+        {/* Description - Constrained for ultra-wide reading comfort */}
+        <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl prose-readable font-normal leading-relaxed mb-8 sm:mb-10 text-[#E5E2E3]">
+          {hero.description}
+        </p>
+
+        {/* Pill-shaped Call-To-Action Buttons */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-md sm:max-w-none mb-6">
+          {/* Primary CTA: High-impact electric cyan pill */}
           <Link
             href={hero.primaryCTA.href}
             id="hero-primary-cta"
-            className="w-full sm:w-auto px-6 py-3 rounded bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#3ECF8E]/20"
+            className="w-full sm:w-auto px-8 py-4 rounded-full bg-[#00F0FF] hover:bg-[#33f3ff] text-black font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-[0_0_24px_rgba(0,240,255,0.4)] hover:shadow-[0_0_36px_rgba(0,240,255,0.65)] hover:scale-105 active:scale-95"
           >
             <span>{hero.primaryCTA.label}</span>
-            <ArrowRight className="w-4 h-4 text-black" />
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
 
-          {/* Secondary CTA */}
+          {/* Secondary CTA: Frosted glass pill */}
           <Link
             href={hero.secondaryCTA.href}
             id="hero-secondary-cta"
-            className="w-full sm:w-auto px-6 py-3 rounded bg-[#18181B] hover:bg-[#27272A] text-[#FAFAFA] font-bold text-xs uppercase tracking-wider border border-[#27272A] transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="hero-secondary-btn w-full sm:w-auto px-8 py-4 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider backdrop-blur-xl transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#1E293B]"
           >
-            <Calendar className="w-4 h-4 text-[#3ECF8E]" />
+            <Compass className="w-4 h-4 text-[#42CF8B]" />
             <span>{hero.secondaryCTA.label}</span>
           </Link>
         </div>
 
-        {/* Tertiary Text Link */}
-        <div className="mt-5">
-          <Link
-            href={hero.tertiaryCTA.href}
-            id="hero-tertiary-cta"
-            className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#3ECF8E] hover:text-emerald-300 transition-colors uppercase tracking-wider"
-          >
-            <span>{hero.tertiaryCTA.label}</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
+        {/* Slideshow Progress Dots (Auto-advances every 4 seconds) */}
+        <div className="flex items-center gap-2 mt-2 pointer-events-auto" aria-label="Hero slide indicators">
+          {hero.images.map((_, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => setCurrentImageIndex(idx)}
+              className={`h-1.5 rounded-full transition-all duration-500 cursor-pointer ${
+                currentImageIndex === idx
+                  ? 'w-7 bg-[#00F0FF] shadow-[0_0_10px_#00F0FF]'
+                  : 'w-2 bg-white/30 hover:bg-white/60'
+              }`}
+              title={`Jump to render ${idx + 1}`}
+              aria-label={`Slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* 5. BOTTOM SECTION: Pipeline ticker & Scroll to Explore indicator */}
+      <div className="relative z-20 w-full container-ultrawide flex flex-col items-center pb-6 sm:pb-8 px-4">
+        {/* Pipeline Stage Bar */}
+        <div className="w-full max-w-4xl mx-auto mb-4 hidden md:block">
+          <div className="hero-pipeline-bar flex items-center justify-center gap-1.5 p-1.5 rounded-full backdrop-blur-xl shadow-2xl border border-[#1E293B]">
+            {pipelineStages.map((stage, idx) => {
+              const isCurrent = idx === currentPipelineIndex;
+              return (
+                <div
+                  key={stage.id}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-500 ${
+                    isCurrent
+                      ? 'bg-[#00F0FF]/20 border border-[#00F0FF]/60 text-white scale-105 shadow-[0_0_12px_rgba(0,240,255,0.3)]'
+                      : 'opacity-70 hover:opacity-100'
+                  }`}
+                >
+                  <span className={isCurrent ? 'text-[#00F0FF]' : 'opacity-60'}>
+                    {getStageIcon(stage.icon)}
+                  </span>
+                  <span className={`text-[11px] font-mono uppercase font-bold tracking-wider ${isCurrent ? 'text-[#00F0FF]' : ''}`}>
+                    {stage.label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
-        {/* High Density Interactive Showcase Pills */}
-        <div className="mt-12 pt-6 border-t border-[#27272A] grid grid-cols-3 gap-2.5 w-full max-w-xl">
-          <button
-            onClick={() => openPanorama('https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=2400&q=85', 'Solarium Penthouse 360')}
-            className="p-2.5 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-left transition-all group cursor-pointer"
-          >
-            <div className="flex items-center justify-between text-xs font-mono font-bold text-[#3ECF8E]">
-              <div className="flex items-center gap-1.5">
-                <Compass className="w-3.5 h-3.5" />
-                <span>360° Tour</span>
-              </div>
-              <span className="text-[9px] text-[#71717A]">16K</span>
-            </div>
-            <div className="text-[11px] text-[#A1A1AA] mt-1 group-hover:text-white truncate">
-              Launch Sample
-            </div>
-          </button>
-
-          <button
-            onClick={openPixelStream}
-            className="p-2.5 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#3ECF8E]/40 text-left transition-all group cursor-pointer"
-          >
-            <div className="flex items-center justify-between text-xs font-mono font-bold text-[#3ECF8E]">
-              <div className="flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Pixel Stream</span>
-              </div>
-              <span className="text-[9px] bg-[#3ECF8E] text-black px-1 rounded font-extrabold">LIVE</span>
-            </div>
-            <div className="text-[11px] text-[#A1A1AA] mt-1 group-hover:text-white truncate">
-              Cloud GPU Stream
-            </div>
-          </button>
-
-          <button
-            onClick={() =>
-              openLightbox([
-                {
-                  url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80',
-                  title: 'Nordic Monolith 8K Still',
-                  type: 'image'
-                }
-              ])
-            }
-            className="p-2.5 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-left transition-all group cursor-pointer"
-          >
-            <div className="flex items-center justify-between text-xs font-mono font-bold text-[#3ECF8E]">
-              <div className="flex items-center gap-1.5">
-                <Box className="w-3.5 h-3.5" />
-                <span>8K Stills</span>
-              </div>
-              <span className="text-[9px] text-[#71717A]">RAW</span>
-            </div>
-            <div className="text-[11px] text-[#A1A1AA] mt-1 group-hover:text-white truncate">
-              Ultra Zoom Gallery
-            </div>
-          </button>
-        </div>
+        {/* Animated Scroll Indicator Pill */}
+        <a
+          href="#viztr-homepage"
+          onClick={(e) => {
+            e.preventDefault();
+            window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+          }}
+          className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full backdrop-blur-md text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-lg border border-[#1E293B]"
+          aria-label="Scroll down to explore page content"
+        >
+          <span>Scroll to explore</span>
+          <ChevronDown className="w-3.5 h-3.5 text-[#00F0FF] animate-bounce" />
+        </a>
       </div>
     </section>
   );

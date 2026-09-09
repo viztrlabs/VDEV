@@ -253,7 +253,7 @@ export default function FileVersioning({ projectId, fileId, initialHistory }: Fi
           <div className="sidebar-actions">
             <button
               className="upload-version-btn"
-              onClick={() => setShowVersionHistory(!showVersionVersionHistory)}
+              onClick={() => setShowVersionHistory(!showVersionHistory)}
             >
               <Upload className="w-4 h-4" />
               Upload New Version

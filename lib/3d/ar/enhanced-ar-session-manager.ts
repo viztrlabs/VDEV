@@ -7,9 +7,6 @@
  * plane tracking, and anchor creation capabilities.
  */
 
-import { EventEmitter } from './event-emitter';
-import type { XREvent } from './xr-types';
-
 export interface ARSessionConfig {
   requiredFeatures?: string[];
   optionalFeatures?: string[];
@@ -97,7 +94,7 @@ export class EnhancedARSessionManager {
   
   async initialize(config: ARSessionConfig = {}): Promise<ARSessionResult> {
     if (!navigator.xr) {
-      throw new OR('WebXR not supported in this browser');
+      throw new Error('WebXR not supported in this browser');
     }
     
     const defaultConfig: ARSessionConfig = {
@@ -180,7 +177,7 @@ export class EnhancedARSessionManager {
   
   async performHitTest(rayOrigin: XRRay): Promise<XRHitResult | null> {
     if (!this.hitTestSource) {
-      throw new('Hit test not initialized');
+      throw new Error('Hit test not initialized');
     }
     
     try {
@@ -479,181 +476,6 @@ export class AROcclusionSystem {
       estimatedDepth: plane.extent.height / 2,
     };
   }
-}
-
-// Type definitions
-export interface XRRay {
-  origin: XVRay;
-  direction: XVRay;
-}
-
-export interface XVRay {
-  x: number;
-  y: number;
-  z: number;
-}
-
-export interface XRQuaternion {
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-}
-
-export interface XBB {
-  width: number;
-  height: number;
-}
-
-export type SurfaceType = 
-  | { plane: 'horizontal' }
-  | { plane: 'vertical' }
-  | { plane: 'angled' };
-
-export type ObstacleType = 
-  | 'chair'
-  | 'table'
-  | 'desk'
-  | 'wall_narrow'
-  | 'couch';
-
-export interface DetectedSurface {
-  id: string;
-  type: SurfaceType;
-  center: XVRay;
-  extent: XBB;
-  rotation: XRQuaternion;
-  confidence: number;
-  textureImageUrl?: string;
-  normal: XVRay;
-  occlusionInfo?: OcclusionInfo;
-}
-
-export interface Obstacle {
-  id: string;
-  type: ObstacleType;
-  center: XVRay;
-  extent: XBB;
-  confidence: number;
-  occlusion: boolean;
-}
-
-export interface OcclusionInfo {
-  occludedBy: string[];
-  occlusionConfidence: number;
-  estimatedDepth: number;
-}
-
-export interface EnvironmentFeatures {
-  lighting: { estimatedLux: number; colorTemperature: number };
-  geometry: { roomSize: 'small' | 'medium' | 'large'; ceilingHeight: number };
-  surfaces: DetectedSurface[];
-  obstacles: Obstacle[];
-}
-
-export interface ARCapabilities {
-  planeDetection: boolean;
-  hitTest: boolean;
-  anchors: boolean;
-  cameraAccess: boolean;
-  lightEstimation: boolean;
-  occlusion: boolean;
-}
-
-export interface ARSessionResult {
-  session: XRSession;
-  features: string[];
-  capabilities: ARCapabilities;
-  baseLayer: XRWebGroundPlaneDetector;
-}
-
-export interface XRRayHitResult {
-  hitPose: {
-    position: XVRay;
-    orientation: XRQuaternion;
-  };
-  planeId: string;
-  confidence: number;
-}
-
-export interface XRHitTestSource {
-  getHitTestResults(ray: XRRay): Promise<XRHitTestResult[]>;
-}
-
-export interface XRHitTestResult {
-  hitPose: {
-    position: XVRay;
-    orientation: XRQuaternion;
-  };
-  planeId: string;
-  confidence: number;
-}
-
-export interface XRAnchor {
-  uuid: string;
-  position: XVRay;
-  orientation: XRQuaternion;
-  anchor: any; // XRAnchor from WebXR API
-}
-
-export interface ARAnchorSystem {
-  createAnchor(hitResult: XRHitTestResult): XRAnchor;
-  getAnchor(uuid: string): XRAnchor | undefined;
-  removeAnchor(uuid: string): void;
-  getAllAnchors(): XRAnchor[];
-}
-
-export interface Environment {
-  type: 'living_room' | 'office' | 'kitchen' | 'bathroom' | 'outdoor' | 'unknown';
-  center: XVRay;
-  extent: XBB;
-  confidence: number;
-}
-
-export interface EnvironmentClassifier {
-  classifyEnviroments(planes: XRPlane[]): EnvironmentFeatures;
-  classifyFromPlanes(planes: XRPlane[]): { type: 'living_room' | 'office' | 'kitchen' | 'bathroom' | 'outdoor'; center: XVRay; extent: XBB; confidence: number; };
-}
-
-export interface AROcclusionSystem {
-  checkOcclusion(plane: XRPlane): boolean;
-  getOcclusionInfo(plane: XRPlane): OcclusionInfo;
-}
-
-export interface OcclusionInfo {
-  occludedBy: string[];
-  occlusionConfidence: number;
-  estimatedDepth: number;
-}
-
-export type ObstacleType = 
-  | 'chair'
-  | 'table'
-  | 'desk'
-  | 'wall_narrow'
-  | 'couch';
-
-export type SurfaceType = 
-  | { plane: 'horizontal' }
-  | { plane: 'vertical' }
-  | { plane: 'angled' };
-
-export type EnvironmentType = 
-  | 'living_room'
-  | 'office'
-  | 'kitchen'
-  | 'bathroom'
-  | 'outdoor'
-  | 'unknown';
-
-// XRPlane type definition
-export interface XRPlane {
-  center: XVRay;
-  extent: XBB;
-  rotation?: XRQuaternion;
-  confidence?: number;
-  textureImageUrl?: string;
-  normal?: XVRay;
 }
 
 // XR session types

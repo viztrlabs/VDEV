@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync, readdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -12,6 +12,18 @@ function getEnv() {
         supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
         supabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
     };
+}
+
+/**
+ * Returns the base HTTP and WebSocket origin for the editor server.
+ * Reads EDITOR_HOST and EDITOR_PORT from the environment so the
+ * editor works when accessed from LAN IPs, Docker, etc.
+ */
+function getServerOrigin() {
+    const host = process.env.EDITOR_HOST || 'localhost';
+    const port = process.env.EDITOR_PORT || '3487';
+    const base = `${host}:${port}`;
+    return { http: `http://${base}`, ws: `ws://${base}` };
 }
 
 async function supabaseQuery(table, query = '') {
@@ -34,9 +46,10 @@ async function supabaseSingle(table, query) {
     return data?.[0] || null;
 }
 
-export async function generateConfig(projectId = null) {
-    const scene = projectId ? await loadScene(projectId) : null;
-    const project = projectId ? await loadProject(projectId) : null;
+export async function generateConfig(projectId = null, sceneId = null) {
+    const project = projectId ? await loadProject(projectId) : await loadProject(1);
+    const resolvedProjectId = project?.id || projectId || 1;
+    const scene = await loadScene(resolvedProjectId, sceneId);
 
     return {
         version: '2.31.4',
@@ -80,21 +93,24 @@ export async function generateConfig(projectId = null) {
         aws: { s3Prefix: '' },
         store: { sketchfab: { clientId: '', cookieName: '', redirectUrl: '' } },
         scene: scene,
-        url: {
-            api: 'http://localhost:3487/api',
-            launch: 'http://localhost:3487/launch/',
-            home: 'http://localhost:3487/',
-            realtime: { http: 'ws://localhost:3487/ws/realtime' },
-            messenger: { http: 'http://localhost:3487/ws/messenger', ws: 'ws://localhost:3487/ws/messenger' },
-            relay: { http: 'http://localhost:3487/ws/relay', ws: 'ws://localhost:3487/ws/relay' },
-            frontend: 'http://localhost:3487/',
-            engine: 'http://localhost:3487/engine',
-            useCustomEngine: true,
-            store: 'http://localhost:3487/',
-            howdoi: 'http://localhost:3487/',
-            static: 'http://localhost:3487/',
-            images: 'http://localhost:3487/'
-        },
+        url: (() => {
+            const origin = getServerOrigin();
+            return {
+                api: `${origin.http}/api`,
+                launch: `${origin.http}/launch/`,
+                home: `${origin.http}/`,
+                realtime: { http: `${origin.ws}/ws/realtime` },
+                messenger: { http: `${origin.http}/ws/messenger`, ws: `${origin.ws}/ws/messenger` },
+                relay: { http: `${origin.http}/ws/relay`, ws: `${origin.ws}/ws/relay` },
+                frontend: `${origin.http}/`,
+                engine: `${origin.http}/engine`,
+                useCustomEngine: true,
+                store: `${origin.http}/`,
+                howdoi: `${origin.http}/`,
+                static: `${origin.http}/`,
+                images: `${origin.http}/`
+            };
+        })(),
         engineVersions: {
             current: { version: '2.23.0-beta.0', description: 'VizTR Custom Engine' },
             force: { version: '2.23.0-beta.0', description: 'VizTR Custom Engine' }
@@ -128,7 +144,7 @@ export async function generateConfig(projectId = null) {
                                 gizmoPreset: { type: 'string', default: 'default', 'x-scope': 'user' },
                                 showViewCube: { type: 'boolean', default: true, 'x-scope': 'user' },
                                 viewCubeSize: { type: 'number', default: 1, 'x-scope': 'user' },
-                                iconSize: { type: 'number', default: 16, 'x-scope': 'user' },
+                                iconSize: { type: 'number', default: 1, 'x-scope': 'user' },
                                 showSkeleton: { type: 'boolean', default: true, 'x-scope': 'user' },
                                 howdoi: { type: 'boolean', default: false, 'x-scope': 'user' }
                             }
@@ -610,11 +626,50 @@ export async function generateConfig(projectId = null) {
 }
 
 async function loadProject(projectId) {
-    const project = await supabaseSingle('editor_projects', `id=eq.${projectId}`);
-    if (!project) return null;
+    let project = null;
+    try {
+        project = await supabaseSingle('editor_projects', `id=eq.${projectId}`);
+    } catch (e) {}
+
+    if (!project) {
+        // Try local projects directory
+        const projFile = join(__dirname, 'data', 'projects', String(projectId), 'project.json');
+        if (existsSync(projFile)) {
+            try {
+                project = JSON.parse(readFileSync(projFile, 'utf-8'));
+            } catch (e) {}
+        } else {
+            // Find any existing project in data/projects
+            const projectsDir = join(__dirname, 'data', 'projects');
+            if (existsSync(projectsDir)) {
+                const entries = readdirSync(projectsDir);
+                if (entries.length > 0) {
+                    const fallbackFile = join(projectsDir, entries[0], 'project.json');
+                    if (existsSync(fallbackFile)) {
+                        try { project = JSON.parse(readFileSync(fallbackFile, 'utf-8')); } catch (e) {}
+                    }
+                }
+            }
+        }
+    }
+
+    if (!project) {
+        project = {
+            id: projectId || 1,
+            name: 'VizTR XR Studio Project',
+            description: 'Local XR Studio Project',
+            settings: {},
+            permissions: { admin: [1], read: [1], write: [1] },
+            private: true,
+            master_branch: 'main',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+        };
+    }
+
     return {
         id: project.id,
-        name: project.name,
+        name: project.name || 'VizTR Project',
         description: project.description || '',
         privateAssets: false,
         hasPrivateSettings: false,
@@ -667,16 +722,56 @@ async function loadProject(projectId) {
         private: project.private ?? true,
         primaryApp: 0,
         playUrl: '',
-        masterBranch: project.master_branch || 'main',
-        createdAt: project.created_at,
-        updatedAt: project.updated_at,
+        masterBranch: project.master_branch || project.masterBranch || 'main',
+        createdAt: project.created_at || project.createdAt || new Date().toISOString(),
+        updatedAt: project.updated_at || project.updatedAt || new Date().toISOString(),
     };
 }
 
-async function loadScene(projectId) {
-    const scenes = await supabaseQuery('editor_scenes', `project_id=eq.${projectId}&order=created_at.asc&limit=1`);
-    if (!scenes || scenes.length === 0) return null;
-    const scene = scenes[0];
+async function loadScene(projectId, sceneId = null) {
+    let scene = null;
+    try {
+        if (sceneId) {
+            const scenes = await supabaseQuery('editor_scenes', `or=(id.eq.${sceneId},unique_id.eq.${sceneId})&limit=1`);
+            if (scenes && scenes[0]) scene = scenes[0];
+        }
+        if (!scene) {
+            const scenes = await supabaseQuery('editor_scenes', `project_id=eq.${projectId}&order=created_at.asc&limit=1`);
+            if (scenes && scenes[0]) scene = scenes[0];
+        }
+    } catch (e) {}
+
+    if (!scene) {
+        // Try local projects directory
+        const scenesDir = join(__dirname, 'data', 'projects', String(projectId), 'scenes');
+        if (existsSync(scenesDir)) {
+            const files = readdirSync(scenesDir).filter(f => f.endsWith('.json'));
+            if (files.length > 0) {
+                try {
+                    scene = JSON.parse(readFileSync(join(scenesDir, files[0]), 'utf-8'));
+                } catch (e) {}
+            }
+        } else {
+            // Find any scene in any project in data/projects
+            const projectsDir = join(__dirname, 'data', 'projects');
+            if (existsSync(projectsDir)) {
+                const entries = readdirSync(projectsDir);
+                for (const entry of entries) {
+                    const candidateDir = join(projectsDir, entry, 'scenes');
+                    if (existsSync(candidateDir)) {
+                        const files = readdirSync(candidateDir).filter(f => f.endsWith('.json'));
+                        if (files.length > 0) {
+                            try {
+                                scene = JSON.parse(readFileSync(join(candidateDir, files[0]), 'utf-8'));
+                                break;
+                            } catch (e) {}
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     const defaultSettings = {
         physics: {
             gravity: [0, -9.8, 0]
@@ -710,11 +805,44 @@ async function loadScene(projectId) {
         exposure: 1,
         gsplat: { enabled: true }
     };
+
+    if (!scene) {
+        scene = {
+            id: sceneId || 1,
+            unique_id: String(sceneId || 1),
+            name: 'Scene 1',
+            entities: {
+                'camera-default': {
+                    name: 'Camera',
+                    components: {
+                        camera: {
+                            clearColor: [0.117, 0.117, 0.117, 1],
+                            fov: 60,
+                            near: 0.1,
+                            far: 1000
+                        }
+                    }
+                },
+                'light-default': {
+                    name: 'Directional Light',
+                    components: {
+                        light: {
+                            type: 'directional',
+                            color: [1, 1, 1],
+                            intensity: 1,
+                            castShadows: true
+                        }
+                    }
+                }
+            }
+        };
+    }
+
     const rawSettings = scene.settings || {};
     return {
-        id: scene.id,
-        uniqueId: scene.unique_id || scene.id,
-        name: scene.name,
+        id: scene.id || sceneId || 1,
+        uniqueId: scene.unique_id || scene.uniqueId || scene.id || String(sceneId || 1),
+        name: scene.name || 'Scene 1',
         entities: scene.entities || {},
         settings: {
             ...defaultSettings,

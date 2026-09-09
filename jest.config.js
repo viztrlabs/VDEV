@@ -18,7 +18,7 @@ const config = {
   testEnvironment: 'jsdom',
   testMatch: ['**/__tests__/**/*.tsx', '**/__tests__/**/*.ts', '**/?(*.)+(spec|test).tsx', '**/?(*.)+(spec|test).ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
-  testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/.next/'],
+  testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/.next/', '<rootDir>/forks/'],
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
     '^.+\\.(js|jsx)$': 'babel-jest',

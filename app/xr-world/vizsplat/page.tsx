@@ -12,8 +12,8 @@ import {
   Camera,
   Zap,
   Download,
-  Github,
-  ArrowDown
+  ArrowDown,
+  Box
 } from 'lucide-react';
 import { servicePagesData } from '@/data/pages';
 
@@ -151,29 +151,8 @@ export default function GaussianSplatShowcasePage() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
-      {/* Navigation Bar */}
-      <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-800">
-        <div className="max-w-[1400px] mx-auto h-full px-6 flex items-center justify-between">
-          <Link href="/xr-world" className="flex items-center gap-3">
-            <ArrowLeft className="w-5 h-5 text-zinc-400 hover:text-white transition-colors" />
-            <span className="text-sm font-semibold text-zinc-300 hidden sm:block">Back to XR World</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link
-              href="https://github.com/antimatter15/splat"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-xs font-mono text-zinc-300 transition-colors"
-            >
-              <Github className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">View on GitHub</span>
-            </Link>
-          </div>
-        </div>
-      </header>
-
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center pt-14 overflow-hidden">
         <div className="absolute inset-0">
           <canvas
             ref={canvasRef}
@@ -202,11 +181,22 @@ export default function GaussianSplatShowcasePage() {
                   <span>Launch Gaussian Splat Demo</span>
                 </button>
                 <Link
-                  href="/xr-world/super-splat"
+                  href="http://localhost:3002"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="px-6 py-3.5 rounded-xl bg-rose-600/80 hover:bg-rose-500 text-white font-semibold text-sm border border-rose-600/50 backdrop-blur-md transition-all flex items-center gap-2"
                 >
                   <Sparkles className="w-4 h-4" />
                   <span>Open SuperSplat Editor</span>
+                </Link>
+                <Link
+                  href="http://localhost:3487/editor/scene/1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-3.5 rounded-xl bg-cyan-600/80 hover:bg-cyan-500 text-white font-semibold text-sm border border-cyan-600/50 backdrop-blur-md transition-all flex items-center gap-2"
+                >
+                  <Box className="w-4 h-4" />
+                  <span>Open XR Editor</span>
                 </Link>
                 <Link
                   href="/xr-world"

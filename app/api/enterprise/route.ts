@@ -17,12 +17,12 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({
           success: true,
           data: {
-            rbac: { rules: Object.keys(rbac.getControls ?? {}).length, active: true },
+            rbac: { active: true },
             audit: { events: auditLogger.size(), healthy: auditLogger.size() >= 0 },
             backup: { jobs: backupService.listJobs().length, backups: backupService.listBackups().length },
             compliance: { frameworks: complianceEngine.getFrameworks().length, reports: complianceEngine.listReports().length },
             monitoring: { rules: monitoring.getRules().length, activeAlerts: monitoring.getActiveAlerts().length },
-            sso: { providers: ssoService['providers']?.size ?? 0 },
+            sso: { providers: (ssoService as any).providers?.size ?? 0 },
           },
         });
 
@@ -88,7 +88,6 @@ export async function POST(req: NextRequest) {
     resourceType: body.resourceType ?? 'system',
     resourceId: body.resourceId,
     changes: body.changes,
-    requestBody: body,
   });
 
   const { action } = body;

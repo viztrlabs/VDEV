@@ -17,7 +17,13 @@
     "build:splat-editor": "rollup -c rollup.config.splat.mjs",
     "watch:splat-editor": "rollup -c rollup.config.splat.mjs -w",
     "dev:splat-editor": "concurrently --kill-others \"npm run watch:splat-editor\" \"npm run dev\"",
-    "lint:splat": "eslint src/splat-editor --ext .ts"
+    "lint:splat": "eslint src/splat-editor --ext .ts",
+    "dev:engine": "node forks/editor/server/index.js",
+    "dev:supersplat": "npx serve -s forks/supersplat/dist -l 3002",
+    "dev:all": "concurrently --kill-others-on-fail --prefix-colors cyan,green,magenta --prefix '[{name}]' --names 'NEXT,ENGINE,SUPERSPLAT' \"npm run dev:splat-editor\" \"npm run dev:engine\" \"npm run dev:supersplat\"",
+    "dev:all:ps": "powershell -ExecutionPolicy Bypass -File scripts/dev-all.ps1",
+    "kill:all": "powershell -ExecutionPolicy Bypass -File scripts/kill-all.ps1",
+    "kill:all:bat": "scripts/kill-all.bat"
   },
 "dependencies": {
     "@epicgames-ps/lib-pixelstreamingfrontend-ue5.6": "^0.3.0",

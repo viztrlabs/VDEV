@@ -13,7 +13,7 @@ describe('Final Performance Benchmark Integration', () => {
     streamingManager = new SplatStreamingManager();
   });
 
-  describe('✅ Memory Efficiency Integration', () {
+  describe('✅ Memory Efficiency Integration', () => {
     test('Memory Usage After Complete Integration', async () => {
       const initialMemory = getMemoryUsage();
       
@@ -32,7 +32,7 @@ describe('Final Performance Benchmark Integration', () => {
     });
   });
 
-  describe('✅ Rendering Performance Integration', () {
+  describe('✅ Rendering Performance Integration', () => {
     test('120 FPS Target Achievement', async () => {
       const splatData = await splatLoader.loadSplat('/test/splats/final-120fps-test.splat');
       await splatRenderer.initializeRenderer();
@@ -55,7 +55,7 @@ describe('Final Performance Benchmark Integration', () => {
     });
   });
 
-  describe('✅ Streaming Performance Integration', () {
+  describe('✅ Streaming Performance Integration', () => {
     test('Concurrent Streaming Performance', async () => {
       const requests = [
         streamingManager.createRequest('/test/splats/final-stream1.splat', { format: 'ply' }),

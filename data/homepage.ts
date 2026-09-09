@@ -1,14 +1,91 @@
 export const homepageData = {
   hero: {
-    headline: 'Where Architecture Meets Immersive Reality',
-    subheadline: 'Premium visualization, extended reality, and pixel-perfect delivery for architects, real estate developers, and visionary designers.',
-    primaryCTA: { label: 'Start Your Project', href: '/contact' },
-    secondaryCTA: { label: 'Book Consultation', href: '/book-consultation' },
-    tertiaryCTA: { label: 'Explore XR World', href: '/xr-world' },
+    headline: 'VIZTR',
+    subheadline: 'Visualize. Experience. Transform.',
+    description: 'Architectural visualization, immersive XR experiences and powerful 3D creation tools — all in one platform.',
+    primaryCTA: { label: 'Start a Project', href: '/app/register' },
+    secondaryCTA: { label: 'Explore XR World', href: '/xr-world' },
     images: [
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=85',
-      'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2000&q=85',
-      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2000&q=85'
+      '/images/renders/dusk-shoot.jpg',
+      '/images/renders/aerial-master.jpg',
+      '/images/renders/living-area.jpeg',
+      '/images/renders/downtown-frontview.jpg',
+      '/images/renders/clubhouse-pool.jpg',
+      '/images/renders/grand-entrance.jpg'
+    ]
+  },
+  pipelineStages: [
+    { id: 'cad', label: 'CAD', icon: 'FileCode', description: 'Technical Drawings' },
+    { id: '3d', label: '3D', icon: 'Box', description: 'Model Creation' },
+    { id: 'render', label: 'Render', icon: 'Image', description: 'Photorealistic Stills' },
+    { id: 'animation', label: 'Animation', icon: 'Play', description: 'Cinematic Walkthroughs' },
+    { id: 'webxr', label: 'WebXR', icon: 'Box', description: 'In-Browser 3D' },
+    { id: 'ar', label: 'AR', icon: 'ScanLine', description: 'Real-World Projection' },
+    { id: 'vr', label: 'VR', icon: 'Headset', description: 'Full Immersion' },
+    { id: 'vizsplat', label: 'VizSplat', icon: 'Sparkles', description: 'Gaussian Splat Capture' },
+  ],
+  studio: {
+    title: 'VizTR Studio',
+    tagline: 'Architecture, visualized.',
+    cards: [
+      {
+        id: 'still-renders',
+        title: 'Still Renders',
+        description: 'Exterior & Interior architectural visualization.',
+        icon: 'Image',
+        services: [
+          { label: 'Exterior Rendering', href: '/studio/exterior' },
+          { label: 'Interior Rendering', href: '/studio/interior' },
+        ],
+        cta: { label: 'Explore Studio', href: '/studio' }
+      },
+      {
+        id: 'animation',
+        title: 'Animation Walkthrough',
+        description: 'Cinematic architectural walkthroughs and presentations.',
+        icon: 'Play',
+        services: [
+          { label: 'Walkthrough Animation', href: '/studio/walkthrough' },
+        ],
+        cta: { label: 'Explore Studio', href: '/studio' }
+      },
+    ]
+  },
+  xrWorld: {
+    title: 'VizTR XR World',
+    tagline: 'Turn architecture into an experience.',
+    experiences: [
+      { id: 'webxr', name: 'WebXR', purpose: 'Browser-based immersive 3D/XR', icon: 'Box', href: '/xr-world/webxr' },
+      { id: 'webar', name: 'WebAR', purpose: 'View architecture in the real world', icon: 'ScanLine', href: '/xr-world/webar' },
+      { id: 'vr', name: 'Virtual Reality', purpose: 'Fully immersive virtual reality', icon: 'Headset', href: '/xr-world/virtual-reality' },
+      { id: 'virtual-tour', name: 'Virtual Tour', purpose: '360° interactive property tours', icon: 'Compass', href: '/xr-world/virtual-tour' },
+      { id: 'vizsplat', name: 'VizSplat', purpose: 'Photorealistic 3D Gaussian Splat experiences', icon: 'Sparkles', href: '/xr-world/vizsplat', badge: 'NEW' },
+      { id: 'pixel-streaming', name: 'Pixel Streaming', purpose: 'High-end Unreal experiences streamed to browsers', icon: 'Cpu', href: '/xr-world/pixel-streaming', badge: 'FLAGSHIP' },
+    ],
+    cta: { label: 'Enter XR World', href: '/xr-world' }
+  },
+  creator: {
+    title: 'VizTR Creator',
+    tagline: 'Create. Edit. Publish.',
+    tools: [
+      { id: '3d-editor', name: '3D Editor', icon: 'Box', description: 'Edit GLB, GLTF, FBX, OBJ, USDZ models', href: '/creator/3d-editor' },
+      { id: 'supersplat', name: 'SuperSplat Editor', icon: 'Sparkles', description: 'Specialized Gaussian Splat editor', href: '/creator/supersplat' },
+      { id: 'asset-manager', name: 'Asset Manager', icon: 'Layers', description: 'Manage 3D assets, textures, materials', href: '/creator/assets' },
+      { id: 'material-editor', name: 'Material Editor', icon: 'PenTool', description: 'PBR materials, shaders, texture mapping', href: '#', comingSoon: true },
+      { id: 'lighting', name: 'Lighting', icon: 'Zap', description: 'Scene lighting, HDRI environments', href: '#', comingSoon: true },
+      { id: 'publish', name: 'Publish', icon: 'ExternalLink', description: 'Publish to WebXR, WebAR, VR, Virtual Tour', href: '/creator/publish' },
+    ],
+    cta: { label: 'Start Creating', href: '/creator' }
+  },
+  solutions: {
+    title: 'Solutions for Every Industry',
+    subtitle: 'From architecture to real estate, VizTR powers visualization workflows for professionals worldwide.',
+    audiences: [
+      { id: 'architects', title: 'Architects', description: 'Bring designs to life with photorealistic renders and immersive walkthroughs.', href: '/solutions/architects', icon: 'Building2' },
+      { id: 'real-estate', title: 'Real Estate', description: 'Sell properties faster with virtual tours and 3D visualizations before construction.', href: '/solutions/real-estate', icon: 'Home' },
+      { id: 'developers', title: 'Developers', description: 'Showcase projects to investors and buyers with cutting-edge 3D experiences.', href: '/solutions/developers', icon: 'Building' },
+      { id: 'interior-designers', title: 'Interior Designers', description: 'Present interior designs in stunning photorealistic quality.', href: '/solutions/interior-designers', icon: 'Palette' },
+      { id: 'agencies', title: 'Agencies', description: 'Scale visualization production with VizTR Creator and team workflows.', href: '/solutions/agencies', icon: 'Briefcase' },
     ]
   },
   marquee: {
@@ -20,7 +97,9 @@ export const homepageData = {
       'WebAR EXPERIENCES',
       'VIRTUAL REALITY',
       '8K VIRTUAL TOUR',
-      'PIXEL STREAMING'
+      'PIXEL STREAMING',
+      'GAUSSIAN SPLAT',
+      '3D EDITOR'
     ],
     speed: 35
   },
@@ -31,7 +110,7 @@ export const homepageData = {
       title: 'Studio',
       subtitle: 'Architecture Visualization Studio',
       description: 'Photorealistic renders, cinematic walkthroughs, and detailed visual narratives for master plans, high-rises, and private villas.',
-      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+      image: '/images/renders/front-dusk-view.jpg',
       cta: 'Explore Studio Services',
       href: '/studio',
       services: ['Exterior Visualization', 'Interior Visualization', 'Walkthrough Animation']
@@ -40,7 +119,7 @@ export const homepageData = {
       title: 'XR World',
       subtitle: 'Immersive Technology Experiences',
       description: 'WebXR, WebAR, VR, virtual tours, and cloud pixel streaming — zero software installation required on client devices.',
-      image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80',
+      image: '/images/renders/clubhouse-pool.jpg',
       cta: 'Explore XR World',
       href: '/xr-world',
       services: ['WebXR In-Browser', 'WebAR Mobile Projection', 'Virtual Reality Tour', '360° Spherical Hub', 'Unreal Pixel Streaming']
@@ -54,7 +133,7 @@ export const homepageData = {
         id: 'exterior',
         title: 'Exterior Visualization',
         description: 'Photorealistic exterior renders that showcase architectural form, context, landscaping, and changing daylight.',
-        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+        image: '/images/renders/dusk-shoot.jpg',
         href: '/studio/exterior',
         tag: 'Exterior'
       },
@@ -62,7 +141,7 @@ export const homepageData = {
         id: 'interior',
         title: 'Interior Visualization',
         description: 'Detailed interior scenes with accurate material roughness, custom bespoke furniture, and natural spatial composition.',
-        image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=80',
+        image: '/images/renders/living-area.jpeg',
         href: '/studio/interior',
         tag: 'Interior'
       },
@@ -70,7 +149,7 @@ export const homepageData = {
         id: 'walkthrough',
         title: 'Walkthrough Animation',
         description: 'Cinematic 4K 60fps flythrough animations that weave emotion, atmospheric audio, and architectural elegance.',
-        image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80',
+        image: '/images/renders/aerial-master.jpg',
         href: '/studio/walkthrough',
         tag: 'Walkthrough'
       }
@@ -126,7 +205,7 @@ export const homepageData = {
   showreel: {
     title: 'VizTR Showreel',
     subtitle: 'Watch our photorealistic architectural and spatial worlds in motion.',
-    poster: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85',
+    poster: '/images/renders/dusk-shoot.jpg',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-minimalist-living-room-with-modern-furniture-4156-large.mp4',
     ctaText: 'View Portfolio',
     ctaHref: '/portfolio'

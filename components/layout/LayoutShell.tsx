@@ -7,8 +7,10 @@ import Footer from '@/components/layout/Footer';
 export default function LayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isEditor = pathname.startsWith('/editor/');
+  const isDashboard = pathname.startsWith('/app/') || pathname.startsWith('/dashboard/');
 
-  if (isEditor) {
+  // Hide header and footer for editor and dashboard layouts, keep sidebar
+  if (isEditor || isDashboard) {
     return <>{children}</>;
   }
 

@@ -53,5 +53,7 @@ export function useClientSession() {
     role: (data?.user as any)?.role as ClientSessionData['role'] | undefined,
     clientId: (data?.user as any)?.clientId as string | undefined,
     accessCode: (data?.user as any)?.accessCode as string | undefined,
+    clientFirm: (data?.user as any)?.clientFirm as string | undefined,
+    assignedDirector: (data?.user as any)?.assignedDirector as string | undefined,
   };
 }

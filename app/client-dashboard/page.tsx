@@ -390,7 +390,16 @@ export default function ClientDashboardPage() {
             <ProjectWorkspace />
           </div>
         )}
-        {activeDashboardTab === 'feedback' && <VisualFeedbackSystem />}
+        {activeDashboardTab === 'feedback' && (
+          <VisualFeedbackSystem 
+            projectId={clientId || 'default-project'}
+            assets={[
+              { id: 'asset-1', name: 'Exterior Rendering v4', type: 'image', url: '/assets/exterior_v4.jpg', thumbnail: '/assets/exterior_v4_thumb.jpg' },
+              { id: 'asset-2', name: 'Interior Walkthrough', type: '3d-model', url: '/models/interior.glb', thumbnail: '/assets/interior_thumb.jpg' },
+              { id: 'asset-3', name: 'Site Plan PDF', type: 'pdf', url: '/docs/site_plan.pdf', thumbnail: '/assets/pdf_thumb.jpg' }
+            ]}
+          />
+        )}
         {activeDashboardTab === 'approvals' && <ApprovalWorkflow />}
         {activeDashboardTab === 'financials' && <FinancialsPanel />}
         {activeDashboardTab === 'meetings' && <MeetingsManager />}
