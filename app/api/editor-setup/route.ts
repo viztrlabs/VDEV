@@ -1,7 +1,16 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
+import { normalizeUserRole } from '@/lib/rbac';
 
 export async function POST() {
+    const session = await getServerSession(authOptions);
+    const role = normalizeUserRole((session?.user as any)?.role);
+    if (role !== 'super_admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     if (!supabaseAdmin) {
         return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
     }
@@ -83,36 +92,36 @@ export async function POST() {
         );
         CREATE INDEX IF NOT EXISTS editor_checkpoints_project_id_idx ON public.editor_checkpoints(project_id);`,
 
-        // RLS Policies
+        // RLS enabled but left default-deny: no anon-all policies are created
+        // here. Author access policies via a proper migration run through the
+        // Supabase CLI / exec_sql when it is available on this project.
         `ALTER TABLE public.editor_projects ENABLE ROW LEVEL SECURITY;
         ALTER TABLE public.editor_scenes ENABLE ROW LEVEL SECURITY;
         ALTER TABLE public.editor_assets ENABLE ROW LEVEL SECURITY;
         ALTER TABLE public.editor_branches ENABLE ROW LEVEL SECURITY;
-        ALTER TABLE public.editor_checkpoints ENABLE ROW LEVEL SECURITY;
-
-        DROP POLICY IF EXISTS editor_projects_anon_all ON public.editor_projects;
-        CREATE POLICY editor_projects_anon_all ON public.editor_projects FOR ALL USING (true);
-        DROP POLICY IF EXISTS editor_scenes_anon_all ON public.editor_scenes;
-        CREATE POLICY editor_scenes_anon_all ON public.editor_scenes FOR ALL USING (true);
-        DROP POLICY IF EXISTS editor_assets_anon_all ON public.editor_assets;
-        CREATE POLICY editor_assets_anon_all ON public.editor_assets FOR ALL USING (true);
-        DROP POLICY IF EXISTS editor_branches_anon_all ON public.editor_branches;
-        CREATE POLICY editor_branches_anon_all ON public.editor_branches FOR ALL USING (true);
-        DROP POLICY IF EXISTS editor_checkpoints_anon_all ON public.editor_checkpoints;
-        CREATE POLICY editor_checkpoints_anon_all ON public.editor_checkpoints FOR ALL USING (true);`,
+        ALTER TABLE public.editor_checkpoints ENABLE ROW LEVEL SECURITY;`,
     ];
 
     const results = [];
     for (const sql of migrations) {
         const { error } = await supabaseAdmin.rpc('exec_sql', { sql });
         if (error) {
-            // Try direct query as fallback
-            const { error: directError } = await supabaseAdmin.from('_sql').select().throwOnError();
             results.push({ sql: sql.substring(0, 50) + '...', error: error.message });
         } else {
             results.push({ sql: sql.substring(0, 50) + '...', ok: true });
         }
     }
 
-    return NextResponse.json({ results });
+    const failures = results.filter((r) => !r.ok);
+    if (failures.length > 0) {
+        return NextResponse.json(
+            {
+                error:
+                    'Migration failed. The exec_sql RPC is unavailable on this project. Run migrations via Supabase CLI instead.',
+                results,
+            },
+            { status: 503 }
+        );
+    }
+    return NextResponse.json({ results, ok: true });
 }
