@@ -1,5 +1,10 @@
 import { ClientRecord } from '@/app/api/clients/route';
-import { getDemoAuthUser } from '@/lib/auth';
+import { authenticateUser, getDemoAuthUser } from '@/lib/auth';
+
+jest.mock('@/lib/supabase', () => {
+  const mock = { auth: { signInWithPassword: jest.fn() } };
+  return { isSupabaseConfigured: true, supabase: mock };
+});
 
 describe('lib/auth.ts — ClientAuthLookup type contract', () => {
   it('exposes required fields for client authentication', () => {
@@ -58,5 +63,100 @@ describe('UserSession extension (lib/store.ts)', () => {
     expect(u?.clientFirm).toBe('Test Studio');
     expect(u?.assignedDirector).toBe('Test Director');
     useAppStore.getState().logout();
+  });
+});
+
+describe('authenticateUser — Supabase-first validation', () => {
+  const supabaseMock = (require('@/lib/supabase') as any).supabase;
+
+  beforeEach(() => {
+    (supabaseMock.auth.signInWithPassword as jest.Mock).mockReset();
+    // Deterministic /api/clients directory response for the client-path tests.
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        clients: [
+          {
+            id: 'cli_test_1',
+            name: 'Test Client',
+            firmName: 'Test Studio',
+            email: 'client@test.com',
+            portalAccessCode: 'FST-2025-VTR',
+            assignedDirector: 'Alex',
+            status: 'Active',
+          },
+        ],
+      }),
+    }) as unknown as typeof fetch;
+  });
+
+  it('returns the Supabase user with role normalized from user_metadata', async () => {
+    (supabaseMock.auth.signInWithPassword as jest.Mock).mockResolvedValue({
+      data: {
+        user: {
+          id: 'usr_supabase_1',
+          email: 'real@user.com',
+          user_metadata: { full_name: 'Real User', role: 'owner' },
+        },
+      },
+      error: null,
+    });
+
+    const user = await authenticateUser({ email: 'real@user.com', password: 'pw123' });
+    expect(user).toMatchObject({
+      id: 'usr_supabase_1',
+      email: 'real@user.com',
+      name: 'Real User',
+      role: 'user', // owner -> 'user' via normalizeUserRole
+    });
+    expect(supabaseMock.auth.signInWithPassword).toHaveBeenCalledWith({
+      email: 'real@user.com',
+      password: 'pw123',
+    });
+  });
+
+  it('falls through to demo when Supabase rejects the credentials', async () => {
+    (supabaseMock.auth.signInWithPassword as jest.Mock).mockResolvedValue({
+      data: { user: null },
+      error: { message: 'Invalid login credentials' },
+    });
+
+    const user = await authenticateUser({ email: 'admin@viztr.com', password: 'password123' });
+    expect(user).toMatchObject({ email: 'admin@viztr.com', role: 'super_admin' });
+  });
+
+  it('falls through to client lookup when Supabase says the user is unconfirmed/unknown', async () => {
+    (supabaseMock.auth.signInWithPassword as jest.Mock).mockResolvedValue({
+      data: { user: null },
+      error: { message: 'Email not confirmed' },
+    });
+
+    const user = await authenticateUser({ email: 'client@viztr.com', password: 'password123' });
+    // client@viztr.com is demo fallback too; assert we still get a user,
+    // proving Supabase failure did not short-circuit the chain.
+    expect(user).not.toBeNull();
+  });
+
+  it('does not call Supabase for access-code-only logins', async () => {
+    const user = await authenticateUser({ accessCode: 'FST-2025-VTR', password: 'pw' });
+    expect(supabaseMock.auth.signInWithPassword).not.toHaveBeenCalled();
+    expect(user).toMatchObject({ role: 'client' });
+  });
+
+  it('returns null when every path fails', async () => {
+    (supabaseMock.auth.signInWithPassword as jest.Mock).mockResolvedValue({
+      data: { user: null },
+      error: { message: 'Invalid login credentials' },
+    });
+
+    // Empty directory so the client-lookup path also fails for the unmatched
+    // email (the beforeEach stub would otherwise fall through to clients[0]).
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ clients: [] }),
+    }) as unknown as typeof fetch;
+
+    const user = await authenticateUser({ email: 'nobody@example.com', password: 'wrongpw' });
+    expect(user).toBeNull();
   });
 });

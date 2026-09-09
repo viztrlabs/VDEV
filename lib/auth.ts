@@ -2,6 +2,8 @@ import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 
+import { supabase, isSupabaseConfigured } from './supabase';
+
 export interface ClientAuthLookup {
   id: string;
   name: string;
@@ -13,6 +15,7 @@ export interface ClientAuthLookup {
 }
 
 import { normalizeUserRole } from './rbac';
+import type { UserRole } from './rbac';
 
 export function getDemoAuthUser(email?: string, password?: string) {
   if (!email || !password) return null;
@@ -134,6 +137,72 @@ function getSessionSecret(): string {
   return 'viztr-dev-insecure-secret-do-not-use-in-prod';
 }
 
+interface AuthenticateInput {
+  email?: string;
+  password?: string;
+  accessCode?: string;
+}
+
+export type AuthenticatedUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  clientId?: string;
+  accessCode?: string;
+  assignedDirector?: string;
+  clientFirm?: string;
+} | null;
+
+export async function authenticateUser(
+  credentials: AuthenticateInput
+): Promise<AuthenticatedUser> {
+  const { email, password, accessCode } = credentials ?? {};
+
+  // 1. Supabase validation (primary path for real users).
+  //    Anon client only — never the service-role client.
+  if (email && password && isSupabaseConfigured && supabase) {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (!error && data.user) {
+      const meta = data.user.user_metadata as { role?: unknown; full_name?: unknown } | null;
+      const role = normalizeUserRole(typeof meta?.role === 'string' ? meta.role : undefined);
+      return {
+        id: data.user.id,
+        name: typeof meta?.full_name === 'string' && meta.full_name
+          ? meta.full_name
+          : data.user.email || email || '',
+        email: data.user.email || email || '',
+        role,
+      };
+    }
+    // Fall through — wrong password, unconfirmed email, or unknown user, so
+    // demo and client paths get a chance.
+  }
+
+  // 2. Demo accounts (unchanged behavior).
+  const demoUser = getDemoAuthUser(email, password);
+  if (demoUser) return demoUser as AuthenticatedUser;
+
+  // 3. Client access-code / directory lookup (unchanged behavior).
+  if (!email && !accessCode) return null;
+
+  const client = await lookupClientByCredentials(email, accessCode);
+  if (client) {
+    return {
+      id: client.id,
+      name: client.name,
+      email: client.email,
+      role: 'client' as UserRole,
+      clientId: client.id,
+      accessCode: client.portalAccessCode,
+      assignedDirector: client.assignedDirector,
+      clientFirm: client.firmName,
+    };
+  }
+
+  return null;
+}
+
 export const authOptions: NextAuthOptions = {
   secret: getSessionSecret(),
   session: {
@@ -163,30 +232,11 @@ export const authOptions: NextAuthOptions = {
         accessCode: { label: 'Access Code', type: 'text' },
       },
       async authorize(credentials) {
-        const demoUser = getDemoAuthUser(credentials?.email, credentials?.password);
-        if (demoUser) return demoUser;
-
-        if (!credentials?.email && !credentials?.accessCode) return null;
-
-        const client = await lookupClientByCredentials(
-          credentials.email,
-          credentials.accessCode
-        );
-
-        if (client) {
-          return {
-            id: client.id,
-            name: client.name,
-            email: client.email,
-            role: 'client',
-            clientId: client.id,
-            accessCode: client.portalAccessCode,
-            assignedDirector: client.assignedDirector,
-            clientFirm: client.firmName,
-          } as any;
-        }
-
-        return null;
+        return authenticateUser({
+          email: typeof credentials?.email === 'string' ? credentials.email : undefined,
+          password: typeof credentials?.password === 'string' ? credentials.password : undefined,
+          accessCode: typeof credentials?.accessCode === 'string' ? credentials.accessCode : undefined,
+        });
       },
     }),
   ],
