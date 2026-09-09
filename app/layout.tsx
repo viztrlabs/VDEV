@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/lib/theme-provider';
 import NextAuthProvider from '@/components/providers/NextAuthProvider';
 import LayoutShell from '@/components/layout/LayoutShell';
 import GlobalViewers from '@/components/layout/GlobalViewers';
+import { MessagingAgent } from '@/components/ui/MessagingAgent';
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -73,6 +74,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
             {/* Global Universal Lightboxes & Interactive Spatial Viewers */}
             <GlobalViewers />
+            
+            {/* VIZTR Messaging Agent */}
+            <MessagingAgent />
           </ThemeProvider>
         </NextAuthProvider>
       </body>

@@ -15,14 +15,15 @@ import {
   X,
   Box,
   Sparkles,
-  Send
+  Send,
+  MessageSquare
 } from 'lucide-react';
 import { ViztrLogoMark } from '@/components/ui/Logo';
 
 export default function Header() {
   const pathname = usePathname();
   const { theme, resolvedTheme, setTheme, cycleLightDarkSystem } = useTheme();
-  const { user } = useAppStore();
+  const { user, isAgentClosed, setAgentClosed } = useAppStore();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [studioOpen, setStudioOpen] = useState(false);
@@ -55,7 +56,8 @@ export default function Header() {
   }, []);
 
   // Sticky header: visible at top, slides up on scroll down, slides down on scroll up or mouse at top
-  const [isNavVisible, setIsNavVisible] = useState(true);
+  const [isNavVisible, setIsNavVisible] = useState(false); // Hidden on initial load
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   useEffect(() => {
     let lastScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
@@ -67,18 +69,20 @@ export default function Header() {
           const currentScrollY = window.scrollY;
           const diff = currentScrollY - lastScrollY;
 
-          // Always visible near top of page (within 64px)
-          if (currentScrollY <= 64) {
+          // Always visible near top of page (within 64px) after initial interaction
+          if (currentScrollY <= 64 && hasInteracted) {
             setIsNavVisible(true);
           } else if (diff > 6 && currentScrollY > 64) {
             // Scrolling down -> slide completely up out of view
             setIsNavVisible(false);
+            setHasInteracted(true);
             setStudioOpen(false);
             setXrOpen(false);
             setContactOpen(false);
           } else if (diff < -6) {
             // Scrolling up -> slide smoothly down into view
             setIsNavVisible(true);
+            setHasInteracted(true);
           }
 
           lastScrollY = Math.max(0, currentScrollY);
@@ -92,6 +96,7 @@ export default function Header() {
       // Reveal header if mouse enters top 64px of viewport
       if (e.clientY <= 64) {
         setIsNavVisible(true);
+        setHasInteracted(true);
       }
     };
 
@@ -164,12 +169,12 @@ export default function Header() {
             id="header-logo-link"
             className="flex items-center gap-2.5 group shrink-0 cursor-pointer flex-shrink-0"
           >
-            <div className="header-logo-glass w-8 h-8 rounded-full flex items-center justify-center group-hover:scale-105 transition-all shrink-0 p-1 shadow-[0_0_12px_rgba(0,240,255,0.25)]">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:scale-105 transition-all shrink-0 p-1 shadow-[0_0_12px_rgba(0,240,255,0.25)]">
               <ViztrLogoMark className="w-5 h-5" variant="cyan" />
             </div>
             <div className="flex items-center font-display text-xl font-bold tracking-tight">
-              <span className="text-white">Viz</span>
-              <span className="text-[#00F0FF]">TR</span>
+              <span className="text-white animate-[pulse_2s_ease-in-out_infinite]">Viz</span>
+              <span className="text-[#00F0FF] animate-[pulse_2.5s_ease-in-out_infinite]">TR</span>
               <span className="w-1.5 h-1.5 rounded-full bg-[#00F0FF] -mt-2.5 ml-0.5 shadow-[0_0_8px_#00F0FF]" />
             </div>
           </Link>
@@ -177,7 +182,7 @@ export default function Header() {
           {/* CENTER SECTION: Single Unified Button Cluster: STUDIO, XR WORLD, CONTACT */}
           <nav
             id="header-mid-menu"
-            className="header-mid-menu-nav header-mid-menu-cluster hidden md:flex flex-row items-center p-1 rounded-full transition-opacity duration-300 ease-in-out"
+            className="hidden md:flex flex-row items-center p-1 rounded-full transition-opacity duration-300 ease-in-out"
             aria-label="Main Navigation"
           >
             {/* 1. STUDIO PILL BUTTON */}
@@ -540,7 +545,7 @@ export default function Header() {
 
           {/* RIGHT SECTION: Quick Controls Pill */}
           <div className="flex items-center gap-2 flex-shrink-0">
-            <div className="header-quick-controls-glass hidden sm:flex items-center gap-3 px-3.5 py-1.5 rounded-full transition-all">
+            <div className="hidden sm:flex items-center gap-3 px-3.5 py-1.5 rounded-full transition-all">
               {/* Theme Toggle (Light / Dark Global Switcher) */}
               <button
                 type="button"
@@ -559,10 +564,21 @@ export default function Header() {
               {/* Divider */}
               <div className="w-[1px] h-3.5 bg-white/15" />
 
-              {/* Active Status Dot */}
-              <div className="flex items-center justify-center" title="Platform Operational">
-                <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee] animate-pulse" />
-              </div>
+              {/* Messaging Agent OR Active Status Dot */}
+              {isAgentClosed ? (
+                <button
+                  type="button"
+                  onClick={() => setAgentClosed(false)}
+                  className="flex items-center justify-center p-1.5 rounded-full bg-[#00F0FF]/10 text-[#00F0FF] hover:bg-[#00F0FF]/20 hover:scale-105 transition-all shadow-[0_0_12px_rgba(0,240,255,0.3)] border border-[#00F0FF]/30"
+                  title="Open VIZTR Messaging Agent"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                </button>
+              ) : (
+                <div className="flex items-center justify-center" title="Platform Operational">
+                  <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee] animate-pulse" />
+                </div>
+              )}
 
               {/* Divider */}
               <div className="w-[1px] h-3.5 bg-white/15" />
@@ -585,7 +601,7 @@ export default function Header() {
             <button
               id="mobile-menu-toggle-btn"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="header-quick-controls-glass md:hidden p-2 rounded-full text-zinc-300 hover:text-white transition-all cursor-pointer"
+              className="md:hidden p-2 rounded-full text-zinc-300 hover:text-white transition-all cursor-pointer"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
@@ -607,7 +623,7 @@ export default function Header() {
           {/* Mobile Menu Panel - Slides from right */}
           <div
             id="mobile-nav-overlay"
-            className="header-mobile-drawer-glass fixed inset-y-0 right-0 z-50 w-full max-w-sm md:hidden animate-in slide-in-from-right-full duration-300 ease-out shadow-2xl flex flex-col"
+            className="fixed inset-y-0 right-0 z-50 w-full max-w-sm md:hidden animate-in slide-in-from-right-full duration-300 ease-out shadow-2xl flex flex-col bg-[#0A0A0B]/95 backdrop-blur-xl border-l border-white/10"
             role="dialog"
             aria-modal="true"
             aria-label="Navigation menu"

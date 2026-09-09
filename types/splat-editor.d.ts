@@ -15,6 +15,17 @@ export type ToolType =
     | 'measure' 
     | 'orient';
 
+export interface SplatPoint {
+  x: number;
+  y: number;
+  z: number;
+  r: number;
+  g: number;
+  b: number;
+  size: number;
+  selected?: boolean;
+}
+
 export interface SplatSceneDef {
     id: string;
     name: string;

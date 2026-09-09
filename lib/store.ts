@@ -98,6 +98,10 @@ interface AppState {
     projectName?: string;
     actionUrl?: string;
   }) => void;
+  
+  // Messaging Agent State
+  isAgentClosed: boolean;
+  setAgentClosed: (closed: boolean) => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -141,6 +145,10 @@ export const useAppStore = create<AppState>((set, get) => ({
     }, 4000);
   },
   hideToast: () => set({ toast: null }),
+
+  // Messaging Agent State
+  isAgentClosed: false,
+  setAgentClosed: (closed) => set({ isAgentClosed: closed }),
 
   // Notification Defaults
   desktopNotificationsEnabled: true,

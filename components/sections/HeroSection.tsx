@@ -15,6 +15,8 @@ import {
   Headset,
   Sparkles,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 export default function HeroSection() {
@@ -158,35 +160,30 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* 5. BOTTOM SECTION: Pipeline ticker & Scroll to Explore indicator */}
-      <div className="relative z-20 w-full container-ultrawide flex flex-col items-center pb-6 sm:pb-8 px-4">
-        {/* Pipeline Stage Bar */}
-        <div className="w-full max-w-4xl mx-auto mb-4 hidden md:block">
-          <div className="hero-pipeline-bar flex items-center justify-center gap-1.5 p-1.5 rounded-full backdrop-blur-xl shadow-2xl border border-[#1E293B]">
-            {pipelineStages.map((stage, idx) => {
-              const isCurrent = idx === currentPipelineIndex;
-              return (
-                <div
-                  key={stage.id}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-500 ${
-                    isCurrent
-                      ? 'bg-[#00F0FF]/20 border border-[#00F0FF]/60 text-white scale-105 shadow-[0_0_12px_rgba(0,240,255,0.3)]'
-                      : 'opacity-70 hover:opacity-100'
-                  }`}
-                >
-                  <span className={isCurrent ? 'text-[#00F0FF]' : 'opacity-60'}>
-                    {getStageIcon(stage.icon)}
-                  </span>
-                  <span className={`text-[11px] font-mono uppercase font-bold tracking-wider ${isCurrent ? 'text-[#00F0FF]' : ''}`}>
-                    {stage.label}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+      {/* 5. BOTTOM SECTION: Scroll to Explore indicator & Left/Right Nav */}
+      <div className="absolute bottom-6 left-0 right-0 z-20 w-full container-ultrawide px-4 pointer-events-none flex items-end justify-between">
+        {/* Navigation Arrows (Bottom-Left) */}
+        <div className="flex items-center gap-3 pointer-events-auto">
+          <button
+            type="button"
+            onClick={() => setCurrentImageIndex((prev) => (prev - 1 + hero.images.length) % hero.images.length)}
+            className="w-10 h-10 rounded-full bg-black/40 hover:bg-[#00F0FF]/20 border border-white/10 hover:border-[#00F0FF]/50 text-white flex items-center justify-center backdrop-blur-md transition-all group"
+            aria-label="Previous Slide"
+          >
+            <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setCurrentImageIndex((prev) => (prev + 1) % hero.images.length)}
+            className="w-10 h-10 rounded-full bg-black/40 hover:bg-[#00F0FF]/20 border border-white/10 hover:border-[#00F0FF]/50 text-white flex items-center justify-center backdrop-blur-md transition-all group"
+            aria-label="Next Slide"
+          >
+            <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
+          </button>
         </div>
 
-        {/* Animated Scroll Indicator Pill */}
+        {/* Animated Scroll Indicator Pill (Center-ish / Right) */}
+        <div className="pointer-events-auto">
         <a
           href="#viztr-homepage"
           onClick={(e) => {
@@ -199,6 +196,7 @@ export default function HeroSection() {
           <span>Scroll to explore</span>
           <ChevronDown className="w-3.5 h-3.5 text-[#00F0FF] animate-bounce" />
         </a>
+        </div>
       </div>
     </section>
   );
