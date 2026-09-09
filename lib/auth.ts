@@ -162,21 +162,26 @@ export async function authenticateUser(
   // 1. Supabase validation (primary path for real users).
   //    Anon client only — never the service-role client.
   if (email && password && isSupabaseConfigured && supabase) {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (!error && data.user) {
-      const meta = data.user.user_metadata as { role?: unknown; full_name?: unknown } | null;
-      const role = normalizeUserRole(typeof meta?.role === 'string' ? meta.role : undefined);
-      return {
-        id: data.user.id,
-        name: typeof meta?.full_name === 'string' && meta.full_name
-          ? meta.full_name
-          : data.user.email || email || '',
-        email: data.user.email || email || '',
-        role,
-      };
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (!error && data.user) {
+        const meta = (data.user.user_metadata ?? {}) as { role?: unknown; full_name?: unknown };
+        const role = normalizeUserRole(typeof meta?.role === 'string' ? meta.role : undefined);
+        const name =
+          typeof meta?.full_name === 'string' && meta.full_name
+            ? meta.full_name
+            : data.user.email || email || '';
+        return {
+          id: data.user.id,
+          name,
+          email: data.user.email || email || '',
+          role,
+        };
+      }
+    } catch (err) {
+      console.warn('[auth] Supabase sign-in threw; falling back to demo/client.', err);
     }
-    // Fall through — wrong password, unconfirmed email, or unknown user, so
-    // demo and client paths get a chance.
+    // Fall through to demo and client paths on error OR thrown exception.
   }
 
   // 2. Demo accounts (unchanged behavior).

@@ -5,11 +5,12 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/client';
+import { getDefaultDashboard } from '@/lib/rbac';
 
 function SignupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/admin/dashboard';
+  const callbackUrl = searchParams.get('callbackUrl');
   const [fullName, setFullName] = useState('');
   const [orgName, setOrgName] = useState('');
   const [email, setEmail] = useState('');
@@ -61,10 +62,13 @@ function SignupContent() {
 
     // Supabase has a session immediately (autoconfirm ON) -> sign in now.
     if (data.session) {
+      const destination =
+        callbackUrl || getDefaultDashboard('user');
       const result = await signIn('credentials', {
         email,
         password,
         redirect: false,
+        callbackUrl: destination,
       });
 
       setBusy(false);
@@ -74,8 +78,7 @@ function SignupContent() {
         return;
       }
 
-      const destination = result?.url || callbackUrl || '/admin/dashboard';
-      router.push(destination);
+      router.push(result?.url || destination);
       router.refresh();
       return;
     }

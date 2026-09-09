@@ -173,4 +173,55 @@ describe('authenticateUser — Supabase-first validation', () => {
     const user = await authenticateUser({ email: 'nobody@example.com', password: 'wrongpw' });
     expect(user).toBeNull();
   });
+
+  it('falls back to user email when Supabase metadata has no full_name', async () => {
+    (supabaseMock.auth.signInWithPassword as jest.Mock).mockResolvedValue({
+      data: {
+        user: {
+          id: 'usr_no_name',
+          email: 'noname@user.com',
+          user_metadata: { role: 'owner' },
+        },
+      },
+      error: null,
+    });
+
+    const user = await authenticateUser({ email: 'noname@user.com', password: 'pw123' });
+    expect(user).toMatchObject({
+      id: 'usr_no_name',
+      email: 'noname@user.com',
+      name: 'noname@user.com',
+      role: 'user',
+    });
+  });
+
+  it('normalizes role to user when Supabase metadata has no role', async () => {
+    (supabaseMock.auth.signInWithPassword as jest.Mock).mockResolvedValue({
+      data: {
+        user: {
+          id: 'usr_no_role',
+          email: 'norole@user.com',
+          user_metadata: { full_name: 'No Role User' },
+        },
+      },
+      error: null,
+    });
+
+    const user = await authenticateUser({ email: 'norole@user.com', password: 'pw123' });
+    expect(user).toMatchObject({
+      id: 'usr_no_role',
+      email: 'norole@user.com',
+      name: 'No Role User',
+      role: 'user',
+    });
+  });
+
+  it('survives a thrown Supabase error and falls through to demo user', async () => {
+    (supabaseMock.auth.signInWithPassword as jest.Mock).mockRejectedValue(
+      new Error('Supabase is down'),
+    );
+
+    const user = await authenticateUser({ email: 'admin@viztr.com', password: 'password123' });
+    expect(user).toMatchObject({ email: 'admin@viztr.com', role: 'super_admin' });
+  });
 });
