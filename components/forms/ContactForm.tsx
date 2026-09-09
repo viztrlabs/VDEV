@@ -33,12 +33,20 @@ export default function ContactForm({ initialService = 'Exterior Visualization' 
     }
 
     setLoading(true);
-    // Simulate instantaneous real-time sync / API dispatch
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/forms/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) throw new Error('submit failed');
       setLoading(false);
       setSubmitted(true);
       showToast('Thank you! Your project inquiry has been dispatched to our architectural directors.', 'success');
-    }, 800);
+    } catch (err) {
+      setLoading(false);
+      showToast('Something went wrong. Please try again.', 'error');
+    }
   };
 
   if (submitted) {

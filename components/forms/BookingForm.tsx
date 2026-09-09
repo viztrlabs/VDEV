@@ -24,11 +24,14 @@ export default function BookingForm() {
     preferredTime: '14:00 (EST / UTC-5)',
     budgetRange: '$15,000 – $50,000',
     projectDetails: '',
-    consent: false
+    consent: false,
+    honeypot: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (formData.honeypot) return; // Anti-spam
 
     if (!formData.name || !formData.email || !formData.phone || !formData.preferredDate || !formData.consent) {
       showToast('Please fill out all required fields and accept terms.', 'error');
@@ -46,11 +49,20 @@ export default function BookingForm() {
     }
 
     setLoading(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/forms/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) throw new Error('submit failed');
       setLoading(false);
       setConfirmed(true);
       showToast('Consultation successfully scheduled! A calendar invitation has been sent.', 'success');
-    }, 700);
+    } catch (err) {
+      setLoading(false);
+      showToast('Something went wrong. Please try again.', 'error');
+    }
   };
 
   if (confirmed) {
@@ -80,6 +92,17 @@ export default function BookingForm() {
 
   return (
     <form id="booking-consultation-form" onSubmit={handleSubmit} className="space-y-4">
+      {/* Honeypot hidden field for anti-spam */}
+      <input
+        type="text"
+        name="honeypot"
+        value={formData.honeypot}
+        onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })}
+        className="hidden"
+        tabIndex={-1}
+        autoComplete="off"
+      />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-[#A1A1AA] mb-1.5">

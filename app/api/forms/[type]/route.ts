@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { isLeadType, saveLead } from '@/lib/leadsStore';
 
 export async function POST(
   request: NextRequest,
@@ -13,21 +14,17 @@ export async function POST(
       return NextResponse.json({ error: 'Spam detected' }, { status: 400 });
     }
 
-    // Validate type
-    const validTypes = ['contact', 'booking', 'demo', 'inquiry', 'newsletter', 'portfolio-enquiry'];
-    if (!validTypes.includes(type)) {
+    if (!isLeadType(type)) {
       return NextResponse.json({ error: 'Invalid form submission type' }, { status: 400 });
     }
 
-    // Mock successful storage / notification dispatch in server
-    console.log(`[Form Submission] Type: ${type}, Payload:`, body);
-
+    const lead = await saveLead(type, body);
     return NextResponse.json({
       success: true,
-      id: `sub_${Date.now()}`,
+      id: lead.id,
       type,
-      message: `Form of type ${type} successfully received and queued for architectural lead dispatch.`,
-      receivedAt: new Date().toISOString()
+      message: `Form of type ${type} received and persisted.`,
+      receivedAt: lead.receivedAt,
     });
   } catch (error) {
     console.error('Form submission error:', error);
