@@ -17,6 +17,7 @@ function SignupContent() {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState('');
+  const [created, setCreated] = useState(false);
 
   useEffect(() => {
     if (!isSupabaseConfigured) {
@@ -58,22 +59,31 @@ function SignupContent() {
       return;
     }
 
-    const result = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    });
+    // Supabase has a session immediately (autoconfirm ON) -> sign in now.
+    if (data.session) {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
 
-    setBusy(false);
+      setBusy(false);
 
-    if (result?.error) {
-      setError('Account created, but there was a session issue. Please sign in manually.');
+      if (result?.error) {
+        setError('Account created, but there was a session issue. Please sign in manually.');
+        return;
+      }
+
+      const destination = result?.url || callbackUrl || '/admin/dashboard';
+      router.push(destination);
+      router.refresh();
       return;
     }
 
-    const destination = result?.url || callbackUrl || '/admin/dashboard';
-    router.push(destination);
-    router.refresh();
+    // Email confirmation required — no session yet. Show a success screen
+    // instead of a failed auto-login.
+    setBusy(false);
+    setCreated(true);
   };
 
   return (
@@ -95,44 +105,62 @@ function SignupContent() {
           </div>
         )}
 
-        <form onSubmit={onSubmit} className="space-y-3">
-          <input
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            placeholder="Full name"
-            className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-2 text-sm"
-          />
-          <input
-            value={orgName}
-            onChange={(e) => setOrgName(e.target.value)}
-            placeholder="Studio / Company name"
-            className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-2 text-sm"
-          />
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@studio.com"
-            className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-2 text-sm"
-          />
-          <input
-            type="password"
-            required
-            minLength={6}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password (min 6)"
-            className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-2 text-sm"
-          />
-          <button
-            type="submit"
-            disabled={busy}
-            className="w-full bg-[#3ECF8E] hover:bg-[#34b876] text-black font-mono font-bold text-xs py-2 rounded disabled:opacity-50"
-          >
-            {busy ? 'Creating…' : 'Create Account'}
-          </button>
-        </form>
+        {!created ? (
+          <form onSubmit={onSubmit} className="space-y-3">
+            <input
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Full name"
+              className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-2 text-sm"
+            />
+            <input
+              value={orgName}
+              onChange={(e) => setOrgName(e.target.value)}
+              placeholder="Studio / Company name"
+              className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-2 text-sm"
+            />
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@studio.com"
+              className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-2 text-sm"
+            />
+            <input
+              type="password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password (min 6)"
+              className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-2 text-sm"
+            />
+            <button
+              type="submit"
+              disabled={busy}
+              className="w-full bg-[#3ECF8E] hover:bg-[#34b876] text-black font-mono font-bold text-xs py-2 rounded disabled:opacity-50"
+            >
+              {busy ? 'Creating…' : 'Create Account'}
+            </button>
+          </form>
+        ) : (
+          <div className="text-center space-y-3 py-2">
+            <div className="text-sm font-bold text-[#3ECF8E]">
+              Account created
+            </div>
+            <p className="text-xs font-mono text-[#A1A1AA]">
+              We sent a confirmation email to <span className="text-white">{email}</span>.
+              Please check your inbox and click the confirmation link before signing in.
+            </p>
+            <Link
+              href="/login"
+              className="inline-block text-xs font-mono text-[#3ECF8E] hover:underline"
+            >
+              Go to sign in
+            </Link>
+          </div>
+        )}
 
         <div className="text-center text-[11px] text-[#71717A] font-mono">
           Already have an account?{' '}
