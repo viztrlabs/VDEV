@@ -1,4 +1,4 @@
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { adminClient, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 
 export interface XRLinkRecord {
   id: string;
@@ -37,6 +37,82 @@ export interface XRLinkRecord {
       iOSQuickLook: boolean;
       androidAR: boolean;
     };
+  };
+}
+
+export interface XrLinkDbRow {
+  id: string;
+  name: string;
+  slug: string;
+  project_id: string;
+  scene_id: string | null;
+  model_url: string;
+  thumbnail_url: string | null;
+  share_url: string;
+  qr_code_url: string;
+  environment: XRLinkRecord['environment'];
+  ar_placement: XRLinkRecord['arPlacement'];
+  password_protected: boolean;
+  access_password: string | null;
+  views_count: number;
+  unique_visitors: number;
+  avg_engagement_secs: number;
+  status: XRLinkRecord['status'];
+  expires_at: string;
+  metadata: XRLinkRecord['metadata'];
+  created_at: string;
+  updated_at: string;
+}
+
+export function toDbRow(link: XRLinkRecord): XrLinkDbRow {
+  return {
+    id: link.id,
+    name: link.name,
+    slug: link.slug,
+    project_id: link.projectId,
+    scene_id: link.sceneId ?? null,
+    model_url: link.modelUrl,
+    thumbnail_url: link.thumbnailUrl ?? null,
+    share_url: link.shareUrl,
+    qr_code_url: link.qrCodeUrl,
+    environment: link.environment,
+    ar_placement: link.arPlacement,
+    password_protected: link.passwordProtected,
+    access_password: link.accessPassword ?? null,
+    views_count: link.viewsCount,
+    unique_visitors: link.uniqueVisitors,
+    avg_engagement_secs: link.avgEngagementSecs,
+    status: link.status,
+    expires_at: link.expiresAt,
+    metadata: link.metadata,
+    created_at: link.createdAt,
+    updated_at: link.updatedAt,
+  };
+}
+
+export function fromDbRow(row: XrLinkDbRow): XRLinkRecord {
+  return {
+    id: row.id,
+    name: row.name,
+    slug: row.slug,
+    projectId: row.project_id,
+    sceneId: row.scene_id ?? undefined,
+    modelUrl: row.model_url,
+    thumbnailUrl: row.thumbnail_url ?? undefined,
+    shareUrl: row.share_url,
+    qrCodeUrl: row.qr_code_url,
+    environment: row.environment,
+    arPlacement: row.ar_placement,
+    passwordProtected: row.password_protected,
+    accessPassword: row.access_password ?? undefined,
+    viewsCount: row.views_count,
+    uniqueVisitors: row.unique_visitors,
+    avgEngagementSecs: row.avg_engagement_secs,
+    status: row.status,
+    expiresAt: row.expires_at,
+    metadata: row.metadata,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
   };
 }
 
@@ -184,15 +260,15 @@ export const XR_LINKS_DB: XRLinkRecord[] = [
 ];
 
 export async function getXRLinksFromDB(): Promise<XRLinkRecord[]> {
-  if (isSupabaseConfigured && supabase) {
+  if (isSupabaseAdminConfigured && adminClient) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await adminClient
         .from('xr_links')
         .select('*')
         .order('created_at', { ascending: false });
-      
+
       if (!error && data) {
-        return data as XRLinkRecord[];
+        return (data as XrLinkDbRow[]).map(fromDbRow);
       }
     } catch (err) {
       console.warn('[XR Links] Supabase fetch failed:', err);
@@ -202,12 +278,12 @@ export async function getXRLinksFromDB(): Promise<XRLinkRecord[]> {
 }
 
 export async function saveXRLinkToDB(link: XRLinkRecord): Promise<boolean> {
-  if (isSupabaseConfigured && supabase) {
+  if (isSupabaseAdminConfigured && adminClient) {
     try {
-      const { error } = await supabase
+      const { error } = await adminClient
         .from('xr_links')
-        .upsert(link, { onConflict: 'id' });
-      
+        .upsert(toDbRow(link), { onConflict: 'id' });
+
       if (error) {
         console.warn('[XR Links] Supabase upsert failed:', error.message);
         return false;
@@ -222,13 +298,13 @@ export async function saveXRLinkToDB(link: XRLinkRecord): Promise<boolean> {
 }
 
 export async function deleteXRLinkFromDB(id: string): Promise<boolean> {
-  if (isSupabaseConfigured && supabase) {
+  if (isSupabaseAdminConfigured && adminClient) {
     try {
-      const { error } = await supabase
+      const { error } = await adminClient
         .from('xr_links')
         .delete()
         .eq('id', id);
-      
+
       if (error) {
         console.warn('[XR Links] Supabase delete failed:', error.message);
         return false;
