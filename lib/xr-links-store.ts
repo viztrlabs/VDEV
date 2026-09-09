@@ -160,6 +160,27 @@ export const XR_LINKS_DB: XRLinkRecord[] = [
     qrCodeUrl: '',
     metadata: { engineType: 'three', entitiesCount: 142, fileSizeMB: 24.5, formats: ['glb', 'usdz'], arConfig: { placement: 'image', environment: 'studio', passwordProtected: false }, delivery: { webAR: true, webXR: true, iOSQuickLook: true, androidAR: true } }
   },
+  {
+    id: 'xr_link_secure',
+    name: 'Client Secure Haven — Gated XR',
+    slug: 'client-secure-haven',
+    projectId: 'client-secure-haven',
+    modelUrl: 'https://cdn.viztr.studio/models/client-secure-haven.glb',
+    environment: 'interior',
+    arPlacement: 'floor',
+    passwordProtected: true,
+    accessPassword: 'VIZTR-2026',
+    viewsCount: 0,
+    uniqueVisitors: 0,
+    avgEngagementSecs: 0,
+    status: 'active',
+    expiresAt: new Date(Date.now() + 90 * 86400000).toISOString(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    shareUrl: '/xr-world/view/client-secure-haven',
+    qrCodeUrl: '',
+    metadata: { engineType: 'three', entitiesCount: 142, fileSizeMB: 24.5, formats: ['glb', 'usdz'], arConfig: { placement: 'floor', environment: 'interior', passwordProtected: true }, delivery: { webAR: true, webXR: true, iOSQuickLook: true, androidAR: true } }
+  },
 ];
 
 export async function getXRLinksFromDB(): Promise<XRLinkRecord[]> {
