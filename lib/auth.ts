@@ -28,7 +28,11 @@ export function getDemoAuthUser(email?: string, password?: string) {
     };
   }
 
-  if (normalizedEmail === 'viztr.labs@gmail.com' && password === '123456') {
+  if (
+    !isProduction &&
+    normalizedEmail === 'viztr.labs@gmail.com' &&
+    password === '123456'
+  ) {
     return {
       id: 'usr_viztr_labs_01',
       name: 'VizTR Labs Admin',
@@ -114,8 +118,24 @@ async function lookupClientByCredentials(
   }
 }
 
+const isProduction = process.env.NODE_ENV === 'production';
+
+function getSessionSecret(): string {
+  const secret = process.env.NEXTAUTH_SECRET;
+  if (secret) return secret;
+  // In production a missing secret would silently sign JWTs with a known,
+  // publicly-readable constant, allowing admin sessions to be forged.
+  if (isProduction) {
+    throw new Error(
+      'NEXTAUTH_SECRET is required in production. Set it in your deployment environment.'
+    );
+  }
+  // Development fallback only — never reachable in production.
+  return 'viztr-dev-insecure-secret-do-not-use-in-prod';
+}
+
 export const authOptions: NextAuthOptions = {
-  secret: process.env.NEXTAUTH_SECRET || 'viztr-master-jwt-session-secret-production-key',
+  secret: getSessionSecret(),
   session: {
     strategy: 'jwt',
     maxAge: 24 * 60 * 60, // 24 hours
