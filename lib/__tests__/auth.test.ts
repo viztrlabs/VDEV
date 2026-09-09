@@ -68,6 +68,7 @@ describe('UserSession extension (lib/store.ts)', () => {
 
 describe('authenticateUser — Supabase-first validation', () => {
   const supabaseMock = (require('@/lib/supabase') as any).supabase;
+  const originalFetch = global.fetch;
 
   beforeEach(() => {
     (supabaseMock.auth.signInWithPassword as jest.Mock).mockReset();
@@ -88,6 +89,10 @@ describe('authenticateUser — Supabase-first validation', () => {
         ],
       }),
     }) as unknown as typeof fetch;
+  });
+
+  afterEach(() => {
+    global.fetch = originalFetch;
   });
 
   it('returns the Supabase user with role normalized from user_metadata', async () => {
@@ -131,10 +136,19 @@ describe('authenticateUser — Supabase-first validation', () => {
       error: { message: 'Email not confirmed' },
     });
 
-    const user = await authenticateUser({ email: 'client@viztr.com', password: 'password123' });
-    // client@viztr.com is demo fallback too; assert we still get a user,
-    // proving Supabase failure did not short-circuit the chain.
+    // client@test.com is NOT a demo account, so reaching the resolved client
+    // record proves Supabase failure did not short-circuit the chain AND that
+    // the /api/clients directory path resolves for it.
+    const user = await authenticateUser({ email: 'client@test.com', password: 'password123' });
     expect(user).not.toBeNull();
+    expect(user).toMatchObject({
+      email: 'client@test.com',
+      role: 'client',
+      clientId: 'cli_test_1',
+      accessCode: 'FST-2025-VTR',
+      assignedDirector: 'Alex',
+      clientFirm: 'Test Studio',
+    });
   });
 
   it('does not call Supabase for access-code-only logins', async () => {
