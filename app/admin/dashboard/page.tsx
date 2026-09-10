@@ -209,7 +209,7 @@ const SIDEBAR_SECTIONS = [
 
 export default function AdminDashboardPage() {
   const [activeSection, setActiveSection] = useState<ActiveSection>('dashboard');
-  const [activeRoleView, setActiveRoleView] = useState<'SUPER_ADMIN' | 'ADMIN' | 'USER' | 'CLIENT'>('SUPER_ADMIN');
+  const [activeRoleView, setActiveRoleView] = useState<'super_admin' | 'admin' | 'user' | 'client'>('super_admin');
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 

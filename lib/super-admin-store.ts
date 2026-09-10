@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'USER' | 'CLIENT';
+export type UserRole = 'super_admin' | 'admin' | 'user' | 'client';
 export type UserStatus = 'active' | 'invited' | 'suspended' | 'inactive';
 
 export interface AdminUser {
@@ -124,7 +124,7 @@ const INITIAL_USERS: AdminUser[] = [
     id: 'usr-001',
     name: 'Alexander Sterling',
     email: 'alex.sterling@viztr.studio',
-    role: 'SUPER_ADMIN',
+    role: 'super_admin',
     status: 'active',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
     department: 'Executive / Spatial Tech Lead',
@@ -139,7 +139,7 @@ const INITIAL_USERS: AdminUser[] = [
     id: 'usr-002',
     name: 'Elena Rostova',
     email: 'elena.rostova@viztr.studio',
-    role: 'ADMIN',
+    role: 'admin',
     status: 'active',
     avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
     department: 'Principal ArchViz Director',
@@ -154,7 +154,7 @@ const INITIAL_USERS: AdminUser[] = [
     id: 'usr-003',
     name: 'Marcus Vance',
     email: 'm.vance@vancerealty.ae',
-    role: 'CLIENT',
+    role: 'client',
     status: 'active',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
     department: 'VIP Client / Investor',
@@ -169,7 +169,7 @@ const INITIAL_USERS: AdminUser[] = [
     id: 'usr-004',
     name: 'Kenji Takahashi',
     email: 'kenji.takahashi@viztr.studio',
-    role: 'USER',
+    role: 'user',
     status: 'active',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
     department: 'Lead Unreal 5.4 Engineer',
@@ -184,7 +184,7 @@ const INITIAL_USERS: AdminUser[] = [
     id: 'usr-005',
     name: 'Sophia Lindqvist',
     email: 'sophia@nordicarchitects.se',
-    role: 'CLIENT',
+    role: 'client',
     status: 'active',
     avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
     department: 'Managing Partner',
@@ -199,7 +199,7 @@ const INITIAL_USERS: AdminUser[] = [
     id: 'usr-006',
     name: 'Damon Morales',
     email: 'damon.morales@viztr.studio',
-    role: 'ADMIN',
+    role: 'admin',
     status: 'active',
     avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
     department: 'Pixel Streaming Infrastructure Lead',
@@ -214,7 +214,7 @@ const INITIAL_USERS: AdminUser[] = [
     id: 'usr-007',
     name: 'Julian Croft',
     email: 'j.croft@solariumholdings.co.uk',
-    role: 'CLIENT',
+    role: 'client',
     status: 'invited',
     avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80',
     department: 'Chief Investment Officer',
@@ -229,7 +229,7 @@ const INITIAL_USERS: AdminUser[] = [
     id: 'usr-008',
     name: 'Chloe Zhang',
     email: 'chloe.zhang@viztr.studio',
-    role: 'USER',
+    role: 'user',
     status: 'suspended',
     avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
     department: 'Junior 3D Modeler & Texturing',
