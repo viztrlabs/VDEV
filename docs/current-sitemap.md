@@ -76,22 +76,47 @@
 
 ## New Routes (Phase 6 - Role-Based Dashboards)
 
-### Super Admin Dashboard (`/app/super-admin`)
-- `/app/super-admin` - Dashboard
-- `/app/super-admin/organizations`
-- `/app/super-admin/users`
-- `/app/super-admin/admins`
-- `/app/super-admin/clients`
-- `/app/super-admin/projects`
-- `/app/super-admin/storage`
-- `/app/super-admin/billing`
-- `/app/super-admin/analytics`
-- `/app/super-admin/cms`
-- `/app/super-admin/referrals`
-- `/app/super-admin/system-health`
-- `/app/super-admin/security`
-- `/app/super-admin/api-integrations`
-- `/app/super-admin/settings`
+### Super Admin Dashboard (`/admin/dashboard`)
+- `/admin/dashboard` - Platform Overview & Telemetry
+- `/admin/dashboard?section=super-admin-panel` - Master Super Admin Panel
+- `/admin/dashboard?section=super-admin-users` - Manage Admins & Users
+- `/admin/dashboard?section=super-admin-analytics` - System Analytics
+- `/admin/dashboard?section=super-admin-revenue` - Revenue & MRR Tracking
+- `/admin/dashboard?section=super-admin-gpu` - GPU Usage Monitoring
+- `/admin/dashboard?section=super-admin-toggles` - Feature Toggles Switchboard
+- `/admin/dashboard?section=super-admin-health` - Global Health & Error Logs
+- `/admin/dashboard?section=client-discovery` - Client Discovery Form
+- `/admin/dashboard?section=project-management` - Project Management
+- `/admin/dashboard?section=xr-links` - XR Link Generator
+- `/admin/dashboard?section=pixel-streaming-control` - Pixel Streaming Control
+- `/admin/dashboard?section=file-storage` - Multi-Cloud File Storage
+- `/admin/dashboard?section=asset-pipeline` - Asset Pipeline
+- `/admin/dashboard?section=cms-manager` - Master CMS Engine
+- `/admin/dashboard?section=pages` - Pages & Templates
+- `/admin/dashboard?section=blog` - Blog Posts
+- `/admin/dashboard?section=cms-services` - Services CMS
+- `/admin/dashboard?section=media` - Media & Placeholders
+- `/admin/dashboard?section=design-themes` - Theme & Layout
+- `/admin/dashboard?section=doc-studio-crm` - Doc Studio & CRM
+- `/admin/dashboard?section=vr-configurator` - VR Tour Builder
+- `/admin/dashboard?section=ar` - AR QuickLook Assets
+- `/admin/dashboard?section=streaming` - GPU Pixel Streaming
+- `/admin/dashboard?section=splat-engine` - Gaussian Splat Engine
+- `/admin/dashboard?section=virtual-tour-config` - 360° Virtual Tour
+- `/admin/dashboard?section=google-meet` - Google Meet Fleet
+- `/admin/dashboard?section=bookings` - All Bookings
+- `/admin/dashboard?section=support` - Support Tickets
+- `/admin/dashboard?section=google-drive` - Google Drive Fleet
+- `/admin/dashboard?section=ai-credentials` - AI & API Credentials
+- `/admin/dashboard?section=playcanvas-engine` - PlayCanvas XR Engine
+- `/admin/dashboard?section=settings` - Platform Settings
+- `/admin/dashboard?section=ai-platform` - AI Platform
+- `/admin/dashboard?section=super-admin-crud` - Master CRUD
+- `/admin/dashboard?section=models` - 3D Model Manager
+- `/admin/dashboard?section=seo` - SEO Settings
+- `/admin/dashboard?section=testimonials` - Testimonials
+- `/admin/dashboard?section=navigation` - Navigation Menus
+- `/admin/dashboard?section=social` - Social Links
 
 ### Admin Dashboard (`/app/admin`)
 - `/app/admin` - Dashboard
