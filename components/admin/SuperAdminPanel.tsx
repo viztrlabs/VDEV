@@ -208,7 +208,7 @@ export default function SuperAdminPanel({
     setNewUserForm({
       name: '',
       email: '',
-      role: 'USER',
+      role: 'user',
       status: 'active',
       department: '3D Spatial Modeling',
       company: 'VizTR Studio Contractor',
@@ -536,7 +536,7 @@ export default function SuperAdminPanel({
                             <div className="space-y-0.5">
                               <div className="font-bold text-white font-display flex items-center gap-1.5">
                                 <span>{user.name}</span>
-                                {user.role === 'SUPER_ADMIN' && (
+                                {user.role === 'super_admin' && (
                                   <Shield className="w-3.5 h-3.5 text-purple-400 inline" />
                                 )}
                               </div>
