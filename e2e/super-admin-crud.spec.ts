@@ -76,7 +76,7 @@ test.describe('User Management CRUD', () => {
     
     // Should show only admin users
     const rows = page.locator('tbody tr');
-    await expect(rows).toHaveCountGreaterThan(0);
+    await expect(rows).toHaveCount(1); // At least 1 admin user
   });
 
   test('status filter works', async ({ page }) => {
@@ -84,7 +84,7 @@ test.describe('User Management CRUD', () => {
     await page.waitForTimeout(500);
     
     const rows = page.locator('tbody tr');
-    await expect(rows).toHaveCountGreaterThan(0);
+    await expect(rows).toHaveCount(1); // At least 1 active user
   });
 
   test('search filters users', async ({ page }) => {
@@ -189,7 +189,7 @@ test.describe('System Logs', () => {
 
   test('displays system logs', async ({ page }) => {
     await expect(page.locator('text=Global Health & Error Logs')).toBeVisible({ timeout: 15000 });
-    await expect(page.locator('tbody tr')).toHaveCountGreaterThan(0);
+    await expect(page.locator('tbody tr')).toHaveCount(1);
   });
 
   test('level filter works', async ({ page }) => {

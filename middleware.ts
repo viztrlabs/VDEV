@@ -3,9 +3,10 @@ import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { normalizeUserRole, hasRouteAccess, getDefaultDashboard } from './lib/rbac';
 import { checkRateLimit } from './lib/rate-limit';
+import { isEnabledServer } from './lib/feature-flags';
 
 const PROTECTED_CLIENT_PATHS = ['/client-dashboard'];
-const ADMIN_PATHS = ['/admin/dashboard', '/admin'];
+const ADMIN_PATHS = ['/admin/dashboard', '/admin', '/under-admin'];
 
 export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
@@ -16,6 +17,13 @@ export async function middleware(req: NextRequest) {
 
   const rawRole = (token as any)?.role;
   const role = normalizeUserRole(rawRole);
+
+  // Feature flag: Super Admin Dashboard Consolidation
+  const superAdminEnabled = isEnabledServer('super-admin-consolidation');
+  if (!superAdminEnabled && pathname.startsWith('/admin/dashboard')) {
+    // If feature disabled, redirect to old location or show maintenance
+    return NextResponse.redirect(new URL('/admin', req.url));
+  }
 
   // 1. /app/* routes (SaaS role-based dashboards)
   if (pathname.startsWith('/app')) {
@@ -111,6 +119,6 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/client-dashboard/:path*', '/admin/:path*', '/app/:path*', '/api/:path*'],
+  matcher: ['/client-dashboard/:path*', '/admin/:path*', '/under-admin/:path*', '/app/:path*', '/api/:path*'],
 };
 
