@@ -134,6 +134,7 @@ const nextConfig: NextConfig = {
       { source: '/privacy', destination: '/privacy-policy', permanent: true },
       { source: '/terms', destination: '/terms-conditions', permanent: true },
       { source: '/admin', destination: '/admin/dashboard', permanent: true },
+      { source: '/app/super-admin/:path*', destination: '/admin/dashboard', permanent: true },
     ];
   },
 };

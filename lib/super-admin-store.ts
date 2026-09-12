@@ -1,820 +1,457 @@
+/**
+ * Super Admin Store - Repository-backed reactive state
+ * 
+ * Thin reactive wrapper around Repository implementations.
+ * Provides optimistic UI updates with background sync.
+ */
+
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import type {
+  AdminUser,
+  UserRole,
+  UserStatus,
+  RegionGPUNode,
+  FeatureToggle,
+  SystemHealthLog,
+  RevenueMetric,
+} from './super-admin-store-types';
 
-export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'USER' | 'CLIENT';
-export type UserStatus = 'active' | 'invited' | 'suspended' | 'inactive';
+import { INITIAL_USERS } from './super-admin-store-types';
 
-export interface AdminUser {
-  id: string;
-  name: string;
-  email: string;
-  role: UserRole;
-  status: UserStatus;
-  avatar: string;
-  department: string;
-  assignedProjectsCount: number;
-  lastLogin: string;
-  twoFactorEnabled: boolean;
-  createdAt: string;
-  permissionsOverride?: string[];
-  phone?: string;
-  company?: string;
-}
-
-export interface RegionGPUNode {
-  id: string;
-  regionCode: string;
-  regionName: string;
-  flagEmoji: string;
-  gpuModel: string;
-  instanceType: string;
-  totalNodes: number;
-  activeNodes: number;
-  activeSessions: number;
-  maxSessions: number;
-  loadPercentage: number;
-  vramUsedGB: number;
-  vramTotalGB: number;
-  avgLatencyMs: number;
-  avgFps: number;
-  temperatureC: number;
-  status: 'healthy' | 'warning' | 'degraded' | 'maintenance';
-}
-
-export interface FeatureToggle {
-  id: string;
-  key: string;
-  name: string;
-  description: string;
-  category: 'core' | 'rendering' | 'xr' | 'ai' | 'security' | 'storage';
-  enabled: boolean;
-  requiresRestart: boolean;
-  environment: 'all' | 'production' | 'staging';
-  lastModifiedBy: string;
-  lastModifiedAt: string;
-}
-
-export interface SystemHealthLog {
-  id: string;
-  timestamp: string;
-  level: 'info' | 'warn' | 'error' | 'critical';
-  service: string;
-  message: string;
-  details?: string;
-  region?: string;
-  ip?: string;
-}
-
-export interface RevenueMetric {
-  month: string;
-  mrr: number;
-  oneOffCommissions: number;
-  gpuStreamingRevenue: number;
-  vrLicenses: number;
-  total: number;
-  expenses: number;
-  netMargin: number;
-}
+import { createMockRepositoryFactorySync } from './repositories/mock-repositories';
+import type { RepositoryFactory } from './repositories';
 
 export interface SuperAdminState {
+  // Repository (non-persisted)
+  _repository: ReturnType<typeof import('./repositories/mock-repositories').createMockRepositoryFactorySync> | null;
+  _initialized: boolean;
+
   // Users & Admins
   users: AdminUser[];
   selectedUser: AdminUser | null;
-  addUser: (user: Omit<AdminUser, 'id' | 'createdAt'>) => void;
-  updateUser: (id: string, updates: Partial<AdminUser>) => void;
-  deleteUser: (id: string) => void;
-  changeUserRole: (id: string, newRole: UserRole) => void;
-  changeUserStatus: (id: string, newStatus: UserStatus) => void;
+  usersLoading: boolean;
+  usersError: string | null;
+  addUser: (user: Omit<AdminUser, 'id' | 'createdAt'>) => Promise<void>;
+  updateUser: (id: string, updates: Partial<AdminUser>) => Promise<void>;
+  deleteUser: (id: string) => Promise<void>;
+  changeUserRole: (id: string, newRole: UserRole) => Promise<void>;
+  changeUserStatus: (id: string, newStatus: UserStatus) => Promise<void>;
   setSelectedUser: (user: AdminUser | null) => void;
+  refreshUsers: () => Promise<void>;
 
   // GPU Region Telemetry
   gpuNodes: RegionGPUNode[];
-  updateGPULoad: (id: string, updates: Partial<RegionGPUNode>) => void;
-  toggleNodeMaintenance: (id: string) => void;
-  scaleRegionNodes: (id: string, delta: number) => void;
-  restartRegionGPU: (id: string) => void;
+  gpuLoading: boolean;
+  updateGPULoad: (id: string, updates: Partial<RegionGPUNode>) => Promise<void>;
+  toggleNodeMaintenance: (id: string) => Promise<void>;
+  scaleRegionNodes: (id: string, delta: number) => Promise<void>;
+  restartRegionGPU: (id: string) => Promise<void>;
+  refreshGPUNodes: () => Promise<void>;
 
   // Feature Toggles Switchboard
   featureToggles: FeatureToggle[];
-  toggleFeature: (key: string) => void;
-  updateFeatureToggle: (key: string, updates: Partial<FeatureToggle>) => void;
-  resetFeatureToggles: () => void;
+  togglesLoading: boolean;
+  toggleFeature: (key: string) => Promise<void>;
+  updateFeatureToggle: (key: string, updates: Partial<FeatureToggle>) => Promise<void>;
+  resetFeatureToggles: () => Promise<void>;
+  refreshFeatureToggles: () => Promise<void>;
 
   // System Health & Logs
   systemLogs: SystemHealthLog[];
-  addLog: (log: Omit<SystemHealthLog, 'id' | 'timestamp'>) => void;
-  clearLogs: () => void;
+  logsLoading: boolean;
+  logsError: string | null;
+  addLog: (log: Omit<SystemHealthLog, 'id' | 'timestamp'>) => Promise<void>;
+  clearLogs: () => Promise<void>;
+  refreshLogs: () => Promise<void>;
 
   // Revenue & Analytics
   revenueHistory: RevenueMetric[];
   currentMRR: number;
   currentARR: number;
   growthRateMom: number;
+  revenueLoading: boolean;
+  refreshRevenue: () => Promise<void>;
 
   // Global Simulator Mode for Live Telemetry
   isLiveSimulationActive: boolean;
   toggleLiveSimulation: () => void;
-  
-  // Reset all to defaults
-  resetAllSuperAdminData: () => void;
+
+  // Initialization
+  initialize: () => Promise<void>;
+  resetAllSuperAdminData: () => Promise<void>;
 }
 
-const INITIAL_USERS: AdminUser[] = [
-  {
-    id: 'usr-001',
-    name: 'Alexander Sterling',
-    email: 'alex.sterling@viztr.studio',
-    role: 'SUPER_ADMIN',
-    status: 'active',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-    department: 'Executive / Spatial Tech Lead',
-    assignedProjectsCount: 14,
-    lastLogin: '2 minutes ago',
-    twoFactorEnabled: true,
-    createdAt: '2025-01-10T08:00:00Z',
-    phone: '+1 (555) 234-8901',
-    company: 'VizTR Studio HQ'
-  },
-  {
-    id: 'usr-002',
-    name: 'Elena Rostova',
-    email: 'elena.rostova@viztr.studio',
-    role: 'ADMIN',
-    status: 'active',
-    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
-    department: 'Principal ArchViz Director',
-    assignedProjectsCount: 8,
-    lastLogin: '1 hour ago',
-    twoFactorEnabled: true,
-    createdAt: '2025-02-14T10:15:00Z',
-    phone: '+1 (555) 890-1234',
-    company: 'VizTR Studio Europe'
-  },
-  {
-    id: 'usr-003',
-    name: 'Marcus Vance',
-    email: 'm.vance@vancerealty.ae',
-    role: 'CLIENT',
-    status: 'active',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-    department: 'VIP Client / Investor',
-    assignedProjectsCount: 2,
-    lastLogin: 'Yesterday',
-    twoFactorEnabled: false,
-    createdAt: '2025-03-01T12:00:00Z',
-    phone: '+971 50 123 4567',
-    company: 'Vance Luxury Towers Dubai'
-  },
-  {
-    id: 'usr-004',
-    name: 'Kenji Takahashi',
-    email: 'kenji.takahashi@viztr.studio',
-    role: 'USER',
-    status: 'active',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-    department: 'Lead Unreal 5.4 Engineer',
-    assignedProjectsCount: 5,
-    lastLogin: '3 hours ago',
-    twoFactorEnabled: true,
-    createdAt: '2025-03-12T09:30:00Z',
-    phone: '+81 3 5555 0192',
-    company: 'VizTR Tokyo Tech Lab'
-  },
-  {
-    id: 'usr-005',
-    name: 'Sophia Lindqvist',
-    email: 'sophia@nordicarchitects.se',
-    role: 'CLIENT',
-    status: 'active',
-    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
-    department: 'Managing Partner',
-    assignedProjectsCount: 1,
-    lastLogin: '4 days ago',
-    twoFactorEnabled: true,
-    createdAt: '2025-04-05T14:20:00Z',
-    phone: '+46 8 123 456',
-    company: 'Nordic Monolith Architects'
-  },
-  {
-    id: 'usr-006',
-    name: 'Damon Morales',
-    email: 'damon.morales@viztr.studio',
-    role: 'ADMIN',
-    status: 'active',
-    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
-    department: 'Pixel Streaming Infrastructure Lead',
-    assignedProjectsCount: 6,
-    lastLogin: '30 minutes ago',
-    twoFactorEnabled: true,
-    createdAt: '2025-04-18T11:00:00Z',
-    phone: '+1 (555) 777-9922',
-    company: 'VizTR Cloud Operations'
-  },
-  {
-    id: 'usr-007',
-    name: 'Julian Croft',
-    email: 'j.croft@solariumholdings.co.uk',
-    role: 'CLIENT',
-    status: 'invited',
-    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80',
-    department: 'Chief Investment Officer',
-    assignedProjectsCount: 1,
-    lastLogin: 'Never (Invite Pending)',
-    twoFactorEnabled: false,
-    createdAt: '2025-05-20T16:45:00Z',
-    phone: '+44 20 7946 0912',
-    company: 'Solarium Developments London'
-  },
-  {
-    id: 'usr-008',
-    name: 'Chloe Zhang',
-    email: 'chloe.zhang@viztr.studio',
-    role: 'USER',
-    status: 'suspended',
-    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
-    department: 'Junior 3D Modeler & Texturing',
-    assignedProjectsCount: 0,
-    lastLogin: '2 weeks ago',
-    twoFactorEnabled: false,
-    createdAt: '2025-06-01T10:00:00Z',
-    phone: '+1 (555) 444-1234',
-    company: 'Contractor Hub'
-  }
-];
+// Repository instance (created once)
+let repositoryInstance: ReturnType<typeof import('./repositories/mock-repositories').createMockRepositoryFactorySync> | null = null;
 
-const INITIAL_GPU_NODES: RegionGPUNode[] = [
-  {
-    id: 'gpu-us-east',
-    regionCode: 'us-east-1',
-    regionName: 'US East (N. Virginia)',
-    flagEmoji: '🇺🇸',
-    gpuModel: 'NVIDIA A10G Tensor Core (24GB VRAM)',
-    instanceType: 'AWS g5.4xlarge Dedicated Fleet',
-    totalNodes: 8,
-    activeNodes: 7,
-    activeSessions: 19,
-    maxSessions: 28,
-    loadPercentage: 68,
-    vramUsedGB: 114.2,
-    vramTotalGB: 168.0,
-    avgLatencyMs: 18.4,
-    avgFps: 60.0,
-    temperatureC: 62,
-    status: 'healthy'
-  },
-  {
-    id: 'gpu-eu-west',
-    regionCode: 'eu-central-1',
-    regionName: 'EU Central (Frankfurt)',
-    flagEmoji: '🇩🇪',
-    gpuModel: 'NVIDIA RTX 6000 Ada (48GB VRAM)',
-    instanceType: 'Hetzner Dedicated RTX Bare-Metal',
-    totalNodes: 6,
-    activeNodes: 6,
-    activeSessions: 22,
-    maxSessions: 24,
-    loadPercentage: 89,
-    vramUsedGB: 256.8,
-    vramTotalGB: 288.0,
-    avgLatencyMs: 24.1,
-    avgFps: 59.8,
-    temperatureC: 68,
-    status: 'warning'
-  },
-  {
-    id: 'gpu-me-south',
-    regionCode: 'me-central-1',
-    regionName: 'Middle East (Dubai Cluster)',
-    flagEmoji: '🇦🇪',
-    gpuModel: 'NVIDIA L40S Ultra Cluster (48GB VRAM)',
-    instanceType: 'CoreWeave Spatial Cluster',
-    totalNodes: 4,
-    activeNodes: 4,
-    activeSessions: 9,
-    maxSessions: 16,
-    loadPercentage: 56,
-    vramUsedGB: 107.5,
-    vramTotalGB: 192.0,
-    avgLatencyMs: 21.6,
-    avgFps: 60.0,
-    temperatureC: 59,
-    status: 'healthy'
-  },
-  {
-    id: 'gpu-ap-east',
-    regionCode: 'ap-northeast-1',
-    regionName: 'Asia Pacific (Tokyo)',
-    flagEmoji: '🇯🇵',
-    gpuModel: 'NVIDIA RTX 4090 Enterprise (24GB VRAM)',
-    instanceType: 'Sakura Cloud GPU Farm',
-    totalNodes: 4,
-    activeNodes: 3,
-    activeSessions: 6,
-    maxSessions: 12,
-    loadPercentage: 42,
-    vramUsedGB: 40.3,
-    vramTotalGB: 96.0,
-    avgLatencyMs: 34.8,
-    avgFps: 59.5,
-    temperatureC: 54,
-    status: 'healthy'
-  },
-  {
-    id: 'gpu-us-west',
-    regionCode: 'us-west-2',
-    regionName: 'US West (Oregon)',
-    flagEmoji: '🇺🇸',
-    gpuModel: 'NVIDIA A100 SXM4 (80GB VRAM)',
-    instanceType: 'Lambda Labs Hyperplane',
-    totalNodes: 3,
-    activeNodes: 2,
-    activeSessions: 5,
-    maxSessions: 12,
-    loadPercentage: 35,
-    vramUsedGB: 84.0,
-    vramTotalGB: 240.0,
-    avgLatencyMs: 29.2,
-    avgFps: 60.0,
-    temperatureC: 51,
-    status: 'healthy'
+function getRepository() {
+  if (!repositoryInstance) {
+    repositoryInstance = createMockRepositoryFactorySync();
   }
-];
+  return repositoryInstance;
+}
 
-const INITIAL_FEATURE_TOGGLES: FeatureToggle[] = [
-  {
-    id: 'ft-webxr',
-    key: 'ENABLE_WEBXR_VIEWER',
-    name: 'WebXR Spatial VR/AR Engine',
-    description: 'Enables WebXR device API, Meta Quest 3 & Apple Vision Pro native immersive headset passthrough.',
-    category: 'xr',
-    enabled: true,
-    requiresRestart: false,
-    environment: 'all',
-    lastModifiedBy: 'Alexander Sterling',
-    lastModifiedAt: '2025-08-20T10:00:00Z'
-  },
-  {
-    id: 'ft-pixel-streaming',
-    key: 'ENABLE_PIXEL_STREAMING',
-    name: 'Unreal Engine 5.4 Pixel Streaming',
-    description: 'Routes WebRTC video/audio streams directly from global cloud GPU clusters to client web browsers.',
-    category: 'rendering',
-    enabled: true,
-    requiresRestart: false,
-    environment: 'all',
-    lastModifiedBy: 'Alexander Sterling',
-    lastModifiedAt: '2025-08-21T14:30:00Z'
-  },
-  {
-    id: 'ft-ai-upscaler',
-    key: 'ENABLE_GEMINI_TEXTURE_ENHANCER',
-    name: 'Gemini AI Spatial Texture Enhancer',
-    description: 'Uses Google Gemini Vision API to auto-tag, upscale 4K architectural textures, and generate floorplan annotations.',
-    category: 'ai',
-    enabled: true,
-    requiresRestart: false,
-    environment: 'all',
-    lastModifiedBy: 'Damon Morales',
-    lastModifiedAt: '2025-08-15T09:12:00Z'
-  },
-  {
-    id: 'ft-multi-cloud-sync',
-    key: 'ENABLE_MULTI_CLOUD_STORAGE',
-    name: 'Multi-Cloud Storage Replication (S3 + R2 + Drive)',
-    description: 'Automatically replicates uploaded 8K renders and GLB models to AWS S3, Cloudflare R2, and Google Drive.',
-    category: 'storage',
-    enabled: true,
-    requiresRestart: false,
-    environment: 'all',
-    lastModifiedBy: 'Elena Rostova',
-    lastModifiedAt: '2025-08-18T16:00:00Z'
-  },
-  {
-    id: 'ft-public-booking',
-    key: 'ENABLE_GOOGLE_MEET_AUTOMATION',
-    name: 'Google Meet Studio Consultation Auto-Booking',
-    description: 'Allows prospective VIP clients to schedule architectural consultations with instant calendar invites.',
-    category: 'core',
-    enabled: true,
-    requiresRestart: false,
-    environment: 'all',
-    lastModifiedBy: 'Elena Rostova',
-    lastModifiedAt: '2025-08-22T11:45:00Z'
-  },
-  {
-    id: 'ft-2fa-enforce',
-    key: 'ENFORCE_2FA_ADMINS',
-    name: 'Enforce Mandatory 2FA for Admins',
-    description: 'Requires TOTP Authenticator or WebAuthn hardware key for all Super Admin and Studio Admin logins.',
-    category: 'security',
-    enabled: true,
-    requiresRestart: true,
-    environment: 'production',
-    lastModifiedBy: 'Alexander Sterling',
-    lastModifiedAt: '2025-07-30T08:00:00Z'
-  },
-  {
-    id: 'ft-maintenance-mode',
-    key: 'ENABLE_MAINTENANCE_MODE',
-    name: 'Global Studio Maintenance Mode',
-    description: 'Displays a high-end maintenance banner for all public viewers while keeping Super Admin portal operational.',
-    category: 'core',
-    enabled: false,
-    requiresRestart: false,
-    environment: 'all',
-    lastModifiedBy: 'Alexander Sterling',
-    lastModifiedAt: '2025-08-01T00:00:00Z'
-  },
-  {
-    id: 'ft-draco-compression',
-    key: 'ENABLE_DRACO_AUTO_COMPRESSION',
-    name: 'Draco 3D Mesh Auto-Compression on Upload',
-    description: 'Compresses GLB models by up to 85% geometry size during admin and client file uploads.',
-    category: 'rendering',
-    enabled: true,
-    requiresRestart: false,
-    environment: 'all',
-    lastModifiedBy: 'Kenji Takahashi',
-    lastModifiedAt: '2025-08-12T13:20:00Z'
-  }
-];
-
-const INITIAL_SYSTEM_LOGS: SystemHealthLog[] = [
-  {
-    id: 'log-001',
-    timestamp: '2025-08-27T07:44:12Z',
-    level: 'info',
-    service: 'SignalingServer:us-east',
-    message: 'WebRTC PeerConnection established successfully for session sess-8820-apex.',
-    region: 'us-east-1',
-    ip: '198.51.100.44'
-  },
-  {
-    id: 'log-002',
-    timestamp: '2025-08-27T07:38:05Z',
-    level: 'warn',
-    service: 'GPUNodeMonitor:eu-central',
-    message: 'Frankfurt RTX 6000 Ada pool load reached 89% capacity. Autoscaling node warm-up dispatched.',
-    region: 'eu-central-1',
-    details: 'Queue count: 3 pending sessions. Thermal load 68°C within safe envelope.'
-  },
-  {
-    id: 'log-003',
-    timestamp: '2025-08-27T07:22:50Z',
-    level: 'info',
-    service: 'StorageGateway:R2',
-    message: 'Replication completed for apex-master-hero-8k.tiff (248.5 MB) to Cloudflare R2 bucket viztr-renders-cdn.',
-    region: 'global-cdn'
-  },
-  {
-    id: 'log-004',
-    timestamp: '2025-08-27T06:55:18Z',
-    level: 'error',
-    service: 'AuthManager:OAuth',
-    message: 'Rate limit threshold reached on Google Workspace OAuth token refresh for service account sync.',
-    details: 'Handled with exponential backoff. Resumed after 1400ms retry delay.',
-    ip: '172.56.21.90'
-  },
-  {
-    id: 'log-005',
-    timestamp: '2025-08-27T06:14:02Z',
-    level: 'info',
-    service: 'DracoMeshPipeline',
-    message: 'Model nordic-monolith-hull.glb successfully optimized from 48.2MB down to 14.1MB (70.7% compression ratio).',
-    details: 'Vertices: 482,000 | Triangles: 890,200 | Textures: 4K PBR packed.'
-  },
-  {
-    id: 'log-006',
-    timestamp: '2025-08-27T05:30:41Z',
-    level: 'info',
-    service: 'BillingWebhook:Stripe',
-    message: 'Invoice inv_891280 paid in full ($28,500.00 USD) by Vance Luxury Towers LLC for Stage 4 Completion.',
-    details: 'Project: VIZTR-882 (The Apex Tower).'
-  }
-];
-
-const INITIAL_REVENUE_HISTORY: RevenueMetric[] = [
-  {
-    month: 'Mar 2025',
-    mrr: 94000,
-    oneOffCommissions: 62000,
-    gpuStreamingRevenue: 14500,
-    vrLicenses: 17500,
-    total: 188000,
-    expenses: 42000,
-    netMargin: 146000
-  },
-  {
-    month: 'Apr 2025',
-    mrr: 108000,
-    oneOffCommissions: 78000,
-    gpuStreamingRevenue: 18200,
-    vrLicenses: 19800,
-    total: 224000,
-    expenses: 48000,
-    netMargin: 176000
-  },
-  {
-    month: 'May 2025',
-    mrr: 121000,
-    oneOffCommissions: 85000,
-    gpuStreamingRevenue: 22400,
-    vrLicenses: 23600,
-    total: 252000,
-    expenses: 54000,
-    netMargin: 198000
-  },
-  {
-    month: 'Jun 2025',
-    mrr: 132000,
-    oneOffCommissions: 92000,
-    gpuStreamingRevenue: 26800,
-    vrLicenses: 27200,
-    total: 278000,
-    expenses: 59000,
-    netMargin: 219000
-  },
-  {
-    month: 'Jul 2025',
-    mrr: 142000,
-    oneOffCommissions: 110000,
-    gpuStreamingRevenue: 31500,
-    vrLicenses: 29500,
-    total: 313000,
-    expenses: 65000,
-    netMargin: 248000
-  },
-  {
-    month: 'Aug 2025',
-    mrr: 156500,
-    oneOffCommissions: 128000,
-    gpuStreamingRevenue: 38200,
-    vrLicenses: 34300,
-    total: 357000,
-    expenses: 71000,
-    netMargin: 286000
-  }
-];
-
-export const useSuperAdminStore = create<SuperAdminState>()(
+const useSuperAdminStore = create<SuperAdminState>()(
   persist(
     (set, get) => ({
+      _repository: null,
+      _initialized: false,
+
+      // Initial state (will be replaced on initialize)
       users: INITIAL_USERS,
       selectedUser: null,
-      gpuNodes: INITIAL_GPU_NODES,
-      featureToggles: INITIAL_FEATURE_TOGGLES,
-      systemLogs: INITIAL_SYSTEM_LOGS,
-      revenueHistory: INITIAL_REVENUE_HISTORY,
-      currentMRR: 156500,
-      currentARR: 1878000,
-      growthRateMom: 24.8,
-      isLiveSimulationActive: true,
+      usersLoading: false,
+      usersError: null,
 
-      addUser: (userData) => {
-        const newUser: AdminUser = {
-          ...userData,
-          id: `usr-${Date.now().toString().slice(-4)}`,
-          createdAt: new Date().toISOString()
-        };
-        set((state) => ({
-          users: [newUser, ...state.users],
-          systemLogs: [
-            {
-              id: `log-${Date.now()}`,
-              timestamp: new Date().toISOString(),
-              level: 'info',
-              service: 'UserManager',
-              message: `Super Admin created user "${newUser.name}" with role [${newUser.role}].`,
-              details: `Email: ${newUser.email} | Dept: ${newUser.department}`
-            },
-            ...state.systemLogs
-          ]
-        }));
+      gpuNodes: [],
+      gpuLoading: false,
+
+      featureToggles: [],
+      togglesLoading: false,
+
+      systemLogs: [],
+      logsLoading: false,
+      logsError: null,
+
+      revenueHistory: [],
+      currentMRR: 0,
+      currentARR: 0,
+      growthRateMom: 0,
+      revenueLoading: false,
+
+      isLiveSimulationActive: false,
+
+      // Initialize from repository
+      initialize: async () => {
+        if (get()._initialized) return;
+        
+        const repo = getRepository();
+        set({ _repository: repo, usersLoading: true, gpuLoading: true, togglesLoading: true, logsLoading: true, revenueLoading: true });
+
+        try {
+          const [users, gpuNodes, featureToggles, systemLogs, revenue] = await Promise.all([
+            repo.users.findAll().then((r: { data: AdminUser[] }) => r.data),
+            repo.gpu.findAll(),
+            repo.featureToggles.findAll(),
+            repo.logs.findAll({}).then((r: { data: SystemHealthLog[] }) => r.data),
+            repo.revenue.getMonthly(),
+          ]);
+
+          const summary = await repo.revenue.getSummary();
+
+          set({
+            users,
+            gpuNodes,
+            featureToggles,
+            systemLogs,
+            revenueHistory: revenue,
+            currentMRR: summary.currentMRR,
+            currentARR: summary.currentARR,
+            growthRateMom: summary.growthRateMoM,
+            _initialized: true,
+            usersLoading: false,
+            gpuLoading: false,
+            togglesLoading: false,
+            logsLoading: false,
+            revenueLoading: false,
+          });
+        } catch (error) {
+          console.error('Failed to initialize super admin store:', error);
+          set({
+            usersLoading: false,
+            gpuLoading: false,
+            togglesLoading: false,
+            logsLoading: false,
+            revenueLoading: false,
+            usersError: error instanceof Error ? error.message : 'Initialization failed',
+          });
+        }
       },
 
-      updateUser: (id, updates) => {
-        set((state) => ({
-          users: state.users.map((u) => (u.id === id ? { ...u, ...updates } : u)),
-          systemLogs: [
-            {
-              id: `log-${Date.now()}`,
-              timestamp: new Date().toISOString(),
-              level: 'info',
-              service: 'UserManager',
-              message: `User ${id} record updated by Super Admin.`,
-              details: JSON.stringify(updates)
-            },
-            ...state.systemLogs
-          ]
-        }));
+      // Users & Admins
+      addUser: async (user) => {
+        const repo = getRepository();
+        set({ usersLoading: true, usersError: null });
+        try {
+          const newUser = await repo.users.create(user);
+          set(state => ({ users: [newUser, ...state.users], usersLoading: false }));
+        } catch (error) {
+          set({ usersLoading: false, usersError: error instanceof Error ? error.message : 'Failed to add user' });
+          throw error;
+        }
       },
 
-      deleteUser: (id) => {
-        const user = get().users.find((u) => u.id === id);
-        set((state) => ({
-          users: state.users.filter((u) => u.id !== id),
-          selectedUser: state.selectedUser?.id === id ? null : state.selectedUser,
-          systemLogs: [
-            {
-              id: `log-${Date.now()}`,
-              timestamp: new Date().toISOString(),
-              level: 'warn',
-              service: 'UserManager',
-              message: `User ${user?.name || id} (${user?.email}) was permanently deleted by Super Admin.`
-            },
-            ...state.systemLogs
-          ]
-        }));
+      updateUser: async (id, updates) => {
+        const repo = getRepository();
+        set({ usersLoading: true, usersError: null });
+        try {
+          const updated = await repo.users.update(id, updates);
+          set(state => ({
+            users: state.users.map(u => u.id === id ? updated : u),
+            selectedUser: state.selectedUser?.id === id ? updated : state.selectedUser,
+            usersLoading: false,
+          }));
+        } catch (error) {
+          set({ usersLoading: false, usersError: error instanceof Error ? error.message : 'Failed to update user' });
+          throw error;
+        }
       },
 
-      changeUserRole: (id, newRole) => {
-        const user = get().users.find((u) => u.id === id);
-        set((state) => ({
-          users: state.users.map((u) => (u.id === id ? { ...u, role: newRole } : u)),
-          systemLogs: [
-            {
-              id: `log-${Date.now()}`,
-              timestamp: new Date().toISOString(),
-              level: 'info',
-              service: 'RBAC:RoleGovernance',
-              message: `Role for ${user?.name || id} changed from [${user?.role}] to [${newRole}].`
-            },
-            ...state.systemLogs
-          ]
-        }));
+      deleteUser: async (id) => {
+        const repo = getRepository();
+        set({ usersLoading: true, usersError: null });
+        try {
+          await repo.users.delete(id);
+          set(state => ({
+            users: state.users.filter(u => u.id !== id),
+            selectedUser: state.selectedUser?.id === id ? null : state.selectedUser,
+            usersLoading: false,
+          }));
+        } catch (error) {
+          set({ usersLoading: false, usersError: error instanceof Error ? error.message : 'Failed to delete user' });
+          throw error;
+        }
       },
 
-      changeUserStatus: (id, newStatus) => {
-        set((state) => ({
-          users: state.users.map((u) => (u.id === id ? { ...u, status: newStatus } : u))
-        }));
+      changeUserRole: async (id, newRole) => {
+        const repo = getRepository();
+        set({ usersLoading: true, usersError: null });
+        try {
+          const updated = await repo.users.changeRole(id, newRole);
+          set(state => ({
+            users: state.users.map(u => u.id === id ? updated : u),
+            selectedUser: state.selectedUser?.id === id ? updated : state.selectedUser,
+            usersLoading: false,
+          }));
+        } catch (error) {
+          set({ usersLoading: false, usersError: error instanceof Error ? error.message : 'Failed to change role' });
+          throw error;
+        }
+      },
+
+      changeUserStatus: async (id, newStatus) => {
+        const repo = getRepository();
+        set({ usersLoading: true, usersError: null });
+        try {
+          const updated = await repo.users.changeStatus(id, newStatus);
+          set(state => ({
+            users: state.users.map(u => u.id === id ? updated : u),
+            selectedUser: state.selectedUser?.id === id ? updated : state.selectedUser,
+            usersLoading: false,
+          }));
+        } catch (error) {
+          set({ usersLoading: false, usersError: error instanceof Error ? error.message : 'Failed to change status' });
+          throw error;
+        }
       },
 
       setSelectedUser: (user) => set({ selectedUser: user }),
 
-      updateGPULoad: (id, updates) => {
-        set((state) => ({
-          gpuNodes: state.gpuNodes.map((node) => (node.id === id ? { ...node, ...updates } : node))
-        }));
+      refreshUsers: async () => {
+        const repo = getRepository();
+        set({ usersLoading: true, usersError: null });
+        try {
+          const result = await repo.users.findAll();
+          set({ users: result.data, usersLoading: false });
+        } catch (error) {
+          set({ usersLoading: false, usersError: error instanceof Error ? error.message : 'Failed to refresh users' });
+        }
       },
 
-      toggleNodeMaintenance: (id) => {
-        set((state) => ({
-          gpuNodes: state.gpuNodes.map((node) => {
-            if (node.id === id) {
-              const isMaint = node.status === 'maintenance';
-              return {
-                ...node,
-                status: isMaint ? 'healthy' : 'maintenance',
-                activeSessions: isMaint ? 5 : 0,
-                loadPercentage: isMaint ? 35 : 0
-              };
-            }
-            return node;
-          }),
-          systemLogs: [
-            {
-              id: `log-${Date.now()}`,
-              timestamp: new Date().toISOString(),
-              level: 'warn',
-              service: 'GPUClusterManager',
-              message: `Node ${id} maintenance state toggled.`
-            },
-            ...state.systemLogs
-          ]
-        }));
+      // GPU Region Telemetry
+      updateGPULoad: async (id, updates) => {
+        const repo = getRepository();
+        try {
+          const updated = await repo.gpu.updateLoad(id, updates);
+          set(state => ({
+            gpuNodes: state.gpuNodes.map(n => n.id === id ? updated : n),
+          }));
+        } catch (error) {
+          console.error('Failed to update GPU load:', error);
+        }
       },
 
-      scaleRegionNodes: (id, delta) => {
-        set((state) => ({
-          gpuNodes: state.gpuNodes.map((node) => {
-            if (node.id === id) {
-              const newTotal = Math.max(1, Math.min(20, node.totalNodes + delta));
-              const newActive = Math.min(newTotal, node.activeNodes + (delta > 0 ? 1 : -1));
-              const newMaxSessions = newTotal * 4;
-              return {
-                ...node,
-                totalNodes: newTotal,
-                activeNodes: Math.max(1, newActive),
-                maxSessions: newMaxSessions
-              };
-            }
-            return node;
-          }),
-          systemLogs: [
-            {
-              id: `log-${Date.now()}`,
-              timestamp: new Date().toISOString(),
-              level: 'info',
-              service: 'GPUAutoscaler',
-              message: `Region ${id} node capacity scaled by ${delta > 0 ? '+' : ''}${delta}.`
-            },
-            ...state.systemLogs
-          ]
-        }));
+      toggleNodeMaintenance: async (id) => {
+        const repo = getRepository();
+        try {
+          const updated = await repo.gpu.toggleMaintenance(id);
+          set(state => ({
+            gpuNodes: state.gpuNodes.map(n => n.id === id ? updated : n),
+          }));
+        } catch (error) {
+          console.error('Failed to toggle maintenance:', error);
+        }
       },
 
-      restartRegionGPU: (id) => {
-        set((state) => ({
-          gpuNodes: state.gpuNodes.map((node) => {
-            if (node.id === id) {
-              return {
-                ...node,
-                activeSessions: 0,
-                loadPercentage: 10,
-                temperatureC: 45,
-                status: 'healthy'
-              };
-            }
-            return node;
-          }),
-          systemLogs: [
-            {
-              id: `log-${Date.now()}`,
-              timestamp: new Date().toISOString(),
-              level: 'critical',
-              service: 'GPUClusterManager',
-              message: `Emergency warm restart triggered for GPU cluster [${id}]. All WebRTC sessions gracefully migrated.`
-            },
-            ...state.systemLogs
-          ]
-        }));
+      scaleRegionNodes: async (id, delta) => {
+        const repo = getRepository();
+        try {
+          const updated = await repo.gpu.scaleNodes(id, delta);
+          set(state => ({
+            gpuNodes: state.gpuNodes.map(n => n.id === id ? updated : n),
+          }));
+        } catch (error) {
+          console.error('Failed to scale nodes:', error);
+        }
       },
 
-      toggleFeature: (key) => {
-        const toggle = get().featureToggles.find((t) => t.key === key);
-        const newState = !toggle?.enabled;
-        set((state) => ({
-          featureToggles: state.featureToggles.map((t) =>
-            t.key === key
-              ? {
-                  ...t,
-                  enabled: newState,
-                  lastModifiedBy: 'Super Admin',
-                  lastModifiedAt: new Date().toISOString()
-                }
-              : t
-          ),
-          systemLogs: [
-            {
-              id: `log-${Date.now()}`,
-              timestamp: new Date().toISOString(),
-              level: 'warn',
-              service: 'FeatureSwitchboard',
-              message: `Feature flag "${key}" was toggled to [${newState ? 'ENABLED' : 'DISABLED'}].`
-            },
-            ...state.systemLogs
-          ]
-        }));
+      restartRegionGPU: async (id) => {
+        const repo = getRepository();
+        try {
+          const updated = await repo.gpu.restart(id);
+          set(state => ({
+            gpuNodes: state.gpuNodes.map(n => n.id === id ? updated : n),
+          }));
+        } catch (error) {
+          console.error('Failed to restart GPU:', error);
+        }
       },
 
-      updateFeatureToggle: (key, updates) => {
-        set((state) => ({
-          featureToggles: state.featureToggles.map((t) =>
-            t.key === key ? { ...t, ...updates, lastModifiedAt: new Date().toISOString() } : t
-          )
-        }));
+      refreshGPUNodes: async () => {
+        const repo = getRepository();
+        set({ gpuLoading: true });
+        try {
+          const nodes = await repo.gpu.findAll();
+          set({ gpuNodes: nodes, gpuLoading: false });
+        } catch (error) {
+          set({ gpuLoading: false });
+        }
       },
 
-      resetFeatureToggles: () => {
-        set({ featureToggles: INITIAL_FEATURE_TOGGLES });
+      // Feature Toggles Switchboard
+      toggleFeature: async (key) => {
+        const repo = getRepository();
+        try {
+          const updated = await repo.featureToggles.toggle(key);
+          set(state => ({
+            featureToggles: state.featureToggles.map(t => t.key === key ? updated : t),
+          }));
+        } catch (error) {
+          console.error('Failed to toggle feature:', error);
+        }
       },
 
-      addLog: (logData) => {
-        const newLog: SystemHealthLog = {
-          ...logData,
-          id: `log-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-          timestamp: new Date().toISOString()
-        };
-        set((state) => ({
-          systemLogs: [newLog, ...state.systemLogs.slice(0, 199)]
-        }));
+      updateFeatureToggle: async (key, updates) => {
+        const repo = getRepository();
+        try {
+          const updated = await repo.featureToggles.update(key, updates);
+          set(state => ({
+            featureToggles: state.featureToggles.map(t => t.key === key ? updated : t),
+          }));
+        } catch (error) {
+          console.error('Failed to update feature toggle:', error);
+        }
       },
 
-      clearLogs: () => {
-        set({ systemLogs: [] });
+      resetFeatureToggles: async () => {
+        const repo = getRepository();
+        try {
+          await repo.featureToggles.reset();
+          const toggles = await repo.featureToggles.findAll();
+          set({ featureToggles: toggles });
+        } catch (error) {
+          console.error('Failed to reset feature toggles:', error);
+        }
       },
 
-      toggleLiveSimulation: () => {
-        set((state) => ({ isLiveSimulationActive: !state.isLiveSimulationActive }));
+      refreshFeatureToggles: async () => {
+        const repo = getRepository();
+        set({ togglesLoading: true });
+        try {
+          const toggles = await repo.featureToggles.findAll();
+          set({ featureToggles: toggles, togglesLoading: false });
+        } catch (error) {
+          set({ togglesLoading: false });
+        }
       },
 
-      resetAllSuperAdminData: () => {
-        set({
-          users: INITIAL_USERS,
-          selectedUser: null,
-          gpuNodes: INITIAL_GPU_NODES,
-          featureToggles: INITIAL_FEATURE_TOGGLES,
-          systemLogs: INITIAL_SYSTEM_LOGS,
-          revenueHistory: INITIAL_REVENUE_HISTORY,
-          currentMRR: 156500,
-          currentARR: 1878000,
-          growthRateMom: 24.8
-        });
-      }
+      // System Health & Logs
+      addLog: async (log) => {
+        const repo = getRepository();
+        try {
+          const newLog = await repo.logs.add(log);
+          set(state => ({
+            systemLogs: [newLog, ...state.systemLogs].slice(0, 1000),
+          }));
+        } catch (error) {
+          console.error('Failed to add log:', error);
+        }
+      },
+
+      clearLogs: async () => {
+        const repo = getRepository();
+        try {
+          await repo.logs.clear();
+          set({ systemLogs: [] });
+        } catch (error) {
+          console.error('Failed to clear logs:', error);
+        }
+      },
+
+      refreshLogs: async () => {
+        const repo = getRepository();
+        set({ logsLoading: true, logsError: null });
+        try {
+          const result = await repo.logs.findAll({});
+          set({ systemLogs: result.data, logsLoading: false });
+        } catch (error) {
+          set({ logsLoading: false, logsError: error instanceof Error ? error.message : 'Failed to refresh logs' });
+        }
+      },
+
+      // Revenue & Analytics
+      refreshRevenue: async () => {
+        const repo = getRepository();
+        set({ revenueLoading: true });
+        try {
+          const [revenue, summary] = await Promise.all([
+            repo.revenue.getMonthly(),
+            repo.revenue.getSummary(),
+          ]);
+          set({
+            revenueHistory: revenue,
+            currentMRR: summary.currentMRR,
+            currentARR: summary.currentARR,
+            growthRateMom: summary.growthRateMoM,
+            revenueLoading: false,
+          });
+        } catch (error) {
+          set({ revenueLoading: false });
+        }
+      },
+
+      // Global Simulator Mode
+      toggleLiveSimulation: () => set(state => ({
+        isLiveSimulationActive: !state.isLiveSimulationActive,
+      })),
+
+      // Reset all to defaults
+      resetAllSuperAdminData: async () => {
+        const repo = getRepository();
+        try {
+          await Promise.all([
+            repo.featureToggles.reset(),
+            repo.logs.clear(),
+          ]);
+          await get().initialize();
+        } catch (error) {
+          console.error('Failed to reset all data:', error);
+        }
+      },
     }),
     {
-      name: 'viztr-super-admin-store-v1'
+      name: 'viztr-super-admin-store',
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        // Only persist UI state, not repository or loading states
+        isLiveSimulationActive: state.isLiveSimulationActive,
+      }),
     }
   )
 );
+
+// For backward compatibility - re-export types and constants
+export type { AdminUser, UserRole, UserStatus, RegionGPUNode, FeatureToggle, SystemHealthLog, RevenueMetric } from './super-admin-store-types';
+export { INITIAL_USERS, INITIAL_GPU_NODES, INITIAL_FEATURE_TOGGLES, INITIAL_SYSTEM_LOGS } from './super-admin-store-types';
+export { useSuperAdminStore };

@@ -93,6 +93,13 @@ export const featureFlags: Record<string, FeatureFlag> = {
     defaultValue: false,
     envVar: 'NEXT_PUBLIC_FLAG_PRICING_V2',
   },
+  'super-admin-consolidation': {
+    key: 'super-admin-consolidation',
+    name: 'Super Admin Dashboard Consolidation',
+    description: 'Enable consolidated Super Admin dashboard at /admin/dashboard with lazy-loaded sections, repository-backed data layer, and typed API contracts',
+    defaultValue: true,
+    envVar: 'NEXT_PUBLIC_FLAG_SUPER_ADMIN_CONSOLIDATION',
+  },
   'solutions-pages': {
     key: 'solutions-pages',
     name: 'Solutions Pages',

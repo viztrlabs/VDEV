@@ -79,7 +79,7 @@ interface SuperAdminPanelProps {
 }
 
 export default function SuperAdminPanel({
-  currentRoleView = 'SUPER_ADMIN',
+  currentRoleView = 'super_admin',
   onSwitchRoleView
 }: SuperAdminPanelProps) {
   const { showToast } = useAppStore();
@@ -101,7 +101,7 @@ export default function SuperAdminPanel({
   const [newUserForm, setNewUserForm] = useState({
     name: '',
     email: '',
-    role: 'USER' as UserRole,
+    role: 'user' as UserRole,
     status: 'active' as UserStatus,
     department: '3D Spatial Modeling',
     company: 'VizTR Studio Contractor',
@@ -208,7 +208,7 @@ export default function SuperAdminPanel({
     setNewUserForm({
       name: '',
       email: '',
-      role: 'USER',
+      role: 'user',
       status: 'active',
       department: '3D Spatial Modeling',
       company: 'VizTR Studio Contractor',
@@ -239,28 +239,28 @@ export default function SuperAdminPanel({
   // Helper badge for role
   const getRoleBadge = (role: UserRole) => {
     switch (role) {
-      case 'SUPER_ADMIN':
+      case 'super_admin':
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-500/10 text-purple-400 border border-purple-500/30">
             <Shield className="w-3 h-3 text-purple-400" />
             SUPER ADMIN
           </span>
         );
-      case 'ADMIN':
+      case 'admin':
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#3ECF8E]/10 text-[#3ECF8E] border border-[#3ECF8E]/30">
             <Zap className="w-3 h-3 text-[#3ECF8E]" />
             STUDIO ADMIN
           </span>
         );
-      case 'USER':
+      case 'user':
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-sky-500/10 text-sky-400 border border-sky-500/30">
             <Users className="w-3 h-3 text-sky-400" />
             3D ARTIST / USER
           </span>
         );
-      case 'CLIENT':
+      case 'client':
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30">
             <Building className="w-3 h-3 text-amber-400" />
@@ -334,7 +334,7 @@ export default function SuperAdminPanel({
               <span className="text-[10px] font-mono font-bold text-[#71717A] px-2 uppercase">
                 Active View:
               </span>
-              {(['SUPER_ADMIN', 'ADMIN', 'USER', 'CLIENT'] as UserRole[]).map((r) => (
+              {(['super_admin', 'admin', 'user', 'client'] as UserRole[]).map((r) => (
                 <button
                   key={r}
                   onClick={() => {
@@ -347,11 +347,11 @@ export default function SuperAdminPanel({
                       : 'text-[#A1A1AA] hover:text-white hover:bg-[#27272A]'
                   }`}
                 >
-                  {r === 'SUPER_ADMIN'
+                  {r === 'super_admin'
                     ? 'Super Admin'
-                    : r === 'ADMIN'
+                    : r === 'admin'
                     ? 'Studio Admin'
-                    : r === 'USER'
+                    : r === 'user'
                     ? '3D Artist'
                     : 'VIP Client'}
                 </button>
@@ -536,7 +536,7 @@ export default function SuperAdminPanel({
                             <div className="space-y-0.5">
                               <div className="font-bold text-white font-display flex items-center gap-1.5">
                                 <span>{user.name}</span>
-                                {user.role === 'SUPER_ADMIN' && (
+                                {user.role === 'super_admin' && (
                                   <Shield className="w-3.5 h-3.5 text-purple-400 inline" />
                                 )}
                               </div>
@@ -566,10 +566,10 @@ export default function SuperAdminPanel({
                                 className="text-[10px] font-mono bg-[#09090B] border border-[#27272A] rounded px-1.5 py-0.5 text-zinc-300 focus:outline-none focus:border-purple-500 cursor-pointer"
                                 title="Change User Role"
                               >
-                                <option value="SUPER_ADMIN">Promote: SUPER_ADMIN</option>
-                                <option value="ADMIN">Set: STUDIO ADMIN</option>
-                                <option value="USER">Set: 3D ARTIST</option>
-                                <option value="CLIENT">Set: VIP CLIENT</option>
+                                <option value="super_admin">Promote: SUPER_ADMIN</option>
+                                <option value="admin">Set: STUDIO ADMIN</option>
+                                <option value="user">Set: 3D ARTIST</option>
+                                <option value="client">Set: VIP CLIENT</option>
                               </select>
                             </div>
                           </div>
@@ -677,19 +677,19 @@ export default function SuperAdminPanel({
               <div className="flex items-center gap-4">
                 <span className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-purple-400" />
-                  Super Admins: {superAdmin.users.filter((u) => u.role === 'SUPER_ADMIN').length}
+                  Super Admins: {superAdmin.users.filter((u) => u.role === 'super_admin').length}
                 </span>
                 <span className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-[#3ECF8E]" />
-                  Admins: {superAdmin.users.filter((u) => u.role === 'ADMIN').length}
+                  Admins: {superAdmin.users.filter((u) => u.role === 'admin').length}
                 </span>
                 <span className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-sky-400" />
-                  Artists: {superAdmin.users.filter((u) => u.role === 'USER').length}
+                  Artists: {superAdmin.users.filter((u) => u.role === 'user').length}
                 </span>
                 <span className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-amber-400" />
-                  Clients: {superAdmin.users.filter((u) => u.role === 'CLIENT').length}
+                  Clients: {superAdmin.users.filter((u) => u.role === 'client').length}
                 </span>
               </div>
             </div>
@@ -1670,10 +1670,10 @@ export default function SuperAdminPanel({
                     onChange={(e) => setNewUserForm({ ...newUserForm, role: e.target.value as UserRole })}
                     className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-purple-500 cursor-pointer"
                   >
-                    <option value="SUPER_ADMIN">SUPER_ADMIN (Root Access)</option>
-                    <option value="ADMIN">ADMIN (Studio Operations)</option>
-                    <option value="USER">USER (3D Artist / Team)</option>
-                    <option value="CLIENT">CLIENT (External VIP)</option>
+                    <option value="super_admin">SUPER_ADMIN (Root Access)</option>
+                    <option value="admin">ADMIN (Studio Operations)</option>
+                    <option value="user">USER (3D Artist / Team)</option>
+                    <option value="client">CLIENT (External VIP)</option>
                   </select>
                 </div>
 
@@ -1798,10 +1798,10 @@ export default function SuperAdminPanel({
                     onChange={(e) => setUserToEdit({ ...userToEdit, role: e.target.value as UserRole })}
                     className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-purple-500 cursor-pointer"
                   >
-                    <option value="SUPER_ADMIN">SUPER_ADMIN (Root Authority)</option>
-                    <option value="ADMIN">ADMIN (Studio Operations)</option>
-                    <option value="USER">USER (3D Artist / Team)</option>
-                    <option value="CLIENT">CLIENT (External VIP)</option>
+                    <option value="super_admin">SUPER_ADMIN (Root Authority)</option>
+                    <option value="admin">ADMIN (Studio Operations)</option>
+                    <option value="user">USER (3D Artist / Team)</option>
+                    <option value="client">CLIENT (External VIP)</option>
                   </select>
                 </div>
 
