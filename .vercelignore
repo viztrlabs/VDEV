@@ -9,6 +9,5 @@ docs/
 supabase/
 e2e/
 scripts/
-data/
 .turbo/
 coverage/
