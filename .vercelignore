@@ -6,7 +6,7 @@ playwright-report/
 docs/
 *.md
 !README.md
-supabase/
+/supabase/
 e2e/
 scripts/
 .turbo/
