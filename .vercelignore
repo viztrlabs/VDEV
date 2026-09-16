@@ -1,0 +1,14 @@
+node_modules/
+.next/
+forks/
+test-results/
+playwright-report/
+docs/
+*.md
+!README.md
+supabase/
+e2e/
+scripts/
+data/
+.turbo/
+coverage/

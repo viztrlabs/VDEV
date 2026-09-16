@@ -5,7 +5,24 @@ build/
 *.log
 .env.local
 .env
+.env*
 .opencode/
 
 # Forks - not tracked in this repo
 forks/
+
+.vercel
+
+# Large/generated files
+.turbo/
+.next/cache/
+coverage/
+.playwright/
+test-results/
+playwright-report/
+*.tsbuildinfo
+tsc_*.txt
+lighthouse-report.json
+.data/
+.kilo/
+docs/superpowers/
