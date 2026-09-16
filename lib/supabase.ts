@@ -1,8 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
+function stripBom(s: string): string {
+  return s.replace(/^\uFEFF/, '');
+}
+
 // If Supabase environment variables are provided, initialize client; otherwise export fallback client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseUrl = stripBom(process.env.NEXT_PUBLIC_SUPABASE_URL || '');
+const supabaseAnonKey = stripBom(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '');
 
 export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
 
