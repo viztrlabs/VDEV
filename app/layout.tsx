@@ -50,6 +50,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script
           dangerouslySetInnerHTML={{
             __html: `
+              (function(){
+                if(typeof window==='undefined')return;
+                var OF=window.fetch;
+                window.fetch=function(){var a=arguments;if(a[1]&&a[1].headers){var h=a[1].headers;if(h instanceof Headers){var ks=[];h.forEach(function(v,k){if(/[^\x00-\xff]/.test(v))ks.push(k)});ks.forEach(function(k){h.delete(k)})}else if(typeof h==='object'){Object.keys(h).forEach(function(k){if(typeof h[k]==='string'&&/[^\x00-\xff]/.test(h[k]))delete h[k]})}}return OF.apply(this,a)};
+              })();
+            `,
+          }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
               (function() {
                 try {
                   var saved = localStorage.getItem('viztr-theme') || 'dark';
