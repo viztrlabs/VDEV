@@ -1,5 +1,5 @@
 import { getProject, getScenes } from '@/lib/supabase-admin';
-import { getEditorSchema } from '@/forks/editor/server/schema.js';
+import { getEditorSchema } from '@/lib/editor/schema-stub';
 import EditorClient from './EditorClient';
 
 export default async function EditorPage({ params }: { params: Promise<{ projectId: string }> }) {
