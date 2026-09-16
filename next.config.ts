@@ -84,23 +84,21 @@ const nextConfig: NextConfig = {
       asyncWebAssembly: true,
     };
 
-    // Resolve @playcanvas/splat-transform's bundled WASM assets from public/
+    // Handle @playcanvas/splat-transform's node: imports and WASM assets
     config.resolve.alias = {
       ...config.resolve.alias,
       'webp.wasm': path.resolve(__dirname, 'public/splat-editor/lib/webp/webp.wasm'),
-      'node:worker_threads': false,
+    };
+
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
       'node:os': false,
       'node:module': false,
+      'node:worker_threads': false,
       'node:fs': false,
       'node:path': false,
       'node:process': false,
       'node:util': false,
-    };
-
-    // Mark node: imports as false for client-side
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      'node:os': false,
       'os': false,
       'module': false,
       'worker_threads': false,
@@ -109,6 +107,17 @@ const nextConfig: NextConfig = {
       'process': false,
       'util': false,
     };
+
+    // Externals for node: scheme — prevents "UnhandledSchemeError" on Vercel
+    config.externals = [
+      ...(Array.isArray(config.externals) ? config.externals : config.externals ? [config.externals] : []),
+      ({ request }: { request: string }, callback: (err?: Error | null, result?: string) => void) => {
+        if (request.startsWith('node:')) {
+          return callback(null, 'commonjs ' + request.slice(5));
+        }
+        callback();
+      },
+    ];
 
     // Handle WGSL shaders as raw source
     config.module.rules.push({
