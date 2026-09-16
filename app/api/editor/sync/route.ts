@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import { SceneSnapshot } from '@/lib/3d/bridge/types';
+import { requireAuth } from '@/lib/api-guard';
 
 const DATA_DIR = path.join(process.cwd(), 'data', 'editor');
 const SNAPSHOT_FILE = path.join(DATA_DIR, 'latest-scene.json');
@@ -97,6 +98,8 @@ export async function GET(req: NextRequest) {
  * Persists updated scene snapshot
  */
 export async function POST(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const snapshot: SceneSnapshot = await req.json();
 

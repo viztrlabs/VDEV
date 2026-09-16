@@ -11,7 +11,14 @@ export default function InteriorEditorPage() {
   const params = useParams<{ userId: string; projectId: string }>();
   const projectId = params?.projectId;
   const serviceSlug = "interior";
+  const serviceTitle = "Interior";
     
+  const [data, setData] = useState<Record<string, any[]>>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | undefined>();
+
+  const experienceOptions = (data.experiences || []).map((e: any) => ({ label: e.title, value: e.id }));
+
   const tabs: Tab[] = [
     {
       key: 'experiences',
@@ -47,7 +54,7 @@ export default function InteriorEditorPage() {
         { key: 'assets', label: 'Assets', render: (v) => (Array.isArray(v) ? `${v.length} items` : '-') },
       ],
       fields: [
-        { key: 'experience_id', label: 'Experience ID', type: 'text' },
+        { key: 'experience_id', label: 'Experience ID', type: 'select', options: experienceOptions },
         { key: 'config', label: 'Config', type: 'json' },
         { key: 'settings', label: 'Settings', type: 'json' },
         { key: 'assets', label: 'Assets', type: 'json' },
@@ -121,7 +128,7 @@ export default function InteriorEditorPage() {
       fields: [
         { key: 'project_id', label: 'Project ID', type: 'text' },
         { key: 'service', label: 'Service', type: 'text' },
-        { key: 'experience_id', label: 'Experience ID', type: 'text' },
+        { key: 'experience_id', label: 'Experience ID', type: 'select', options: experienceOptions },
         { key: 'type', label: 'Type', type: 'text' },
         { key: 'url', label: 'URL', type: 'text' },
         { key: 'mime_type', label: 'MIME', type: 'text' },
@@ -159,10 +166,6 @@ export default function InteriorEditorPage() {
       rowIdField: 'id',
     },
   ];
-
-  const [data, setData] = useState<Record<string, any[]>>({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | undefined>();
 
   useEffect(() => {
     if (!projectId) return;

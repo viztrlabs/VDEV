@@ -49,6 +49,7 @@ import {
   Box as Cube,
   Download,
   Brain,
+  Mail,
 } from 'lucide-react';
 import { ViztrLogoMark } from '@/components/ui/Logo';
 import HermesButton from '@/components/admin/HermesButton';
@@ -98,6 +99,8 @@ const PlayCanvasEngineDashboardTile = lazy(() => import('@/components/admin/Play
 const ApiCredentialsManager = lazy(() => import('@/components/admin/ApiCredentialsManager').then(m => ({ default: m.default })));
 const AIDashboardPanel = lazy(() => import('@/components/admin/AIDashboardPanel').then(m => ({ default: m.default })));
 const ClientDiscoveryManager = lazy(() => import('@/components/admin/ClientDiscoveryManager').then(m => ({ default: m.default })));
+const BookingManager = lazy(() => import('@/components/admin/BookingManager').then(m => ({ default: m.default })));
+const ContactManager = lazy(() => import('@/components/admin/ContactManager').then(m => ({ default: m.default })));
 
 // =====================================================================
 // SECTION TYPE DEFINITIONS
@@ -165,6 +168,7 @@ const SIDEBAR_SECTIONS = [
       { id: 'super-admin-gpu', label: 'GPU Usage Monitoring', icon: Cpu },
       { id: 'super-admin-toggles', label: 'Feature Toggles Switchboard', icon: SlidersHorizontal },
       { id: 'super-admin-health', label: 'Global Health & Error Logs', icon: Activity },
+      { id: 'inquiries', label: 'Contact Submissions', icon: Mail },
     ],
   },
   {
@@ -467,6 +471,25 @@ export default function AdminDashboardLayout() {
     }
   }, []);
 
+  // Fetch projects from Supabase when available
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const res = await fetch('/api/admin/projects?pageSize=100');
+        const data = await res.json();
+        if (data.success && data.data && data.data.length > 0) {
+          setProjectsList(data.data);
+          if (data.data.length > 0 && !selectedProjectId) {
+            setSelectedProjectId(data.data[0].id);
+          }
+        }
+      } catch {
+        // Keep initial mock data
+      }
+    };
+    fetchProjects();
+  }, []);
+
   const handleAddProject = (newProject: ManagedProject) => {
     setProjectsList((prev) => [newProject, ...prev]);
     setSelectedProjectId(newProject.id);
@@ -625,13 +648,18 @@ function renderSection(section: ActiveSection, props: {
     case 'analytics':
     case 'revenue':
     case 'clients':
-    case 'inquiries':
       return (
         <Suspense fallback={<SectionFallback />}>
           <SuperAdminPanel
             currentRoleView={props.activeRoleView}
             onSwitchRoleView={props.setActiveRoleView}
           />
+        </Suspense>
+      );
+    case 'inquiries':
+      return (
+        <Suspense fallback={<SectionFallback />}>
+          <ContactManager />
         </Suspense>
       );
     case 'project-management':
@@ -702,6 +730,12 @@ function renderSection(section: ActiveSection, props: {
       return (
         <Suspense fallback={<SectionFallback />}>
           <GoogleDriveAdminManager />
+        </Suspense>
+      );
+    case 'bookings':
+      return (
+        <Suspense fallback={<SectionFallback />}>
+          <BookingManager />
         </Suspense>
       );
     case 'google-meet':

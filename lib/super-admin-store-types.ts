@@ -265,3 +265,208 @@ export const INITIAL_USERS: AdminUser[] = [
 export const INITIAL_GPU_NODES: RegionGPUNode[] = [];
 export const INITIAL_FEATURE_TOGGLES: FeatureToggle[] = [];
 export const INITIAL_SYSTEM_LOGS: SystemHealthLog[] = [];
+
+// =====================================================================
+// BOOKING TYPES
+// =====================================================================
+
+export type BookingStatus = 'pending' | 'approved' | 'rejected' | 'completed' | 'cancelled';
+
+export type BookingServiceType = 
+  | 'Architectural'
+  | 'Virtual Reality'
+  | 'Pixel Streaming'
+  | 'WebXR'
+  | 'WebAR'
+  | 'Virtual Tour 360'
+  | 'Animation'
+  | 'Still Renders'
+  | 'Other';
+
+export interface Booking {
+  id: string;
+  service_type: BookingServiceType;
+  client_name: string;
+  client_email: string;
+  client_phone?: string;
+  company?: string;
+  project_description?: string;
+  preferred_date: string; // YYYY-MM-DD
+  preferred_time: string; // HH:MM
+  timezone: string;
+  message?: string;
+  status: BookingStatus;
+  admin_notes?: string;
+  approved_by?: string | null;
+  approved_at?: string | null;
+  rejected_by?: string | null;
+  rejected_at?: string | null;
+  rejection_reason?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateBooking {
+  service_type: BookingServiceType;
+  client_name: string;
+  client_email: string;
+  client_phone?: string;
+  company?: string;
+  project_description?: string;
+  preferred_date: string; // YYYY-MM-DD
+  preferred_time: string; // HH:MM
+  timezone: string;
+  message?: string;
+}
+
+export interface UpdateBooking {
+  service_type?: BookingServiceType;
+  client_name?: string;
+  client_email?: string;
+  client_phone?: string;
+  company?: string;
+  project_description?: string;
+  preferred_date?: string;
+  preferred_time?: string;
+  timezone?: string;
+  message?: string;
+  status?: BookingStatus;
+  admin_notes?: string;
+  approved_by?: string | null;
+  approved_at?: string | null;
+  rejected_by?: string | null;
+  rejected_at?: string | null;
+  rejection_reason?: string;
+}
+
+export interface ApproveBooking {
+  admin_notes?: string;
+}
+
+export interface RejectBooking {
+  rejection_reason: string;
+  admin_notes?: string;
+}
+
+export interface BookingFilters {
+  search?: string;
+  status?: BookingStatus;
+  service_type?: BookingServiceType;
+  date_from?: string;
+  date_to?: string;
+}
+
+export interface BookingStats {
+  total: number;
+  by_status: Record<BookingStatus, number>;
+  by_service_type: Record<BookingServiceType, number>;
+}
+
+export type ContactStatus = 'new' | 'read' | 'responded' | 'archived';
+
+export type ContactServiceInterest =
+  | 'Architectural'
+  | 'Virtual Reality'
+  | 'Pixel Streaming'
+  | 'WebXR'
+  | 'WebAR'
+  | 'Virtual Tour 360'
+  | 'Animation'
+  | 'Still Renders'
+  | 'Other';
+
+export interface ContactSubmission {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  company?: string;
+  service_interest?: ContactServiceInterest;
+  message?: string;
+  status: ContactStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateContact {
+  name: string;
+  email: string;
+  phone?: string;
+  company?: string;
+  service_interest?: ContactServiceInterest;
+  message?: string;
+}
+
+export interface ContactFilters {
+  search?: string;
+  status?: ContactStatus;
+  service_interest?: ContactServiceInterest;
+  date_from?: string;
+  date_to?: string;
+}
+
+export interface ContactStats {
+  total: number;
+  by_status: Record<ContactStatus, number>;
+  by_service_interest: Record<ContactServiceInterest, number>;
+}
+
+export interface PaginationParams {
+  page: number;
+  pageSize: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface PaginatedResult<T> {
+  data: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+export type CommentStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
+
+export interface Comment {
+  id: string;
+  projectId: string;
+  deliverableId?: string;
+  parentId?: string;
+  authorId: string;
+  authorName: string;
+  authorRole: 'client' | 'admin' | 'user' | 'designer' | 'architect';
+  content: string;
+  status: CommentStatus;
+  mentions: string[];
+  attachments: string[];
+  createdAt: string;
+  updatedAt: string;
+  resolvedAt?: string;
+  resolvedBy?: string;
+  replies: Comment[];
+}
+
+export interface CreateComment {
+  projectId: string;
+  deliverableId?: string;
+  parentId?: string;
+  content: string;
+  mentions?: string[];
+  attachments?: string[];
+}
+
+export interface UpdateComment {
+  content?: string;
+  status?: CommentStatus;
+  mentions?: string[];
+}
+
+export interface CommentFilters {
+  status?: CommentStatus;
+  authorId?: string;
+  deliverableId?: string;
+  search?: string;
+  date_from?: string;
+  date_to?: string;
+}

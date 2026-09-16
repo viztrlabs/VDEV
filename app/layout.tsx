@@ -6,6 +6,8 @@ import NextAuthProvider from '@/components/providers/NextAuthProvider';
 import LayoutShell from '@/components/layout/LayoutShell';
 import GlobalViewers from '@/components/layout/GlobalViewers';
 import { MessagingAgent } from '@/components/ui/MessagingAgent';
+import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
+import { OrganizationJsonLd, WebSiteJsonLd } from '@/components/seo';
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -79,6 +81,35 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <MessagingAgent />
           </ThemeProvider>
         </NextAuthProvider>
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        )}
+        <OrganizationJsonLd
+          name="VizTR Studio"
+          url="https://viztr.com"
+          logo="https://viztr.com/logo.png"
+          description="High-density architectural rendering, real-time WebXR spatial computing, and scalable cloud Unreal Engine 5 pixel streaming."
+          email="hello@viztr.com"
+          phone="+1 (555) 123-4567"
+          address={{
+            streetAddress: '123 Spatial Boulevard',
+            addressLocality: 'Silicon District',
+            addressRegion: 'CA',
+            postalCode: '94000',
+            addressCountry: 'US',
+          }}
+          socialLinks={[
+            'https://instagram.com',
+            'https://linkedin.com',
+            'https://twitter.com',
+            'https://youtube.com',
+          ]}
+        />
+        <WebSiteJsonLd
+          name="VizTR Studio"
+          url="https://viztr.com"
+          searchUrl="https://viztr.com/search?q={search_term_string}"
+        />
       </body>
     </html>
   );

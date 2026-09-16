@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceClient } from '@/lib/services/client';
+import { requireAuth } from '@/lib/api-guard';
 
 export async function GET(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const { searchParams } = new URL(req.url);
     const projectId = searchParams.get('projectId');
@@ -34,14 +37,36 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const body = await req.json();
     const svc = getServiceClient();
     if (!svc) return NextResponse.json({ success: false, error: 'supabase not configured' }, { status: 500 });
 
+    let projectServiceId = body.project_service_id;
+    if (!projectServiceId && body.project_id) {
+      const { data: services, error: svcErr } = await svc
+        .from('project_services')
+        .select('id, service_id')
+        .eq('project_id', body.project_id);
+      if (svcErr) return NextResponse.json({ success: false, error: svcErr.message }, { status: 500 });
+      if (!services || services.length === 0) {
+        return NextResponse.json({ success: false, error: 'No project services found for this project' }, { status: 400 });
+      }
+      if (services.length === 1) {
+        projectServiceId = services[0].id;
+      } else {
+        return NextResponse.json({
+          success: false,
+          error: `Multiple services exist for this project. Please provide project_service_id. Available: ${services.map((s: any) => `${s.id} (${s.service_id})`).join(', ')}`,
+        }, { status: 400 });
+      }
+    }
+
     const payload: Record<string, any> = {
       project_id: body.project_id,
-      project_service_id: body.project_service_id,
+      project_service_id: projectServiceId,
       title: body.title || 'New Experience',
       slug: body.slug || `experience-${Date.now()}`,
       description: body.description || '',
@@ -59,13 +84,33 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const body = await req.json();
     const svc = getServiceClient();
     if (!svc) return NextResponse.json({ success: false, error: 'supabase not configured' }, { status: 500 });
     if (!body.id) return NextResponse.json({ success: false, error: 'id required' }, { status: 400 });
 
-    const { data, error } = await svc.from('experiences').update(body).eq('id', body.id).select('*').single();
+    const updatePayload = { ...body };
+
+    if (body.status === 'published') {
+      const { data: current } = await svc.from('experiences').select('status, slug, metadata').eq('id', body.id).maybeSingle();
+      if (current && current.status !== 'published') {
+        const origin = req.headers.get('origin') || 'http://localhost:3000';
+        const shareUrl = `${origin}/experience/${current.slug}`;
+        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(shareUrl)}`;
+        const existingMetadata = current.metadata || {};
+        updatePayload.published_at = new Date().toISOString();
+        updatePayload.metadata = {
+          ...existingMetadata,
+          shareUrl,
+          qrCodeUrl,
+        };
+      }
+    }
+
+    const { data, error } = await svc.from('experiences').update(updatePayload).eq('id', body.id).select('*').single();
     if (error) return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     return NextResponse.json({ success: true, experience: data });
   } catch (err: any) {
@@ -74,6 +119,8 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const guard = await requireAuth(req, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');

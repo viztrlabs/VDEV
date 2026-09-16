@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import {
   handleApiError,
   successResponse,
@@ -6,7 +7,9 @@ import {
   applyRateLimit,
   generateRequestId,
   addRequestIdHeaders,
+  type RateLimitConfig,
 } from '@/lib/api/validation';
+import { getAuthUser, requireAdmin } from '@/lib/api/auth';
 import {
   AdminUserSchema,
   UpdateAdminUserSchema,
@@ -47,28 +50,18 @@ const mockUsers: AdminUser[] = [
   },
 ];
 
-function getAuthUser(request: NextRequest): { id: string; email: string; role: string } {
-  const authHeader = request.headers.get('x-user-role');
-  if (!authHeader) {
-    throw new Error('UNAUTHORIZED');
-  }
-  return {
-    id: request.headers.get('x-user-id') || 'unknown',
-    email: request.headers.get('x-user-email') || 'unknown',
-    role: authHeader,
-  };
-}
+const RATE_LIMIT_CONFIG: RateLimitConfig = { limit: 100, window: '60 s' };
 
 // GET /api/admin/users/[id] - Get single user
 export async function GET(request: NextRequest) {
   const requestId = generateRequestId();
   const id = request.nextUrl.pathname.split('/').pop() || '';
   
-  const rateLimitResponse = applyRateLimit(request, { limit: 100, windowMs: 60000 });
+  const rateLimitResponse = await applyRateLimit(request, RATE_LIMIT_CONFIG);
   if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
   try {
-    getAuthUser(request); // Verify auth
+    await getAuthUser(); // Verify auth
     
     const targetUser = mockUsers.find(u => u.id === id);
     if (!targetUser) {
@@ -92,11 +85,11 @@ export async function PATCH(request: NextRequest) {
   const requestId = generateRequestId();
   const id = request.nextUrl.pathname.split('/').pop() || '';
   
-  const rateLimitResponse = applyRateLimit(request, { limit: 50, windowMs: 60000 });
+  const rateLimitResponse = await applyRateLimit(request, { limit: 50, window: '60 s' });
   if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
   try {
-    const user = getAuthUser(request);
+    const user = await getAuthUser();
     const body = await request.json().catch(() => ({}));
 
     const userIndex = mockUsers.findIndex(u => u.id === id);
@@ -135,11 +128,11 @@ export async function DELETE(request: NextRequest) {
   const requestId = generateRequestId();
   const id = request.nextUrl.pathname.split('/').pop() || '';
   
-  const rateLimitResponse = applyRateLimit(request, { limit: 20, windowMs: 60000 });
+  const rateLimitResponse = await applyRateLimit(request, { limit: 20, window: '60 s' });
   if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
   try {
-    const user = getAuthUser(request);
+    const user = await getAuthUser();
 
     const userIndex = mockUsers.findIndex(u => u.id === id);
     if (userIndex === -1) {

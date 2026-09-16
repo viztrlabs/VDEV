@@ -11,6 +11,7 @@ import {
   listWaypoints,
   setWaypoints,
 } from '@/lib/tourCollaboration';
+import { requireAuth } from '@/lib/api-guard';
 
 // Generic collaboration endpoint.
 // GET  /api/tour/collab?tourId=..&type=members|comments|tasks|waypoints
@@ -18,6 +19,8 @@ import {
 // PATCH /api/tour/collab { tourId, type, op, ... }
 
 export async function GET(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const tourId = req.nextUrl.searchParams.get('tourId');
     const type = req.nextUrl.searchParams.get('type');
@@ -35,6 +38,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const body = await req.json();
     const { tourId, type } = body;
@@ -52,6 +57,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const body = await req.json();
     const { tourId, type, op } = body;

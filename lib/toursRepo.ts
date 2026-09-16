@@ -2,12 +2,10 @@ import { createServiceClient } from '@/lib/supabase/admin';
 import { LOCAL_TOUR_ROOMS } from './localTour';
 import {
   getTour as localGetTour,
-  saveTour as localSaveTour,
   SavedTour,
 } from './tourStore';
 import {
   getTourSettings as localGetSettings,
-  saveTourSettings as localSaveSettings,
   TourSettings,
 } from './tourSettings';
 
@@ -85,7 +83,8 @@ export async function saveTour(
       return result;
     }
   }
-  return localSaveTour(result);
+  console.warn('[toursRepo] Supabase not configured — tour save skipped (read-only fallback)');
+  return result;
 }
 
 export async function getTourSettings(): Promise<TourSettings> {
@@ -121,7 +120,7 @@ export async function saveTourSettings(input: Partial<TourSettings> & {
   vted?: TourSettings['vted'];
 }): Promise<TourSettings> {
   const base = await localGetSettings();
-  const full: TourSettings = {
+  const merged: TourSettings = {
     ...base,
     ...input,
     features: { ...base.features, ...(input.features || {}) },
@@ -132,7 +131,6 @@ export async function saveTourSettings(input: Partial<TourSettings> & {
     publicUrl: input.publicUrl ?? base.publicUrl,
     vted: { ...(base.vted || {}), ...(input.vted || {}) },
   };
-  const merged = await localSaveSettings(full);
 
   if (isSupabaseReady()) {
     const svc = createServiceClient();
@@ -167,7 +165,9 @@ export async function saveTourSettings(input: Partial<TourSettings> & {
       } else {
         await svc.from(TABLE).insert({ ...patch, title: 'VizTR Virtual Tour' });
       }
+      return merged;
     }
   }
+  console.warn('[toursRepo] Supabase not configured — settings save skipped (read-only fallback)');
   return merged;
 }

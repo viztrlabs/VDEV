@@ -660,10 +660,6 @@ label, .font-label {
 }
 
 /* Dashboard Layout Utilities - Hide Header/Footer for Dashboard Views */
-.dashboard-layout {
-  /* Remove header and footer from dashboard view */
-}
-
 .dashboard-layout #main-header,
 .dashboard-layout header,
 .dashboard-layout #header,
@@ -802,31 +798,40 @@ label, .font-label {
   }
 }
 
-/* Header Glassmorphism Navbar */
+/* Header Glassmorphism Navbar - Completely Transparent with no background */
 #main-header {
-  background: rgba(10, 10, 11, 0.7) !important;
-  backdrop-filter: blur(24px) saturate(190%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
-  border-bottom: 1px solid rgba(30, 41, 59, 0.7) !important;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5) !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
   will-change: transform, opacity;
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease !important;
 }
 
 :is(.light, [data-theme="light"], .theme-light) #main-header {
-  background: rgba(255, 255, 255, 0.75) !important;
-  backdrop-filter: blur(24px) saturate(190%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
-  border-bottom: 1px solid rgba(226, 232, 240, 0.85) !important;
-  box-shadow: 0 10px 25px -10px rgba(17, 27, 47, 0.08) !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
 }
 
-/* Force horizontal layout and unified pill cluster styling for mid menu - aligned with hero-pipeline-bar */
-#header-mid-menu,
-.header-mid-menu-nav {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
+/* Force horizontal layout and unified pill cluster styling for mid menu - desktop/tablet (>= 768px) only */
+@media (min-width: 768px) {
+  #header-mid-menu,
+  .header-mid-menu-nav {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+  }
+}
+
+@media (max-width: 767px) {
+  #header-mid-menu,
+  .header-mid-menu-nav {
+    display: none !important;
+  }
 }
 
 .header-mid-menu-cluster {
@@ -982,6 +987,13 @@ label, .font-label {
   backdrop-filter: blur(28px) saturate(200%) !important;
   -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
   border-left: 1px solid rgba(255, 255, 255, 0.9) !important;
+}
+
+:is(.light, [data-theme="light"], .theme-light) #mobile-menu-toggle-btn {
+  background: rgba(255, 255, 255, 0.75) !important;
+  border-color: rgba(203, 213, 225, 0.8) !important;
+  color: #1e293b !important;
+  box-shadow: 0 2px 8px rgba(17, 27, 47, 0.08) !important;
 }
 
 /* Global body theme colors & ambient glassmorphic refraction mesh */
@@ -1174,3 +1186,42 @@ body.dark {
   border: 1px solid rgba(0, 102, 134, 0.25) !important;
   color: #334155 !important;
 }
+
+/* =========================================================================
+   MARQUEE SECTION TICKER ANIMATION
+   Continuous 60fps horizontal marquee scroll with pause on hover
+   ========================================================================= */
+@keyframes marquee-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee-scroll 32s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+:is(.light, [data-theme="light"], .theme-light) #marquee-section {
+  background-color: #f1f3f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+:is(.light, [data-theme="light"], .theme-light) #marquee-section span:not(.text-\[\#00F0FF\]) {
+  color: #0f172a !important;
+}
+
+:is(.light, [data-theme="light"], .theme-light) #marquee-section span.text-\[\#00F0FF\] {
+  color: #008fa8 !important;
+}
+
+

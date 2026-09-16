@@ -8,7 +8,10 @@ import {
   applyRateLimit,
   generateRequestId,
   addRequestIdHeaders,
+  type RateLimitConfig,
 } from '@/lib/api/validation';
+import { getAuthUser, requireAdmin } from '@/lib/api/auth';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import {
   AdminUserSchema,
   CreateAdminUserSchema,
@@ -53,15 +56,23 @@ const mockUsers: AdminUser[] = [
   },
 ];
 
-function getAuthUser(request: NextRequest): { id: string; email: string; role: string } {
-  const authHeader = request.headers.get('x-user-role');
-  if (!authHeader) {
-    throw new Error('UNAUTHORIZED');
-  }
+const RATE_LIMIT_CONFIG: RateLimitConfig = { limit: 100, window: '60 s' };
+
+function mapSupabaseUser(row: any): AdminUser {
   return {
-    id: request.headers.get('x-user-id') || 'unknown',
-    email: request.headers.get('x-user-email') || 'unknown',
-    role: authHeader,
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    role: row.role || 'user',
+    status: row.status || 'active',
+    avatar: row.avatar || '',
+    department: row.department || '',
+    assignedProjectsCount: row.assigned_projects_count || 0,
+    lastLogin: row.last_login || 'Never',
+    twoFactorEnabled: row.two_factor_enabled || false,
+    createdAt: row.created_at || new Date().toISOString(),
+    phone: row.phone || '',
+    company: row.company || '',
   };
 }
 
@@ -69,13 +80,56 @@ function getAuthUser(request: NextRequest): { id: string; email: string; role: s
 export async function GET(request: NextRequest) {
   const requestId = generateRequestId();
   
-  const rateLimitResponse = applyRateLimit(request, { limit: 100, windowMs: 60000 });
+  const rateLimitResponse = await applyRateLimit(request, RATE_LIMIT_CONFIG);
   if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
   try {
-    const user = getAuthUser(request);
+    const user = await getAuthUser();
     const query = Object.fromEntries(request.nextUrl.searchParams.entries());
     
+    const page = parseInt(query.page as string) || 1;
+    const pageSize = parseInt(query.pageSize as string) || 20;
+
+    // Try Supabase first
+    if (supabaseAdmin) {
+      try {
+        let qb = supabaseAdmin
+          .from('User')
+          .select('*', { count: 'exact' });
+
+        if (query.search) {
+          const s = query.search.toLowerCase();
+          qb = qb.or(`name.ilike.%${s}%,email.ilike.%${s}%,department.ilike.%${s}%`);
+        }
+        if (query.role) qb = qb.eq('role', query.role);
+        if (query.status) qb = qb.eq('status', query.status);
+        if (query.department) qb = qb.eq('department', query.department);
+
+        const start = (page - 1) * pageSize;
+        qb = qb.range(start, start + pageSize - 1);
+        qb = qb.order('created_at', { ascending: false });
+
+        const { data, error, count } = await qb;
+
+        if (!error && data) {
+          const users = data.map(mapSupabaseUser);
+          return addRequestIdHeaders(
+            successResponse({
+              data: users,
+              total: count ?? users.length,
+              page,
+              pageSize,
+              totalPages: Math.ceil((count ?? users.length) / pageSize),
+            }, { requestId }),
+            requestId
+          );
+        }
+      } catch {
+        // Fall through to mock
+      }
+    }
+
+    // Fallback to in-memory
     let filtered = [...mockUsers];
     
     if (query.search) {
@@ -90,8 +144,6 @@ export async function GET(request: NextRequest) {
     if (query.status) filtered = filtered.filter(u => u.status === query.status);
     if (query.department) filtered = filtered.filter(u => u.department === query.department);
 
-    const page = parseInt(query.page as string) || 1;
-    const pageSize = parseInt(query.pageSize as string) || 20;
     const start = (page - 1) * pageSize;
     const end = start + pageSize;
     const paginated = filtered.slice(start, end);
@@ -103,7 +155,7 @@ export async function GET(request: NextRequest) {
         page,
         pageSize,
         totalPages: Math.ceil(filtered.length / pageSize),
-      }, { requestId }) as NextResponse,
+      }, { requestId }),
       requestId
     );
   } catch (error) {
@@ -115,11 +167,13 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const requestId = generateRequestId();
   
-  const rateLimitResponse = applyRateLimit(request, { limit: 20, windowMs: 60000 });
+  const rateLimitResponse = await applyRateLimit(request, { limit: 20, window: '60 s' });
   if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
   try {
-    const user = getAuthUser(request);
+    const user = await getAuthUser();
+    requireAdmin(user); // Only admin/super_admin can create users
+    
     const body = await request.json().catch(() => ({}));
     
     // Validate required fields
@@ -146,7 +200,63 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if email already exists
+    // Try Supabase first
+    if (supabaseAdmin) {
+      try {
+        // Check if email already exists
+        const { data: existing } = await supabaseAdmin
+          .from('User')
+          .select('id')
+          .eq('email', email.toLowerCase())
+          .single();
+
+        if (existing) {
+          return addRequestIdHeaders(
+            NextResponse.json(
+              { success: false, error: { code: 'CONFLICT', message: 'Email already exists' } },
+              { status: 409 }
+            ),
+            requestId
+          );
+        }
+
+        const newUser = {
+          id: `usr-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          name,
+          email: email.toLowerCase(),
+          role,
+          status,
+          department: department || '',
+          assigned_projects_count: assignedProjectsCount || 0,
+          avatar: avatar || `https://images.unsplash.com/photo-${Math.floor(Math.random() * 1000000)}?w=150`,
+          last_login: 'Never',
+          two_factor_enabled: twoFactorEnabled || false,
+          created_at: new Date().toISOString(),
+          phone: phone || '',
+          company: company || '',
+        };
+
+        const { data, error } = await supabaseAdmin
+          .from('User')
+          .insert(newUser)
+          .select()
+          .single();
+
+        if (!error && data) {
+          return addRequestIdHeaders(
+            NextResponse.json(
+              { success: true, data: mapSupabaseUser(data), meta: { timestamp: new Date().toISOString(), requestId } },
+              { status: 201 }
+            ),
+            requestId
+          );
+        }
+      } catch {
+        // Fall through to mock
+      }
+    }
+
+    // Fallback to in-memory
     const existing = mockUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
     if (existing) {
       return addRequestIdHeaders(
@@ -158,7 +268,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create new user
     const newUser: AdminUser = {
       id: `usr-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       name,

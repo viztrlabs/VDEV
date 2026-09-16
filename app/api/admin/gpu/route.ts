@@ -5,10 +5,10 @@ import {
   handleApiError,
   successResponse,
   createdResponse,
-  noContentResponse,
   applyRateLimit,
   generateRequestId,
   addRequestIdHeaders,
+  type RateLimitConfig,
 } from '@/lib/api/validation';
 import {
   GpuNodeSchema,
@@ -73,7 +73,7 @@ export const GET = withAuth(
   async (query, request, user) => {
     const requestId = generateRequestId();
     
-    const rateLimitResponse = applyRateLimit(request, { limit: 100, windowMs: 60000 });
+    const rateLimitResponse = await applyRateLimit(request, { limit: 100, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
     try {
@@ -111,7 +111,7 @@ export const POST = withAuth(
   async (data, request, user) => {
     const requestId = generateRequestId();
     
-    const rateLimitResponse = applyRateLimit(request, { limit: 10, windowMs: 60000 });
+    const rateLimitResponse = await applyRateLimit(request, { limit: 10, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
     try {

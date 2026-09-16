@@ -41,6 +41,8 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
   const [newFeedback, setNewFeedback] = useState<Partial<Feedback> | null>(null);
   const [filter, setFilter] = useState<'all' | 'open' | 'in-progress' | 'resolved'>('all');
   const [showResolution, setShowResolution] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   // Mock client data
   const currentUser = {
@@ -55,34 +57,93 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
     { id: '3dartist1', name: 'David Kim', role: '3d-artist' }
   ];
 
-  const addFeedback = (feedbackData: Partial<Feedback>) => {
-    const newFeedback: Feedback = {
-      id: `feedback_${Date.now()}`,
-      assetId: selectedAsset,
-      assetName: assets.find(a => a.id === selectedAsset)?.name || '',
-      assetType: assets.find(a => a.id === selectedAsset)?.type || 'image',
-      x: feedbackData.x || 0,
-      y: feedbackData.y || 0,
-      width: feedbackData.width || 100,
-      height: feedbackData.height || 100,
-      comment: feedbackData.comment || '',
-      author: currentUser.name,
-      authorRole: currentUser.role,
-      assignedTo: feedbackData.assignedTo || teamMembers[0].id,
-      status: 'open',
-      createdAt: new Date(),
-      resolution: ''
-    };
+  useEffect(() => {
+    if (!projectId) { setLoading(false); return; }
+    fetch(`/api/feedback?projectId=${encodeURIComponent(projectId)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.feedback)) {
+          const mapped: Feedback[] = data.feedback.map((f: any) => ({
+            id: f.id,
+            assetId: f.experience_id || '',
+            assetName: '',
+            assetType: 'image' as const,
+            x: (f.annotation?.x) || 0,
+            y: (f.annotation?.y) || 0,
+            width: (f.annotation?.width) || 100,
+            height: (f.annotation?.height) || 100,
+            comment: f.content,
+            author: f.author_name,
+            authorRole: (f.annotation?.role || 'client') as 'client' | 'designer' | 'architect',
+            assignedTo: f.annotation?.assignedTo || teamMembers[0].id,
+            status: f.status || 'open',
+            createdAt: new Date(f.created_at),
+            resolvedAt: f.updated_at !== f.created_at ? new Date(f.updated_at) : undefined,
+            resolution: f.annotation?.resolution || '',
+          }));
+          setFeedbacks(mapped);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [projectId]);
 
-    setFeedbacks(prev => [...prev, newFeedback]);
-    setIsAddingFeedback(false);
-    setNewFeedback(null);
+  const addFeedback = async (feedbackData: Partial<Feedback>) => {
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          project_id: projectId,
+          content: feedbackData.comment || '',
+          author_name: currentUser.name,
+          experience_id: selectedAsset || null,
+          annotation: {
+            x: feedbackData.x || 50,
+            y: feedbackData.y || 50,
+            width: feedbackData.width || 150,
+            height: feedbackData.height || 150,
+            assignedTo: feedbackData.assignedTo || teamMembers[0].id,
+            role: currentUser.role,
+          },
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.feedback) {
+        const f = data.feedback;
+        const mapped: Feedback = {
+          id: f.id,
+          assetId: f.experience_id || selectedAsset,
+          assetName: assets.find(a => a.id === selectedAsset)?.name || '',
+          assetType: assets.find(a => a.id === selectedAsset)?.type || 'image',
+          x: f.annotation?.x || 0,
+          y: f.annotation?.y || 0,
+          width: f.annotation?.width || 100,
+          height: f.annotation?.height || 100,
+          comment: f.content,
+          author: f.author_name,
+          authorRole: currentUser.role,
+          assignedTo: feedbackData.assignedTo || teamMembers[0].id,
+          status: 'open',
+          createdAt: new Date(f.created_at),
+          resolution: '',
+        };
+        setFeedbacks(prev => [...prev, mapped]);
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setIsAddingFeedback(false);
+      setNewFeedback(null);
+      setSubmitting(false);
+    }
   };
 
   const resolveFeedback = (feedbackId: string, resolution: string) => {
-    setFeedbacks(prev => prev.map(fb => 
-      fb.id === feedbackId 
-        ? { ...fb, status: 'resolved', resolvedAt: new Date(), resolution } 
+    setFeedbacks(prev => prev.map(fb =>
+      fb.id === feedbackId
+        ? { ...fb, status: 'resolved', resolvedAt: new Date(), resolution }
         : fb
     ));
     setShowResolution(null);
@@ -212,12 +273,12 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
                   >
                     Cancel
                   </button>
-                  <button 
+                  <button
                     className="save-btn"
                     onClick={() => addFeedback(newFeedback || {})}
-                    disabled={!newFeedback?.comment}
+                    disabled={!newFeedback?.comment || submitting}
                   >
-                    Add Feedback
+                    {submitting ? 'Adding...' : 'Add Feedback'}
                   </button>
                 </div>
               </div>
@@ -244,7 +305,12 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
               </div>
             </div>
 
-            {filteredFeedbacks.length === 0 ? (
+            {loading ? (
+              <div className="no-feedback">
+                <div className="w-5 h-5 border-2 border-[#3ECF8E] border-t-transparent rounded-full animate-spin mb-2" />
+                <p>Loading feedback...</p>
+              </div>
+            ) : filteredFeedbacks.length === 0 ? (
               <div className="no-feedback">
                 <MessageSquare className="w-12 h-12" />
                 <p>No feedback items found</p>

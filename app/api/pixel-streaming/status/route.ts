@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/api-guard';
 
 const CONTROLLER_URL =
   process.env.STREAM_CONTROLLER_URL || 'http://localhost:3001';
 
 export async function GET(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   const { searchParams } = new URL(req.url);
   const streamId = searchParams.get('streamId') || 'apex-tower-ue5';
 

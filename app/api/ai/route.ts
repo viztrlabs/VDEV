@@ -21,8 +21,11 @@ import {
   deactivateAIAgent,
   getCollaborationMetrics,
 } from '@/src/services/ai';
+import { requireAuth } from '@/lib/api-guard';
 
 export async function GET(req: NextRequest) {
+  const guard = await requireAuth(req, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
   const { searchParams } = new URL(req.url);
   const action = searchParams.get('action') ?? 'status';
 
@@ -145,23 +148,12 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireAuth(req, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
   const body = await req.json().catch(() => null);
   if (!body) return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
 
   const { action } = body;
-
-  // Basic auth check
-  const role = req.headers.get('x-user-role');
-  const allowedRoles = [
-    'SUPER_ADMIN',
-    'ENTERPRISE_ADMIN',
-    'ORG_ADMIN',
-    'PROJECT_MANAGER',
-    'ADMIN',
-  ];
-  if (!role || !allowedRoles.includes(role)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-  }
 
   try {
     switch (action) {

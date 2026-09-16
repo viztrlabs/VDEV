@@ -1,19 +1,18 @@
 import { NextResponse } from 'next/server';
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 
 // GET /api/tour/views — total public tour opens (for the admin analytics counter)
 // POST /api/tour/views — increment the counter when a visitor opens the tour
-const DATA_DIR = path.join(process.cwd(), '.data', 'tour');
-const VIEWS_FILE = path.join(DATA_DIR, 'views.json');
 
 async function readCount(): Promise<number> {
-  try {
-    const raw = await fs.readFile(VIEWS_FILE, 'utf8');
-    return (JSON.parse(raw).count as number) || 0;
-  } catch {
-    return 0;
-  }
+  if (!supabaseAdmin) return 0;
+  const { data } = await supabaseAdmin
+    .from('tours')
+    .select('views_count')
+    .order('updated_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  return data?.views_count ?? 0;
 }
 
 export async function GET() {
@@ -22,10 +21,25 @@ export async function GET() {
 
 export async function POST() {
   try {
-    const count = (await readCount()) + 1;
-    await fs.mkdir(DATA_DIR, { recursive: true });
-    await fs.writeFile(VIEWS_FILE, JSON.stringify({ count }), 'utf8');
-    return NextResponse.json({ count });
+    if (!supabaseAdmin) {
+      return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
+    }
+    const { data: tour } = await supabaseAdmin
+      .from('tours')
+      .select('id')
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (!tour) {
+      return NextResponse.json({ count: 0 });
+    }
+    const { data } = await supabaseAdmin
+      .from('tours')
+      .update({ views_count: (await readCount()) + 1 })
+      .eq('id', tour.id)
+      .select('views_count')
+      .single();
+    return NextResponse.json({ count: data?.views_count ?? 0 });
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'failed' }, { status: 500 });
   }

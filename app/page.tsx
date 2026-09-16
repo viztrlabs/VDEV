@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import ViztrIntroOverlay from '@/components/landing/ViztrIntroOverlay';
 import HeroSection from '@/components/sections/HeroSection';
 import MarqueeSection from '@/components/sections/MarqueeSection';
 import StudioSection from '@/components/sections/StudioSection';
@@ -21,6 +22,9 @@ import FinalCTASection from '@/components/sections/FinalCTASection';
 export default function HomePage() {
   return (
     <main id="viztr-homepage" className="flex-1 w-full overflow-hidden">
+      {/* 5-SECOND VIZTR INTRO ANIMATION: Plays exclusively on landing page arrival */}
+      <ViztrIntroOverlay />
+
       {/* SECTION 1: HERO - Master entry point to VizTR ecosystem */}
       <HeroSection />
 

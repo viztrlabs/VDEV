@@ -1,4 +1,5 @@
 import { getProject, getScenes } from '@/lib/supabase-admin';
+import { getEditorSchema } from '@/forks/editor/server/schema.js';
 import EditorClient from './EditorClient';
 
 export default async function EditorPage({ params }: { params: Promise<{ projectId: string }> }) {
@@ -28,7 +29,7 @@ export default async function EditorPage({ params }: { params: Promise<{ project
       username: 'viztr-user',
       flags: {
         openedEditor: true,
-        superUser: true,
+        superUser: false,
         tips: {
           hierarchy: true,
           assets: true,
@@ -36,7 +37,7 @@ export default async function EditorPage({ params }: { params: Promise<{ project
           dashboard: true,
           entityInspector: true,
           soundComponent: true,
-          mainMenu: true,
+          mainMenu: false,
           controls: true,
           launch: true,
           howdoi: true,
@@ -58,7 +59,7 @@ export default async function EditorPage({ params }: { params: Promise<{ project
       size: 0,
       diskAllowance: 10737418240,
     },
-    accessToken: 'local-dev-token',
+    accessToken: '',
     project: {
       id: project.id,
       name: project.name,
@@ -68,7 +69,7 @@ export default async function EditorPage({ params }: { params: Promise<{ project
       thumbnails: {},
       settings: {
         id: `settings_${project.id}`,
-        engineV2: false,
+        engineV2: true,
         antiAlias: true,
         fillMode: 'KEEP_CASPECT',
         resolutionMode: 'AUTO',
@@ -163,31 +164,7 @@ export default async function EditorPage({ params }: { params: Promise<{ project
     sentry: { enabled: false, env: 'local', version: '1.0.0', send: false, service: 'editor', page: '', disable_breadcrumbs: true },
     metrics: { env: 'local', send: false },
     oneTrustDomainKey: '',
-    schema: {
-      version: 1,
-      documents: {
-        settings: {
-          type: 'object',
-          properties: {
-            editor: {
-              type: 'object',
-              'x-scope': 'projectUser',
-              properties: {
-                cameraClearColor: { type: 'array', default: [0.117, 0.117, 0.117, 1], 'x-scope': 'projectUser' },
-                cameraNearClip: { type: 'number', default: 0.0001, 'x-scope': 'projectUser' },
-                cameraFarClip: { type: 'number', default: 1000, 'x-scope': 'projectUser' },
-                cameraToneMapping: { type: 'number', default: 0, 'x-scope': 'projectUser' },
-                cameraGammaCorrection: { type: 'number', default: 0, 'x-scope': 'projectUser' },
-                showFog: { type: 'boolean', default: true, 'x-scope': 'projectUser' },
-                snapIncrement: { type: 'number', default: 0.1, 'x-scope': 'projectUser' },
-                gridSnap: { type: 'boolean', default: false, 'x-scope': 'projectUser' },
-              },
-            },
-          },
-        },
-      },
-      assetData: {},
-    },
+    schema: getEditorSchema(),
     wasmModules: [],
   };
 

@@ -61,12 +61,57 @@ interface RoleLayoutProps {
   role: UserRole;
 }
 
-// Role-based color mapping
-const roleColors: Record<UserRole, string> = {
-  super_admin: 'purple',
-  admin: 'blue',
-  user: 'emerald',
-  client: 'amber',
+// Role-based class mapping
+const roleClassMap: Record<UserRole, {
+  bgBadge: string;
+  textBadge: string;
+  borderBadge: string;
+  bgActiveNav: string;
+  textActiveNav: string;
+  borderActiveNav: string;
+  bgAvatar: string;
+  textAvatar: string;
+}> = {
+  super_admin: {
+    bgBadge: 'bg-purple-500/20',
+    textBadge: 'text-purple-400',
+    borderBadge: 'border-purple-500/30',
+    bgActiveNav: 'bg-purple-500/15',
+    textActiveNav: 'text-purple-400',
+    borderActiveNav: 'border-purple-500/30',
+    bgAvatar: 'bg-purple-500/20',
+    textAvatar: 'text-purple-400',
+  },
+  admin: {
+    bgBadge: 'bg-blue-500/20',
+    textBadge: 'text-blue-400',
+    borderBadge: 'border-blue-500/30',
+    bgActiveNav: 'bg-blue-500/15',
+    textActiveNav: 'text-blue-400',
+    borderActiveNav: 'border-blue-500/30',
+    bgAvatar: 'bg-blue-500/20',
+    textAvatar: 'text-blue-400',
+  },
+  user: {
+    bgBadge: 'bg-emerald-500/20',
+    textBadge: 'text-emerald-400',
+    borderBadge: 'border-emerald-500/30',
+    bgActiveNav: 'bg-emerald-500/15',
+    textActiveNav: 'text-emerald-400',
+    borderActiveNav: 'border-emerald-500/30',
+    bgAvatar: 'bg-emerald-500/20',
+    textAvatar: 'text-emerald-400',
+  },
+  client: {
+    bgBadge: 'bg-amber-500/20',
+    textBadge: 'text-amber-400',
+    borderBadge: 'border-amber-500/30',
+    bgActiveNav: 'bg-amber-500/15',
+    textActiveNav: 'text-amber-400',
+    borderActiveNav: 'border-amber-500/30',
+    bgAvatar: 'bg-amber-500/20',
+    textAvatar: 'text-amber-400',
+  },
 };
 
 // Role-based label mapping
@@ -308,20 +353,12 @@ export default function RoleLayout({
     });
   }, [loadSidebarState, sidebarOpen, pathname, role, getStorageKey]);
 
-  // ===== HEADER/FOOTER HIDING LOGIC =====
+  // ===== HEADER/FOOTER SHOWING LOGIC =====
   
-  const hideHeaderAndFooter = true; // Set to false to show them
+  const hideHeaderAndFooter = false;
 
   return (
-    <div className={`min-h-screen bg-zinc-950 text-white`}>      {/* Debug button - remove in production */}
-      <button
-        onClick={debugSidebarState}
-        className="fixed top-4 right-4 z-50 bg-zinc-800 text-white px-3 py-1 rounded text-xs"
-        style={{ display: 'none' }} /* Hide in production */
-      >
-        Debug Sidebar
-      </button>
-
+    <div className={`min-h-screen bg-zinc-950 text-white`}>
       {/* Mobile sidebar backdrop */}
       {!hideHeaderAndFooter && sidebarOpen && (
         <div
@@ -339,12 +376,12 @@ export default function RoleLayout({
             {/* Logo & Role */}
             <div className="p-5 border-b border-zinc-800">
               <Link href="/" className="flex items-center gap-3 mb-4">
-                <div className={`p-2 rounded-lg bg-${roleColors[role]}-500/20`}>
-                  <Sparkles className={`w-6 h-6 text-${roleColors[role]}-400`} />
+                <div className={`p-2 rounded-lg ${roleClassMap[role].bgBadge}`}>
+                  <Sparkles className={`w-6 h-6 ${roleClassMap[role].textBadge}`} />
                 </div>
                 <span className="text-xl font-bold font-display">VizTR</span>
               </Link>
-              <div className={`px-3 py-1.5 rounded-lg bg-${roleColors[role]}-500/20 border border-${roleColors[role]}-500/30 text-${roleColors[role]}-400 text-xs font-bold uppercase tracking-wider text-center`}>
+              <div className={`px-3 py-1.5 rounded-lg ${roleClassMap[role].bgBadge} ${roleClassMap[role].borderBadge} ${roleClassMap[role].textBadge} text-xs font-bold uppercase tracking-wider text-center`}>
                 {roleLabels[role]}
               </div>
             </div>
@@ -357,9 +394,10 @@ export default function RoleLayout({
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
-                      ? `bg-${roleColors[role]}-500/15 text-${roleColors[role]}-400 border border-${roleColors[role]}-500/30`
-                      : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-white'
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                      isActive
+                        ? `${roleClassMap[role].bgActiveNav} ${roleClassMap[role].textActiveNav} ${roleClassMap[role].borderActiveNav}`
+                        : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-white'
                     }`}
                     onClick={() => setSidebarOpen(false)} // Close sidebar on mobile navigation
                   >
@@ -429,12 +467,12 @@ export default function RoleLayout({
                     className="flex items-center gap-3 p-2 rounded-lg hover:bg-zinc-800 cursor-pointer"
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
                   >
-                    <div className={`w-8 h-8 rounded-full bg-${roleColors[role]}-500/20 flex items-center justify-center`}>
-                      <User className={`w-4 h-4 text-${roleColors[role]}-400`} />
+                    <div className={`w-8 h-8 rounded-full ${roleClassMap[role].bgAvatar} flex items-center justify-center`}>
+                      <User className={`w-4 h-4 ${roleClassMap[role].textAvatar}`} />
                     </div>
                     <div className="hidden md:block text-left">
                       <p className="text-sm font-semibold">{roleLabels[role] + ' User'}</p>
-                      <p className={`text-xs text-${roleColors[role]}-400`}>{roleLabels[role]}</p>
+                      <p className={`text-xs ${roleClassMap[role].textBadge}`}>{roleLabels[role]}</p>
                     </div>
                     <ChevronDown className="w-4 h-4 text-zinc-500" />
                   </button>

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/api-guard';
 
 export interface MediaAssetRecord {
   id: string;
@@ -74,6 +75,9 @@ let MEDIA_DB: MediaAssetRecord[] = [
 ];
 
 export async function GET(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
+
   const { searchParams } = new URL(req.url);
   const type = searchParams.get('type');
   const category = searchParams.get('category');
@@ -103,6 +107,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const body = await req.json();
     const newAsset: MediaAssetRecord = {
@@ -128,6 +134,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const guard = await requireAuth(req, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
 

@@ -8,6 +8,7 @@ import {
   applyRateLimit,
   generateRequestId,
   addRequestIdHeaders,
+  type RateLimitConfig,
 } from '@/lib/api/validation';
 import {
   FeatureToggleSchema,
@@ -52,7 +53,7 @@ export const GET = withAuth(
     const requestId = generateRequestId();
     const key = request.nextUrl.pathname.split('/').pop() || '';
     
-    const rateLimitResponse = applyRateLimit(request, { limit: 100, windowMs: 60000 });
+    const rateLimitResponse = await applyRateLimit(request, { limit: 100, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
     try {
@@ -81,7 +82,7 @@ export const PATCH = withAuth(
     const requestId = generateRequestId();
     const key = request.nextUrl.pathname.split('/').pop() || '';
     
-    const rateLimitResponse = applyRateLimit(request, { limit: 50, windowMs: 60000 });
+    const rateLimitResponse = await applyRateLimit(request, { limit: 50, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
     try {
@@ -122,7 +123,7 @@ export const POST = withAuth(
     const requestId = generateRequestId();
     const key = request.nextUrl.pathname.split('/').slice(-2)[0];
     
-    const rateLimitResponse = applyRateLimit(request, { limit: 50, windowMs: 60000 });
+    const rateLimitResponse = await applyRateLimit(request, { limit: 50, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
     try {
@@ -162,7 +163,7 @@ export const DELETE = withAuth(
     const requestId = generateRequestId();
     const key = request.nextUrl.pathname.split('/').pop() || '';
     
-    const rateLimitResponse = applyRateLimit(request, { limit: 10, windowMs: 60000 });
+    const rateLimitResponse = await applyRateLimit(request, { limit: 10, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
     try {

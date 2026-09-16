@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { requireAuth } from '@/lib/api-guard';
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    const guard = await requireAuth(_request);
+    if (guard.error) return guard.error;
     if (!supabaseAdmin) {
         return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
     }

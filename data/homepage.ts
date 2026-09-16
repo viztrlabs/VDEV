@@ -91,14 +91,14 @@ export const homepageData = {
   marquee: {
     items: [
       'EXTERIOR VISUALIZATION',
-      'INTERIOR ARCHITECTURE',
+      'INTERIOR VISUALIZATION',
       'CINEMATIC WALKTHROUGH',
       'WebXR ENGINE',
       'WebAR EXPERIENCES',
       'VIRTUAL REALITY',
-      '8K VIRTUAL TOUR',
+      'VIRTUAL TOUR',
       'PIXEL STREAMING',
-      'GAUSSIAN SPLAT',
+      'GAUSSIAN SPLAT — VIZSPLAT',
       '3D EDITOR'
     ],
     speed: 35

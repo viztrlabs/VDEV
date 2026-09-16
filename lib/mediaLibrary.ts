@@ -1,7 +1,6 @@
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 
-// Lists 360° panorama images available in the media library (public/tour),
+// Lists 360° panorama images available in the media library (Supabase Storage viztr-assets/tour),
 // so the editor can reuse existing uploads instead of re-uploading.
 export interface MediaAsset {
   name: string;
@@ -11,19 +10,28 @@ export interface MediaAsset {
 
 export async function listMediaLibrary(): Promise<MediaAsset[]> {
   try {
-    const dir = path.join(process.cwd(), 'public', 'tour');
-    const files = await fs.readdir(dir);
+    if (!supabaseAdmin) return [];
+
+    const { data: files, error } = await supabaseAdmin.storage
+      .from('viztr-assets')
+      .list('tour', { limit: 500 });
+
+    if (error || !files) {
+      console.warn('[mediaLibrary] Supabase list error:', error?.message);
+      return [];
+    }
+
     const assets: MediaAsset[] = [];
     for (const f of files) {
-      if (/\.(jpg|jpeg|png|webp|avif)$/i.test(f)) {
-        let size: number | undefined;
-        try {
-          const st = await fs.stat(path.join(dir, f));
-          size = st.size;
-        } catch {
-          /* ignore */
-        }
-        assets.push({ name: f, url: `/tour/${f}`, size });
+      if (/\.(jpg|jpeg|png|webp|avif)$/i.test(f.name)) {
+        const { data: urlData } = supabaseAdmin.storage
+          .from('viztr-assets')
+          .getPublicUrl(`tour/${f.name}`);
+        assets.push({
+          name: f.name,
+          url: urlData.publicUrl,
+          size: f.metadata?.size ?? undefined,
+        });
       }
     }
     return assets;

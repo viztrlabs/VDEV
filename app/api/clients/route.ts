@@ -8,12 +8,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { normalizeUserRole, type UserRole } from '@/lib/rbac';
 import { isSupabaseAdminReady } from '@/lib/supabase/repositories';
-
-async function requireSessionRole(): Promise<UserRole | null> {
-  const session = await getServerSession(authOptions);
-  const role = normalizeUserRole((session?.user as any)?.role);
-  return session?.user ? role : null;
-}
+import { requireAuth } from '@/lib/api-guard';
 
 export interface ClientRecord {
   id: string;
@@ -33,10 +28,9 @@ export interface ClientRecord {
 }
 
 export async function GET(req: NextRequest) {
-  const role = await requireSessionRole();
-  if (!role) {
-    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
-  }
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
+  const role = guard.role;
   const isAdmin = role === 'super_admin' || role === 'admin';
 
   const { searchParams } = new URL(req.url);
@@ -57,6 +51,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireAuth(req, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
   try {
     const body = await req.json();
     const newClient: ClientRecord = {
@@ -84,6 +80,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
+  const guard = await requireAuth(req, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
   try {
     const body = await req.json();
     if (!body.id) {
@@ -107,6 +105,8 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const guard = await requireAuth(req, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
 

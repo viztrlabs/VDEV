@@ -11,6 +11,8 @@ import type {
   FeatureToggleRepository,
   SystemLogRepository,
   RevenueRepository,
+  BookingRepository,
+  ContactRepository,
   RepositoryFactory,
   PaginationParams,
   PaginatedResult,
@@ -31,7 +33,24 @@ import {
   type FeatureToggle,
   type SystemHealthLog,
   type RevenueMetric,
+  type Booking,
+  type BookingStatus,
+  type BookingServiceType,
+  type BookingFilters,
+  type BookingStats,
+  type CreateBooking,
+  type UpdateBooking,
+  type ApproveBooking,
+  type RejectBooking,
+  type ContactSubmission,
+  type ContactStatus,
+  type ContactServiceInterest,
+  type ContactFilters,
+  type ContactStats,
+  type CreateContact,
 } from '../super-admin-store-types';
+
+import { INITIAL_MANAGED_PROJECTS } from '../projects-data';
 
 // =====================================================================
 // STORAGE HELPERS
@@ -42,6 +61,8 @@ const STORAGE_KEYS = {
   gpuNodes: 'viztr_super_admin_gpu_nodes',
   featureToggles: 'viztr_super_admin_feature_toggles',
   systemLogs: 'viztr_super_admin_system_logs',
+  bookings: 'viztr_super_admin_bookings',
+  contacts: 'viztr_super_admin_contacts',
 };
 
 function loadFromStorage<T>(key: string, fallback: T[]): T[] {
@@ -366,13 +387,11 @@ function createSystemLogRepository(): SystemLogRepository {
 // =====================================================================
 
 function createRevenueRepository(): RevenueRepository {
-  // Use the same mock data from projects-data
-  const { INITIAL_MANAGED_PROJECTS } = require('../projects-data');
-  
+
   function computeMonthly(): RevenueMetric[] {
     const monthly: Record<string, RevenueMetric> = {};
     
-    INITIAL_MANAGED_PROJECTS.forEach((p: any) => {
+    INITIAL_MANAGED_PROJECTS.forEach((p) => {
       const monthKey = p.lastUpdate.includes('2025') ? '2025-08' : '2025-09'; // Simplified
       if (!monthly[monthKey]) {
         monthly[monthKey] = { month: monthKey, mrr: 0, oneOffCommissions: 0, gpuStreamingRevenue: 0, vrLicenses: 0, total: 0, expenses: 0, netMargin: 0 };
@@ -411,8 +430,252 @@ function createRevenueRepository(): RevenueRepository {
 }
 
 // =====================================================================
-// FACTORY
+// MOCK BOOKING REPOSITORY
 // =====================================================================
+
+function createBookingRepository(): BookingRepository {
+  let bookings = loadFromStorage<Booking>(STORAGE_KEYS.bookings, []);
+
+  const persist = () => saveToStorage(STORAGE_KEYS.bookings, bookings);
+
+  function applyFilters(list: Booking[], filters?: BookingFilters): Booking[] {
+    if (!filters) return list;
+    return list.filter(b => {
+      if (filters.search) {
+        const s = filters.search.toLowerCase();
+        if (!b.client_name.toLowerCase().includes(s) &&
+            !b.client_email.toLowerCase().includes(s) &&
+            !b.company?.toLowerCase().includes(s) &&
+            !b.project_description?.toLowerCase().includes(s)) {
+          return false;
+        }
+      }
+      if (filters.status && b.status !== filters.status) return false;
+      if (filters.service_type && b.service_type !== filters.service_type) return false;
+      if (filters.date_from && b.preferred_date < filters.date_from) return false;
+      if (filters.date_to && b.preferred_date > filters.date_to) return false;
+      return true;
+    });
+  }
+
+  function paginate<T>(list: T[], pagination?: PaginationParams): PaginatedResult<T> {
+    if (!pagination) return { data: list, total: list.length, page: 1, pageSize: list.length, totalPages: 1 };
+    const { page = 1, pageSize = 20 } = pagination;
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
+    return {
+      data: list.slice(start, end),
+      total: list.length,
+      page,
+      pageSize,
+      totalPages: Math.ceil(list.length / pageSize),
+    };
+  }
+
+  return {
+    async findAll(filters?: BookingFilters, pagination?: PaginationParams) {
+      const filtered = applyFilters(bookings, filters);
+      // Sort by created_at descending
+      const sorted = [...filtered].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      return paginate(sorted, pagination);
+    },
+    async findById(id: string) {
+      return bookings.find(b => b.id === id) || null;
+    },
+    async create(booking: CreateBooking) {
+      const newBooking: Booking = {
+        ...booking,
+        id: `bkg-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        status: 'pending',
+        admin_notes: undefined,
+        approved_by: undefined,
+        approved_at: undefined,
+        rejected_by: undefined,
+        rejected_at: undefined,
+        rejection_reason: undefined,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      bookings = [newBooking, ...bookings];
+      persist();
+      return newBooking;
+    },
+    async update(id: string, updates: Partial<Booking>) {
+      const idx = bookings.findIndex(b => b.id === id);
+      if (idx === -1) throw new Error(`Booking ${id} not found`);
+      bookings[idx] = { ...bookings[idx], ...updates, updated_at: new Date().toISOString() };
+      persist();
+      return bookings[idx];
+    },
+    async delete(id: string) {
+      const idx = bookings.findIndex(b => b.id === id);
+      if (idx === -1) throw new Error(`Booking ${id} not found`);
+      bookings.splice(idx, 1);
+      persist();
+    },
+    async approve(id: string, adminNotes?: string) {
+      const idx = bookings.findIndex(b => b.id === id);
+      if (idx === -1) throw new Error(`Booking ${id} not found`);
+      if (bookings[idx].status !== 'pending') {
+        throw new Error('Only pending bookings can be approved');
+      }
+      bookings[idx] = {
+        ...bookings[idx],
+        status: 'approved',
+        admin_notes: adminNotes,
+        approved_by: 'current-user-id', // In real app, get from auth context
+        approved_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      persist();
+      return bookings[idx];
+    },
+    async reject(id: string, rejectionReason: string, adminNotes?: string) {
+      const idx = bookings.findIndex(b => b.id === id);
+      if (idx === -1) throw new Error(`Booking ${id} not found`);
+      if (bookings[idx].status !== 'pending') {
+        throw new Error('Only pending bookings can be rejected');
+      }
+      bookings[idx] = {
+        ...bookings[idx],
+        status: 'rejected',
+        rejection_reason: rejectionReason,
+        admin_notes: adminNotes,
+        rejected_by: 'current-user-id',
+        rejected_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      persist();
+      return bookings[idx];
+    },
+    async getStats() {
+      const byStatus: Record<BookingStatus, number> = { pending: 0, approved: 0, rejected: 0, completed: 0, cancelled: 0 };
+      const byServiceType: Record<BookingServiceType, number> = {
+        Architectural: 0, 'Virtual Reality': 0, 'Pixel Streaming': 0, WebXR: 0, WebAR: 0, 'Virtual Tour 360': 0, Animation: 0, 'Still Renders': 0, Other: 0,
+      };
+      
+      bookings.forEach(b => {
+        byStatus[b.status] = (byStatus[b.status] || 0) + 1;
+        byServiceType[b.service_type] = (byServiceType[b.service_type] || 0) + 1;
+      });
+      
+      return { total: bookings.length, by_status: byStatus, by_service_type: byServiceType };
+    },
+  };
+}
+
+// =====================================================================
+// MOCK CONTACT REPOSITORY
+// =====================================================================
+
+function createContactRepository(): ContactRepository {
+  let contacts = loadFromStorage<ContactSubmission>(STORAGE_KEYS.contacts, []);
+
+  const persist = () => saveToStorage(STORAGE_KEYS.contacts, contacts);
+
+  function applyFilters(list: ContactSubmission[], filters?: ContactFilters): ContactSubmission[] {
+    if (!filters) return list;
+    return list.filter(c => {
+      if (filters.search) {
+        const s = filters.search.toLowerCase();
+        if (!c.name.toLowerCase().includes(s) &&
+            !c.email.toLowerCase().includes(s) &&
+            !(c.company && c.company.toLowerCase().includes(s)) &&
+            !(c.message && c.message.toLowerCase().includes(s))) {
+          return false;
+        }
+      }
+      if (filters.status && c.status !== filters.status) return false;
+      if (filters.service_interest && c.service_interest !== filters.service_interest) return false;
+      if (filters.date_from && c.created_at < filters.date_from) return false;
+      if (filters.date_to && c.created_at > filters.date_to + 'T23:59:59Z') return false;
+      return true;
+    });
+  }
+
+  return {
+    async findAll(filters?: ContactFilters, pagination?: PaginationParams): Promise<PaginatedResult<ContactSubmission>> {
+      let filtered = applyFilters([...contacts], filters);
+      
+      const sortBy = pagination?.sortBy || 'created_at';
+      const sortOrder = pagination?.sortOrder || 'desc';
+      filtered.sort((a, b) => {
+        const aVal = a[sortBy as keyof ContactSubmission] as string;
+        const bVal = b[sortBy as keyof ContactSubmission] as string;
+        if (aVal < bVal) return sortOrder === 'asc' ? -1 : 1;
+        if (aVal > bVal) return sortOrder === 'asc' ? 1 : -1;
+        return 0;
+      });
+
+      const page = pagination?.page || 1;
+      const pageSize = pagination?.pageSize || 20;
+      const start = (page - 1) * pageSize;
+      const paginated = filtered.slice(start, start + pageSize);
+
+      return {
+        data: paginated,
+        total: filtered.length,
+        page,
+        pageSize,
+        totalPages: Math.ceil(filtered.length / pageSize),
+      };
+    },
+
+    async findById(id: string): Promise<ContactSubmission | null> {
+      return contacts.find(c => c.id === id) || null;
+    },
+
+    async create(contact: CreateContact): Promise<ContactSubmission> {
+      const now = new Date().toISOString();
+      const newContact: ContactSubmission = {
+        id: `CONT-${new Date().getFullYear()}-${String(contacts.length + 1).padStart(3, '0')}`,
+        ...contact,
+        status: 'new',
+        created_at: now,
+        updated_at: now,
+      };
+      contacts.push(newContact);
+      persist();
+      return newContact;
+    },
+
+    async updateStatus(id: string, status: ContactStatus): Promise<ContactSubmission> {
+      const idx = contacts.findIndex(c => c.id === id);
+      if (idx === -1) throw new Error(`Contact ${id} not found`);
+      
+      contacts[idx] = {
+        ...contacts[idx],
+        status,
+        updated_at: new Date().toISOString(),
+      };
+      persist();
+      return contacts[idx];
+    },
+
+    async delete(id: string): Promise<void> {
+      contacts = contacts.filter(c => c.id !== id);
+      persist();
+    },
+
+    async getStats(): Promise<ContactStats> {
+      const byStatus: Record<string, number> = {};
+      const byServiceInterest: Record<string, number> = {};
+
+      contacts.forEach(c => {
+        byStatus[c.status] = (byStatus[c.status] || 0) + 1;
+        if (c.service_interest) {
+          byServiceInterest[c.service_interest] = (byServiceInterest[c.service_interest] || 0) + 1;
+        }
+      });
+
+      return {
+        total: contacts.length,
+        by_status: byStatus as any,
+        by_service_interest: byServiceInterest as any,
+      };
+    },
+  };
+}
 
 export function createMockRepositoryFactory() {
   return {
@@ -421,6 +684,8 @@ export function createMockRepositoryFactory() {
     featureToggles: createFeatureToggleRepository(),
     logs: createSystemLogRepository(),
     revenue: createRevenueRepository(),
+    bookings: createBookingRepository(),
+    contacts: createContactRepository(),
   };
 }
 

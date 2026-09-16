@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/api-guard';
 
 export interface PageRecord {
   id: string;
@@ -99,6 +100,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireAuth(req, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
   try {
     const body = await req.json();
     const newPage: PageRecord = {
@@ -125,6 +128,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
+  const guard = await requireAuth(req, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
   try {
     const body = await req.json();
     if (!body.id) {
@@ -149,6 +154,8 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const guard = await requireAuth(req, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
 

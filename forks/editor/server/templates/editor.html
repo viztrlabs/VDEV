@@ -6,6 +6,19 @@
     <title>VizTR Editor</title>
     <link rel="stylesheet" href="/css/editor.css">
     <link rel="stylesheet" href="/css/code-editor.css">
+    <style>
+        /* VizTR Brand Overrides */
+        .playcanvas-icon::after {
+            background-image: url('/images/viztr-editor-icon.svg') !important;
+            background-size: 18px 18px !important;
+        }
+        .toolbar .logo .pcui-element {
+            background-image: url('/images/viztr-editor-icon.svg') !important;
+        }
+        #progress-bar {
+            background-color: #3ECF8E !important;
+        }
+    </style>
 </head>
 <body>
     <script>
@@ -24,7 +37,7 @@
                 dashboard: true,
                 entityInspector: true,
                 soundComponent: true,
-                mainMenu: true,
+                mainMenu: false,
                 controls: true,
                 launch: true,
                 howdoi: true
@@ -32,6 +45,89 @@
         }
     </script>
     <script src="/js/editor.js"></script>
+    <script>
+        // VizTR Branding Overrides — replaces PlayCanvas logos and text at runtime
+        (function() {
+            var VIZTR_LOGO = '/images/viztr-logo-white.svg';
+            var VIZTR_LOGO_360 = '/images/viztr-logo-360.svg';
+
+            // 1. Override splash screen logo (intercept image loads)
+            var origCreateElement = document.createElement.bind(document);
+            document.createElement = function(tag) {
+                var el = origCreateElement(tag);
+                if (tag.toLowerCase() === 'img') {
+                    var origSrcSet = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src').set;
+                    Object.defineProperty(el, 'src', {
+                        set: function(val) {
+                            if (val && val.indexOf('playcanvas.com') !== -1 && val.indexOf('logo') !== -1) {
+                                val = VIZTR_LOGO;
+                            }
+                            if (val && val.indexOf('playcanvas.com') !== -1 && val.indexOf('play_text') !== -1) {
+                                val = VIZTR_LOGO;
+                            }
+                            if (val && val.indexOf('playcanvas.com') !== -1 && val.indexOf('playcanvas-logo') !== -1) {
+                                val = VIZTR_LOGO_360;
+                            }
+                            origSrcSet.call(el, val);
+                        },
+                        get: function() {
+                            return Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src').get.call(el);
+                        },
+                        configurable: true
+                    });
+                }
+                return el;
+            };
+
+            // 2. Replace PlayCanvas text with VizTR after editor loads
+            function replaceBranding() {
+                if (typeof editor === 'undefined' || !editor.call) {
+                    setTimeout(replaceBranding, 500);
+                    return;
+                }
+                setTimeout(function() {
+                    // Replace text content in DOM
+                    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+                    var textNodes = [];
+                    while (walker.nextNode()) textNodes.push(walker.currentNode);
+                    textNodes.forEach(function(node) {
+                        if (node.nodeValue) {
+                            if (node.nodeValue.indexOf('PlayCanvas Asset Store') !== -1) {
+                                node.nodeValue = node.nodeValue.replace('PlayCanvas Asset Store', 'VizTR Asset Store');
+                            } else if (node.nodeValue.indexOf('PLAYCANVAS ASSET STORE') !== -1) {
+                                node.nodeValue = node.nodeValue.replace('PLAYCANVAS ASSET STORE', 'VIZTR ASSET STORE');
+                            } else if (node.nodeValue.indexOf('PLAYCANVAS') !== -1) {
+                                node.nodeValue = node.nodeValue.replace('PLAYCANVAS', 'VIZTR');
+                            } else if (node.nodeValue.indexOf('PlayCanvas') !== -1) {
+                                node.nodeValue = node.nodeValue.replace(/PlayCanvas/g, 'VizTR');
+                            }
+                        }
+                    });
+
+                    // Override editor_logo.png background-image URLs in inline styles
+                    var allElements = document.querySelectorAll('[style*="editor_logo"], [style*="playcanvas"]');
+                    allElements.forEach(function(el) {
+                        el.style.backgroundImage = "url('/images/viztr-editor-icon.svg')";
+                    });
+
+                    // Override notification icon
+                    if (window.Notification && Notification.permission === 'granted') {
+                        // Future notifications will use VizTR icon via service worker
+                    }
+                }, 2000);
+            }
+            window.addEventListener('load', function() { setTimeout(replaceBranding, 1000); });
+
+            // 3. Override CSS background-image for editor_logo in guide bubbles
+            var style = document.createElement('style');
+            style.textContent = [
+                '[style*="editor_logo.png"] { background-image: url("/images/viztr-editor-icon.svg") !important; background-size: 18px 18px !important; }',
+                '.playcanvas-icon::after { background-image: url("/images/viztr-editor-icon.svg") !important; }',
+                '#application-splash img { content: url("/images/viztr-logo-white.svg"); }'
+            ].join('\n');
+            document.head.appendChild(style);
+        })();
+    </script>
     <script>
         // Ensure viewport wheel and hover work reliably across all browser environments
         (function() {
@@ -158,4 +254,3 @@
     </script>
 </body>
 </html>
-

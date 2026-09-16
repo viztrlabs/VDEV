@@ -50,6 +50,15 @@ export type {
   FeatureToggleCategory,
   FeatureToggleEnvironment,
   LogLevel,
+  BookingStatus,
+  BookingServiceType,
+  Booking,
+  CreateBooking,
+  UpdateBooking,
+  ApproveBooking,
+  RejectBooking,
+  BookingFilters,
+  BookingStats,
 } from './schemas';
 
 export {

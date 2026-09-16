@@ -26,7 +26,7 @@ type Lighting = 'noon' | 'sunset' | 'night';
 
 /** Real WebGL model renderer — loads an actual .glb/.gltf via three.js and
  *  respects the orbit / zoom / render-mode / lighting controls from the HUD. */
-function ModelCanvas({
+export function ModelCanvas({
   url,
   rotX,
   rotY,
@@ -64,6 +64,9 @@ function ModelCanvas({
     (async () => {
       try {
         const { GLTFLoader } = await import('three/examples/jsm/loaders/GLTFLoader.js');
+        const { DRACOLoader } = await import('three/examples/jsm/loaders/DRACOLoader.js');
+        const { KTX2Loader } = await import('three/examples/jsm/loaders/KTX2Loader.js');
+        const { MeshoptDecoder } = await import('three/examples/jsm/libs/meshopt_decoder.module.js');
         const { OrbitControls } = await import('three/examples/jsm/controls/OrbitControls.js');
         if (disposed) return;
 
@@ -102,6 +105,17 @@ function ModelCanvas({
         gridRef.current = grid;
 
         const loader = new GLTFLoader();
+
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
+        loader.setDRACOLoader(dracoLoader);
+
+        const ktx2Loader = new KTX2Loader();
+        ktx2Loader.setTranscoderPath('https://unpkg.com/basis-universal@1.4.0/dist/');
+        loader.setKTX2Loader(ktx2Loader);
+
+        loader.setMeshoptDecoder(MeshoptDecoder);
+
         const gltf = await loader.loadAsync(url);
         if (disposed) return;
         const model = gltf.scene;
@@ -167,6 +181,8 @@ function ModelCanvas({
           cancelAnimationFrame(raf);
           controls.dispose();
           renderer.dispose();
+          dracoLoader.dispose();
+          ktx2Loader.dispose();
           model.traverse((o: any) => {
             if (o.isMesh) {
               o.geometry?.dispose?.();

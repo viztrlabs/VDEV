@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import { requireAuth } from '@/lib/api-guard';
 
 interface PerfBody {
   timestamp?: number;
@@ -68,7 +69,9 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ success: true, ingested: records.length });
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const guard = await requireAuth(request, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
   try {
     await fs.mkdir(DATA_DIR, { recursive: true });
     const buf = await fs.readFile(PERF_FILE, 'utf8').catch(() => '');

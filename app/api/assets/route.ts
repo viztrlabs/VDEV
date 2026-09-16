@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceClient } from '@/lib/services/client';
 import { requireAuth } from '@/lib/api-guard';
+import type { AssetCategory } from '@/lib/asset-types';
 
 export async function GET(req: NextRequest) {
   const guard = await requireAuth(req);
@@ -11,6 +12,7 @@ export async function GET(req: NextRequest) {
     const projectId = searchParams.get('projectId');
     const id = searchParams.get('id');
     const service = searchParams.get('service');
+    const experienceId = searchParams.get('experienceId');
 
     const svc = getServiceClient();
     if (!svc) return NextResponse.json({ success: false, error: 'supabase not configured' }, { status: 500 });
@@ -36,6 +38,10 @@ export async function GET(req: NextRequest) {
       }
     }
 
+    if (experienceId) {
+      query = query.eq('experience_id', experienceId);
+    }
+
     const { data, error } = await query.order('created_at', { ascending: true });
     if (error) return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     return NextResponse.json({ success: true, count: data?.length || 0, assets: data || [] });
@@ -58,7 +64,7 @@ export async function POST(req: NextRequest) {
       service_id: body.service_id || null,
       experience_id: body.experience_id || null,
       deliverable_id: body.deliverable_id || null,
-      type: body.type || 'image',
+      type: (body.type as AssetCategory) || 'image',
       url: body.url || '',
       storage_path: body.storage_path || '',
       mime_type: body.mime_type || '',

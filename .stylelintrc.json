@@ -1,0 +1,8 @@
+{
+  "customSyntax": "postcss-scss",
+  "rules": {
+    "at-rule-no-unknown": [true, {
+      "ignoreAtRules": ["custom-variant", "tailwind", "apply", "layer", "variants", "responsive", "screen", "media", "supports", "import", "charset", "namespace", "page", "font-face", "keyframes", "viewport", "document", "property", "counter-style", "font-feature-values", "font-palette-values", "container", "layer", "starting-style", "scope", "nest", "starting-style"]
+    }]
+  }
+}

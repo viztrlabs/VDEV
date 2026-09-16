@@ -1,5 +1,4 @@
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 
 export type LeadType =
   | 'contact'
@@ -25,37 +24,59 @@ const LEAD_TYPES: LeadType[] = [
   'portfolio-enquiry',
 ];
 
-const DATA_DIR = path.join(process.cwd(), '.data', 'leads');
-const LEADS_FILE = path.join(DATA_DIR, 'leads.json');
-
 export function isLeadType(value: unknown): value is LeadType {
   return typeof value === 'string' && LEAD_TYPES.includes(value as LeadType);
 }
 
 export async function listLeads(): Promise<LeadRecord[]> {
-  try {
-    const raw = await fs.readFile(LEADS_FILE, 'utf8');
-    const parsed = JSON.parse(raw) as LeadRecord[];
-    if (Array.isArray(parsed)) return parsed;
-  } catch {
-    // no file yet
+  if (!supabaseAdmin) {
+    console.warn('[leadsStore] Supabase not configured — returning empty leads list');
+    return [];
   }
-  return [];
+  const { data } = await supabaseAdmin
+    .from('leads')
+    .select('id, service, name, contact, source, stage, metadata, created_at')
+    .order('created_at', { ascending: false });
+  if (!data) return [];
+  return data.map((row: any) => ({
+    id: row.id,
+    type: (row.service as LeadType) || 'contact',
+    payload: row.metadata || {},
+    receivedAt: row.created_at || new Date().toISOString(),
+  }));
 }
 
 export async function saveLead(
   type: LeadType,
   payload: Record<string, unknown>
 ): Promise<LeadRecord> {
-  const lead: LeadRecord = {
-    id: `lead_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+  if (!supabaseAdmin) {
+    console.warn('[leadsStore] Supabase not configured — lead not persisted');
+    return {
+      id: `lead_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+      type,
+      payload,
+      receivedAt: new Date().toISOString(),
+    };
+  }
+  const now = new Date().toISOString();
+  const { data } = await supabaseAdmin
+    .from('leads')
+    .insert({
+      name: (payload.name as string) || 'Unknown',
+      contact: (payload.email as string) || (payload.contact as string) || '',
+      source: (payload.source as string) || type,
+      service: type,
+      stage: 'new',
+      metadata: payload,
+      created_at: now,
+    })
+    .select('id, service, metadata, created_at')
+    .single();
+  return {
+    id: data?.id || `lead_${Date.now()}`,
     type,
     payload,
-    receivedAt: new Date().toISOString(),
+    receivedAt: data?.created_at || now,
   };
-  const list = await listLeads();
-  list.push(lead);
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(LEADS_FILE, JSON.stringify(list, null, 2), 'utf8');
-  return lead;
 }

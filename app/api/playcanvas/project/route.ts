@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/api-guard';
 
 // DORMANT PlayCanvas Cloud API integration.
 // The engine + scenes run fully LOCAL (node_modules/playcanvas + /assets/), so
@@ -11,6 +12,9 @@ import { NextRequest, NextResponse } from 'next/server';
 const PLAYCANVAS_BASE = 'https://playcanvas.com/api';
 
 export async function GET(req: NextRequest) {
+  const guard = await requireAuth(req, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
+
   const apiKey = process.env.PLAYCANVAS_API_KEY;
   if (!apiKey) {
     return NextResponse.json(

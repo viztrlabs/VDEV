@@ -57,6 +57,14 @@ import {
   // Storage
   StorageFileSchema,
   UploadFileSchema,
+  // Bookings
+  BookingSchema,
+  BookingFiltersSchema,
+  BookingStatsSchema,
+  // Contact
+  ContactSubmissionSchema,
+  ContactFiltersSchema,
+  ContactStatsSchema,
   // Base types
   UserRoleSchema,
   UserStatusSchema,
@@ -86,6 +94,12 @@ const CreateXRLink = registry.register('CreateXRLink', CreateXRLinkSchema);
 const Tour = registry.register('Tour', TourSchema);
 const CreateTour = registry.register('CreateTour', CreateTourSchema);
 const UpdateTour = registry.register('UpdateTour', UpdateTourSchema);
+const Booking = registry.register('Booking', BookingSchema);
+const BookingFilters = registry.register('BookingFilters', BookingFiltersSchema);
+const BookingStats = registry.register('BookingStats', BookingStatsSchema);
+const ContactSubmission = registry.register('ContactSubmission', ContactSubmissionSchema);
+const ContactFilters = registry.register('ContactFilters', ContactFiltersSchema);
+const ContactStats = registry.register('ContactStats', ContactStatsSchema);
 
 // =====================================================================
 // REGISTER PATHS
@@ -756,6 +770,180 @@ registry.registerPath({
     params: z.object({ id: z.string() }),
   },
   responses: { 204: { description: 'Tour deleted' } },
+});
+
+// Bookings
+registry.registerPath({
+  method: 'get',
+  path: '/api/admin/bookings',
+  summary: 'List bookings',
+  request: {
+    query: BookingFiltersSchema.merge(PaginationParamsSchema).optional().openapi({ param: { in: 'query', name: 'BookingFilters' } }),
+  },
+  responses: {
+    200: {
+      description: 'Paginated bookings',
+      content: {
+        'application/json': {
+          schema: z.object({
+            success: z.literal(true),
+            data: z.array(BookingSchema),
+            total: z.number(),
+            page: z.number(),
+            pageSize: z.number(),
+            totalPages: z.number(),
+          }),
+        },
+      },
+    },
+  },
+});
+
+registry.registerPath({
+  method: 'post',
+  path: '/api/admin/bookings',
+  summary: 'Create booking',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: BookingSchema.omit({ id: true, created_at: true, updated_at: true }),
+        },
+      },
+    },
+  },
+  responses: { 201: { description: 'Booking created' } },
+});
+
+registry.registerPath({
+  method: 'post',
+  path: '/api/admin/bookings/{id}/approve',
+  summary: 'Approve booking',
+  request: {
+    params: z.object({ id: z.string() }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z.object({ admin_notes: z.string().optional() }),
+        },
+      },
+    },
+  },
+  responses: { 200: { description: 'Booking approved' } },
+});
+
+registry.registerPath({
+  method: 'post',
+  path: '/api/admin/bookings/{id}/reject',
+  summary: 'Reject booking',
+  request: {
+    params: z.object({ id: z.string() }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z.object({ rejection_reason: z.string(), admin_notes: z.string().optional() }),
+        },
+      },
+    },
+  },
+  responses: { 200: { description: 'Booking rejected' } },
+});
+
+// Contact
+registry.registerPath({
+  method: 'get',
+  path: '/api/contact',
+  summary: 'List contact submissions',
+  request: {
+    query: ContactFiltersSchema.merge(PaginationParamsSchema).optional().openapi({ param: { in: 'query', name: 'ContactFilters' } }),
+  },
+  responses: {
+    200: {
+      description: 'Paginated contact submissions',
+      content: {
+        'application/json': {
+          schema: z.object({
+            success: z.literal(true),
+            data: z.array(ContactSubmissionSchema),
+            total: z.number(),
+            page: z.number(),
+            pageSize: z.number(),
+            totalPages: z.number(),
+            stats: ContactStatsSchema,
+          }),
+        },
+      },
+    },
+  },
+});
+
+registry.registerPath({
+  method: 'post',
+  path: '/api/contact',
+  summary: 'Submit contact form',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: ContactSubmissionSchema.omit({ id: true, status: true, created_at: true, updated_at: true }),
+        },
+      },
+    },
+  },
+  responses: { 201: { description: 'Contact submitted' } },
+});
+
+// Comments
+registry.registerPath({
+  method: 'get',
+  path: '/api/projects/{id}/comments',
+  summary: 'List project comments',
+  request: {
+    params: z.object({ id: z.string() }),
+    query: z.object({
+      status: z.string().optional().openapi({ param: { in: 'query', name: 'status' } }),
+      authorId: z.string().optional().openapi({ param: { in: 'query', name: 'authorId' } }),
+      deliverableId: z.string().optional().openapi({ param: { in: 'query', name: 'deliverableId' } }),
+      search: z.string().optional().openapi({ param: { in: 'query', name: 'search' } }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Comment tree',
+      content: {
+        'application/json': {
+          schema: z.object({
+            success: z.literal(true),
+            data: z.array(z.any()),
+            total: z.number(),
+          }),
+        },
+      },
+    },
+  },
+});
+
+registry.registerPath({
+  method: 'post',
+  path: '/api/projects/{id}/comments',
+  summary: 'Create comment',
+  request: {
+    params: z.object({ id: z.string() }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z.object({
+            deliverableId: z.string().optional(),
+            parentId: z.string().optional(),
+            content: z.string().min(1).max(2000),
+            mentions: z.array(z.string()).optional(),
+            attachments: z.array(z.string()).optional(),
+          }),
+        },
+      },
+    },
+  },
+  responses: { 201: { description: 'Comment created' } },
 });
 
 // =====================================================================

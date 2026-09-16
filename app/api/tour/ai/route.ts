@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { processFloorplanImage } from '@/lib/floorplanAI';
 import type { VtedFloorplanAI } from '@/lib/vted-types';
+import { requireAuth } from '@/lib/api-guard';
 
 export const maxDuration = 30;
 
 export async function POST(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const body = await req.json();
 

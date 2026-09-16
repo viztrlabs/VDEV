@@ -45,6 +45,15 @@ import {
   type Lead,
   type StudioProfile,
   type StorageFile,
+  type Booking,
+  type CreateBooking,
+  type UpdateBooking,
+  type ApproveBooking,
+  type RejectBooking,
+  type BookingFilters,
+  type BookingStats,
+  type PaginationParams,
+  type PaginatedResponse,
 } from './schemas';
 
 const API_BASE = '/api/admin';
@@ -439,8 +448,35 @@ export const pixelStreamingApi = {
 // =====================================================================
 // COMBINED EXPORT
 // =====================================================================
+// BOOKINGS
+// =====================================================================
 
-export const adminApi = {
+export const bookingsApi = {
+  list: (filters?: { search?: string; status?: Booking['status']; service_type?: Booking['service_type']; date_from?: string; date_to?: string }, pagination?: PaginationParams) => 
+    get<PaginatedResponse<Booking>>('/bookings', { ...filters, ...pagination }),
+
+  get: (id: string) => 
+    get<Booking>(`/bookings/${id}`),
+
+  create: (data: { service_type: string; client_name: string; client_email: string; client_phone?: string; company?: string; project_description?: string; preferred_date: string; preferred_time: string; timezone?: string; message?: string }) => 
+    post<Booking>('/bookings', data),
+
+  update: (id: string, data: { service_type?: string; client_name?: string; client_email?: string; client_phone?: string; company?: string; project_description?: string; preferred_date?: string; preferred_time?: string; timezone?: string; message?: string; status?: string }) => 
+    patch<Booking>(`/bookings/${id}`, data),
+
+  delete: (id: string) => 
+    del<void>(`/bookings/${id}`),
+
+  approve: (id: string, admin_notes?: string) => 
+    post<Booking>(`/bookings/${id}/approve`, { admin_notes }),
+
+  reject: (id: string, rejection_reason: string, admin_notes?: string) => 
+    post<Booking>(`/bookings/${id}/reject`, { rejection_reason, admin_notes }),
+
+  getStats: () => 
+    get<{ total: number; by_status: Record<string, number>; by_service_type: Record<string, number> }>('/bookings/stats'),
+};
+  export const adminApi = {
   users: usersApi,
   gpu: gpuApi,
   features: featuresApi,
@@ -454,6 +490,7 @@ export const adminApi = {
   storage: storageApi,
   ai: aiApi,
   pixelStreaming: pixelStreamingApi,
+  bookings: bookingsApi,
 };
 
 export default adminApi;

@@ -13,7 +13,7 @@ function svc() {
   return READY ? createServiceClient() : null;
 }
 
-// ---------- local fallback store ----------
+// ---------- local fallback store (deprecated — Supabase is primary) ----------
 const DATA_DIR = process.cwd() + '/data/tour';
 const LOCAL_FILE = DATA_DIR + '/multi-tour.json';
 
@@ -44,14 +44,8 @@ function readLocal(): LocalTour[] {
     return [];
   }
 }
-function writeLocal(tours: LocalTour[]) {
-  try {
-    const fs = require('fs');
-    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-    fs.writeFileSync(LOCAL_FILE, JSON.stringify(tours, null, 2));
-  } catch {
-    /* best-effort */
-  }
+function writeLocal(_tours: LocalTour[]) {
+  console.warn('[tourCollaboration] Local filesystem write is deprecated — use Supabase');
 }
 
 export interface TourSummary {

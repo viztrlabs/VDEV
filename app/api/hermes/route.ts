@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
+import { requireAuth } from '@/lib/api-guard';
 
 interface HermesRequest {
   userId?: string;
@@ -10,6 +11,8 @@ const SYSTEM_PROMPT = `You are Hermes, the AI assistant for VizTR — a studio t
 
 // POST handler for Hermes chat messages
 export async function POST(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const body: HermesRequest = await req.json();
     const { userId, message } = body;

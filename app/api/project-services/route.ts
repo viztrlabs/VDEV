@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { listProjectServices, getProjectService } from '@/lib/services/projectServices';
+import { requireAuth } from '@/lib/api-guard';
 
 export async function GET(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const { searchParams } = new URL(req.url);
     const projectId = searchParams.get('projectId');
@@ -24,6 +27,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const body = await req.json();
     const projectId = body.projectId;

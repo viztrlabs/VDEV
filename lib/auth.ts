@@ -63,7 +63,11 @@ export function getDemoAuthUser(email?: string, password?: string) {
     };
   }
 
-  if (normalizedEmail === 'user@viztr.com' && password === 'password123') {
+  if (
+    !isProduction() &&
+    normalizedEmail === 'user@viztr.com' &&
+    password === 'password123'
+  ) {
     return {
       id: 'usr_user_01',
       name: 'Marcus Vance',
@@ -72,7 +76,11 @@ export function getDemoAuthUser(email?: string, password?: string) {
     };
   }
 
-  if (normalizedEmail === 'client@viztr.com' && password === 'password123') {
+  if (
+    !isProduction() &&
+    normalizedEmail === 'client@viztr.com' &&
+    password === 'password123'
+  ) {
     return {
       id: 'usr_client_01',
       name: 'Elena Rostova',

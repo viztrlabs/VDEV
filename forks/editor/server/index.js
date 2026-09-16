@@ -243,12 +243,8 @@ server.on('upgrade', (request, socket, head) => {
     }
 });
 
-// Setup ShareDB realtime handler
-const defaultConfig = {
-    accessToken: 'local-dev-token',
-    project: { id: 1 },
-};
-const shareDB = setupShareDB(defaultConfig);
+// Setup ShareDB realtime handler — loads all projects from Supabase
+const shareDB = setupShareDB({});
 
 realtimeWss.on('connection', (ws, req) => {
     console.log('[Realtime] Client connected, port:', req?.socket?.remotePort);

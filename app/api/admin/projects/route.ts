@@ -5,11 +5,12 @@ import {
   handleApiError,
   successResponse,
   createdResponse,
-  noContentResponse,
   applyRateLimit,
   generateRequestId,
   addRequestIdHeaders,
+  type RateLimitConfig,
 } from '@/lib/api/validation';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import {
   ManagedProjectSchema,
   CreateProjectSchema,
@@ -66,6 +67,29 @@ const mockProjects: ManagedProject[] = [
   },
 ];
 
+function mapSupabaseProject(row: any): ManagedProject {
+  return {
+    id: row.id,
+    name: row.name,
+    clientName: row.client_name || '',
+    projectType: row.project_type || 'Architectural',
+    status: row.status || 'Work in Progress',
+    startDate: row.start_date || '',
+    endDate: row.end_date || '',
+    estimatedHours: row.estimated_hours || 0,
+    assignedTeam: row.assigned_team || [],
+    hoursMonitoring: {
+      estimatedHours: row.estimated_hours || 0,
+      hoursSpent: row.hours_spent || 0,
+      hoursRemaining: (row.estimated_hours || 0) - (row.hours_spent || 0),
+      timesheetEntries: [],
+    },
+    bookingAmount: row.booking_amount || 0,
+    paymentStatus: row.payment_status || 'Pending',
+    notes: row.notes || '',
+  };
+}
+
 // GET /api/admin/projects - List projects with filtering and pagination
 export const GET = withAuth(
   z.object({
@@ -77,10 +101,53 @@ export const GET = withAuth(
   async (query, request, user) => {
     const requestId = generateRequestId();
     
-    const rateLimitResponse = applyRateLimit(request, { limit: 100, windowMs: 60000 });
+    const rateLimitResponse = await applyRateLimit(request, { limit: 100, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
     try {
+      const page = query?.page || 1;
+      const pageSize = query?.pageSize || 20;
+
+      // Try Supabase first
+      if (supabaseAdmin) {
+        try {
+          let qb = supabaseAdmin
+            .from('projects')
+            .select('*', { count: 'exact' });
+
+          if (query?.search) {
+            const s = query.search.toLowerCase();
+            qb = qb.or(`name.ilike.%${s}%,client_name.ilike.%${s}%,id.ilike.%${s}%`);
+          }
+          if (query?.status) qb = qb.eq('status', query.status);
+          if (query?.projectType) qb = qb.eq('project_type', query.projectType);
+          if (query?.paymentStatus) qb = qb.eq('payment_status', query.paymentStatus);
+
+          const start = (page - 1) * pageSize;
+          qb = qb.range(start, start + pageSize - 1);
+          qb = qb.order('created_at', { ascending: false });
+
+          const { data, error, count } = await qb;
+
+          if (!error && data) {
+            const projects = data.map(mapSupabaseProject);
+            return addRequestIdHeaders(
+              successResponse({
+                data: projects,
+                total: count ?? projects.length,
+                page,
+                pageSize,
+                totalPages: Math.ceil((count ?? projects.length) / pageSize),
+              }, { requestId }) as NextResponse,
+              requestId
+            );
+          }
+        } catch {
+          // Fall through to mock
+        }
+      }
+
+      // Fallback to in-memory
       let filtered = [...mockProjects];
       
       if (query?.search) {
@@ -95,8 +162,6 @@ export const GET = withAuth(
       if (query?.projectType) filtered = filtered.filter(p => p.projectType === query.projectType);
       if (query?.paymentStatus) filtered = filtered.filter(p => p.paymentStatus === query.paymentStatus);
 
-      const page = query?.page || 1;
-      const pageSize = query?.pageSize || 20;
       const start = (page - 1) * pageSize;
       const end = start + pageSize;
       const paginated = filtered.slice(start, end);
@@ -123,7 +188,7 @@ export const POST = withAuth(
   async (data, request, user) => {
     const requestId = generateRequestId();
     
-    const rateLimitResponse = applyRateLimit(request, { limit: 20, windowMs: 60000 });
+    const rateLimitResponse = await applyRateLimit(request, { limit: 20, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
     try {
@@ -131,9 +196,52 @@ export const POST = withAuth(
         throw new Error('Insufficient permissions');
       }
 
+      const projectId = `VIZTR-${Date.now().toString().slice(-3)}`;
+
+      // Try Supabase first
+      if (supabaseAdmin) {
+        try {
+          const newProject = {
+            id: projectId,
+            name: data.name,
+            client_name: data.clientName || '',
+            project_type: data.projectType || 'Architectural',
+            status: data.status || 'Work in Progress',
+            start_date: data.startDate || new Date().toISOString(),
+            end_date: data.endDate || '',
+            estimated_hours: data.estimatedHours || 0,
+            assigned_team: data.assignedTeam || [],
+            hours_spent: 0,
+            booking_amount: data.bookingAmount || 0,
+            payment_status: data.paymentStatus || 'Pending',
+            notes: data.notes || '',
+            created_at: new Date().toISOString(),
+          };
+
+          const { data: created, error } = await supabaseAdmin
+            .from('projects')
+            .insert(newProject)
+            .select()
+            .single();
+
+          if (!error && created) {
+            return addRequestIdHeaders(
+              NextResponse.json(
+                { success: true, data: mapSupabaseProject(created), meta: { timestamp: new Date().toISOString(), requestId } },
+                { status: 201 }
+              ),
+              requestId
+            );
+          }
+        } catch {
+          // Fall through to mock
+        }
+      }
+
+      // Fallback to in-memory
       const newProject: ManagedProject = {
         ...data,
-        id: `VIZTR-${Date.now().toString().slice(-3)}`,
+        id: projectId,
         hoursMonitoring: {
           estimatedHours: data.estimatedHours,
           hoursSpent: 0,

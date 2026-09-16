@@ -124,6 +124,31 @@ export default function SuperAdminPanel({
   const [globalBitrateMbps, setGlobalBitrateMbps] = useState(25);
   const [resolutionPreset, setResolutionPreset] = useState<'1080p' | '1440p' | '4K'>('1080p');
 
+  // Real-time platform stats from API
+  const [platformStats, setPlatformStats] = useState<{
+    projects: number;
+    clients: number;
+    experiences: number;
+    assets: number;
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch('/api/admin/stats');
+        const data = await res.json();
+        if (data.success && data.data) {
+          setPlatformStats(data.data);
+        }
+      } catch {
+        // Stats unavailable, keep null
+      }
+    };
+    fetchStats();
+    const interval = setInterval(fetchStats, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   // Live Telemetry Simulation Tick
   useEffect(() => {
     if (!superAdmin.isLiveSimulationActive) return;
@@ -710,12 +735,18 @@ export default function SuperAdminPanel({
                 <Users className="w-4 h-4 text-purple-400" />
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl sm:text-3xl font-bold font-display text-white">1,482</span>
-                <span className="text-xs font-mono font-bold text-emerald-400 flex items-center">
-                  <ArrowUpRight className="w-3.5 h-3.5" /> +28.4%
+                <span className="text-2xl sm:text-3xl font-bold font-display text-white">
+                  {platformStats ? platformStats.clients.toLocaleString() : '—'}
                 </span>
+                {platformStats && (
+                  <span className="text-xs font-mono font-bold text-emerald-400 flex items-center">
+                    <ArrowUpRight className="w-3.5 h-3.5" /> Live
+                  </span>
+                )}
               </div>
-              <p className="text-[11px] text-[#71717A] font-mono">142 active enterprise accounts this week</p>
+              <p className="text-[11px] text-[#71717A] font-mono">
+                {platformStats ? `${platformStats.clients} registered clients` : 'Loading from Supabase...'}
+              </p>
             </div>
 
             <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-2">
@@ -724,40 +755,58 @@ export default function SuperAdminPanel({
                 <Layers className="w-4 h-4 text-[#3ECF8E]" />
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl sm:text-3xl font-bold font-display text-white">216</span>
-                <span className="text-xs font-mono font-bold text-emerald-400 flex items-center">
-                  <ArrowUpRight className="w-3.5 h-3.5" /> +14.2%
+                <span className="text-2xl sm:text-3xl font-bold font-display text-white">
+                  {platformStats ? platformStats.projects.toLocaleString() : '—'}
                 </span>
+                {platformStats && (
+                  <span className="text-xs font-mono font-bold text-emerald-400 flex items-center">
+                    <ArrowUpRight className="w-3.5 h-3.5" /> Live
+                  </span>
+                )}
               </div>
-              <p className="text-[11px] text-[#71717A] font-mono">42 active pipelines, 174 delivered</p>
+              <p className="text-[11px] text-[#71717A] font-mono">
+                {platformStats ? `${platformStats.projects} total projects` : 'Loading from Supabase...'}
+              </p>
             </div>
 
             <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-2">
               <div className="flex items-center justify-between text-[#A1A1AA]">
-                <span className="text-xs font-mono uppercase tracking-wider font-bold">GPU Streaming Compute</span>
+                <span className="text-xs font-mono uppercase tracking-wider font-bold">Experiences</span>
                 <Cpu className="w-4 h-4 text-sky-400" />
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl sm:text-3xl font-bold font-display text-white">12,480h</span>
-                <span className="text-xs font-mono font-bold text-emerald-400 flex items-center">
-                  <ArrowUpRight className="w-3.5 h-3.5" /> +44.1%
+                <span className="text-2xl sm:text-3xl font-bold font-display text-white">
+                  {platformStats ? platformStats.experiences.toLocaleString() : '—'}
                 </span>
+                {platformStats && (
+                  <span className="text-xs font-mono font-bold text-emerald-400 flex items-center">
+                    <ArrowUpRight className="w-3.5 h-3.5" /> Live
+                  </span>
+                )}
               </div>
-              <p className="text-[11px] text-[#71717A] font-mono">99.98% zero-jitter stream delivery</p>
+              <p className="text-[11px] text-[#71717A] font-mono">
+                {platformStats ? `${platformStats.experiences} configured experiences` : 'Loading from Supabase...'}
+              </p>
             </div>
 
             <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-2">
               <div className="flex items-center justify-between text-[#A1A1AA]">
-                <span className="text-xs font-mono uppercase tracking-wider font-bold">Multi-Cloud Storage</span>
+                <span className="text-xs font-mono uppercase tracking-wider font-bold">Assets & Models</span>
                 <HardDrive className="w-4 h-4 text-amber-400" />
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl sm:text-3xl font-bold font-display text-white">48.6 TB</span>
-                <span className="text-xs font-mono font-bold text-sky-400 flex items-center">
-                  <ArrowUpRight className="w-3.5 h-3.5" /> +6.8 TB
+                <span className="text-2xl sm:text-3xl font-bold font-display text-white">
+                  {platformStats ? platformStats.assets.toLocaleString() : '—'}
                 </span>
+                {platformStats && (
+                  <span className="text-xs font-mono font-bold text-emerald-400 flex items-center">
+                    <ArrowUpRight className="w-3.5 h-3.5" /> Live
+                  </span>
+                )}
               </div>
-              <p className="text-[11px] text-[#71717A] font-mono">S3 + R2 + Drive synchronized</p>
+              <p className="text-[11px] text-[#71717A] font-mono">
+                {platformStats ? `${platformStats.assets} production assets` : 'Loading from Supabase...'}
+              </p>
             </div>
           </div>
 

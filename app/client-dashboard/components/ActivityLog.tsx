@@ -1,16 +1,64 @@
 'use client';
 
-import React from 'react';
-import { Activity, Download, Eye, CheckCircle2, MessageSquare } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Activity, Download, Eye, CheckCircle2, MessageSquare, Loader2 } from 'lucide-react';
 
-export default function ActivityLog() {
-  const logs = [
-    { action: '8K Render Set Downloaded', user: 'Alexander Wright', time: '1 hour ago', type: 'download' },
-    { action: 'Feedback Comment Added to Cam 04', user: 'Alexander Wright', time: '2 hours ago', type: 'feedback' },
-    { action: 'CAD Facade Rev 4 Uploaded', user: 'VizTR BIM Team', time: '5 hours ago', type: 'upload' },
-    { action: 'Stage 02 Milestone Formally Approved', user: 'Elena Rostova', time: 'Yesterday', type: 'approval' },
-    { action: 'WebXR Spatial Inspection Launched', user: 'Marcus Chen', time: '2 days ago', type: 'view' }
-  ];
+interface ActivityLogEntry {
+  id: string;
+  action: string;
+  entity_type: string;
+  entity_id: string | null;
+  user_name: string | null;
+  metadata: Record<string, unknown>;
+  created_at: string;
+}
+
+function timeAgo(dateStr: string): string {
+  const now = Date.now();
+  const then = new Date(dateStr).getTime();
+  const diffSec = Math.floor((now - then) / 1000);
+  if (diffSec < 60) return 'just now';
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `${diffMin}m ago`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${diffHr}h ago`;
+  const diffDay = Math.floor(diffHr / 24);
+  if (diffDay === 1) return 'Yesterday';
+  return `${diffDay} days ago`;
+}
+
+function getIcon(type: string) {
+  switch (type) {
+    case 'download':
+      return <Download className="w-3.5 h-3.5" />;
+    case 'approval':
+      return <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />;
+    case 'feedback':
+      return <MessageSquare className="w-3.5 h-3.5 text-amber-400" />;
+    default:
+      return <Eye className="w-3.5 h-3.5 text-sky-400" />;
+  }
+}
+
+export default function ActivityLog({ projectId }: { projectId?: string }) {
+  const [logs, setLogs] = useState<ActivityLogEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (projectId) params.set('projectId', projectId);
+    params.set('limit', '50');
+
+    fetch(`/api/activity?${params.toString()}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.logs)) {
+          setLogs(data.logs);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [projectId]);
 
   return (
     <section className="space-y-6">
@@ -26,31 +74,37 @@ export default function ActivityLog() {
         </div>
       </div>
 
-      <div className="space-y-2">
-        {logs.map((log, idx) => (
-          <div key={idx} className="p-3.5 rounded-xl bg-[#18181B] border border-[#27272A] flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[#3ECF8E] shrink-0">
-                {log.type === 'download' ? (
-                  <Download className="w-3.5 h-3.5" />
-                ) : log.type === 'approval' ? (
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                ) : log.type === 'feedback' ? (
-                  <MessageSquare className="w-3.5 h-3.5 text-amber-400" />
-                ) : (
-                  <Eye className="w-3.5 h-3.5 text-sky-400" />
-                )}
+      {loading ? (
+        <div className="flex items-center justify-center py-12 text-[#71717A]">
+          <Loader2 className="w-5 h-5 animate-spin mr-2" />
+          <span className="text-xs font-mono">Loading activity...</span>
+        </div>
+      ) : logs.length === 0 ? (
+        <div className="text-center py-12 text-[#71717A]">
+          <Activity className="w-8 h-8 mx-auto mb-2 opacity-40" />
+          <p className="text-xs font-mono">No activity recorded yet</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {logs.map((log) => (
+            <div key={log.id} className="p-3.5 rounded-xl bg-[#18181B] border border-[#27272A] flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[#3ECF8E] shrink-0">
+                  {getIcon(log.entity_type)}
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-white">{log.action}</div>
+                  <div className="text-[10px] font-mono text-[#71717A]">
+                    Performed by {log.user_name || 'System'}
+                  </div>
+                </div>
               </div>
-              <div>
-                <div className="text-xs font-bold text-white">{log.action}</div>
-                <div className="text-[10px] font-mono text-[#71717A]">Performed by {log.user}</div>
-              </div>
-            </div>
 
-            <span className="text-[10px] font-mono text-[#71717A]">{log.time}</span>
-          </div>
-        ))}
-      </div>
+              <span className="text-[10px] font-mono text-[#71717A]">{timeAgo(log.created_at)}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

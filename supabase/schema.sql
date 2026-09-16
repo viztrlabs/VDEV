@@ -27,7 +27,7 @@ begin
     new.id,
     new.email,
     coalesce(new.raw_user_meta_data ->> 'full_name', new.raw_user_meta_data ->> 'name'),
-    coalesce(new.raw_user_meta_data ->> 'role', 'owner')
+    'user' -- Role must be set via admin API or service role only. Never trust client-provided role.
   )
   on conflict (id) do nothing;
   return new;

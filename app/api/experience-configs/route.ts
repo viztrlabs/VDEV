@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceClient } from '@/lib/services/client';
+import { requireAuth } from '@/lib/api-guard';
 
 export async function GET(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const { searchParams } = new URL(req.url);
     const projectId = searchParams.get('projectId');
@@ -21,7 +24,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'projectId or experienceId required' }, { status: 400 });
     }
 
-    let query = svc.from('experience_configs').select('*');
+    let query = svc.from('experience_configs').select('*, experiences!inner(id, slug, title, status, published_at, metadata)');
     if (experienceId) {
       query = query.eq('experience_id', experienceId);
     } else if (projectId) {
@@ -35,13 +38,21 @@ export async function GET(req: NextRequest) {
 
     const { data, error } = await query.order('created_at', { ascending: true });
     if (error) return NextResponse.json({ success: false, error: error.message }, { status: 500 });
-    return NextResponse.json({ success: true, count: data?.length || 0, configs: data || [] });
+
+    const configs = (data || []).map((row: any) => ({
+      ...row,
+      published_at: row.experiences?.published_at || null,
+    }));
+
+    return NextResponse.json({ success: true, count: configs.length, configs });
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err?.message || 'failed' }, { status: 500 });
   }
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const body = await req.json();
     const svc = getServiceClient();
@@ -63,6 +74,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const body = await req.json();
     const svc = getServiceClient();
@@ -78,6 +91,8 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const guard = await requireAuth(req, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');

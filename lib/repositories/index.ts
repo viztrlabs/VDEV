@@ -13,6 +13,21 @@ import type {
   FeatureToggle,
   SystemHealthLog,
   RevenueMetric,
+  Booking,
+  BookingStatus,
+  BookingServiceType,
+  BookingFilters,
+  BookingStats,
+  CreateBooking,
+  UpdateBooking,
+  ApproveBooking,
+  RejectBooking,
+  ContactSubmission,
+  ContactStatus,
+  ContactServiceInterest,
+  ContactFilters,
+  ContactStats,
+  CreateContact,
 } from '../super-admin-store-types';
 
 export interface PaginationParams {
@@ -49,6 +64,53 @@ export interface LogFilters {
   dateFrom?: string;
   dateTo?: string;
 }
+
+export interface BookingFilters {
+  search?: string;
+  status?: BookingStatus;
+  service_type?: BookingServiceType;
+  date_from?: string;
+  date_to?: string;
+}
+
+export interface BookingStats {
+  total: number;
+  by_status: Record<BookingStatus, number>;
+  by_service_type: Record<BookingServiceType, number>;
+}
+
+// =====================================================================
+// BOOKING REPOSITORY
+// =====================================================================
+
+export interface BookingRepository {
+  findAll(filters?: BookingFilters, pagination?: PaginationParams): Promise<PaginatedResult<Booking>>;
+  findById(id: string): Promise<Booking | null>;
+  create(booking: CreateBooking): Promise<Booking>;
+  update(id: string, updates: UpdateBooking): Promise<Booking>;
+  delete(id: string): Promise<void>;
+  approve(id: string, adminNotes?: string): Promise<Booking>;
+  reject(id: string, rejectionReason: string, adminNotes?: string): Promise<Booking>;
+  getStats(): Promise<BookingStats>;
+}
+
+// =====================================================================
+// CONTACT REPOSITORY
+// =====================================================================
+
+export interface ContactRepository {
+  findAll(filters?: ContactFilters, pagination?: PaginationParams): Promise<PaginatedResult<ContactSubmission>>;
+  findById(id: string): Promise<ContactSubmission | null>;
+  create(contact: CreateContact): Promise<ContactSubmission>;
+  updateStatus(id: string, status: ContactStatus): Promise<ContactSubmission>;
+  delete(id: string): Promise<void>;
+  getStats(): Promise<ContactStats>;
+}
+
+// =====================================================================
+// REPOSITORY FACTORY
+// =====================================================================
+// LOG FILTERS (existing)
 
 // =====================================================================
 // USER REPOSITORY
@@ -143,6 +205,8 @@ export interface RepositoryFactory {
   featureToggles: FeatureToggleRepository;
   logs: SystemLogRepository;
   revenue: RevenueRepository;
+  bookings: BookingRepository;
+  contacts: ContactRepository;
 }
 
 export type RepositoryMode = 'mock' | 'supabase';

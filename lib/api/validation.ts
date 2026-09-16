@@ -15,6 +15,8 @@ import {
   ForbiddenError,
   NotFoundError,
 } from '@/lib/api/contracts/schemas';
+import { requireAuth } from '@/lib/api-guard';
+import { applyRateLimit, rateLimitHeaders, type RateLimitConfig } from '@/lib/rate-limit';
 
 /**
  * Higher-order function to create a validated route handler
@@ -49,18 +51,49 @@ export function withAuth<T extends z.ZodType<any, any, any>>(
   handler: (data: z.infer<T>, request: NextRequest, user: { id: string; email: string; role: string }) => Promise<NextResponse>
 ) {
   return withValidation(schema, async (data, request) => {
-    // In a real implementation, this would get the user from auth
-    // For now, we'll use a header-based approach for demo
-    const authHeader = request.headers.get('x-user-role');
-    if (!authHeader) {
+    const guard = await requireAuth(request);
+    if (guard.error) {
       throw new UnauthorizedError('Authentication required');
     }
-    
+
+    const { session, role, userId } = guard;
     const user = {
-      id: request.headers.get('x-user-id') || 'unknown',
-      email: request.headers.get('x-user-email') || 'unknown',
-      role: authHeader,
+      id: userId,
+      email: (session?.user as any)?.email || '',
+      role,
     };
+
+    return handler(data, request, user);
+  });
+}
+
+/**
+ * Wrapper that adds rate limiting to a route handler
+ */
+export function withRateLimit<T extends z.ZodType<any, any, any>>(
+  schema: T,
+  handler: (data: z.infer<T>, request: NextRequest) => Promise<NextResponse>,
+  rateLimitConfig: RateLimitConfig
+) {
+  return withValidation(schema, async (data, request) => {
+    const rateLimitResponse = await applyRateLimit(request, rateLimitConfig);
+    if (rateLimitResponse) return rateLimitResponse;
+    
+    return handler(data, request);
+  });
+}
+
+/**
+ * Wrapper that adds both auth and rate limiting
+ */
+export function withAuthAndRateLimit<T extends z.ZodType<any, any, any>>(
+  schema: T,
+  handler: (data: z.infer<T>, request: NextRequest, user: { id: string; email: string; role: string }) => Promise<NextResponse>,
+  rateLimitConfig: RateLimitConfig
+) {
+  return withAuth(schema, async (data, request, user) => {
+    const rateLimitResponse = await applyRateLimit(request, rateLimitConfig);
+    if (rateLimitResponse) return rateLimitResponse;
     
     return handler(data, request, user);
   });
@@ -194,68 +227,9 @@ export function noContentResponse(): NextResponse {
 }
 
 /**
- * Rate limiting helper (simple in-memory, use Redis in production)
+ * Apply rate limiting to a request (re-export from rate-limit.ts)
  */
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-
-export function rateLimit(
-  identifier: string,
-  options: { limit: number; windowMs: number }
-): { allowed: boolean; resetTime: number; remaining: number } {
-  const now = Date.now();
-  const record = rateLimitMap.get(identifier);
-  
-  if (!record || now > record.resetTime) {
-    rateLimitMap.set(identifier, {
-      count: 1,
-      resetTime: now + options.windowMs,
-    });
-    return { allowed: true, resetTime: now + options.windowMs, remaining: options.limit - 1 };
-  }
-  
-  if (record.count >= options.limit) {
-    return { allowed: false, resetTime: record.resetTime, remaining: 0 };
-  }
-  
-  record.count++;
-  return { allowed: true, resetTime: record.resetTime, remaining: options.limit - record.count };
-}
-
-/**
- * Apply rate limiting to a request
- */
-export function applyRateLimit(
-  request: NextRequest,
-  options: { limit: number; windowMs: number }
-): NextResponse | null {
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-  const identifier = `api:${ip}`;
-  
-  const result = rateLimit(identifier, options);
-  
-  if (!result.allowed) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: {
-          code: 'RATE_LIMITED',
-          message: 'Too many requests. Please try again later.',
-        },
-      },
-      {
-        status: 429,
-        headers: {
-          'Retry-After': Math.ceil((result.resetTime - Date.now()) / 1000).toString(),
-          'X-RateLimit-Limit': options.limit.toString(),
-          'X-RateLimit-Remaining': '0',
-          'X-RateLimit-Reset': Math.ceil(result.resetTime / 1000).toString(),
-        },
-      }
-    );
-  }
-  
-  return null;
-}
+export { applyRateLimit, rateLimitHeaders, type RateLimitConfig } from '@/lib/rate-limit';
 
 /**
  * Request ID generator for tracing

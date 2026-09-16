@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/api-guard';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 
 export interface DiscoverySubmission {
   id: string;
@@ -103,7 +105,70 @@ let submissionsStore: DiscoverySubmission[] = [
   }
 ];
 
-export async function GET() {
+function mapFormSubmission(row: any): DiscoverySubmission {
+  const data = row.data || {};
+  return {
+    id: row.id,
+    createdAt: row.createdAt || row.created_at || new Date().toISOString(),
+    clientName: data.clientName || '',
+    contactNameRole: data.contactNameRole || '',
+    contactEmail: data.contactEmail || '',
+    contactPhone: data.contactPhone || '',
+    industry: data.industry || '',
+    teamSize: data.teamSize || '',
+    referralSource: data.referralSource || '',
+    specificProblem: data.specificProblem || '',
+    currentSolution: data.currentSolution || '',
+    costOfNotSolving: data.costOfNotSolving || '',
+    whoFeelsPain: data.whoFeelsPain || '',
+    painType: data.painType || '',
+    threeMonthOutcome: data.threeMonthOutcome || '',
+    successMetric: data.successMetric || '',
+    solutionTypes: data.solutionTypes || [],
+    otherSolution: data.otherSolution || '',
+    featureList: data.featureList || '',
+    priorityRanking: data.priorityRanking || '',
+    endUsers: data.endUsers || '',
+    existingSystems: data.existingSystems || '',
+    brandAssets: data.brandAssets || '',
+    budgetRange: data.budgetRange || '',
+    timeline: data.timeline || '',
+    techPreferences: data.techPreferences || '',
+    signOffOwner: data.signOffOwner || '',
+    complianceNeeds: data.complianceNeeds || '',
+    referencesLiked: data.referencesLiked || '',
+    referencesAvoided: data.referencesAvoided || '',
+    status: data.status || 'new',
+  };
+}
+
+export async function GET(req: NextRequest) {
+  const guard = await requireAuth(req, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
+
+  // Try Supabase first
+  if (supabaseAdmin) {
+    try {
+      const { data, error } = await supabaseAdmin
+        .from('FormSubmission')
+        .select('*')
+        .eq('type', 'discovery')
+        .order('createdAt', { ascending: false });
+
+      if (!error && data && data.length > 0) {
+        const submissions = data.map(mapFormSubmission);
+        return NextResponse.json({
+          success: true,
+          total: submissions.length,
+          submissions
+        });
+      }
+    } catch {
+      // Fall through to mock
+    }
+  }
+
+  // Fallback to in-memory
   return NextResponse.json({
     success: true,
     total: submissionsStore.length,
@@ -112,6 +177,8 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireAuth(req, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
   try {
     const body = await req.json();
     
@@ -123,7 +190,7 @@ export async function POST(req: NextRequest) {
     }
 
     const newId = `DISC-${new Date().getFullYear()}-${String(submissionsStore.length + 1).padStart(3, '0')}`;
-    const newSubmission: DiscoverySubmission = {
+    const submissionData: DiscoverySubmission = {
       id: newId,
       createdAt: new Date().toISOString(),
       clientName: body.clientName,
@@ -157,13 +224,42 @@ export async function POST(req: NextRequest) {
       status: 'new'
     };
 
-    submissionsStore.unshift(newSubmission);
+    // Try Supabase first
+    if (supabaseAdmin) {
+      try {
+        const { data, error } = await supabaseAdmin
+          .from('FormSubmission')
+          .insert({
+            id: newId,
+            type: 'discovery',
+            data: submissionData,
+            status: 'new',
+            createdAt: new Date().toISOString(),
+          })
+          .select()
+          .single();
+
+        if (!error && data) {
+          return NextResponse.json({
+            success: true,
+            message: 'Discovery form received successfully! A dedicated proposal has been queued.',
+            submissionId: newId,
+            submission: mapFormSubmission(data)
+          });
+        }
+      } catch {
+        // Fall through to mock
+      }
+    }
+
+    // Fallback to in-memory
+    submissionsStore.unshift(submissionData);
 
     return NextResponse.json({
       success: true,
       message: 'Discovery form received successfully! A dedicated proposal has been queued.',
       submissionId: newId,
-      submission: newSubmission
+      submission: submissionData
     });
   } catch (error: any) {
     return NextResponse.json(

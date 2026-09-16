@@ -56,8 +56,22 @@ export default function Header() {
   }, []);
 
   // Sticky header: visible at top, slides up on scroll down, slides down on scroll up or mouse at top
-  const [isNavVisible, setIsNavVisible] = useState(false); // Hidden on initial load
-  const [hasInteracted, setHasInteracted] = useState(false);
+  const [isNavVisible, setIsNavVisible] = useState(pathname !== '/'); // Immediately visible on sub-pages
+  const [hasInteracted, setHasInteracted] = useState(pathname !== '/');
+
+  // Auto-reveal on home page after intro completes
+  useEffect(() => {
+    if (pathname !== '/') {
+      setIsNavVisible(true);
+      setHasInteracted(true);
+      return;
+    }
+    const timer = setTimeout(() => {
+      setIsNavVisible(true);
+      setHasInteracted(true);
+    }, 5500);
+    return () => clearTimeout(timer);
+  }, [pathname]);
 
   useEffect(() => {
     let lastScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
@@ -100,13 +114,22 @@ export default function Header() {
       }
     };
 
+    const handleTouchStart = () => {
+      setHasInteracted(true);
+      if (window.scrollY <= 64) {
+        setIsNavVisible(true);
+      }
+    };
+
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
     return () => {
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchstart', handleTouchStart);
     };
-  }, []);
+  }, [hasInteracted]);
 
   const [prevPathname, setPrevPathname] = useState(pathname);
   if (prevPathname !== pathname) {
@@ -162,7 +185,7 @@ export default function Header() {
         }`}
         style={{ height: '64px' }}
       >
-        <div className="w-full h-full px-4 sm:px-6 lg:px-10 xl:px-14 flex flex-row items-center justify-between pointer-events-auto">
+        <div className="relative w-full h-full px-4 sm:px-6 lg:px-10 xl:px-14 flex flex-row items-center justify-between pointer-events-auto">
           {/* LEFT SECTION: Authentic VizTR Logo Mark */}
           <Link
             href="/"
@@ -179,10 +202,10 @@ export default function Header() {
             </div>
           </Link>
 
-          {/* CENTER SECTION: Single Unified Button Cluster: STUDIO, XR WORLD, CONTACT */}
+          {/* MID SECTION: Navigation Cluster (STUDIO, XR WORLD, CONTACT) Centered in Mid */}
           <nav
             id="header-mid-menu"
-            className="hidden md:flex flex-row items-center p-1 rounded-full transition-opacity duration-300 ease-in-out"
+            className="!hidden md:!flex absolute left-1/2 -translate-x-1/2 flex-row items-center p-1 rounded-full header-mid-menu-cluster transition-all duration-300 ease-in-out"
             aria-label="Main Navigation"
           >
             {/* 1. STUDIO PILL BUTTON */}
@@ -214,7 +237,6 @@ export default function Header() {
                 <div
                   id="studio-dropdown-menu"
                   className="header-mid-dropdown absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-64 rounded-2xl py-2 z-[100] animate-in fade-in slide-in-from-top-2 duration-150 before:content-[''] before:absolute before:-top-3.5 before:left-0 before:right-0 before:h-3.5"
-                  // Keep dropdown open; closing handled by outside clicks or selection
                 >
                   <div className="dropdown-label px-3.5 py-1 text-[10px] font-bold uppercase tracking-widest text-[#a1abc4]">
                     Studio Pipelines
@@ -334,12 +356,11 @@ export default function Header() {
                 />
               </button>
 
-              {/* XR WORLD DROPDOWN (Flat list: WebXR, WebAR, VR – Virtual Reality, Virtual Tour, VizSplat, Pixel Streaming) */}
+              {/* XR WORLD DROPDOWN */}
               {xrOpen && (
                 <div
                   id="xr-dropdown-menu"
                   className="header-mid-dropdown absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-72 rounded-2xl py-2 z-[100] animate-in fade-in slide-in-from-top-2 duration-150 before:content-[''] before:absolute before:-top-3.5 before:left-0 before:right-0 before:h-3.5"
-                  // Keep dropdown open; closing handled by outside clicks or selection
                 >
                   <div className="dropdown-label px-3.5 py-1 text-[10px] font-bold uppercase tracking-widest text-[#a1abc4]">
                     Spatial Computing Stack
@@ -488,7 +509,6 @@ export default function Header() {
                 <div
                   id="contact-dropdown-menu"
                   className="header-mid-dropdown absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-64 rounded-2xl py-2 z-[100] animate-in fade-in slide-in-from-top-2 duration-150 before:content-[''] before:absolute before:-top-3.5 before:left-0 before:right-0 before:h-3.5"
-                  // Keep dropdown open; closing handled by outside clicks or selection
                 >
                   <div className="dropdown-label px-3.5 py-1 text-[10px] font-bold uppercase tracking-widest text-[#a1abc4]">
                     Get in Touch
@@ -543,14 +563,15 @@ export default function Header() {
             </div>
           </nav>
 
-          {/* RIGHT SECTION: Quick Controls Pill */}
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <div className="hidden sm:flex items-center gap-3 px-3.5 py-1.5 rounded-full transition-all">
-              {/* Theme Toggle (Light / Dark Global Switcher) */}
+          {/* RIGHT SECTION: Grouped 3 Buttons (Theme, Message, Sign In) and Mobile Hamburger */}
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            {/* 3 Buttons Group: Theme, Message, Sign In */}
+            <div className="hidden sm:flex items-center gap-1.5 p-1 rounded-full header-mid-menu-cluster transition-all">
+              {/* 1. Theme Toggle Button */}
               <button
                 type="button"
                 onClick={cycleLightDarkSystem}
-                className="p-1 text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer flex items-center justify-center"
+                className="header-cluster-btn p-1.5 rounded-full text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer flex items-center justify-center"
                 title={`Current theme: ${resolvedTheme.toUpperCase()} (Click to toggle Light / Dark)`}
                 aria-label="Toggle Light and Dark theme"
               >
@@ -562,38 +583,41 @@ export default function Header() {
               </button>
 
               {/* Divider */}
-              <div className="w-[1px] h-3.5 bg-white/15" />
+              <div className="header-cluster-divider w-[1px] h-3.5 bg-[#3e485e]/50 mx-0.5 shrink-0" />
 
-              {/* Messaging Agent OR Active Status Dot */}
-              {isAgentClosed ? (
-                <button
-                  type="button"
-                  onClick={() => setAgentClosed(false)}
-                  className="flex items-center justify-center p-1.5 rounded-full bg-[#00F0FF]/10 text-[#00F0FF] hover:bg-[#00F0FF]/20 hover:scale-105 transition-all shadow-[0_0_12px_rgba(0,240,255,0.3)] border border-[#00F0FF]/30"
-                  title="Open VIZTR Messaging Agent"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                </button>
-              ) : (
-                <div className="flex items-center justify-center" title="Platform Operational">
-                  <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee] animate-pulse" />
-                </div>
-              )}
+              {/* 2. Message Button */}
+              <button
+                type="button"
+                onClick={() => setAgentClosed(!isAgentClosed)}
+                className={`header-cluster-btn p-1.5 rounded-full transition-all cursor-pointer flex items-center justify-center ${
+                  !isAgentClosed
+                    ? 'text-[#00F0FF] bg-[#00F0FF]/20 shadow-[0_0_10px_rgba(0,240,255,0.4)]'
+                    : 'text-[#dce5ff] hover:text-[#00F0FF] hover:bg-white/5 opacity-80 hover:opacity-100'
+                }`}
+                title={isAgentClosed ? 'Open VIZTR Messaging Agent' : 'Close VIZTR Messaging Agent'}
+                aria-label="Toggle Messaging Agent"
+              >
+                <MessageSquare className="w-4 h-4" />
+              </button>
 
               {/* Divider */}
-              <div className="w-[1px] h-3.5 bg-white/15" />
+              <div className="header-cluster-divider w-[1px] h-3.5 bg-[#3e485e]/50 mx-0.5 shrink-0" />
 
-              {/* User Account / Profile */}
+              {/* 3. Sign In Button (Icon Only) */}
               <Link
                 href={user ? '/client-dashboard' : '/client-access'}
                 id="header-client-access-btn"
-                className="p-0.5 rounded-full text-zinc-300 hover:text-white transition-colors flex items-center justify-center"
-                title={user ? `Logged in as ${user.name}` : 'Client Access'}
-                aria-label="Account"
+                className="header-cluster-btn p-1.5 rounded-full text-[#dce5ff] hover:text-[#00F0FF] hover:bg-white/5 transition-all cursor-pointer flex items-center justify-center"
+                title={user ? `Logged in as ${user.name}` : 'Sign In / Client Access'}
+                aria-label="Sign In"
               >
-                <div className="w-5 h-5 rounded-full border border-white/25 flex items-center justify-center text-[10px] font-bold text-white hover:border-cyan-400 transition-colors bg-white/5">
-                  {user ? user.name.charAt(0).toUpperCase() : <User className="w-3.5 h-3.5 text-zinc-300" />}
-                </div>
+                {user ? (
+                  <div className="w-4 h-4 rounded-full bg-cyan-400 text-black text-[10px] font-bold flex items-center justify-center">
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                ) : (
+                  <User className="w-4 h-4" />
+                )}
               </Link>
             </div>
 
@@ -601,10 +625,10 @@ export default function Header() {
             <button
               id="mobile-menu-toggle-btn"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-full text-zinc-300 hover:text-white transition-all cursor-pointer"
+              className="md:hidden p-2 sm:p-2.5 rounded-full border border-white/10 dark:border-white/15 bg-black/40 dark:bg-black/50 backdrop-blur-md text-zinc-200 hover:text-[#00F0FF] hover:border-[#00F0FF]/40 transition-all cursor-pointer flex items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.3)] active:scale-95"
               aria-label="Toggle navigation menu"
             >
-              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 text-[#00F0FF]" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
@@ -615,7 +639,7 @@ export default function Header() {
         <>
           {/* Backdrop - catches outside clicks */}
           <div
-            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden animate-in fade-in duration-200"
+            className="fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm md:hidden animate-in fade-in duration-200"
             onClick={() => setMobileMenuOpen(false)}
             aria-hidden="true"
           />
@@ -623,79 +647,97 @@ export default function Header() {
           {/* Mobile Menu Panel - Slides from right */}
           <div
             id="mobile-nav-overlay"
-            className="fixed inset-y-0 right-0 z-50 w-full max-w-sm md:hidden animate-in slide-in-from-right-full duration-300 ease-out shadow-2xl flex flex-col bg-[#0A0A0B]/95 backdrop-blur-xl border-l border-white/10"
+            className="fixed inset-y-0 right-0 z-[120] w-full sm:w-[380px] sm:max-w-sm md:hidden animate-in slide-in-from-right-full duration-300 ease-out shadow-2xl flex flex-col header-mobile-drawer-glass border-l border-white/10 dark:border-white/10"
             role="dialog"
             aria-modal="true"
             aria-label="Navigation menu"
           >
-            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
-              {/* Header with close button */}
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-lg font-bold text-zinc-900 dark:text-zinc-100">Menu</span>
-                <button
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 rounded-lg text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-                  aria-label="Close menu"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+            {/* Header with brand logo and close button */}
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/10 dark:border-white/10 shrink-0">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-full flex items-center justify-center p-0.5 shadow-[0_0_10px_rgba(0,240,255,0.25)]">
+                  <ViztrLogoMark className="w-4 h-4" variant="cyan" />
+                </div>
+                <div className="flex items-center font-display text-base font-bold tracking-tight">
+                  <span className="text-white">Viz</span>
+                  <span className="text-[#00F0FF]">TR</span>
+                  <span className="w-1 h-1 rounded-full bg-[#00F0FF] -mt-2 ml-0.5 shadow-[0_0_6px_#00F0FF]" />
+                </div>
               </div>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-1.5 rounded-full text-zinc-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer flex items-center justify-center"
+                aria-label="Close menu"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
+            {/* Scrollable Nav Links */}
+            <div className="flex-1 overflow-y-auto px-4 py-3 space-y-1">
               {/* Home Link */}
               <Link
                 href="/"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block py-3 text-lg font-medium text-zinc-900 dark:text-zinc-100 border-b border-zinc-100 dark:border-zinc-900"
+                className="flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium text-zinc-200 hover:text-white hover:bg-white/5 transition-all"
               >
-                Home
+                <span>Home</span>
+                <span className="text-[10px] font-mono text-cyan-400/60">01</span>
               </Link>
 
               {/* Studio Mobile Accordion */}
               <div>
                 <button
                   onClick={() => setMobileStudioOpen(!mobileStudioOpen)}
-                  className="w-full flex items-center justify-between py-3 text-lg font-medium text-zinc-900 dark:text-zinc-100 border-b border-zinc-100 dark:border-zinc-900"
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+                    mobileStudioOpen
+                      ? 'text-cyan-400 bg-cyan-500/10 font-semibold'
+                      : 'text-zinc-200 hover:text-white hover:bg-white/5'
+                  }`}
                 >
-                  <span>Studio</span>
+                  <div className="flex items-center gap-2.5">
+                    <Box className={`w-4 h-4 ${mobileStudioOpen ? 'text-cyan-400' : 'text-zinc-400'}`} />
+                    <span>Studio</span>
+                  </div>
                   <ChevronDown
-                    className={`w-5 h-5 transition-transform duration-200 ${
-                      mobileStudioOpen ? 'rotate-180 text-cyan-400' : ''
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      mobileStudioOpen ? 'rotate-180 text-cyan-400' : 'text-zinc-400'
                     }`}
                   />
                 </button>
                 {mobileStudioOpen && (
-                  <div className="pl-4 py-3 space-y-2.5 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg">
+                  <div className="pl-3 pr-2 py-1.5 space-y-1 bg-white/[0.03] dark:bg-white/[0.03] rounded-xl border border-white/5 my-1">
                     {/* Still Renders Sub-Accordion */}
                     <div>
                       <button
                         type="button"
                         onClick={() => setMobileStillRendersOpen(!mobileStillRendersOpen)}
-                        className="w-full flex items-center justify-between py-1.5 text-base font-semibold text-zinc-800 dark:text-zinc-200"
+                        className="w-full flex items-center justify-between px-2 py-1 text-xs font-semibold rounded-lg text-zinc-300 hover:text-cyan-300 transition-colors"
                       >
                         <span className="flex items-center gap-1.5">
                           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
                           <span>Still Renders</span>
                         </span>
                         <ChevronDown
-                          className={`w-4 h-4 transition-transform duration-200 ${
-                            mobileStillRendersOpen ? 'rotate-180 text-cyan-400' : ''
+                          className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                            mobileStillRendersOpen ? 'rotate-180 text-cyan-400' : 'text-zinc-500'
                           }`}
                         />
                       </button>
                       {mobileStillRendersOpen && (
-                        <div className="pl-4 py-1 space-y-1.5 border-l-2 border-cyan-400/40 my-1">
+                        <div className="pl-3 py-1 space-y-1 border-l border-cyan-400/30 my-0.5 ml-1.5">
                           <Link
                             href="/studio/exterior"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="block py-1 text-sm text-zinc-700 dark:text-zinc-300 hover:text-cyan-400 flex items-center justify-between"
+                            className="block py-1 px-2 text-xs text-zinc-400 hover:text-cyan-300 flex items-center justify-between rounded-md hover:bg-white/5"
                           >
                             <span>Exterior</span>
-                            <span className="text-[9px] font-mono text-cyan-400 bg-black/40 px-1 rounded">8K</span>
+                            <span className="text-[9px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-400/30 px-1 rounded">8K</span>
                           </Link>
                           <Link
                             href="/studio/interior"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="block py-1 text-sm text-zinc-700 dark:text-zinc-300 hover:text-cyan-400"
+                            className="block py-1 px-2 text-xs text-zinc-400 hover:text-cyan-300 rounded-md hover:bg-white/5"
                           >
                             Interior
                           </Link>
@@ -707,7 +749,7 @@ export default function Header() {
                     <Link
                       href="/studio/walkthrough"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-2 text-base text-zinc-700 dark:text-zinc-300 hover:text-cyan-400 flex items-center gap-1.5"
+                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-cyan-400 rounded-md hover:bg-white/5 flex items-center gap-1.5"
                     >
                       <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
                       <span>Animation & Walkthrough</span>
@@ -715,7 +757,7 @@ export default function Header() {
                     <Link
                       href="/studio"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-2 text-sm font-semibold text-cyan-500 dark:text-cyan-400"
+                      className="block py-1 px-2 text-xs font-semibold text-cyan-400 hover:underline"
                     >
                       Studio Overview →
                     </Link>
@@ -723,69 +765,70 @@ export default function Header() {
                 )}
               </div>
 
-              {/* XR World Mobile Accordion (Flat list: WebXR, WebAR, VR – Virtual Reality, Virtual Tour, VizSplat, Pixel Streaming) */}
+              {/* XR World Mobile Accordion */}
               <div>
                 <button
                   onClick={() => setMobileXrOpen(!mobileXrOpen)}
-                  className="w-full flex items-center justify-between py-3 text-lg font-medium text-zinc-900 dark:text-zinc-100 border-b border-zinc-100 dark:border-zinc-900"
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+                    mobileXrOpen
+                      ? 'text-cyan-400 bg-cyan-500/10 font-semibold'
+                      : 'text-zinc-200 hover:text-white hover:bg-white/5'
+                  }`}
                 >
-                  <span>XR World</span>
+                  <div className="flex items-center gap-2.5">
+                    <Sparkles className={`w-4 h-4 ${mobileXrOpen ? 'text-cyan-400' : 'text-zinc-400'}`} />
+                    <span>XR World</span>
+                  </div>
                   <ChevronDown
-                    className={`w-5 h-5 transition-transform duration-200 ${
-                      mobileXrOpen ? 'rotate-180 text-cyan-400' : ''
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      mobileXrOpen ? 'rotate-180 text-cyan-400' : 'text-zinc-400'
                     }`}
                   />
                 </button>
                 {mobileXrOpen && (
-                  <div className="pl-4 py-3 space-y-2 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg">
-                    {/* 1. WebXR */}
+                  <div className="pl-3 pr-2 py-1.5 space-y-0.5 bg-white/[0.03] dark:bg-white/[0.03] rounded-xl border border-white/5 my-1">
                     <Link
                       href="/xr-world/webxr"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-2 text-base text-zinc-700 dark:text-zinc-300 hover:text-cyan-400"
+                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-cyan-400 rounded-md hover:bg-white/5"
                     >
                       WebXR
                     </Link>
-                    {/* 2. WebAR */}
                     <Link
                       href="/xr-world/webar"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-2 text-base text-zinc-700 dark:text-zinc-300 hover:text-cyan-400"
+                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-cyan-400 rounded-md hover:bg-white/5"
                     >
                       WebAR
                     </Link>
-                    {/* 3. VR – Virtual Reality */}
                     <Link
                       href="/xr-world/virtual-reality"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-2 text-base text-zinc-700 dark:text-zinc-300 hover:text-cyan-400"
+                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-cyan-400 rounded-md hover:bg-white/5"
                     >
                       VR – Virtual Reality
                     </Link>
-                    {/* 4. Virtual Tour */}
                     <Link
                       href="/xr-world/virtual-tour"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-2 text-base text-zinc-700 dark:text-zinc-300 hover:text-cyan-400"
+                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-cyan-400 rounded-md hover:bg-white/5"
                     >
                       Virtual Tour
                     </Link>
-                    {/* 5. VizSplat */}
                     <Link
                       href="/xr-world/vizsplat"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-2 text-base text-zinc-700 dark:text-zinc-300 hover:text-cyan-400 flex items-center justify-between"
+                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-cyan-400 rounded-md hover:bg-white/5 flex items-center justify-between"
                     >
                       <span>VizSplat</span>
                       <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-rose-500 text-white font-mono">
                         NEW
                       </span>
                     </Link>
-                    {/* 6. Pixel Streaming */}
                     <Link
                       href="/xr-world/pixel-streaming"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-2 text-base text-zinc-700 dark:text-zinc-300 hover:text-cyan-400 flex items-center justify-between"
+                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-cyan-400 rounded-md hover:bg-white/5 flex items-center justify-between"
                     >
                       <span>Pixel Streaming</span>
                       <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-cyan-400 text-black font-mono">
@@ -795,7 +838,7 @@ export default function Header() {
                     <Link
                       href="/xr-world"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-2 text-sm font-semibold text-cyan-500 dark:text-cyan-400"
+                      className="block py-1 px-2 text-xs font-semibold text-cyan-400 hover:underline"
                     >
                       XR World Overview →
                     </Link>
@@ -803,78 +846,85 @@ export default function Header() {
                 )}
               </div>
 
-
               {/* Portfolio Link */}
               <Link
                 href="/portfolio"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block py-3 text-lg font-medium text-zinc-900 dark:text-zinc-100 border-b border-zinc-100 dark:border-zinc-900"
+                className="flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium text-zinc-200 hover:text-white hover:bg-white/5 transition-all"
               >
-                Portfolio
+                <span>Portfolio</span>
+                <span className="text-[10px] font-mono text-cyan-400/60">Featured</span>
               </Link>
 
               {/* About Link */}
               <Link
                 href="/about"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block py-3 text-lg font-medium text-zinc-900 dark:text-zinc-100 border-b border-zinc-100 dark:border-zinc-900"
+                className="flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium text-zinc-200 hover:text-white hover:bg-white/5 transition-all"
               >
-                About Studio
+                <span>About Studio</span>
               </Link>
 
               {/* Blog Link */}
               <Link
                 href="/blog"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block py-3 text-lg font-medium text-zinc-900 dark:text-zinc-100 border-b border-zinc-100 dark:border-zinc-900"
+                className="flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium text-zinc-200 hover:text-white hover:bg-white/5 transition-all"
               >
-                Journal & Insights
+                <span>Journal & Insights</span>
               </Link>
 
               {/* Contact Mobile Accordion */}
               <div>
                 <button
                   onClick={() => setMobileContactOpen(!mobileContactOpen)}
-                  className="w-full flex items-center justify-between py-3 text-lg font-medium text-zinc-900 dark:text-zinc-100 border-b border-zinc-100 dark:border-zinc-900"
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+                    mobileContactOpen
+                      ? 'text-cyan-400 bg-cyan-500/10 font-semibold'
+                      : 'text-zinc-200 hover:text-white hover:bg-white/5'
+                  }`}
                 >
-                  <span>Contact</span>
+                  <div className="flex items-center gap-2.5">
+                    <Send className={`w-4 h-4 ${mobileContactOpen ? 'text-cyan-400' : 'text-zinc-400'}`} />
+                    <span>Contact</span>
+                  </div>
                   <ChevronDown
-                    className={`w-5 h-5 transition-transform duration-200 ${
-                      mobileContactOpen ? 'rotate-180 text-cyan-400' : ''
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      mobileContactOpen ? 'rotate-180 text-cyan-400' : 'text-zinc-400'
                     }`}
                   />
                 </button>
                 {mobileContactOpen && (
-                  <div className="pl-4 py-3 space-y-2 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg">
+                  <div className="pl-3 pr-2 py-1.5 space-y-0.5 bg-white/[0.03] dark:bg-white/[0.03] rounded-xl border border-white/5 my-1">
                     <Link
                       href="/contact"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-2 text-base text-zinc-700 dark:text-zinc-300 hover:text-cyan-400"
+                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-cyan-400 rounded-md hover:bg-white/5"
                     >
                       Project Inquiry
                     </Link>
                     <Link
                       href="/book-consultation"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-2 text-base text-zinc-700 dark:text-zinc-300 hover:text-cyan-400"
+                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-cyan-400 rounded-md hover:bg-white/5"
                     >
                       Book Consultation
                     </Link>
                     <Link
                       href="/track-project"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-2 text-base text-zinc-700 dark:text-zinc-300 hover:text-cyan-400"
+                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-cyan-400 rounded-md hover:bg-white/5"
                     >
                       Track Project
                     </Link>
-                    <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800 space-y-1">
+                    <div className="pt-1.5 border-t border-white/10 space-y-0.5 px-2">
                       <a
                         href="mailto:hello@viztr.com"
-                        className="block text-xs font-mono text-cyan-500 dark:text-cyan-400 hover:underline"
+                        className="block text-[11px] font-mono text-cyan-400 hover:underline"
                       >
                         hello@viztr.com
                       </a>
-                      <span className="block text-xs font-mono text-zinc-500 dark:text-zinc-400">
+                      <span className="block text-[11px] font-mono text-zinc-400">
                         +1 (555) 123-4567
                       </span>
                     </div>
@@ -884,67 +934,85 @@ export default function Header() {
             </div>
 
             {/* Footer Actions */}
-            <div className="p-6 border-t border-zinc-200 dark:border-zinc-800 space-y-4">
+            <div className="p-4 border-t border-white/10 dark:border-white/10 space-y-2.5 shrink-0 bg-black/20">
+              {/* Appearance Segmented Control */}
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono text-zinc-500 dark:text-zinc-400">Appearance</span>
-                <div className="flex items-center gap-1 p-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400">Theme</span>
+                <div className="flex items-center gap-1 p-0.5 bg-white/5 dark:bg-white/5 rounded-lg border border-white/10">
                   <button
                     type="button"
                     onClick={() => { setTheme('light'); setMobileMenuOpen(false); }}
-                    className={`px-3 py-2 rounded-md flex items-center gap-2 text-sm font-mono transition-all ${
+                    className={`px-2.5 py-1 rounded-md flex items-center gap-1.5 text-xs font-mono transition-all ${
                       theme === 'light'
-                        ? 'bg-zinc-200 text-amber-500 font-bold border border-amber-500/30 dark:bg-zinc-700'
-                        : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white'
+                        ? 'bg-white/20 text-amber-400 font-bold shadow-sm'
+                        : 'text-zinc-400 hover:text-white'
                     }`}
-                    title="Light (Daylight)"
+                    title="Light"
                   >
-                    <Sun className="w-4 h-4" />
+                    <Sun className="w-3.5 h-3.5 text-amber-400" />
                     <span>Light</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => { setTheme('dark'); setMobileMenuOpen(false); }}
-                    className={`px-3 py-2 rounded-md flex items-center gap-2 text-sm font-mono transition-all ${
+                    className={`px-2.5 py-1 rounded-md flex items-center gap-1.5 text-xs font-mono transition-all ${
                       theme === 'dark'
-                        ? 'bg-zinc-200 text-emerald-500 font-bold border border-emerald-500/30 dark:bg-zinc-700'
-                        : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white'
+                        ? 'bg-white/20 text-[#42CF8B] font-bold shadow-sm'
+                        : 'text-zinc-400 hover:text-white'
                     }`}
-                    title="Dark (Cyber Emerald)"
+                    title="Dark"
                   >
-                    <Moon className="w-4 h-4" />
+                    <Moon className="w-3.5 h-3.5 text-[#42CF8B]" />
                     <span>Dark</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => { setTheme('system'); setMobileMenuOpen(false); }}
-                    className={`px-3 py-2 rounded-md flex items-center gap-2 text-sm font-mono transition-all ${
+                    className={`px-2.5 py-1 rounded-md flex items-center gap-1.5 text-xs font-mono transition-all ${
                       theme === 'system'
-                        ? 'bg-zinc-200 text-sky-500 font-bold border border-sky-500/30 dark:bg-zinc-700'
-                        : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white'
+                        ? 'bg-white/20 text-sky-400 font-bold shadow-sm'
+                        : 'text-zinc-400 hover:text-white'
                     }`}
-                    title="System Auto"
+                    title="System"
                   >
-                    <Monitor className="w-4 h-4" />
-                    <span>System</span>
+                    <Monitor className="w-3.5 h-3.5 text-sky-400" />
+                    <span>Auto</span>
                   </button>
                 </div>
               </div>
 
-              <Link
-                href="/client-access"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-3 text-center block rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow"
-              >
-                Client Portal Access
-              </Link>
-              <div className="text-center text-xs text-zinc-500 dark:text-zinc-400">
+              {/* Action Buttons: 2-column sleek grid */}
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAgentClosed(false);
+                    setMobileMenuOpen(false);
+                  }}
+                  className="py-2 px-2.5 text-center rounded-xl border border-cyan-500/40 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 font-semibold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_0_10px_rgba(0,240,255,0.15)] active:scale-[0.98]"
+                >
+                  <MessageSquare className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>AI Agent</span>
+                </button>
+
+                <Link
+                  href="/client-access"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="py-2 px-2.5 text-center rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold text-xs transition-all flex items-center justify-center gap-1.5 shadow-[0_0_12px_rgba(16,185,129,0.25)] active:scale-[0.98]"
+                >
+                  <User className="w-3.5 h-3.5" />
+                  <span>Client Portal</span>
+                </Link>
+              </div>
+
+              <div className="text-center text-[10px] text-zinc-500 pt-0.5">
                 © 2026 VizTR Studio. All rights reserved.
               </div>
             </div>
           </div>
         </>
       )}
-      {!isHomeActive && <div className="h-[56px] w-full shrink-0 pointer-events-none" aria-hidden="true" />}
+      {!isHomeActive && <div className="h-[64px] w-full shrink-0 pointer-events-none" aria-hidden="true" />}
     </>
   );
 }

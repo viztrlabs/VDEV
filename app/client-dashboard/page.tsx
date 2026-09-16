@@ -29,6 +29,8 @@ import ClientSearch from './components/ClientSearch';
 import ExperiencePanels from './components/ExperiencePanels';
 import ProjectWorkspace from './components/ProjectWorkspace';
 import DeadlineTracker from './components/DeadlineTracker';
+import ThreadedComments from '@/components/ThreadedComments';
+import FileDownloads from '@/components/FileDownloads';
 
 export default function ClientDashboardPage() {
   const { user, showToast, openModelViewer, openPanorama, openPixelStream } = useAppStore();
@@ -388,17 +390,58 @@ export default function ClientDashboardPage() {
           <div className="space-y-8">
             <FileVersioningPanel />
             <ProjectWorkspace />
+            <FileDownloads
+              projectId={clientId || 'default-project'}
+              files={[
+                {
+                  id: 'file-1',
+                  name: 'Exterior_Rendering_v4_8K.exr',
+                  type: 'render',
+                  format: 'exr',
+                  size: '245 MB',
+                  sizeBytes: 256901120,
+                  url: 'https://s3.amazonaws.com/viztr-studio-assets-prod-us-east-1/renders/exterior_v4_8k.exr',
+                  uploadedAt: '2026-09-14T10:00:00Z',
+                  uploadedBy: 'Julian Vance',
+                },
+                {
+                  id: 'file-2',
+                  name: 'Interior_Walkthrough_4K.mp4',
+                  type: 'video',
+                  format: 'mp4',
+                  size: '128 MB',
+                  sizeBytes: 134217728,
+                  url: 'https://cdn.viztr.io/videos/interior_walkthrough_4k.mp4',
+                  uploadedAt: '2026-09-13T14:30:00Z',
+                  uploadedBy: 'Marcus Sterling',
+                },
+                {
+                  id: 'file-3',
+                  name: 'Site_Plan_Architectural.pdf',
+                  type: 'pdf',
+                  format: 'pdf',
+                  size: '12 MB',
+                  sizeBytes: 12582912,
+                  url: 'https://drive.google.com/file/d/1SolariumSuiteRevitModelArch_BIM/view',
+                  uploadedAt: '2026-09-12T09:15:00Z',
+                  uploadedBy: 'Foster & Partners BIM Lead',
+                },
+              ]}
+            />
           </div>
         )}
         {activeDashboardTab === 'feedback' && (
-          <VisualFeedbackSystem 
-            projectId={clientId || 'default-project'}
-            assets={[
-              { id: 'asset-1', name: 'Exterior Rendering v4', type: 'image', url: '/assets/exterior_v4.jpg', thumbnail: '/assets/exterior_v4_thumb.jpg' },
-              { id: 'asset-2', name: 'Interior Walkthrough', type: '3d-model', url: '/models/interior.glb', thumbnail: '/assets/interior_thumb.jpg' },
-              { id: 'asset-3', name: 'Site Plan PDF', type: 'pdf', url: '/docs/site_plan.pdf', thumbnail: '/assets/pdf_thumb.jpg' }
-            ]}
-          />
+          <div className="space-y-8">
+            <VisualFeedbackSystem 
+              projectId={clientId || 'default-project'}
+              assets={[
+                { id: 'asset-1', name: 'Exterior Rendering v4', type: 'image', url: '/assets/exterior_v4.jpg', thumbnail: '/assets/exterior_v4_thumb.jpg' },
+                { id: 'asset-2', name: 'Interior Walkthrough', type: '3d-model', url: '/models/interior.glb', thumbnail: '/assets/interior_thumb.jpg' },
+                { id: 'asset-3', name: 'Site Plan PDF', type: 'pdf', url: '/docs/site_plan.pdf', thumbnail: '/assets/pdf_thumb.jpg' }
+              ]}
+            />
+            <ThreadedComments projectId={clientId || 'default-project'} currentUserRole="client" />
+          </div>
         )}
         {activeDashboardTab === 'approvals' && <ApprovalWorkflow />}
         {activeDashboardTab === 'financials' && <FinancialsPanel />}

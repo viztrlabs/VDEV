@@ -11,6 +11,8 @@ import type {
   FeatureToggleRepository,
   SystemLogRepository,
   RevenueRepository,
+  BookingRepository,
+  ContactRepository,
   RepositoryFactory,
   PaginationParams,
   PaginatedResult,
@@ -27,10 +29,32 @@ import type {
   FeatureToggle,
   SystemHealthLog,
   RevenueMetric,
-} from '../super-admin-store';
+  Booking,
+  BookingStatus,
+  BookingServiceType,
+  BookingFilters,
+  BookingStats,
+  CreateBooking,
+  UpdateBooking,
+  ApproveBooking,
+  RejectBooking,
+} from '../super-admin-store-types';
 
 function notImplemented(method: string): never {
   throw new Error(`SupabaseRepository.${method} not implemented. Enable Supabase backend or use mock repositories.`);
+}
+
+function createSupabaseBookingRepository(): BookingRepository {
+  return {
+    findAll: () => Promise.resolve(notImplemented('bookings.findAll')),
+    findById: () => Promise.resolve(notImplemented('bookings.findById')),
+    create: () => Promise.resolve(notImplemented('bookings.create')),
+    update: () => Promise.resolve(notImplemented('bookings.update')),
+    delete: () => Promise.resolve(notImplemented('bookings.delete')),
+    approve: () => Promise.resolve(notImplemented('bookings.approve')),
+    reject: () => Promise.resolve(notImplemented('bookings.reject')),
+    getStats: () => Promise.resolve(notImplemented('bookings.getStats')),
+  };
 }
 
 function createSupabaseUserRepository(): UserRepository {
@@ -88,6 +112,17 @@ function createSupabaseRevenueRepository(): RevenueRepository {
   };
 }
 
+function createSupabaseContactRepository(): ContactRepository {
+  return {
+    findAll: () => Promise.resolve(notImplemented('contacts.findAll')),
+    findById: () => Promise.resolve(notImplemented('contacts.findById')),
+    create: () => Promise.resolve(notImplemented('contacts.create')),
+    updateStatus: () => Promise.resolve(notImplemented('contacts.updateStatus')),
+    delete: () => Promise.resolve(notImplemented('contacts.delete')),
+    getStats: () => Promise.resolve(notImplemented('contacts.getStats')),
+  };
+}
+
 export function createSupabaseRepositoryFactory() {
   return {
     users: createSupabaseUserRepository(),
@@ -95,5 +130,7 @@ export function createSupabaseRepositoryFactory() {
     featureToggles: createSupabaseFeatureToggleRepository(),
     logs: createSupabaseSystemLogRepository(),
     revenue: createSupabaseRevenueRepository(),
+    bookings: createSupabaseBookingRepository(),
+    contacts: createSupabaseContactRepository(),
   };
 }

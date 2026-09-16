@@ -439,6 +439,157 @@ export const UploadFileSchema = z.object({
 export type UploadFile = z.infer<typeof UploadFileSchema>;
 
 // =====================================================================
+// BOOKINGS
+// =====================================================================
+
+export const BookingStatusSchema = z.enum(['pending', 'approved', 'rejected', 'completed', 'cancelled']);
+export type BookingStatus = z.infer<typeof BookingStatusSchema>;
+
+export const BookingServiceTypeSchema = z.enum([
+  'Architectural',
+  'Virtual Reality',
+  'Pixel Streaming',
+  'WebXR',
+  'WebAR',
+  'Virtual Tour 360',
+  'Animation',
+  'Still Renders',
+  'Other'
+]);
+export type BookingServiceType = z.infer<typeof BookingServiceTypeSchema>;
+
+export const BookingSchema = z.object({
+  id: z.string(),
+  service_type: BookingServiceTypeSchema,
+  client_name: z.string().min(1),
+  client_email: z.string().email(),
+  client_phone: z.string().optional(),
+  company: z.string().optional(),
+  project_description: z.string().optional(),
+  preferred_date: z.string().date(),
+  preferred_time: z.string().time(),
+  timezone: z.string().default('UTC'),
+  message: z.string().optional(),
+  status: BookingStatusSchema,
+  admin_notes: z.string().optional(),
+  approved_by: z.string().nullable().optional(),
+  approved_at: z.string().datetime().nullable().optional(),
+  rejected_by: z.string().nullable().optional(),
+  rejected_at: z.string().datetime().nullable().optional(),
+  rejection_reason: z.string().optional(),
+  created_at: z.string().datetime(),
+  updated_at: z.string().datetime(),
+});
+export type Booking = z.infer<typeof BookingSchema>;
+
+export const CreateBookingSchema = BookingSchema.omit({
+  id: true,
+  status: true,
+  admin_notes: true,
+  approved_by: true,
+  approved_at: true,
+  rejected_by: true,
+  rejected_at: true,
+  rejection_reason: true,
+  created_at: true,
+  updated_at: true,
+});
+export type CreateBooking = z.infer<typeof CreateBookingSchema>;
+
+export const UpdateBookingSchema = BookingSchema.partial().omit({
+  id: true,
+  created_at: true,
+  updated_at: true,
+});
+export type UpdateBooking = z.infer<typeof UpdateBookingSchema>;
+
+export const ApproveBookingSchema = z.object({
+  admin_notes: z.string().optional(),
+});
+export type ApproveBooking = z.infer<typeof ApproveBookingSchema>;
+
+export const RejectBookingSchema = z.object({
+  rejection_reason: z.string().min(1),
+  admin_notes: z.string().optional(),
+});
+export type RejectBooking = z.infer<typeof RejectBookingSchema>;
+
+export const BookingFiltersSchema = z.object({
+  search: z.string().optional(),
+  status: BookingStatusSchema.optional(),
+  service_type: BookingServiceTypeSchema.optional(),
+  date_from: z.string().date().optional(),
+  date_to: z.string().date().optional(),
+});
+export type BookingFilters = z.infer<typeof BookingFiltersSchema>;
+
+export const BookingStatsSchema = z.object({
+  total: z.number().int().nonnegative(),
+  by_status: z.record(BookingStatusSchema, z.number().int().nonnegative()),
+  by_service_type: z.record(BookingServiceTypeSchema, z.number().int().nonnegative()),
+});
+export type BookingStats = z.infer<typeof BookingStatsSchema>;
+
+// =====================================================================
+// CONTACT SUBMISSIONS
+// =====================================================================
+
+export const ContactStatusSchema = z.enum(['new', 'read', 'responded', 'archived']);
+export type ContactStatus = z.infer<typeof ContactStatusSchema>;
+
+export const ContactServiceInterestSchema = z.enum([
+  'Architectural',
+  'Virtual Reality',
+  'Pixel Streaming',
+  'WebXR',
+  'WebAR',
+  'Virtual Tour 360',
+  'Animation',
+  'Still Renders',
+  'Other',
+]);
+export type ContactServiceInterest = z.infer<typeof ContactServiceInterestSchema>;
+
+export const ContactSubmissionSchema = z.object({
+  id: z.string(),
+  name: z.string().min(1),
+  email: z.string().email(),
+  phone: z.string().optional(),
+  company: z.string().optional(),
+  service_interest: ContactServiceInterestSchema.optional(),
+  message: z.string().optional(),
+  status: ContactStatusSchema,
+  created_at: z.string().datetime(),
+  updated_at: z.string().datetime(),
+});
+export type ContactSubmission = z.infer<typeof ContactSubmissionSchema>;
+
+export const CreateContactSchema = ContactSubmissionSchema.omit({
+  id: true,
+  status: true,
+  created_at: true,
+  updated_at: true,
+});
+export type CreateContact = z.infer<typeof CreateContactSchema>;
+
+export const ContactFiltersSchema = z.object({
+  search: z.string().optional(),
+  status: ContactStatusSchema.optional(),
+  service_interest: ContactServiceInterestSchema.optional(),
+  date_from: z.string().date().optional(),
+  date_to: z.string().date().optional(),
+});
+export type ContactFilters = z.infer<typeof ContactFiltersSchema>;
+
+export const ContactStatsSchema = z.object({
+  total: z.number().int().nonnegative(),
+  by_status: z.record(ContactStatusSchema, z.number().int().nonnegative()),
+  by_service_interest: z.record(ContactServiceInterestSchema, z.number().int().nonnegative()),
+});
+export type ContactStats = z.infer<typeof ContactStatsSchema>;
+
+
+// =====================================================================
 // API RESPONSE WRAPPERS
 // =====================================================================
 

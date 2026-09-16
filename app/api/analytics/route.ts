@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import { requireAuth } from '@/lib/api-guard';
 
 // Analytics ingestion endpoint. Receives batched events + performance samples
 // from the client AnalyticsEngine (see components/xr/analytics/analyticsEngine.ts).
@@ -42,6 +43,8 @@ async function readRecent(limit: number): Promise<Array<Record<string, unknown>>
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const body = (await req.json()) as IngestBody;
     const ts = Date.now();
@@ -60,7 +63,9 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const guard = await requireAuth(req, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
   const recent = await readRecent(25);
   return NextResponse.json({ success: true, count: recent.length, recent });
 }

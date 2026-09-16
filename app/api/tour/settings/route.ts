@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getTourSettings, saveTourSettings } from '@/lib/toursRepo';
+import { requireAuth } from '@/lib/api-guard';
 
 // GET /api/tour/settings — admin-controlled public tour settings (live flag + feature toggles)
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const settings = await getTourSettings();
     return NextResponse.json(settings);
@@ -13,6 +16,8 @@ export async function GET() {
 
 // PUT /api/tour/settings — persist admin changes (including full VTED nested object)
 export async function PUT(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const body = await req.json();
     const saved = await saveTourSettings({

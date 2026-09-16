@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { rbac, auditLogger, backupService, complianceEngine, monitoring, ssoService } from '@/src/services/enterprise';
+import { requireAuth } from '@/lib/api-guard';
 
 export async function GET(req: NextRequest) {
+  const guard = await requireAuth(req, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
   const { searchParams } = new URL(req.url);
   const action = searchParams.get('action') ?? 'status';
-
-  // Basic auth check (in real impl, use proper session)
-  const role = req.headers.get('x-user-role') as 'SUPER_ADMIN' | 'ENTERPRISE_ADMIN' | undefined;
-  if (!role || !['SUPER_ADMIN', 'ENTERPRISE_ADMIN'].includes(role)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-  }
 
   try {
     switch (action) {
@@ -72,13 +69,10 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireAuth(req, ['super_admin', 'admin']);
+  if (guard.error) return guard.error;
   const body = await req.json().catch(() => null);
   if (!body) return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
-
-  const role = req.headers.get('x-user-role');
-  if (!role || !['SUPER_ADMIN', 'ENTERPRISE_ADMIN', 'ORG_ADMIN'].includes(role)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-  }
 
   // Audit log the action
   auditLogger.log({

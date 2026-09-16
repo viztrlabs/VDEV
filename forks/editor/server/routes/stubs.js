@@ -18,7 +18,7 @@ router.get('/users/:id', (req, res) => {
                 dashboard: true,
                 entityInspector: true,
                 soundComponent: true,
-                mainMenu: true,
+                mainMenu: false,
                 controls: true,
                 launch: true,
                 howdoi: true

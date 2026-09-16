@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/api-guard';
 
 const CONTROLLER_URL =
   process.env.STREAM_CONTROLLER_URL || 'http://localhost:3001';
@@ -11,6 +12,8 @@ interface SessionConfig {
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     const body = await req.json().catch(() => ({}));
     const config: SessionConfig = {
@@ -44,7 +47,6 @@ export async function POST(req: NextRequest) {
             {
               urls: process.env.PS_TURN_URL || 'turn:turn.viztr.io:3478',
               username: process.env.PS_TURN_USER || 'viztr',
-              credential: process.env.PS_TURN_PASS || 'yourpassword',
             },
           ],
         });
@@ -72,7 +74,6 @@ export async function POST(req: NextRequest) {
         {
           urls: process.env.PS_TURN_URL || 'turn:turn.viztr.io:3478',
           username: process.env.PS_TURN_USER || 'viztr',
-          credential: process.env.PS_TURN_PASS || 'yourpassword',
         },
       ],
     });

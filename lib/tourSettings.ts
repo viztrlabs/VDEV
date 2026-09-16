@@ -81,7 +81,7 @@ export async function getTourSettings(): Promise<TourSettings> {
 }
 
 export async function saveTourSettings(settings: TourSettings): Promise<TourSettings> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
+  console.warn('[tourSettings] Local filesystem save is deprecated — use Supabase via toursRepo.saveTourSettings()');
   const merged: TourSettings = {
     ...DEFAULT_SETTINGS,
     ...settings,
@@ -90,6 +90,5 @@ export async function saveTourSettings(settings: TourSettings): Promise<TourSett
     accessLevel: settings.accessLevel === 'private' ? 'private' : 'public',
     version: typeof settings.version === 'number' ? settings.version : 1,
   };
-  await fs.writeFile(SETTINGS_FILE, JSON.stringify(merged, null, 2), 'utf8');
   return merged;
 }

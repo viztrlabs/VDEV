@@ -1,13 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api-guard';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { getAssetTypeByMime, validateMagicBytes } from '@/lib/asset-types';
 
 const MAX_FILE_SIZE_MB = 500; // Increased for chunked uploads
+const MAX_AGGREGATE_CHUNKS_MB = 500;
 const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB chunks
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 1000;
 const ALLOWED_MIME_PREFIXES = ['image/', 'video/', 'model/', 'application/octet-stream', 'application/json'];
 const BUCKET_NAME = 'viztr-assets';
+
+function isMimeAllowed(mimeType: string): boolean {
+  if (ALLOWED_MIME_PREFIXES.some((prefix) => mimeType.startsWith(prefix))) return true;
+  return getAssetTypeByMime(mimeType) !== undefined;
+}
+
+function validateMimeMagicBytes(buf: Buffer, mimeType: string): boolean {
+  const assetType = getAssetTypeByMime(mimeType);
+  if (!assetType) return true; // no definition — pass through
+  return validateMagicBytes(buf, assetType);
+}
 
 // In-memory chunk storage (in production, use Redis)
 const chunkStore = new Map<string, { chunks: Map<number, Buffer>; totalChunks: number; fileName: string; mimeType: string }>();
@@ -100,8 +113,7 @@ async function initChunkedUpload(fileName: string, mimeType: string, totalChunks
     return NextResponse.json({ success: false, error: 'Too many chunks (max 100)' }, { status: 400 });
   }
 
-  const isAllowed = ALLOWED_MIME_PREFIXES.some((prefix) => mimeType.startsWith(prefix));
-  if (!isAllowed) {
+  if (!isMimeAllowed(mimeType)) {
     return NextResponse.json({ success: false, error: `File type "${mimeType}" is not allowed` }, { status: 415 });
   }
 
@@ -142,9 +154,31 @@ async function handleChunkedUpload(
     return NextResponse.json({ success: false, error: `Chunk exceeds max size (${CHUNK_SIZE} bytes)` }, { status: 413 });
   }
 
+  // Validate magic bytes on first chunk
+  if (chunkIndex === 0) {
+    const header = Buffer.from(await chunk.arrayBuffer());
+    if (!validateMimeMagicBytes(header, upload.mimeType)) {
+      return NextResponse.json(
+        { success: false, error: `File content does not match declared MIME type "${upload.mimeType}"` },
+        { status: 400 },
+      );
+    }
+  }
+
   // Store chunk
   const buffer = Buffer.from(await chunk.arrayBuffer());
   upload.chunks.set(chunkIndex, buffer);
+
+  // Aggregate chunk size guard
+  let totalBytes = 0;
+  for (const c of upload.chunks.values()) totalBytes += c.length;
+  if (totalBytes > MAX_AGGREGATE_CHUNKS_MB * 1024 * 1024) {
+    chunkStore.delete(uploadId);
+    return NextResponse.json(
+      { success: false, error: `Upload exceeds ${MAX_AGGREGATE_CHUNKS_MB}MB limit` },
+      { status: 413 },
+    );
+  }
 
   // Check if complete
   const complete = upload.chunks.size === totalChunks;
@@ -182,6 +216,15 @@ async function completeChunkedUpload(userId: string, uploadId: string, fileName:
     chunks.push(chunk);
   }
   const fileBuffer = Buffer.concat(chunks);
+
+  // Validate magic bytes
+  if (!validateMimeMagicBytes(fileBuffer, upload.mimeType)) {
+    chunkStore.delete(uploadId);
+    return NextResponse.json(
+      { success: false, error: `File content does not match declared MIME type "${upload.mimeType}"` },
+      { status: 400 },
+    );
+  }
 
   // Validate file size
   const fileSizeMB = fileBuffer.length / (1024 * 1024);
@@ -239,8 +282,7 @@ async function handleSingleFileUpload(userId: string, file: File, folder?: strin
 
   // Validate MIME type
   const mimeType = file.type || 'application/octet-stream';
-  const isAllowed = ALLOWED_MIME_PREFIXES.some((prefix) => mimeType.startsWith(prefix));
-  if (!isAllowed) {
+  if (!isMimeAllowed(mimeType)) {
     return NextResponse.json(
       { success: false, error: `File type "${mimeType}" is not allowed` },
       { status: 415 }
@@ -252,6 +294,13 @@ async function handleSingleFileUpload(userId: string, file: File, folder?: strin
   const safeFileName = `${uploadFolder}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
 
   const buffer = Buffer.from(await file.arrayBuffer());
+
+  if (!validateMimeMagicBytes(buffer, mimeType)) {
+    return NextResponse.json(
+      { success: false, error: `File content does not match declared MIME type "${mimeType}"` },
+      { status: 400 },
+    );
+  }
 
   const { data, error } = await retryWithBackoff(() =>
     supabase!.storage.from(BUCKET_NAME).upload(safeFileName, buffer, {
