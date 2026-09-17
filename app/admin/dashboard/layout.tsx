@@ -56,9 +56,9 @@ import HermesButton from '@/components/admin/HermesButton';
 import CollapsibleLeftFilterPanel from '@/components/dashboard/CollapsibleLeftFilterPanel';
 import CollapsibleRightInspectorPanel from '@/components/dashboard/CollapsibleRightInspectorPanel';
 import { useAppStore } from '@/lib/store';
+import { useAdminRealtime } from '@/lib/useRealtime';
 import { clearAssetCache } from '@/lib/asset-pipeline';
 import {
-  INITIAL_MANAGED_PROJECTS,
   ManagedProject,
   ProjectType,
   ProjectStatus,
@@ -454,8 +454,30 @@ export default function AdminDashboardLayout() {
   });
 
   const { user, showToast } = useAppStore();
-  const [projectsList, setProjectsList] = useState<ManagedProject[]>(INITIAL_MANAGED_PROJECTS);
-  const [selectedProjectId, setSelectedProjectId] = useState<string>(INITIAL_MANAGED_PROJECTS[0]?.id || 'VIZTR-882');
+
+  // --- Phase 2 Task 2: Supabase Realtime wiring (admin scope) ---
+  // The shared data provider lives in this layout, so the subscription lives
+  // here. Store slices update automatically via applyRealtimePayload; this
+  // callback is for toasts/counters only. No polling — the hook's channels
+  // cover every operational table.
+  useAdminRealtime((table, payload) => {
+    if (table === 'activity_logs' && payload?.eventType === 'INSERT') {
+      const action = payload?.new?.action ?? 'activity';
+      showToast(`Live activity: ${action}`, 'info');
+    }
+  });
+
+  // Canonical realtime slices. projectsList (below) IS the store's projects
+  // slice, so admin sections render live data without refresh. The remaining
+  // subscriptions keep this layout re-rendering whenever any slice changes;
+  // sections read the same slices from the store (Task 3 consumers).
+  const projectsList = useAppStore((s) => s.projects) as ManagedProject[];
+  useAppStore((s) => s.experiences);
+  useAppStore((s) => s.assets);
+  useAppStore((s) => s.deliverables);
+  useAppStore((s) => s.activityFeed);
+  useAppStore((s) => s.feedbackItems);
+  const [selectedProjectId, setSelectedProjectId] = useState<string>('');
 
   const selectedProject = projectsList.find((p) => p.id === selectedProjectId) || projectsList[0];
 
@@ -471,36 +493,65 @@ export default function AdminDashboardLayout() {
     }
   }, []);
 
-  // Fetch projects from Supabase when available
+  // One-time hydration: the existing /api/admin/* fetches populate the
+  // canonical store slices. Realtime (useAdminRealtime above) covers every
+  // later update — no polling.
   useEffect(() => {
     const fetchProjects = async () => {
       try {
         const res = await fetch('/api/admin/projects?pageSize=100');
         const data = await res.json();
         if (data.success && data.data && data.data.length > 0) {
-          setProjectsList(data.data);
-          if (data.data.length > 0 && !selectedProjectId) {
-            setSelectedProjectId(data.data[0].id);
-          }
+          useAppStore.getState().setProjects(data.data);
+          setSelectedProjectId((prev) => prev || data.data[0].id);
         }
       } catch {
-        // Keep initial mock data
+        // Store stays as-is; realtime updates still flow when connected.
       }
     };
     fetchProjects();
   }, []);
 
+  // Admin-global hydration for slices whose endpoints allow unscoped reads.
+  // experiences/assets/deliverables require a projectId-scoped endpoint, so
+  // at admin scope those slices populate via realtime only.
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/activity?limit=50', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && data?.success && Array.isArray(data.logs)) {
+          useAppStore.getState().setActivityFeed(data.logs);
+        }
+      })
+      .catch(() => {});
+    fetch('/api/feedback', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && data?.success && Array.isArray(data.feedback)) {
+          useAppStore.getState().setFeedbackItems(data.feedback);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const handleAddProject = (newProject: ManagedProject) => {
-    setProjectsList((prev) => [newProject, ...prev]);
+    const { projects, setProjects } = useAppStore.getState();
+    setProjects([newProject, ...projects]);
     setSelectedProjectId(newProject.id);
   };
 
   const handleUpdateProject = (updated: ManagedProject) => {
-    setProjectsList((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+    const { projects, setProjects } = useAppStore.getState();
+    setProjects(projects.map((p) => (p.id === updated.id ? updated : p)));
   };
 
   const handleDeleteProject = (id: string) => {
-    setProjectsList((prev) => prev.filter((p) => p.id !== id));
+    const { projects, setProjects } = useAppStore.getState();
+    setProjects(projects.filter((p) => p.id !== id));
   };
 
   const handleLogHours = (projectId: string, entry: Omit<TimesheetEntry, 'id'>) => {
@@ -508,8 +559,9 @@ export default function AdminDashboardLayout() {
       ...entry,
       id: `ts-${Date.now()}`,
     };
-    setProjectsList((prev) =>
-      prev.map((p) => {
+    const { projects, setProjects } = useAppStore.getState();
+    setProjects(
+      (projects as ManagedProject[]).map((p) => {
         if (p.id === projectId) {
           const updatedHoursSpent = p.hoursMonitoring.hoursSpent + entry.hours;
           return {
@@ -597,13 +649,17 @@ export default function AdminDashboardLayout() {
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-8 min-w-0">
           {renderSection(activeSection, sectionProps)}
         </main>
-        <CollapsibleRightInspectorPanel
-          isOpen={rightPanelOpen}
-          onToggle={() => setRightPanelOpen(!rightPanelOpen)}
-          project={selectedProject}
-          onLogHours={handleLogHours}
-          userRole="SUPER_ADMIN"
-        />
+        {/* Selected project resolves after store hydration; until then the
+            inspector has nothing to show (it requires a project). */}
+        {selectedProject && (
+          <CollapsibleRightInspectorPanel
+            isOpen={rightPanelOpen}
+            onToggle={() => setRightPanelOpen(!rightPanelOpen)}
+            project={selectedProject}
+            onLogHours={handleLogHours}
+            userRole="SUPER_ADMIN"
+          />
+        )}
       </div>
       <HermesButton user={user} />
     </div>
