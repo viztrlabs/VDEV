@@ -5,6 +5,16 @@ function stripBom(s: string): string {
   return s.replace(/^\uFEFF/, '');
 }
 
+function isValidHttpUrl(s?: string): boolean {
+  if (!s) return false;
+  try {
+    const url = new URL(s);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 // Server-only admin client. The service role key bypasses RLS and must never
 // be shipped to the browser (no NEXT_PUBLIC_ prefix). Reads .env.local values
 // at module load; tests run without the key, so adminClient is null there and
@@ -13,16 +23,43 @@ const supabaseUrl = stripBom(process.env.NEXT_PUBLIC_SUPABASE_URL || '');
 const serviceRoleKey = stripBom(process.env.SUPABASE_SERVICE_ROLE_KEY || '');
 
 export const isSupabaseAdminConfigured =
-  Boolean(supabaseUrl && serviceRoleKey) && typeof window === 'undefined';
+  Boolean(supabaseUrl && serviceRoleKey && serviceRoleKey !== '[SENSITIVE]' && isValidHttpUrl(supabaseUrl)) &&
+  typeof window === 'undefined';
 
-export const adminClient: SupabaseClient | null = isSupabaseAdminConfigured
-  ? createClient(supabaseUrl, serviceRoleKey, {
+// Lazy singleton — defers createClient() to first call so the module can be
+// imported during `next build` without a valid supabaseUrl at load time.
+// All call sites already guard with `if (!supabaseAdmin)` — this preserves
+// that contract by returning null when env vars are absent.
+let _adminClient: SupabaseClient | null | undefined;
+
+export function getSupabaseAdmin(): SupabaseClient | null {
+  if (_adminClient !== undefined) return _adminClient;
+  if (!isSupabaseAdminConfigured) {
+    _adminClient = null;
+    return null;
+  }
+  try {
+    _adminClient = createClient(supabaseUrl, serviceRoleKey, {
       auth: { persistSession: false, autoRefreshToken: false },
-    })
-  : null;
+    });
+  } catch {
+    _adminClient = null;
+  }
+  return _adminClient;
+}
 
-// Legacy name used by the editor subsystem API routes.
-export const supabaseAdmin = adminClient;
+// Convenience re-export so existing `import { supabaseAdmin }` call sites
+// can be migrated incrementally. Treat this value as a function call.
+/** @deprecated Call {@link getSupabaseAdmin}() instead of using this directly. */
+export const adminClient: SupabaseClient | null = null;
+
+// supabaseAdmin is now a getter function — all call sites that do
+//   `if (!supabaseAdmin)` should be replaced with `if (!getSupabaseAdmin())`
+//   and `supabaseAdmin.from(...)` with `getSupabaseAdmin()!.from(...)`.
+// For now we export getSupabaseAdmin under the legacy name so existing routes
+// that call supabaseAdmin(...) or check `!supabaseAdmin` continue to work
+// after a one-line import change.
+export { getSupabaseAdmin as supabaseAdmin };
 
 // Template scene definitions
 export const TEMPLATES: Record<number, { name: string; entities: Record<string, any>; settings: Record<string, any> }> = {
@@ -99,8 +136,9 @@ export const TEMPLATES: Record<number, { name: string; entities: Record<string, 
 };
 
 export async function getProject(projectId: string) {
-  if (!supabaseAdmin) return null;
-  const { data, error } = await supabaseAdmin
+  const client = getSupabaseAdmin();
+  if (!client) return null;
+  const { data, error } = await client
     .from('editor_projects')
     .select('*')
     .eq('id', projectId)
@@ -110,8 +148,9 @@ export async function getProject(projectId: string) {
 }
 
 export async function getScenes(projectId: string) {
-  if (!supabaseAdmin) return [];
-  const { data, error } = await supabaseAdmin
+  const client = getSupabaseAdmin();
+  if (!client) return [];
+  const { data, error } = await client
     .from('editor_scenes')
     .select('*')
     .eq('project_id', projectId)

@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { INITIAL_MANAGED_PROJECTS, ManagedProject } from '@/lib/projects-data';
 import { listProjectsSupabase, isSupabaseAdminReady } from '@/lib/supabase/repositories';

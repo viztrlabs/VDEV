@@ -11,9 +11,21 @@ function stripBom(s: string): string {
   return s.replace(/^\uFEFF/, '');
 }
 
-const supabaseUrl = stripBom(process.env.NEXT_PUBLIC_SUPABASE_URL || '') || 'https://placeholder-project.supabase.co'
-const supabaseAnonKey = stripBom(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '') || 'placeholder-anon-key'
-export const isSupabaseConfigured = !!(stripBom(process.env.NEXT_PUBLIC_SUPABASE_URL || '') && stripBom(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''));
+function isValidHttpUrl(s?: string): boolean {
+  if (!s) return false;
+  try {
+    const url = new URL(s);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+const rawUrl = stripBom(process.env.NEXT_PUBLIC_SUPABASE_URL || '');
+const rawAnonKey = stripBom(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '');
+const supabaseUrl = isValidHttpUrl(rawUrl) ? rawUrl : 'https://placeholder-project.supabase.co';
+const supabaseAnonKey = rawAnonKey && rawAnonKey !== '[SENSITIVE]' ? rawAnonKey : 'placeholder-anon-key';
+export const isSupabaseConfigured = isValidHttpUrl(rawUrl) && Boolean(rawAnonKey && rawAnonKey !== '[SENSITIVE]');
 
 // Client-side Supabase client (SSR-safe for browser)
 export const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {

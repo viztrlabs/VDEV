@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { rbac, auditLogger, backupService, complianceEngine, monitoring, ssoService } from '@/src/services/enterprise';
 import { requireAuth } from '@/lib/api-guard';

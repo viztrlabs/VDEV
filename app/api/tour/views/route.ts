@@ -1,12 +1,13 @@
+export const dynamic = 'force-dynamic'
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 
 // GET /api/tour/views — total public tour opens (for the admin analytics counter)
 // POST /api/tour/views — increment the counter when a visitor opens the tour
 
 async function readCount(): Promise<number> {
-  if (!supabaseAdmin) return 0;
-  const { data } = await supabaseAdmin
+  if (!getSupabaseAdmin()) return 0;
+  const { data } = await getSupabaseAdmin()!
     .from('tours')
     .select('views_count')
     .order('updated_at', { ascending: false })
@@ -21,10 +22,10 @@ export async function GET() {
 
 export async function POST() {
   try {
-    if (!supabaseAdmin) {
+    if (!getSupabaseAdmin()) {
       return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
     }
-    const { data: tour } = await supabaseAdmin
+    const { data: tour } = await getSupabaseAdmin()!
       .from('tours')
       .select('id')
       .order('updated_at', { ascending: false })
@@ -33,7 +34,7 @@ export async function POST() {
     if (!tour) {
       return NextResponse.json({ count: 0 });
     }
-    const { data } = await supabaseAdmin
+    const { data } = await getSupabaseAdmin()!
       .from('tours')
       .update({ views_count: (await readCount()) + 1 })
       .eq('id', tour.id)

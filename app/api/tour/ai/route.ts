@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { processFloorplanImage } from '@/lib/floorplanAI';
 import type { VtedFloorplanAI } from '@/lib/vted-types';

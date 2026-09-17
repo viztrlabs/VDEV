@@ -101,7 +101,7 @@ export async function middleware(req: NextRequest) {
     (p) => pathname === p || pathname.startsWith(`${p}/`)
   );
   if (isClientPortalRoute) {
-    const clientToken = verifyClientPortalToken(getClientPortalTokenFromRequest(req) || '');
+    const clientToken = await verifyClientPortalToken(getClientPortalTokenFromRequest(req) || '');
     const hasClientToken = !!clientToken;
     const hasValidSession = token && (role === 'client' || role === 'super_admin' || role === 'admin');
 

@@ -1,16 +1,17 @@
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin, TEMPLATES } from '@/lib/supabase-admin';
+import { getSupabaseAdmin, TEMPLATES } from '@/lib/supabase-admin';
 import { requireAuth } from '@/lib/api-guard';
 
 export async function GET(request: NextRequest) {
     const guard = await requireAuth(request);
     if (guard.error) return guard.error;
-    if (!supabaseAdmin) {
+    if (!getSupabaseAdmin()) {
         return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
     }
 
     try {
-        const { data, error } = await supabaseAdmin
+        const { data, error } = await getSupabaseAdmin()!
             .from('editor_projects')
             .select('*')
             .order('updated_at', { ascending: false });
@@ -28,7 +29,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const guard = await requireAuth(request);
   if (guard.error) return guard.error;
-  if (!supabaseAdmin) {
+  if (!getSupabaseAdmin()) {
         return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
     }
 
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
         const template = fork_from ? TEMPLATES[fork_from] : null;
 
         // Create project
-        const { data: project, error: projectError } = await supabaseAdmin
+        const { data: project, error: projectError } = await getSupabaseAdmin()!
             .from('editor_projects')
             .insert({
                 name: name || 'Untitled',
@@ -56,7 +57,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Create default branch
-        await supabaseAdmin
+        await getSupabaseAdmin()!
             .from('editor_branches')
             .insert({
                 id: 'main',
@@ -65,7 +66,7 @@ export async function POST(request: NextRequest) {
             });
 
         // Create scene from template or blank
-        const { error: sceneError } = await supabaseAdmin
+        const { error: sceneError } = await getSupabaseAdmin()!
             .from('editor_scenes')
             .insert({
                 name: template ? template.name : 'Root',

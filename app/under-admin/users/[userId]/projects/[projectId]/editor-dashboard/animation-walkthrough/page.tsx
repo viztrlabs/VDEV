@@ -212,6 +212,12 @@ export default function AnimationEditorPage() {
     };
   }, [projectId, serviceSlug]);
 
+  const timelineItems = [
+    { id: 't1', title: 'Opening Scene', start: 0, duration: 25, type: 'scene' },
+    { id: 't2', title: 'Fly-through Sequence', start: 25, duration: 35, type: 'animation' },
+    { id: 't3', title: 'Architectural Reveals', start: 60, duration: 20, type: 'scene' },
+  ];
+
   return (
     <EditorErrorBoundary serviceName={serviceTitle}>
       <PermissionProvider role="owner">

@@ -1,6 +1,7 @@
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthUser, requireAdmin } from '@/lib/api/auth';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 import {
   handleApiError,
   successResponse,
@@ -19,7 +20,7 @@ export async function GET(request: NextRequest) {
     const user = await getAuthUser();
     requireAdmin(user);
 
-    if (!supabaseAdmin) {
+    if (!getSupabaseAdmin()) {
       return addRequestIdHeaders(
         NextResponse.json(
           {
@@ -36,11 +37,11 @@ export async function GET(request: NextRequest) {
     }
 
     const [projectsCount, clientsCount, experiencesCount, assetsCount, deliverablesCount] = await Promise.all([
-      supabaseAdmin.from('projects').select('id', { count: 'exact', head: true }),
-      supabaseAdmin.from('clients').select('id', { count: 'exact', head: true }),
-      supabaseAdmin.from('experiences').select('id', { count: 'exact', head: true }),
-      supabaseAdmin.from('assets').select('id', { count: 'exact', head: true }),
-      supabaseAdmin.from('deliverables').select('id', { count: 'exact', head: true }),
+      getSupabaseAdmin()!.from('projects').select('id', { count: 'exact', head: true }),
+      getSupabaseAdmin()!.from('clients').select('id', { count: 'exact', head: true }),
+      getSupabaseAdmin()!.from('experiences').select('id', { count: 'exact', head: true }),
+      getSupabaseAdmin()!.from('assets').select('id', { count: 'exact', head: true }),
+      getSupabaseAdmin()!.from('deliverables').select('id', { count: 'exact', head: true }),
     ]);
 
     return addRequestIdHeaders(

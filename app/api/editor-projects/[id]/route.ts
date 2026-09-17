@@ -1,17 +1,19 @@
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 import { requireAuth } from '@/lib/api-guard';
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const guard = await requireAuth(_request);
     if (guard.error) return guard.error;
-    if (!supabaseAdmin) {
+    const db = getSupabaseAdmin();
+    if (!db) {
         return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
     }
 
     const { id } = await params;
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await db
         .from('editor_projects')
         .select('*')
         .eq('id', id)
@@ -27,14 +29,15 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const guard = await requireAuth(request);
   if (guard.error) return guard.error;
-  if (!supabaseAdmin) {
+  const db = getSupabaseAdmin();
+  if (!db) {
         return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
     }
 
     const { id } = await params;
     const body = await request.json();
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await db
         .from('editor_projects')
         .update(body)
         .eq('id', id)
@@ -51,13 +54,14 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 export async function DELETE(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const guard = await requireAuth(_request, ['super_admin', 'admin']);
   if (guard.error) return guard.error;
-  if (!supabaseAdmin) {
+  const db = getSupabaseAdmin();
+  if (!db) {
         return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
     }
 
     const { id } = await params;
 
-    const { error } = await supabaseAdmin
+    const { error } = await db
         .from('editor_projects')
         .delete()
         .eq('id', id);

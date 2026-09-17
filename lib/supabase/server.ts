@@ -8,14 +8,25 @@ function stripBom(s: string): string {
   return s.replace(/^\uFEFF/, '');
 }
 
+function isValidHttpUrl(s?: string): boolean {
+  if (!s) return false;
+  try {
+    const url = new URL(s);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 export async function createClient() {
   const url = stripBom(process.env.NEXT_PUBLIC_SUPABASE_URL || '');
   const anonKey = stripBom(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '');
-  if (!url || !anonKey) return null;
+  if (!url || !anonKey || anonKey === '[SENSITIVE]' || !isValidHttpUrl(url)) return null;
 
-  const cookieStore = await cookies();
-  return createServerClient(url, anonKey, {
-    cookies: {
+  try {
+    const cookieStore = await cookies();
+    return createServerClient(url, anonKey, {
+      cookies: {
       getAll() {
         return cookieStore.getAll();
       },
@@ -30,6 +41,9 @@ export async function createClient() {
       },
     },
   });
+  } catch {
+    return null;
+  }
 }
 
 export async function getSessionUser() {

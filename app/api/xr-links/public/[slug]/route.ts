@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { getXRLinksFromDB, getXRLinkBySlug, XRLinkRecord } from '@/lib/xr-links-store';
 

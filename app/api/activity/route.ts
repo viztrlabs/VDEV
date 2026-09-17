@@ -1,12 +1,14 @@
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth, sanitizeString } from '@/lib/api-guard';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 
 export async function GET(req: NextRequest) {
   const guard = await requireAuth(req);
   if (guard.error) return guard.error;
 
-  if (!supabaseAdmin) {
+  const db = getSupabaseAdmin();
+  if (!db) {
     return NextResponse.json({ success: false, error: 'Database not configured' }, { status: 500 });
   }
 
@@ -15,7 +17,7 @@ export async function GET(req: NextRequest) {
   const limit = Math.min(Number(searchParams.get('limit') || '50'), 200);
 
   try {
-    let query = supabaseAdmin
+    let query = db
       .from('activity_logs')
       .select('*')
       .order('created_at', { ascending: false })
@@ -40,7 +42,8 @@ export async function POST(req: NextRequest) {
   const guard = await requireAuth(req);
   if (guard.error) return guard.error;
 
-  if (!supabaseAdmin) {
+  const db = getSupabaseAdmin();
+  if (!db) {
     return NextResponse.json({ success: false, error: 'Database not configured' }, { status: 500 });
   }
 
@@ -62,7 +65,7 @@ export async function POST(req: NextRequest) {
     const userName = sanitizeString(body.user_name, 255) || guard.session?.user?.name || guard.userId;
     const metadata = body.metadata && typeof body.metadata === 'object' ? body.metadata : {};
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await db
       .from('activity_logs')
       .insert({
         project_id: projectId || null,

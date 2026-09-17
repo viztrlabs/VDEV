@@ -1,6 +1,7 @@
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api-guard';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 
 export interface DiscoverySubmission {
   id: string;
@@ -147,9 +148,9 @@ export async function GET(req: NextRequest) {
   if (guard.error) return guard.error;
 
   // Try Supabase first
-  if (supabaseAdmin) {
+  if (getSupabaseAdmin()) {
     try {
-      const { data, error } = await supabaseAdmin
+      const { data, error } = await getSupabaseAdmin()!
         .from('FormSubmission')
         .select('*')
         .eq('type', 'discovery')
@@ -225,9 +226,9 @@ export async function POST(req: NextRequest) {
     };
 
     // Try Supabase first
-    if (supabaseAdmin) {
+    if (getSupabaseAdmin()) {
       try {
-        const { data, error } = await supabaseAdmin
+        const { data, error } = await getSupabaseAdmin()!
           .from('FormSubmission')
           .insert({
             id: newId,

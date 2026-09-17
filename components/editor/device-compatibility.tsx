@@ -11,7 +11,7 @@ type DeviceConfig = {
 };
 
 type DeviceCompatibilityProps = {
-  items: DeviceConfig[];
+  items?: DeviceConfig[];
   onChange?: (items: DeviceConfig[]) => void;
   readOnly?: boolean;
 };
@@ -24,7 +24,7 @@ const defaultItems: DeviceConfig[] = [
 ];
 
 export function DeviceCompatibility({ items, onChange, readOnly = false }: DeviceCompatibilityProps) {
-  const [local, setLocal] = useState<DeviceConfig[]>(items.length ? items : defaultItems);
+  const [local, setLocal] = useState<DeviceConfig[]>(items && items.length ? items : defaultItems);
 
   const update = (index: number, patch: Partial<DeviceConfig>) => {
     const next = local.map((item, i) => (i === index ? { ...item, ...patch } : item));

@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import {
@@ -11,7 +12,7 @@ import {
   type RateLimitConfig,
 } from '@/lib/api/validation';
 import { getAuthUser, requireAdmin } from '@/lib/api/auth';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 import {
   AdminUserSchema,
   CreateAdminUserSchema,
@@ -91,9 +92,9 @@ export async function GET(request: NextRequest) {
     const pageSize = parseInt(query.pageSize as string) || 20;
 
     // Try Supabase first
-    if (supabaseAdmin) {
+    if (getSupabaseAdmin()) {
       try {
-        let qb = supabaseAdmin
+        let qb = getSupabaseAdmin()!
           .from('User')
           .select('*', { count: 'exact' });
 
@@ -201,10 +202,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Try Supabase first
-    if (supabaseAdmin) {
+    if (getSupabaseAdmin()) {
       try {
         // Check if email already exists
-        const { data: existing } = await supabaseAdmin
+        const { data: existing } = await getSupabaseAdmin()!
           .from('User')
           .select('id')
           .eq('email', email.toLowerCase())
@@ -236,7 +237,7 @@ export async function POST(request: NextRequest) {
           company: company || '',
         };
 
-        const { data, error } = await supabaseAdmin
+        const { data, error } = await getSupabaseAdmin()!
           .from('User')
           .insert(newUser)
           .select()

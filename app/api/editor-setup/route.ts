@@ -1,5 +1,6 @@
+export const dynamic = 'force-dynamic'
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { normalizeUserRole } from '@/lib/rbac';
@@ -11,7 +12,7 @@ export async function POST() {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!supabaseAdmin) {
+    if (!getSupabaseAdmin()) {
         return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
     }
 
@@ -104,7 +105,7 @@ export async function POST() {
 
     const results = [];
     for (const sql of migrations) {
-        const { error } = await supabaseAdmin.rpc('exec_sql', { sql });
+        const { error } = await getSupabaseAdmin()!.rpc('exec_sql', { sql });
         if (error) {
             results.push({ sql: sql.substring(0, 50) + '...', error: error.message });
         } else {

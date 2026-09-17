@@ -1,7 +1,8 @@
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { getTour, saveTour } from '@/lib/toursRepo';
 import { requireAuth } from '@/lib/api-guard';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 
 // GET /api/tour?tour=<id> — return the editable tour graph (nodes + hotspots).
 // Reads from the Supabase `tours` table when configured, else the local JSON store.
@@ -9,8 +10,9 @@ export async function GET(req: NextRequest) {
   const tourId = req.nextUrl.searchParams.get('tour');
 
   // Public bypass: allow unauthenticated access to live, public tours.
-  if (tourId && supabaseAdmin) {
-    const { data: row } = await supabaseAdmin
+  const db = getSupabaseAdmin();
+  if (tourId && db) {
+    const { data: row } = await db
       .from('tours')
       .select('data, is_live, access_level')
       .eq('id', tourId)

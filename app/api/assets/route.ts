@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceClient } from '@/lib/services/client';
 import { requireAuth } from '@/lib/api-guard';

@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { getXRLinksFromDB, getXRLinkBySlug } from '@/lib/xr-links-store';

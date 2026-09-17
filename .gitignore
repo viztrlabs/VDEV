@@ -26,3 +26,5 @@ lighthouse-report.json
 .data/
 .kilo/
 docs/superpowers/
+
+.env*

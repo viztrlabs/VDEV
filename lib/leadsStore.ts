@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase-admin';
+﻿import { getSupabaseAdmin } from '@/lib/supabase-admin';
 
 export type LeadType =
   | 'contact'
@@ -29,11 +29,11 @@ export function isLeadType(value: unknown): value is LeadType {
 }
 
 export async function listLeads(): Promise<LeadRecord[]> {
-  if (!supabaseAdmin) {
+  if (!getSupabaseAdmin()) {
     console.warn('[leadsStore] Supabase not configured — returning empty leads list');
     return [];
   }
-  const { data } = await supabaseAdmin
+  const { data } = await getSupabaseAdmin()!
     .from('leads')
     .select('id, service, name, contact, source, stage, metadata, created_at')
     .order('created_at', { ascending: false });
@@ -50,7 +50,7 @@ export async function saveLead(
   type: LeadType,
   payload: Record<string, unknown>
 ): Promise<LeadRecord> {
-  if (!supabaseAdmin) {
+  if (!getSupabaseAdmin()) {
     console.warn('[leadsStore] Supabase not configured — lead not persisted');
     return {
       id: `lead_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
@@ -60,7 +60,7 @@ export async function saveLead(
     };
   }
   const now = new Date().toISOString();
-  const { data } = await supabaseAdmin
+  const { data } = await getSupabaseAdmin()!
     .from('leads')
     .insert({
       name: (payload.name as string) || 'Unknown',

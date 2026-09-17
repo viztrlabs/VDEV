@@ -1,8 +1,9 @@
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'node:path';
 import { generateTilePyramid } from '@/lib/marzipano/tiling';
 import { requireAuth } from '@/lib/api-guard';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 import { getAssetTypeByExtension, validateMagicBytes, getAllAllowedExtensions } from '@/lib/asset-types';
 
 const BUCKET = 'viztr-assets';
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
         { status: 413 },
       );
     }
-    if (!supabaseAdmin) {
+    if (!getSupabaseAdmin()) {
       return NextResponse.json({ error: 'Supabase admin client not configured' }, { status: 500 });
     }
 
@@ -56,7 +57,7 @@ export async function POST(req: NextRequest) {
       .slice(0, 40) || 'panorama';
 
     // Check for existing file to avoid collisions
-    const { data: existingFiles } = await supabaseAdmin.storage
+    const { data: existingFiles } = await getSupabaseAdmin().storage
       .from(BUCKET)
       .list(STORAGE_FOLDER, { search: `${base}${ext}` });
 
@@ -68,7 +69,7 @@ export async function POST(req: NextRequest) {
     }
 
     const storagePath = `${STORAGE_FOLDER}/${filename}`;
-    const { error: uploadError } = await supabaseAdmin.storage
+    const { error: uploadError } = await getSupabaseAdmin().storage
       .from(BUCKET)
       .upload(storagePath, buf, {
         contentType: file.type || 'application/octet-stream',
@@ -79,7 +80,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: uploadError.message }, { status: 500 });
     }
 
-    const { data: urlData } = supabaseAdmin.storage
+    const { data: urlData } = getSupabaseAdmin().storage
       .from(BUCKET)
       .getPublicUrl(storagePath);
 
@@ -113,7 +114,7 @@ export async function POST(req: NextRequest) {
           const absPath = path.join(tileDir, relPath);
           const tileBuf = await (await import('node:fs/promises')).readFile(absPath);
           const tileStoragePath = `${STORAGE_FOLDER}/${tileBaseName}/${relPath}`;
-          await supabaseAdmin.storage.from(BUCKET).upload(tileStoragePath, tileBuf, {
+          await getSupabaseAdmin().storage.from(BUCKET).upload(tileStoragePath, tileBuf, {
             contentType: 'image/jpeg',
             upsert: true,
           });

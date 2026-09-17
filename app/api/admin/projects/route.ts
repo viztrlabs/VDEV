@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import {
@@ -10,7 +11,7 @@ import {
   addRequestIdHeaders,
   type RateLimitConfig,
 } from '@/lib/api/validation';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 import {
   ManagedProjectSchema,
   CreateProjectSchema,
@@ -109,9 +110,9 @@ export const GET = withAuth(
       const pageSize = query?.pageSize || 20;
 
       // Try Supabase first
-      if (supabaseAdmin) {
+      if (getSupabaseAdmin()) {
         try {
-          let qb = supabaseAdmin
+          let qb = getSupabaseAdmin()!
             .from('projects')
             .select('*', { count: 'exact' });
 
@@ -199,7 +200,7 @@ export const POST = withAuth(
       const projectId = `VIZTR-${Date.now().toString().slice(-3)}`;
 
       // Try Supabase first
-      if (supabaseAdmin) {
+      if (getSupabaseAdmin()) {
         try {
           const newProject = {
             id: projectId,
@@ -218,7 +219,7 @@ export const POST = withAuth(
             created_at: new Date().toISOString(),
           };
 
-          const { data: created, error } = await supabaseAdmin
+          const { data: created, error } = await getSupabaseAdmin()!
             .from('projects')
             .insert(newProject)
             .select()

@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { getTourSettings, saveTourSettings } from '@/lib/toursRepo';
 import { requireAuth } from '@/lib/api-guard';

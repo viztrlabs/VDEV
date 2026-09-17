@@ -4,11 +4,21 @@ function stripBom(s: string): string {
   return s.replace(/^\uFEFF/, '');
 }
 
-// If Supabase environment variables are provided, initialize client; otherwise export fallback client
+function isValidHttpUrl(s: string): boolean {
+  try {
+    const url = new URL(s);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+// If Supabase environment variables are provided AND valid, initialize client; otherwise null
 const supabaseUrl = stripBom(process.env.NEXT_PUBLIC_SUPABASE_URL || '');
 const supabaseAnonKey = stripBom(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '');
 
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+export const isSupabaseConfigured =
+  Boolean(supabaseUrl && supabaseAnonKey) && isValidHttpUrl(supabaseUrl);
 
 export const supabase = isSupabaseConfigured
   ? createClient(supabaseUrl, supabaseAnonKey)

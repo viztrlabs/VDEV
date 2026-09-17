@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase-admin';
+﻿import { getSupabaseAdmin } from '@/lib/supabase-admin';
 
 // Lists 360° panorama images available in the media library (Supabase Storage viztr-assets/tour),
 // so the editor can reuse existing uploads instead of re-uploading.
@@ -10,9 +10,9 @@ export interface MediaAsset {
 
 export async function listMediaLibrary(): Promise<MediaAsset[]> {
   try {
-    if (!supabaseAdmin) return [];
+    if (!getSupabaseAdmin()) return [];
 
-    const { data: files, error } = await supabaseAdmin.storage
+    const { data: files, error } = await getSupabaseAdmin()!.storage
       .from('viztr-assets')
       .list('tour', { limit: 500 });
 
@@ -24,7 +24,7 @@ export async function listMediaLibrary(): Promise<MediaAsset[]> {
     const assets: MediaAsset[] = [];
     for (const f of files) {
       if (/\.(jpg|jpeg|png|webp|avif)$/i.test(f.name)) {
-        const { data: urlData } = supabaseAdmin.storage
+        const { data: urlData } = getSupabaseAdmin()!.storage
           .from('viztr-assets')
           .getPublicUrl(`tour/${f.name}`);
         assets.push({

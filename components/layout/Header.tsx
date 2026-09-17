@@ -179,6 +179,8 @@ export default function Header() {
       <header
         id="main-header"
         className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ease-in-out ${
+          isHomeActive ? 'is-landing-header' : ''
+        } ${
           shouldShowNav
             ? 'opacity-100 translate-y-0 pointer-events-auto'
             : 'opacity-0 -translate-y-full pointer-events-none'
@@ -205,7 +207,11 @@ export default function Header() {
           {/* MID SECTION: Navigation Cluster (STUDIO, XR WORLD, CONTACT) Centered in Mid */}
           <nav
             id="header-mid-menu"
-            className="!hidden md:!flex absolute left-1/2 -translate-x-1/2 flex-row items-center p-1 rounded-full header-mid-menu-cluster transition-all duration-300 ease-in-out"
+            className={`!hidden md:!flex absolute left-1/2 -translate-x-1/2 flex-row items-center p-1 rounded-full transition-all duration-300 ease-in-out ${
+              isHomeActive
+                ? 'header-mid-menu-landing bg-transparent border-transparent shadow-none backdrop-blur-none'
+                : 'header-mid-menu-cluster'
+            }`}
             aria-label="Main Navigation"
           >
             {/* 1. STUDIO PILL BUTTON */}
@@ -330,7 +336,9 @@ export default function Header() {
             </div>
 
             {/* SUBTLE VERTICAL DIVIDER */}
-            <div className="header-cluster-divider w-[1px] h-4 bg-[#3e485e]/50 mx-0.5 shrink-0" />
+            {!isHomeActive && (
+              <div className="header-cluster-divider w-[1px] h-4 bg-[#3e485e]/50 mx-0.5 shrink-0" />
+            )}
 
             {/* 2. XR WORLD PILL BUTTON */}
             <div
@@ -478,7 +486,9 @@ export default function Header() {
             </div>
 
             {/* SUBTLE VERTICAL DIVIDER */}
-            <div className="header-cluster-divider w-[1px] h-4 bg-[#3e485e]/50 mx-0.5 shrink-0" />
+            {!isHomeActive && (
+              <div className="header-cluster-divider w-[1px] h-4 bg-[#3e485e]/50 mx-0.5 shrink-0" />
+            )}
 
             {/* 3. CONTACT PILL BUTTON */}
             <div
@@ -566,7 +576,13 @@ export default function Header() {
           {/* RIGHT SECTION: Grouped 3 Buttons (Theme, Message, Sign In) and Mobile Hamburger */}
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             {/* 3 Buttons Group: Theme, Message, Sign In */}
-            <div className="hidden sm:flex items-center gap-1.5 p-1 rounded-full header-mid-menu-cluster transition-all">
+            <div
+              className={`hidden sm:flex items-center gap-1.5 p-1 rounded-full transition-all ${
+                isHomeActive
+                  ? 'header-mid-menu-landing bg-transparent border-transparent shadow-none backdrop-blur-none'
+                  : 'header-mid-menu-cluster'
+              }`}
+            >
               {/* 1. Theme Toggle Button */}
               <button
                 type="button"
@@ -583,7 +599,9 @@ export default function Header() {
               </button>
 
               {/* Divider */}
-              <div className="header-cluster-divider w-[1px] h-3.5 bg-[#3e485e]/50 mx-0.5 shrink-0" />
+              {!isHomeActive && (
+                <div className="header-cluster-divider w-[1px] h-3.5 bg-[#3e485e]/50 mx-0.5 shrink-0" />
+              )}
 
               {/* 2. Message Button */}
               <button
@@ -601,7 +619,9 @@ export default function Header() {
               </button>
 
               {/* Divider */}
-              <div className="header-cluster-divider w-[1px] h-3.5 bg-[#3e485e]/50 mx-0.5 shrink-0" />
+              {!isHomeActive && (
+                <div className="header-cluster-divider w-[1px] h-3.5 bg-[#3e485e]/50 mx-0.5 shrink-0" />
+              )}
 
               {/* 3. Sign In Button (Icon Only) */}
               <Link
@@ -625,7 +645,11 @@ export default function Header() {
             <button
               id="mobile-menu-toggle-btn"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 sm:p-2.5 rounded-full border border-white/10 dark:border-white/15 bg-black/40 dark:bg-black/50 backdrop-blur-md text-zinc-200 hover:text-[#00F0FF] hover:border-[#00F0FF]/40 transition-all cursor-pointer flex items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.3)] active:scale-95"
+              className={`md:hidden p-2 sm:p-2.5 rounded-full transition-all cursor-pointer flex items-center justify-center active:scale-95 ${
+                isHomeActive
+                  ? 'bg-transparent border-transparent text-white hover:text-[#00F0FF] shadow-none'
+                  : 'border border-white/10 dark:border-white/15 bg-black/40 dark:bg-black/50 backdrop-blur-md text-zinc-200 hover:text-[#00F0FF] hover:border-[#00F0FF]/40 shadow-[0_2px_10px_rgba(0,0,0,0.3)]'
+              }`}
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5 text-[#00F0FF]" /> : <Menu className="w-5 h-5" />}

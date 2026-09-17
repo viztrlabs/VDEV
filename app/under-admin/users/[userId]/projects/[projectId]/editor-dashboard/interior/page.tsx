@@ -4,8 +4,6 @@ import { useParams } from 'next/navigation';
 import { ServiceEditorPanels, Tab } from '@/components/editor/service-editor-panels';
 import { EditorErrorBoundary } from '@/components/editor/editor-error-boundary';
 import { PermissionProvider } from '@/components/editor/permissions';
-import { EditorErrorBoundary } from '@/components/editor/editor-error-boundary';
-import { PermissionProvider } from '@/components/editor/permissions';
 
 export default function InteriorEditorPage() {
   const params = useParams<{ userId: string; projectId: string }>();
