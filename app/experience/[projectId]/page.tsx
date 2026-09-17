@@ -6,6 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { useExperienceRealtime } from '@/lib/useRealtime';
 import type { TourScene } from '@/lib/tourClientStore';
+import type { XRScene } from '@/components/xr/xr.types';
 import {
   Box,
   ScanLine,
@@ -322,6 +323,26 @@ function toSplatScenes(
   }));
 }
 
+// Builds the XRScene[] XRViewer requires from the seeded/published row.
+// Same source as the tour/splat tabs (primaryAssetUrl). Null when no
+// bindable URL exists — the caller renders the empty state instead of
+// falling back to XRViewer's hardcoded DEFAULT_SCENES demo content.
+function toXRScenes(exp: ExperienceRow, cfg: ExperienceConfigRow | null): XRScene[] | null {
+  const url = primaryAssetUrl(exp, cfg);
+  if (!url) return null;
+  return [
+    {
+      id: exp.id,
+      name: exp.title,
+      type: '360',
+      url,
+      hotspots: [],
+      annotations: [],
+      teleportPoints: [],
+    },
+  ];
+}
+
 function EmptyExperience({
   icon: Icon,
   iconClassName,
@@ -487,8 +508,9 @@ export default function ExperiencePage() {
       'Nothing is live for this service yet. When the studio publishes an experience for this project, its interactive viewer will appear here.';
 
     switch (activeService) {
-      case 'webxr':
-        if (!experience) {
+      case 'webxr': {
+        const xrScenes = experience ? toXRScenes(experience, config) : null;
+        if (!experience || !xrScenes) {
           return (
             <EmptyExperience
               icon={Box}
@@ -498,9 +520,18 @@ export default function ExperiencePage() {
             />
           );
         }
-        return <XRViewer projectId={projectId} mode="tour" />;
-      case 'webar':
-        if (!experience) {
+        return (
+          <XRViewer
+            projectId={projectId}
+            mode="tour"
+            scenes={xrScenes}
+            initialSceneId={experience.id}
+          />
+        );
+      }
+      case 'webar': {
+        const xrScenes = experience ? toXRScenes(experience, config) : null;
+        if (!experience || !xrScenes) {
           return (
             <EmptyExperience
               icon={ScanLine}
@@ -510,9 +541,18 @@ export default function ExperiencePage() {
             />
           );
         }
-        return <XRViewer projectId={projectId} mode="ar" />;
-      case 'virtual-reality':
-        if (!experience) {
+        return (
+          <XRViewer
+            projectId={projectId}
+            mode="ar"
+            scenes={xrScenes}
+            initialSceneId={experience.id}
+          />
+        );
+      }
+      case 'virtual-reality': {
+        const xrScenes = experience ? toXRScenes(experience, config) : null;
+        if (!experience || !xrScenes) {
           return (
             <EmptyExperience
               icon={Headset}
@@ -522,7 +562,15 @@ export default function ExperiencePage() {
             />
           );
         }
-        return <XRViewer projectId={projectId} mode="vr" />;
+        return (
+          <XRViewer
+            projectId={projectId}
+            mode="vr"
+            scenes={xrScenes}
+            initialSceneId={experience.id}
+          />
+        );
+      }
       case 'virtual-tour': {
         const scene = experience ? toTourScene(experience, config) : null;
         if (!experience || !scene) {
