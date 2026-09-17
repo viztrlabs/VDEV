@@ -28,3 +28,5 @@ lighthouse-report.json
 docs/superpowers/
 
 .env*
+
+cookies.txt
