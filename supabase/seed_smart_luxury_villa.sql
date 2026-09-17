@@ -88,7 +88,7 @@ VALUES
    '[{"url": "https://naludjmicbqcagrlsrba.supabase.co/storage/v1/object/public/viztr-assets/viztr-assets/a0000000-0000-0000-0000-000000000002/scene.glb", "kind": "model", "name": "scene.glb"}]'::jsonb,
    '{"quality": "high"}'::jsonb),
   ('c0000000-0000-0000-0000-000000000005', 'b0000000-0000-0000-0000-000000000005',
-   '{"pointSize": 2, "splatUrl": "https://naludjmicbqcagrlsrba.supabase.co/storage/v1/object/public/viztr-assets/viztr-assets/a0000000-0000-0000-0000-000000000002/new+kitchen.ply"}'::jsonb,
+   '{"pointSize": 2, "splat_url": "https://naludjmicbqcagrlsrba.supabase.co/storage/v1/object/public/viztr-assets/viztr-assets/a0000000-0000-0000-0000-000000000002/new+kitchen.ply"}'::jsonb,
    '[{"url": "https://naludjmicbqcagrlsrba.supabase.co/storage/v1/object/public/viztr-assets/viztr-assets/a0000000-0000-0000-0000-000000000002/new+kitchen.ply", "kind": "splat", "name": "new+kitchen.ply"}]'::jsonb,
    '{"quality": "high"}'::jsonb),
   ('c0000000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000006',
