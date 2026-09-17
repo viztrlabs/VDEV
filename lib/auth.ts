@@ -176,17 +176,6 @@ export async function authenticateUser(
   if (email && password && isSupabaseConfigured && supabase) {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      console.log('[auth] Supabase signInWithPassword result:', {
-        hasError: !!error,
-        errorMessage: error?.message,
-        errorCode: error?.code,
-        hasUser: !!data?.user,
-        hasSession: !!data?.session,
-        userId: data?.user?.id,
-        userEmail: data?.user?.email,
-        isSupabaseConfigured,
-        supabaseExists: !!supabase,
-      });
       if (!error && data.user) {
         const meta = (data.user.user_metadata ?? {}) as { role?: unknown; full_name?: unknown };
         const role = normalizeUserRole(typeof meta?.role === 'string' ? meta.role : undefined);
@@ -201,7 +190,7 @@ export async function authenticateUser(
           role,
         };
       }
-      console.warn('[auth] Supabase signInWithPassword failed:', error?.message, error?.code);
+      console.warn('[auth] Supabase signInWithPassword failed:', error?.message);
     } catch (err) {
       console.warn('[auth] Supabase sign-in threw; falling back to demo/client.', err);
     }
