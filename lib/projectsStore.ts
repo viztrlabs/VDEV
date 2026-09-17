@@ -1,72 +1,133 @@
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 import type { VtedProject } from '@/lib/vted-types';
 
-const DATA_DIR = path.join(process.cwd(), '.data', 'tour');
-const PROJECTS_FILE = path.join(DATA_DIR, 'projects.json');
+// Virtual-tour editor projects backed by Supabase (`public.vted_projects`).
+// When the service-role key is unavailable (tests, offline dev), an in-memory
+// Map preserves the same interface — never the local filesystem.
 
-interface ProjectStore {
-  version: number;
-  projects: VtedProject[];
+interface VtedProjectRow {
+  id: string;
+  name: string;
+  tour_id: string;
+  author: string | null;
+  scene_count: number;
+  status: string;
+  thumbnail_url: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
-const DEFAULT_STORE: ProjectStore = {
-  version: 1,
-  projects: [],
-};
+function toProject(row: VtedProjectRow): VtedProject {
+  return {
+    id: row.id,
+    name: row.name,
+    tourId: row.tour_id,
+    author: row.author ?? undefined,
+    sceneCount: row.scene_count,
+    status: row.status === 'published' ? 'published' : 'draft',
+    thumbnailUrl: row.thumbnail_url ?? undefined,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+const memoryFallback = new Map<string, VtedProject>();
+
+function useMemory(): boolean {
+  return getSupabaseAdmin() === null;
+}
 
 export async function getProjects(): Promise<VtedProject[]> {
-  try {
-    const raw = await fs.readFile(PROJECTS_FILE, 'utf8');
-    const parsed = JSON.parse(raw) as ProjectStore;
-    if (parsed && Array.isArray(parsed.projects)) return parsed.projects;
-  } catch {
-    // no file
-  }
-  return DEFAULT_STORE.projects;
+  const db = getSupabaseAdmin();
+  if (!db) return [...memoryFallback.values()];
+  const { data, error } = await db
+    .from('vted_projects')
+    .select('*')
+    .order('updated_at', { ascending: false });
+  if (error) throw new Error(`Failed to list projects: ${error.message}`);
+  return ((data ?? []) as VtedProjectRow[]).map(toProject);
 }
 
 export async function getProject(id: string): Promise<VtedProject | null> {
-  const list = await getProjects();
-  return list.find((p) => p.id === id) || null;
+  const db = getSupabaseAdmin();
+  if (!db) return memoryFallback.get(id) ?? null;
+  const { data, error } = await db.from('vted_projects').select('*').eq('id', id).maybeSingle();
+  if (error) throw new Error(`Failed to fetch project: ${error.message}`);
+  return data ? toProject(data as VtedProjectRow) : null;
 }
 
-export async function createProject(input: Omit<VtedProject, 'id' | 'createdAt' | 'updatedAt'>): Promise<VtedProject> {
-  const list = await getProjects();
+export async function createProject(
+  input: Omit<VtedProject, 'id' | 'createdAt' | 'updatedAt'>
+): Promise<VtedProject> {
   const now = new Date().toISOString();
-  const p: VtedProject = {
+  const project: VtedProject = {
     ...input,
     id: `proj-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
     createdAt: now,
     updatedAt: now,
   };
-  list.unshift(p);
-  await save(list);
-  return p;
+  const db = getSupabaseAdmin();
+  if (!db) {
+    memoryFallback.set(project.id, project);
+    return project;
+  }
+  const { data, error } = await db
+    .from('vted_projects')
+    .insert({
+      id: project.id,
+      name: project.name,
+      tour_id: project.tourId,
+      author: project.author ?? null,
+      scene_count: project.sceneCount,
+      status: project.status,
+      thumbnail_url: project.thumbnailUrl ?? null,
+    })
+    .select('*')
+    .single();
+  if (error) throw new Error(`Failed to create project: ${error.message}`);
+  return toProject(data as VtedProjectRow);
 }
 
-export async function updateProject(id: string, patch: Partial<VtedProject>): Promise<VtedProject | null> {
-  const list = await getProjects();
-  const idx = list.findIndex((p) => p.id === id);
-  if (idx === -1) return null;
-  list[idx] = { ...list[idx], ...patch, updatedAt: new Date().toISOString() };
-  await save(list);
-  return list[idx];
+export async function updateProject(
+  id: string,
+  patch: Partial<VtedProject>
+): Promise<VtedProject | null> {
+  const db = getSupabaseAdmin();
+  if (!db) {
+    const existing = memoryFallback.get(id);
+    if (!existing) return null;
+    const next = { ...existing, ...patch, updatedAt: new Date().toISOString() };
+    memoryFallback.set(id, next);
+    return next;
+  }
+  const rowPatch: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (patch.name !== undefined) rowPatch.name = patch.name;
+  if (patch.tourId !== undefined) rowPatch.tour_id = patch.tourId;
+  if (patch.author !== undefined) rowPatch.author = patch.author;
+  if (patch.sceneCount !== undefined) rowPatch.scene_count = patch.sceneCount;
+  if (patch.status !== undefined) rowPatch.status = patch.status;
+  if (patch.thumbnailUrl !== undefined) rowPatch.thumbnail_url = patch.thumbnailUrl;
+  const { data, error } = await db
+    .from('vted_projects')
+    .update(rowPatch)
+    .eq('id', id)
+    .select('*')
+    .maybeSingle();
+  if (error) throw new Error(`Failed to update project: ${error.message}`);
+  return data ? toProject(data as VtedProjectRow) : null;
 }
 
 export async function deleteProject(id: string): Promise<boolean> {
-  const list = await getProjects();
-  const next = list.filter((p) => p.id !== id);
-  if (next.length === list.length) return false;
-  await save(next);
-  return true;
+  const db = getSupabaseAdmin();
+  if (!db) return memoryFallback.delete(id);
+  const { error, count } = await db.from('vted_projects').delete({ count: 'exact' }).eq('id', id);
+  if (error) throw new Error(`Failed to delete project: ${error.message}`);
+  return (count ?? 0) > 0;
 }
 
-async function save(list: VtedProject[]) {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(
-    PROJECTS_FILE,
-    JSON.stringify({ version: 1, projects: list } satisfies ProjectStore, null, 2),
-    'utf8',
-  );
+// Test/dev helper: clear the in-memory fallback (no-op against Supabase).
+export function __clearMemoryFallback(): void {
+  memoryFallback.clear();
 }
+
+export { useMemory };

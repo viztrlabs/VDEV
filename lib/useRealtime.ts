@@ -1,145 +1,152 @@
-import { getSupabaseAdmin } from '@/lib/supabase-admin';
+'use client';
 
-// Real-time subscription manager for all dashboards
+import { useEffect, useRef } from 'react';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { useAppStore } from '@/lib/store';
+
+// Real-time subscription manager for all dashboards (browser-safe: anon key only).
+type RealtimeEvent = 'INSERT' | 'UPDATE' | 'DELETE' | '*';
+
 interface SubscriptionConfig {
   table: string;
-  event: 'UPDATE' | 'INSERT' | 'DELETE' | '*';
+  event: RealtimeEvent;
   filter?: string;
   callback: (payload: any) => void;
 }
 
-class RealtimeManager {
-  private static instance: RealtimeManager;
-  private channels: Map<string, any> = new Map();
-  private supabase: any;
-  private isConnected: boolean = false;
-  private initialized: boolean = false;
-
-  private constructor() {}
-
-  static getInstance(): RealtimeManager {
-    if (!RealtimeManager.instance) {
-      RealtimeManager.instance = new RealtimeManager();
-    }
-    return RealtimeManager.instance;
+// Lazy browser client — never touches the service-role key.
+let browserClient: SupabaseClient | null | undefined;
+function getBrowserClient(): SupabaseClient | null {
+  if (browserClient !== undefined) return browserClient;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anonKey || anonKey === '[SENSITIVE]') {
+    browserClient = null;
+    return null;
   }
-
-  initialize(): void {
-    if (this.initialized) return;
-    const supabase = getSupabaseAdmin();
-    if (!supabase) return;
-
-    this.supabase = supabase;
-    this.isConnected = true;
-    this.initialized = true;
+  try {
+    browserClient = createClient(url, anonKey);
+  } catch {
+    browserClient = null;
   }
+  return browserClient;
+}
 
-  subscribe(config: SubscriptionConfig): string {
-    if (!this.isConnected || !this.supabase) return '';
+// Push a postgres_changes payload into the canonical app store slices.
+function applyRealtimePayload(table: string, payload: any): void {
+  const store = useAppStore.getState();
+  const eventType = payload?.eventType as string | undefined;
+  const row = payload?.new ?? payload?.old;
+  if (!row) return;
 
-    const channelId = `${config.table}_${config.event}_${Date.now()}`;
-    const channel = this.supabase
-      .channel(`realtime:${config.table}`)
+  const isDelete = eventType === 'DELETE';
+  switch (table) {
+    case 'projects':
+      if (isDelete) {
+        store.setProjects(store.projects.filter((p) => p.id !== row.id));
+      } else {
+        store.upsertProject(row);
+      }
+      break;
+    case 'experiences':
+      if (isDelete) {
+        store.setExperiences(store.experiences.filter((e) => e.id !== row.id));
+      } else {
+        store.upsertExperience(row);
+      }
+      break;
+    case 'assets':
+      if (isDelete) {
+        store.setAssets(store.assets.filter((a) => a.id !== row.id));
+      } else {
+        store.setAssets([row, ...store.assets.filter((a) => a.id !== row.id)]);
+      }
+      break;
+    case 'deliverables':
+      if (isDelete) {
+        store.setDeliverables(store.deliverables.filter((d) => d.id !== row.id));
+      } else {
+        store.setDeliverables([row, ...store.deliverables.filter((d) => d.id !== row.id)]);
+      }
+      break;
+    case 'activity_logs':
+      if (!isDelete && payload?.new) store.addActivity(payload.new);
+      break;
+    case 'feedback':
+      if (!isDelete && payload?.new) store.addFeedback(payload.new);
+      break;
+    default:
+      break;
+  }
+}
+
+// React hook for real-time subscriptions with polling fallback.
+export function useRealtime(
+  table: string,
+  callback: (payload: any) => void,
+  event: RealtimeEvent = '*',
+  filter?: string
+): { isConnected: boolean; error: string | null } {
+  const channelRef = useRef<{ unsubscribe: () => void } | null>(null);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const callbackRef = useRef(callback);
+  callbackRef.current = callback;
+
+  useEffect(() => {
+    const client = getBrowserClient();
+    if (!client) return;
+
+    const handler = (payload: any) => {
+      applyRealtimePayload(table, payload);
+      callbackRef.current(payload);
+    };
+
+    const channel = client
+      .channel(`realtime:${table}:${filter ?? 'all'}`)
       .on(
         'postgres_changes',
         {
-          event: config.event,
+          event,
           schema: 'public',
-          table: config.table,
-          filter: config.filter,
+          table,
+          ...(filter ? { filter } : {}),
         },
-        (payload: any) => {
-          config.callback(payload);
-        }
+        handler
       )
       .subscribe();
+    channelRef.current = { unsubscribe: () => void client.removeChannel(channel) };
 
-    this.channels.set(channelId, channel);
-    return channelId;
-  }
-
-  unsubscribe(channelId: string): void {
-    const channel = this.channels.get(channelId);
-    if (channel) {
-      this.supabase.removeChannel(channel);
-      this.channels.delete(channelId);
-    }
-  }
-
-  unsubscribeAll(): void {
-    this.channels.forEach((channel) => {
-      this.supabase.removeChannel(channel);
-    });
-    this.channels.clear();
-  }
-
-  getConnectionStatus(): boolean {
-    return this.isConnected;
-  }
-
-  // Fallback polling for when WebSocket is unavailable
-  startPolling(table: string, callback: (data: any[]) => void, intervalMs: number = 30000): ReturnType<typeof setInterval> {
+    // Polling fallback (30s) for when the WebSocket is unavailable.
     const poll = async () => {
       try {
-        if (!this.supabase) return;
-        const { data, error } = await this.supabase
+        const { data, error } = await client
           .from(table)
           .select('*')
-          .order('updated_at', { ascending: false });
+          .order('updated_at', { ascending: false })
+          .limit(50);
         if (!error && data) {
-          callback(data);
+          callbackRef.current({ type: 'POLL', data });
         }
       } catch (err) {
         console.warn(`[Realtime] Polling failed for ${table}:`, err);
       }
     };
+    pollRef.current = setInterval(poll, 30000);
 
-    poll();
-    return setInterval(poll, intervalMs);
-  }
+    return () => {
+      channelRef.current?.unsubscribe();
+      channelRef.current = null;
+      if (pollRef.current) clearInterval(pollRef.current);
+      pollRef.current = null;
+    };
+  }, [table, event, filter]);
+
+  return { isConnected: getBrowserClient() !== null, error: null };
 }
 
-// React hook for real-time subscriptions
-export function useRealtime(
-  table: string,
-  callback: (payload: any) => void,
-  event: 'UPDATE' | 'INSERT' | 'DELETE' | '*' = '*',
-  filter?: string
-): { isConnected: boolean; error: string | null } {
-  // Initialize the real-time manager
-  const manager = RealtimeManager.getInstance();
-  if (!manager.getConnectionStatus()) {
-    manager.initialize();
-  }
-
-  // Subscribe to Supabase Realtime
-  const channelId = manager.subscribe({
-    table,
-    event,
-    filter,
-    callback,
-  });
-
-  // Start polling as fallback
-  const pollTimer = manager.startPolling(table, (data) => {
-    callback({ type: 'POLL', data: data });
-  }, 30000);
-
-  // Cleanup on unmount
-  const cleanup = () => {
-    if (channelId) manager.unsubscribe(channelId);
-    clearInterval(pollTimer);
-  };
-
-  return {
-    isConnected: manager.getConnectionStatus(),
-    error: null,
-  };
-}
-
-// Specific hooks for dashboard data
+// Specific hooks for dashboard data (filter format: `project_id=eq.<id>`).
 export function useProjectRealtime(projectId: string, onUpdate: (data: any) => void) {
-  return useRealtime('projects', onUpdate, '*', `project_id=eq.${projectId}`);
+  return useRealtime('projects', onUpdate, '*', `id=eq.${projectId}`);
 }
 
 export function useExperienceRealtime(projectId: string, onUpdate: (data: any) => void) {
@@ -162,36 +169,30 @@ export function useFeedbackRealtime(projectId: string, onUpdate: (data: any) => 
   return useRealtime('feedback', onUpdate, '*', `project_id=eq.${projectId}`);
 }
 
-// Dashboard-level hooks
+// Dashboard-level hook: subscribes to every operational table.
 export function useAdminRealtime(onUpdate: (table: string, data: any) => void) {
-  const manager = RealtimeManager.getInstance();
-  if (!manager.getConnectionStatus()) {
-    manager.initialize();
-  }
+  const onUpdateRef = useRef(onUpdate);
+  onUpdateRef.current = onUpdate;
 
-  const tables = ['projects', 'experiences', 'assets', 'deliverables', 'activity_logs', 'feedback'];
-  const channelIds: string[] = [];
+  useEffect(() => {
+    const client = getBrowserClient();
+    if (!client) return;
 
-  tables.forEach((table) => {
-    const id = manager.subscribe({
-      table,
-      event: '*',
-      callback: (payload) => {
-        onUpdate(table, payload);
-      },
-    });
-    if (id) channelIds.push(id);
-  });
+    const tables = ['projects', 'experiences', 'assets', 'deliverables', 'activity_logs', 'feedback'];
+    const channels = tables.map((table) =>
+      client
+        .channel(`realtime:admin:${table}`)
+        .on('postgres_changes', { event: '*', schema: 'public', table }, (payload) => {
+          applyRealtimePayload(table, payload);
+          onUpdateRef.current(table, payload);
+        })
+        .subscribe()
+    );
 
-  return {
-    isConnected: true,
-    cleanup: () => {
-      channelIds.forEach((id) => manager.unsubscribe(id));
-    },
-  };
-}
+    return () => {
+      channels.forEach((channel) => void client.removeChannel(channel));
+    };
+  }, []);
 
-// Singleton getter for server-side usage
-export function getRealtimeManager(): RealtimeManager {
-  return RealtimeManager.getInstance();
+  return { isConnected: getBrowserClient() !== null };
 }

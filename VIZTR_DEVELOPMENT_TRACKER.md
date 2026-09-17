@@ -76,6 +76,21 @@ Client → Auth (NextAuth.js) → API Route → Service Layer → Supabase (or f
 - **File:** `VIZTR_ARCHITECTURE_AUDIT.md`
 - **Sections:** Current architecture, target architecture, service roadmap, mock-data migration map, acceptance criteria
 
+### Phase-1 Remediation (Production Blockers Fixed)
+- **Status:** ✅ Complete
+- **Migrations:** `vted_projects`, `upload_sessions`, `revenue_metrics` tables live in Supabase
+- **Fixes:**
+  - `lib/store.ts` — added realtime slices (`projects`, `experiences`, `assets`, `deliverables`, `activityFeed`, `feedbackItems` + setters/upserts)
+  - `lib/useRealtime.ts` — proper React hooks (subscribe/unsubscribe + polling fallback), browser-safe anon client, pushes into store
+  - `lib/projectsStore.ts` — filesystem JSON replaced with `vted_projects` table (in-memory fallback for tests only)
+  - `lib/xr-links-store.ts` — dead always-null `adminClient` replaced with `getSupabaseAdmin()`
+  - `app/api/storage/route.ts` — in-memory `chunkStore` replaced with `upload_sessions` table + staged chunk objects in `viztr-assets/chunks/`; storage status reports real values only
+  - `app/api/pixel-streaming/start/route.ts` — localhost fallback + simulated allocation removed; returns honest 503/502 when controller is unset/unreachable
+  - `app/api/admin/xr-links/route.ts` — mock arrays replaced with `xr_links` table queries
+  - `app/api/admin/revenue/route.ts` — mock metrics replaced with `revenue_metrics` table; refresh recomputes from project bookings
+  - `app/api/admin/logs/route.ts` — mock logs replaced with `AuditLog` table
+- **Verification:** `tsc --noEmit` clean on all touched files; jest affected suites at baseline parity (84 passed, 6 pre-existing env failures in `projects/client` request-scope tests)
+
 ---
 
 ## Technology Stack

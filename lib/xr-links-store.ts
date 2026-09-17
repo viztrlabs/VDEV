@@ -1,4 +1,4 @@
-import { adminClient, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 
 export interface XRLinkRecord {
   id: string;
@@ -260,9 +260,10 @@ export const XR_LINKS_DB: XRLinkRecord[] = [
 ];
 
 export async function getXRLinksFromDB(): Promise<XRLinkRecord[]> {
-  if (isSupabaseAdminConfigured && adminClient) {
+  const db = getSupabaseAdmin();
+  if (db) {
     try {
-      const { data, error } = await adminClient
+      const { data, error } = await db
         .from('xr_links')
         .select('*')
         .order('created_at', { ascending: false });
@@ -278,9 +279,10 @@ export async function getXRLinksFromDB(): Promise<XRLinkRecord[]> {
 }
 
 export async function saveXRLinkToDB(link: XRLinkRecord): Promise<boolean> {
-  if (isSupabaseAdminConfigured && adminClient) {
+  const db = getSupabaseAdmin();
+  if (db) {
     try {
-      const { error } = await adminClient
+      const { error } = await db
         .from('xr_links')
         .upsert(toDbRow(link), { onConflict: 'id' });
 
@@ -298,9 +300,10 @@ export async function saveXRLinkToDB(link: XRLinkRecord): Promise<boolean> {
 }
 
 export async function deleteXRLinkFromDB(id: string): Promise<boolean> {
-  if (isSupabaseAdminConfigured && adminClient) {
+  const db = getSupabaseAdmin();
+  if (db) {
     try {
-      const { error } = await adminClient
+      const { error } = await db
         .from('xr_links')
         .delete()
         .eq('id', id);

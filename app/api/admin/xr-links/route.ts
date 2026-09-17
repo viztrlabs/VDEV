@@ -4,44 +4,44 @@ import { z } from 'zod';
 import {
   handleApiError,
   successResponse,
-  createdResponse,
   applyRateLimit,
   generateRequestId,
   addRequestIdHeaders,
-  type RateLimitConfig,
 } from '@/lib/api/validation';
 import { getAuthUser, requireAdmin } from '@/lib/api/auth';
 import {
-  XRLinkSchema,
   CreateXRLinkSchema,
   type XRLink,
-  type CreateXRLink,
 } from '@/lib/api/contracts/schemas';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 
-const mockProjects = [
-  { id: 'VIZTR-882', name: 'Nordic Monolith - Phase 1' },
-  { id: 'VIZTR-883', name: 'Vance Luxury Towers - VR Tour' },
-];
+function requireDb() {
+  const db = getSupabaseAdmin();
+  if (!db) {
+    throw new Error('Database unavailable: server storage not configured');
+  }
+  return db;
+}
 
-const mockXrLinks: XRLink[] = [
-  {
-    id: 'xrl-001',
-    projectId: 'VIZTR-883',
-    projectName: 'Vance Luxury Towers - VR Tour',
-    token: 'xrt_vance_7f3a2k9m',
-    url: 'https://xr.viztr.studio/xrt_vance_7f3a2k9m',
-    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-    createdAt: new Date().toISOString(),
-    createdBy: 'usr-001',
-    accessCount: 47,
-    maxAccess: 100,
-    allowedDomains: ['vance-realty.ae'],
-    passwordProtected: true,
-    passwordHash: '$2b$10$...',
-  },
-];
+function toContract(row: any, projectName?: string): XRLink {
+  const meta = (row.metadata ?? {}) as Record<string, any>;
+  return {
+    id: row.id,
+    projectId: row.project_id,
+    projectName: projectName ?? meta.projectName ?? row.project_id,
+    token: row.slug,
+    url: row.share_url,
+    expiresAt: row.expires_at,
+    createdAt: row.created_at,
+    createdBy: meta.createdBy ?? 'system',
+    accessCount: row.views_count ?? 0,
+    maxAccess: meta.maxAccess ?? 100,
+    allowedDomains: meta.allowedDomains,
+    passwordProtected: !!row.password_protected,
+  };
+}
 
-// GET /api/admin/xr-links - List XR links
+// GET /api/admin/xr-links - List XR links (Supabase `xr_links`)
 export async function GET(request: NextRequest) {
   const requestId = generateRequestId();
   try {
@@ -54,16 +54,27 @@ export async function GET(request: NextRequest) {
     const { searchParams } = request.nextUrl;
     const projectId = searchParams.get('projectId') || undefined;
 
-    let filtered = [...mockXrLinks];
-    if (projectId) filtered = filtered.filter(l => l.projectId === projectId);
+    const db = requireDb();
+    let query = db.from('xr_links').select('*').order('created_at', { ascending: false });
+    if (projectId) query = query.eq('project_id', projectId);
+    const { data, error } = await query;
+    if (error) throw new Error(error.message);
 
-    return addRequestIdHeaders(successResponse(filtered, { requestId }), requestId);
+    const rows = (data ?? []) as any[];
+    const projectIds = [...new Set(rows.map((r) => r.project_id).filter(Boolean))];
+    let names: Record<string, string> = {};
+    if (projectIds.length > 0) {
+      const { data: projects } = await db.from('projects').select('id,name').in('id', projectIds);
+      for (const p of (projects ?? []) as any[]) names[p.id] = p.name;
+    }
+
+    return addRequestIdHeaders(successResponse(rows.map((r) => toContract(r, names[r.project_id])), { requestId }), requestId);
   } catch (error) {
     return addRequestIdHeaders(handleApiError(error), requestId);
   }
 }
 
-// POST /api/admin/xr-links - Create XR link
+// POST /api/admin/xr-links - Create XR link (persists to `xr_links`)
 export async function POST(request: NextRequest) {
   const requestId = generateRequestId();
   try {
@@ -76,7 +87,13 @@ export async function POST(request: NextRequest) {
     const body = await request.json().catch(() => ({}));
     const data = CreateXRLinkSchema.parse(body);
 
-    const project = mockProjects.find(p => p.id === data.projectId);
+    const db = requireDb();
+    const { data: project, error: projectError } = await db
+      .from('projects')
+      .select('id,name')
+      .eq('id', data.projectId)
+      .maybeSingle();
+    if (projectError) throw new Error(projectError.message);
     if (!project) {
       return addRequestIdHeaders(
         NextResponse.json(
@@ -87,27 +104,43 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const token = `xrt_${project.name.toLowerCase().replace(/\s+/g, '_')}_${Math.random().toString(36).slice(2, 10)}`;
-    const newLink: XRLink = {
+    const slug = `xrt_${(project as any).name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}_${Math.random().toString(36).slice(2, 10)}`;
+    const now = new Date().toISOString();
+    const row = {
       id: `xrl-${Date.now()}`,
-      projectId: data.projectId,
-      projectName: project.name,
-      token,
-      url: `https://xr.viztr.studio/${token}`,
-      expiresAt: data.expiresAt,
-      createdAt: new Date().toISOString(),
-      createdBy: user.id,
-      accessCount: 0,
-      maxAccess: data.maxAccess || 100,
-      allowedDomains: data.allowedDomains,
-      passwordProtected: !!data.password,
-      passwordHash: data.password ? '$2b$10$...' : undefined,
+      name: `${(project as any).name} — XR link`,
+      slug,
+      project_id: data.projectId,
+      scene_id: null,
+      model_url: '',
+      thumbnail_url: null,
+      share_url: `https://xr.viztr.studio/${slug}`,
+      qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`https://xr.viztr.studio/${slug}`)}`,
+      environment: 'studio',
+      ar_placement: 'floor',
+      password_protected: !!data.password,
+      access_password: data.password ?? null,
+      views_count: 0,
+      unique_visitors: 0,
+      avg_engagement_secs: 0,
+      status: 'active',
+      expires_at: data.expiresAt,
+      metadata: {
+        projectName: (project as any).name,
+        maxAccess: data.maxAccess ?? 100,
+        allowedDomains: data.allowedDomains ?? [],
+        createdBy: user.id,
+      },
+      created_at: now,
+      updated_at: now,
     };
-    mockXrLinks.unshift(newLink);
+
+    const { data: inserted, error } = await db.from('xr_links').insert(row).select('*').single();
+    if (error) throw new Error(error.message);
 
     return addRequestIdHeaders(
       NextResponse.json(
-        { success: true, data: newLink, meta: { timestamp: new Date().toISOString(), requestId } },
+        { success: true, data: toContract(inserted, (project as any).name), meta: { timestamp: new Date().toISOString(), requestId } },
         { status: 201 }
       ),
       requestId
