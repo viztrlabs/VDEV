@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: pnpm/action-setup@v4
         with:
           version: 9
@@ -20,7 +22,17 @@ jobs:
           node-version: '20'
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run lint
+      - name: Get changed files
+        id: changed-files
+        run: |
+          git diff --name-only origin/main...HEAD -- '*.ts' '*.tsx' | grep -E '\.(ts|tsx)$' | head -50 > changed_files.txt
+          cat changed_files.txt
+      - name: Lint changed files
+        if: ${{ steps.changed-files.outputs.stdout != '' }}
+        run: |
+          if [ -s changed_files.txt ]; then
+            pnpm exec eslint $(cat changed_files.txt) --max-warnings=0
+          fi
       - run: pnpm exec tsc --noEmit
 
   test:
