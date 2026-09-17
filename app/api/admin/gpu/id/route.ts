@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import {
-  withAuth,
   handleApiError,
   successResponse,
   noContentResponse,
@@ -11,6 +10,7 @@ import {
   addRequestIdHeaders,
   type RateLimitConfig,
 } from '@/lib/api/validation';
+import { getAuthUser, requireAdmin } from '@/lib/api/auth';
 import {
   GpuNodeSchema,
   UpdateGpuNodeSchema,
@@ -65,145 +65,143 @@ const mockGpuNodes: GpuNode[] = [
 ];
 
 // GET /api/admin/gpu/[id] - Get single GPU node
-export const GET = withAuth(
-  z.object({ id: z.string() }).optional(),
-  async (params, request, user) => {
-    const requestId = generateRequestId();
+export async function GET(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
     const id = request.nextUrl.pathname.split('/').pop() || '';
     
     const rateLimitResponse = await applyRateLimit(request, { limit: 100, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      const node = mockGpuNodes.find(n => n.id === id);
-      if (!node) {
-        return addRequestIdHeaders(
-          NextResponse.json(
-            { success: false, error: { code: 'NOT_FOUND', message: `GPU node ${id} not found` } },
-            { status: 404 }
-          ),
-          requestId
-        );
-      }
-
-      return addRequestIdHeaders(successResponse(node, { requestId }), requestId);
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
+    const node = mockGpuNodes.find(n => n.id === id);
+    if (!node) {
+      return addRequestIdHeaders(
+        NextResponse.json(
+          { success: false, error: { code: 'NOT_FOUND', message: `GPU node ${id} not found` } },
+          { status: 404 }
+        ),
+        requestId
+      );
     }
+
+    return addRequestIdHeaders(successResponse(node, { requestId }), requestId);
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}
 
 // PATCH /api/admin/gpu/[id] - Update GPU node
-export const PATCH = withAuth(
-  UpdateGpuNodeSchema,
-  async (data, request, user) => {
-    const requestId = generateRequestId();
+export async function PATCH(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
     const id = request.nextUrl.pathname.split('/').pop() || '';
     
     const rateLimitResponse = await applyRateLimit(request, { limit: 50, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      if (user.role !== 'super_admin' && user.role !== 'admin') {
-        throw new Error('Insufficient permissions');
-      }
-
-      const nodeIndex = mockGpuNodes.findIndex(n => n.id === id);
-      if (nodeIndex === -1) {
-        return addRequestIdHeaders(
-          NextResponse.json(
-            { success: false, error: { code: 'NOT_FOUND', message: `GPU node ${id} not found` } },
-            { status: 404 }
-          ),
-          requestId
-        );
-      }
-
-      // Apply updates
-      mockGpuNodes[nodeIndex] = { 
-        ...mockGpuNodes[nodeIndex], 
-        ...data, 
-        updatedAt: new Date().toISOString() 
-      };
-
-      return addRequestIdHeaders(successResponse(mockGpuNodes[nodeIndex], { requestId }), requestId);
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
+    if (user.role !== 'super_admin' && user.role !== 'admin') {
+      throw new Error('Insufficient permissions');
     }
+
+    const body = await request.json().catch(() => ({}));
+    const data = UpdateGpuNodeSchema.parse(body);
+
+    const nodeIndex = mockGpuNodes.findIndex(n => n.id === id);
+    if (nodeIndex === -1) {
+      return addRequestIdHeaders(
+        NextResponse.json(
+          { success: false, error: { code: 'NOT_FOUND', message: `GPU node ${id} not found` } },
+          { status: 404 }
+        ),
+        requestId
+      );
+    }
+
+    mockGpuNodes[nodeIndex] = { 
+      ...mockGpuNodes[nodeIndex], 
+      ...data, 
+      updatedAt: new Date().toISOString() 
+    };
+
+    return addRequestIdHeaders(successResponse(mockGpuNodes[nodeIndex], { requestId }), requestId);
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}
 
 // DELETE /api/admin/gpu/[id] - Delete GPU node
-export const DELETE = withAuth(
-  z.object({ id: z.string() }).optional(),
-  async (params, request, user) => {
-    const requestId = generateRequestId();
+export async function DELETE(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
     const id = request.nextUrl.pathname.split('/').pop() || '';
     
     const rateLimitResponse = await applyRateLimit(request, { limit: 10, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      if (user.role !== 'super_admin') {
-        throw new Error('Only super_admin can delete GPU nodes');
-      }
-
-      const nodeIndex = mockGpuNodes.findIndex(n => n.id === id);
-      if (nodeIndex === -1) {
-        return addRequestIdHeaders(
-          NextResponse.json(
-            { success: false, error: { code: 'NOT_FOUND', message: `GPU node ${id} not found` } },
-            { status: 404 }
-          ),
-          requestId
-        );
-      }
-
-      mockGpuNodes.splice(nodeIndex, 1);
-
-      return addRequestIdHeaders(noContentResponse(), requestId);
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
+    if (user.role !== 'super_admin') {
+      throw new Error('Only super_admin can delete GPU nodes');
     }
+
+    const nodeIndex = mockGpuNodes.findIndex(n => n.id === id);
+    if (nodeIndex === -1) {
+      return addRequestIdHeaders(
+        NextResponse.json(
+          { success: false, error: { code: 'NOT_FOUND', message: `GPU node ${id} not found` } },
+          { status: 404 }
+        ),
+        requestId
+      );
+    }
+
+    mockGpuNodes.splice(nodeIndex, 1);
+
+    return addRequestIdHeaders(noContentResponse(), requestId);
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}
 
 // POST /api/admin/gpu/[id]/maintenance - Toggle maintenance mode
-export const POST = withAuth(
-  z.object({ id: z.string() }).optional(),
-  async (params, request, user) => {
-    const requestId = generateRequestId();
+export async function POST(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
     const id = request.nextUrl.pathname.split('/').slice(-2)[0];
     
     const rateLimitResponse = await applyRateLimit(request, { limit: 20, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      if (user.role !== 'super_admin' && user.role !== 'admin') {
-        throw new Error('Insufficient permissions');
-      }
-
-      const nodeIndex = mockGpuNodes.findIndex(n => n.id === id);
-      if (nodeIndex === -1) {
-        return addRequestIdHeaders(
-          NextResponse.json(
-            { success: false, error: { code: 'NOT_FOUND', message: `GPU node ${id} not found` } },
-            { status: 404 }
-          ),
-          requestId
-        );
-      }
-
-      const newStatus = mockGpuNodes[nodeIndex].status === 'maintenance' ? 'healthy' : 'maintenance';
-      mockGpuNodes[nodeIndex] = { 
-        ...mockGpuNodes[nodeIndex], 
-        status: newStatus,
-        updatedAt: new Date().toISOString() 
-      };
-
-      return addRequestIdHeaders(successResponse(mockGpuNodes[nodeIndex], { requestId }), requestId);
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
+    if (user.role !== 'super_admin' && user.role !== 'admin') {
+      throw new Error('Insufficient permissions');
     }
+
+    const nodeIndex = mockGpuNodes.findIndex(n => n.id === id);
+    if (nodeIndex === -1) {
+      return addRequestIdHeaders(
+        NextResponse.json(
+          { success: false, error: { code: 'NOT_FOUND', message: `GPU node ${id} not found` } },
+          { status: 404 }
+        ),
+        requestId
+      );
+    }
+
+    const newStatus = mockGpuNodes[nodeIndex].status === 'maintenance' ? 'healthy' : 'maintenance';
+    mockGpuNodes[nodeIndex] = { 
+      ...mockGpuNodes[nodeIndex], 
+      status: newStatus,
+      updatedAt: new Date().toISOString() 
+    };
+
+    return addRequestIdHeaders(successResponse(mockGpuNodes[nodeIndex], { requestId }), requestId);
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}

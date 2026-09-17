@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import {
-  withAuth,
   handleApiError,
   successResponse,
   applyRateLimit,
@@ -10,6 +9,7 @@ import {
   addRequestIdHeaders,
   type RateLimitConfig,
 } from '@/lib/api/validation';
+import { getAuthUser, requireAdmin } from '@/lib/api/auth';
 import {
   RevenueMetricSchema,
   RevenueSummarySchema,
@@ -57,61 +57,51 @@ const mockRevenueSummary: RevenueSummary = {
 };
 
 // GET /api/admin/revenue - Get monthly revenue metrics
-export const GET = withAuth(
-  z.object({ 
-    period: z.enum(['monthly', 'quarterly', 'yearly']).optional() 
-  }).optional(),
-  async (query, request, user) => {
-    const requestId = generateRequestId();
-    
+export async function GET(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
+
     const rateLimitResponse = await applyRateLimit(request, { limit: 100, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      let metrics = [...mockRevenueMetrics].sort((a, b) => b.month.localeCompare(a.month));
-      
-      // Could filter by period if needed
-      
-      return addRequestIdHeaders(
-        successResponse({
-          monthly: metrics,
-          summary: mockRevenueSummary,
-        }, { requestId }) as NextResponse,
-        requestId
-      );
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
-    }
+    let metrics = [...mockRevenueMetrics].sort((a, b) => b.month.localeCompare(a.month));
+
+    return addRequestIdHeaders(
+      successResponse({
+        monthly: metrics,
+        summary: mockRevenueSummary,
+      }, { requestId }) as NextResponse,
+      requestId
+    );
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}
 
 // POST /api/admin/revenue/refresh - Refresh revenue materialized view (super_admin only)
-export const POST = withAuth(
-  z.object({}).optional(),
-  async (params, request, user) => {
-    const requestId = generateRequestId();
-    
+export async function POST(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
+
     const rateLimitResponse = await applyRateLimit(request, { limit: 5, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      if (user.role !== 'super_admin') {
-        throw new Error('Only super_admin can refresh revenue metrics');
-      }
-
-      // In production: call supabase function to refresh materialized view
-      // await supabase.rpc('refresh_revenue_mv');
-      
-      // For mock, just return current data
-      return addRequestIdHeaders(
-        successResponse({
-          message: 'Revenue metrics refreshed successfully',
-          summary: mockRevenueSummary,
-        }, { requestId }) as NextResponse,
-        requestId
-      );
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
+    if (user.role !== 'super_admin') {
+      throw new Error('Only super_admin can refresh revenue metrics');
     }
+
+    return addRequestIdHeaders(
+      successResponse({
+        message: 'Revenue metrics refreshed successfully',
+        summary: mockRevenueSummary,
+      }, { requestId }) as NextResponse,
+      requestId
+    );
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}

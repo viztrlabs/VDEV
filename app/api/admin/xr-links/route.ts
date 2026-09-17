@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import {
-  withAuth,
   handleApiError,
   successResponse,
   createdResponse,
@@ -11,6 +10,7 @@ import {
   addRequestIdHeaders,
   type RateLimitConfig,
 } from '@/lib/api/validation';
+import { getAuthUser, requireAdmin } from '@/lib/api/auth';
 import {
   XRLinkSchema,
   CreateXRLinkSchema,
@@ -42,75 +42,77 @@ const mockXrLinks: XRLink[] = [
 ];
 
 // GET /api/admin/xr-links - List XR links
-export const GET = withAuth(
-  z.object({ projectId: z.string().optional() }).optional(),
-  async (query, request, user) => {
-    const requestId = generateRequestId();
-    
+export async function GET(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
+
     const rateLimitResponse = await applyRateLimit(request, { limit: 100, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      let filtered = [...mockXrLinks];
-      
-      if (query?.projectId) filtered = filtered.filter(l => l.projectId === query.projectId);
+    const { searchParams } = request.nextUrl;
+    const projectId = searchParams.get('projectId') || undefined;
 
-      return addRequestIdHeaders(successResponse(filtered, { requestId }), requestId);
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
-    }
+    let filtered = [...mockXrLinks];
+    if (projectId) filtered = filtered.filter(l => l.projectId === projectId);
+
+    return addRequestIdHeaders(successResponse(filtered, { requestId }), requestId);
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}
 
 // POST /api/admin/xr-links - Create XR link
-export const POST = withAuth(
-  CreateXRLinkSchema,
-  async (data, request, user) => {
-    const requestId = generateRequestId();
-    
+export async function POST(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
+
     const rateLimitResponse = await applyRateLimit(request, { limit: 50, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      // Find project
-      const project = mockProjects.find(p => p.id === data.projectId);
-      if (!project) {
-        return addRequestIdHeaders(
-          NextResponse.json(
-            { success: false, error: { code: 'NOT_FOUND', message: `Project ${data.projectId} not found` } },
-            { status: 404 }
-          ),
-          requestId
-        );
-      }
+    const body = await request.json().catch(() => ({}));
+    const data = CreateXRLinkSchema.parse(body);
 
-      const token = `xrt_${project.name.toLowerCase().replace(/\s+/g, '_')}_${Math.random().toString(36).slice(2, 10)}`;
-      const newLink: XRLink = {
-        id: `xrl-${Date.now()}`,
-        projectId: data.projectId,
-        projectName: project.name,
-        token,
-        url: `https://xr.viztr.studio/${token}`,
-        expiresAt: data.expiresAt,
-        createdAt: new Date().toISOString(),
-        createdBy: user.id,
-        accessCount: 0,
-        maxAccess: data.maxAccess || 100,
-        allowedDomains: data.allowedDomains,
-        passwordProtected: !!data.password,
-        passwordHash: data.password ? '$2b$10$...' : undefined,
-      };
-      mockXrLinks.unshift(newLink);
-
+    const project = mockProjects.find(p => p.id === data.projectId);
+    if (!project) {
       return addRequestIdHeaders(
         NextResponse.json(
-          { success: true, data: newLink, meta: { timestamp: new Date().toISOString(), requestId } },
-          { status: 201 }
+          { success: false, error: { code: 'NOT_FOUND', message: `Project ${data.projectId} not found` } },
+          { status: 404 }
         ),
         requestId
       );
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
     }
+
+    const token = `xrt_${project.name.toLowerCase().replace(/\s+/g, '_')}_${Math.random().toString(36).slice(2, 10)}`;
+    const newLink: XRLink = {
+      id: `xrl-${Date.now()}`,
+      projectId: data.projectId,
+      projectName: project.name,
+      token,
+      url: `https://xr.viztr.studio/${token}`,
+      expiresAt: data.expiresAt,
+      createdAt: new Date().toISOString(),
+      createdBy: user.id,
+      accessCount: 0,
+      maxAccess: data.maxAccess || 100,
+      allowedDomains: data.allowedDomains,
+      passwordProtected: !!data.password,
+      passwordHash: data.password ? '$2b$10$...' : undefined,
+    };
+    mockXrLinks.unshift(newLink);
+
+    return addRequestIdHeaders(
+      NextResponse.json(
+        { success: true, data: newLink, meta: { timestamp: new Date().toISOString(), requestId } },
+        { status: 201 }
+      ),
+      requestId
+    );
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}

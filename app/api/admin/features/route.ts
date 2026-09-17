@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import {
-  withAuth,
   handleApiError,
   successResponse,
   createdResponse,
@@ -11,6 +10,7 @@ import {
   addRequestIdHeaders,
   type RateLimitConfig,
 } from '@/lib/api/validation';
+import { getAuthUser, requireAdmin } from '@/lib/api/auth';
 import {
   FeatureToggleSchema,
   UpdateFeatureToggleSchema,
@@ -63,60 +63,61 @@ const mockFeatureToggles: FeatureToggle[] = [
 ];
 
 // GET /api/admin/features - List feature toggles
-export const GET = withAuth(
-  z.object({ 
-    category: FeatureToggleCategorySchema.optional() 
-  }).optional(),
-  async (query, request, user) => {
-    const requestId = generateRequestId();
-    
+export async function GET(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
+
     const rateLimitResponse = await applyRateLimit(request, { limit: 100, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      let filtered = [...mockFeatureToggles].sort((a, b) => a.key.localeCompare(b.key));
-      
-      if (query?.category) filtered = filtered.filter(f => f.category === query.category);
+    const { searchParams } = request.nextUrl;
+    const category = searchParams.get('category') || undefined;
 
-      return addRequestIdHeaders(successResponse(filtered, { requestId }), requestId);
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
-    }
+    let filtered = [...mockFeatureToggles].sort((a, b) => a.key.localeCompare(b.key));
+    if (category) filtered = filtered.filter(f => f.category === category);
+
+    return addRequestIdHeaders(successResponse(filtered, { requestId }), requestId);
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}
 
 // POST /api/admin/features - Create feature toggle (super_admin only)
-export const POST = withAuth(
-  FeatureToggleSchema.omit({ id: true, lastModifiedBy: true, lastModifiedAt: true, createdAt: true }),
-  async (data, request, user) => {
-    const requestId = generateRequestId();
-    
+export async function POST(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
+
     const rateLimitResponse = await applyRateLimit(request, { limit: 10, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      if (user.role !== 'super_admin') {
-        throw new Error('Only super_admin can create feature toggles');
-      }
-
-      const newToggle: FeatureToggle = {
-        ...data,
-        id: `ft-${data.key.toLowerCase().replace(/_/g, '-')}`,
-        lastModifiedBy: user.id,
-        lastModifiedAt: new Date().toISOString(),
-        createdAt: new Date().toISOString(),
-      };
-      mockFeatureToggles.push(newToggle);
-
-      return addRequestIdHeaders(
-        NextResponse.json(
-          { success: true, data: newToggle, meta: { timestamp: new Date().toISOString(), requestId } },
-          { status: 201 }
-        ),
-        requestId
-      );
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
+    if (user.role !== 'super_admin') {
+      throw new Error('Only super_admin can create feature toggles');
     }
+
+    const body = await request.json().catch(() => ({}));
+    const data = FeatureToggleSchema.omit({ id: true, lastModifiedBy: true, lastModifiedAt: true, createdAt: true }).parse(body);
+
+    const newToggle: FeatureToggle = {
+      ...data,
+      id: `ft-${data.key.toLowerCase().replace(/_/g, '-')}`,
+      lastModifiedBy: user.id,
+      lastModifiedAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+    };
+    mockFeatureToggles.push(newToggle);
+
+    return addRequestIdHeaders(
+      NextResponse.json(
+        { success: true, data: newToggle, meta: { timestamp: new Date().toISOString(), requestId } },
+        { status: 201 }
+      ),
+      requestId
+    );
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}

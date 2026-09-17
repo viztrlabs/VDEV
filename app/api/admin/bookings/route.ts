@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import {
-  withAuth,
   handleApiError,
   successResponse,
   createdResponse,
@@ -11,6 +10,7 @@ import {
   addRequestIdHeaders,
   type RateLimitConfig,
 } from '@/lib/api/validation';
+import { getAuthUser, requireAdmin } from '@/lib/api/auth';
 import {
   BookingSchema,
   CreateBookingSchema,
@@ -27,33 +27,42 @@ import {
 const RATE_LIMIT_CONFIG: RateLimitConfig = { limit: 100, window: '60 s' };
 
 // GET /api/admin/bookings - List bookings with filtering and pagination
-export const GET = withAuth(
-  BookingFiltersSchema.merge(PaginationParamsSchema).optional(),
-  async (query, request, user) => {
-    const requestId = generateRequestId();
-    
+export async function GET(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
+
     const rateLimitResponse = await applyRateLimit(request, RATE_LIMIT_CONFIG);
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      const repo = getRepository();
-      const result = await repo.bookings.findAll(query, { page: query?.page, pageSize: query?.pageSize });
-      
-      return addRequestIdHeaders(
-        successResponse({
-          data: result.data,
-          total: result.total,
-          page: result.page,
-          pageSize: result.pageSize,
-          totalPages: result.totalPages,
-        }, { requestId }),
-        requestId
-      );
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
+    const { searchParams } = request.nextUrl;
+    const query: any = {};
+    for (const [key, value] of searchParams.entries()) {
+      if (key === 'page' || key === 'pageSize') {
+        query[key] = parseInt(value, 10);
+      } else {
+        query[key] = value;
+      }
     }
+
+    const repo = getRepository();
+    const result = await repo.bookings.findAll(query, { page: query.page, pageSize: query.pageSize });
+    
+    return addRequestIdHeaders(
+      successResponse({
+        data: result.data,
+        total: result.total,
+        page: result.page,
+        pageSize: result.pageSize,
+        totalPages: result.totalPages,
+      }, { requestId }),
+      requestId
+    );
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}
 
 // POST /api/admin/bookings - Create booking (public endpoint, no auth required for creation)
 export async function POST(request: NextRequest) {

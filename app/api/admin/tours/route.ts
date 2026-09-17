@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import {
-  withAuth,
   handleApiError,
   successResponse,
   createdResponse,
@@ -11,6 +10,7 @@ import {
   addRequestIdHeaders,
   type RateLimitConfig,
 } from '@/lib/api/validation';
+import { getAuthUser, requireAdmin } from '@/lib/api/auth';
 import {
   TourSchema,
   CreateTourSchema,
@@ -33,57 +33,58 @@ const mockTours: Tour[] = [
 ];
 
 // GET /api/admin/tours - List tours
-export const GET = withAuth(
-  z.object({ 
-    projectId: z.string().optional(),
-    status: z.enum(['draft', 'published', 'archived']).optional(),
-  }).optional(),
-  async (query, request, user) => {
-    const requestId = generateRequestId();
-    
+export async function GET(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
+
     const rateLimitResponse = await applyRateLimit(request, { limit: 100, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      let filtered = [...mockTours];
-      
-      if (query?.projectId) filtered = filtered.filter(t => t.projectId === query.projectId);
-      if (query?.status) filtered = filtered.filter(t => t.status === query.status);
+    const { searchParams } = request.nextUrl;
+    const projectId = searchParams.get('projectId') || undefined;
+    const status = searchParams.get('status') || undefined;
 
-      return addRequestIdHeaders(successResponse(filtered, { requestId }), requestId);
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
-    }
+    let filtered = [...mockTours];
+    if (projectId) filtered = filtered.filter(t => t.projectId === projectId);
+    if (status) filtered = filtered.filter(t => t.status === status);
+
+    return addRequestIdHeaders(successResponse(filtered, { requestId }), requestId);
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}
 
 // POST /api/admin/tours - Create tour
-export const POST = withAuth(
-  CreateTourSchema,
-  async (data, request, user) => {
-    const requestId = generateRequestId();
-    
+export async function POST(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
+
     const rateLimitResponse = await applyRateLimit(request, { limit: 20, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      const newTour: Tour = {
-        ...data,
-        id: `tour-${Date.now()}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      mockTours.unshift(newTour);
+    const body = await request.json().catch(() => ({}));
+    const data = CreateTourSchema.parse(body);
 
-      return addRequestIdHeaders(
-        NextResponse.json(
-          { success: true, data: newTour, meta: { timestamp: new Date().toISOString(), requestId } },
-          { status: 201 }
-        ),
-        requestId
-      );
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
-    }
+    const newTour: Tour = {
+      ...data,
+      id: `tour-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    mockTours.unshift(newTour);
+
+    return addRequestIdHeaders(
+      NextResponse.json(
+        { success: true, data: newTour, meta: { timestamp: new Date().toISOString(), requestId } },
+        { status: 201 }
+      ),
+      requestId
+    );
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}

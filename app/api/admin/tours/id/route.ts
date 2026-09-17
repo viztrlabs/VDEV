@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import {
-  withAuth,
   handleApiError,
   successResponse,
   noContentResponse,
@@ -11,6 +10,7 @@ import {
   addRequestIdHeaders,
   type RateLimitConfig,
 } from '@/lib/api/validation';
+import { getAuthUser, requireAdmin } from '@/lib/api/auth';
 import {
   TourSchema,
   UpdateTourSchema,
@@ -31,100 +31,100 @@ const mockTours: Tour[] = [
 ];
 
 // GET /api/admin/tours/[id] - Get single tour
-export const GET = withAuth(
-  z.object({ id: z.string() }).optional(),
-  async (params, request, user) => {
-    const requestId = generateRequestId();
+export async function GET(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
     const id = request.nextUrl.pathname.split('/').pop() || '';
     
     const rateLimitResponse = await applyRateLimit(request, { limit: 100, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      const tour = mockTours.find(t => t.id === id);
-      if (!tour) {
-        return addRequestIdHeaders(
-          NextResponse.json(
-            { success: false, error: { code: 'NOT_FOUND', message: `Tour ${id} not found` } },
-            { status: 404 }
-          ),
-          requestId
-        );
-      }
-
-      return addRequestIdHeaders(successResponse(tour, { requestId }), requestId);
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
+    const tour = mockTours.find(t => t.id === id);
+    if (!tour) {
+      return addRequestIdHeaders(
+        NextResponse.json(
+          { success: false, error: { code: 'NOT_FOUND', message: `Tour ${id} not found` } },
+          { status: 404 }
+        ),
+        requestId
+      );
     }
+
+    return addRequestIdHeaders(successResponse(tour, { requestId }), requestId);
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}
 
 // PATCH /api/admin/tours/[id] - Update tour
-export const PATCH = withAuth(
-  UpdateTourSchema,
-  async (data, request, user) => {
-    const requestId = generateRequestId();
+export async function PATCH(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
     const id = request.nextUrl.pathname.split('/').pop() || '';
     
     const rateLimitResponse = await applyRateLimit(request, { limit: 50, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      const tourIndex = mockTours.findIndex(t => t.id === id);
-      if (tourIndex === -1) {
-        return addRequestIdHeaders(
-          NextResponse.json(
-            { success: false, error: { code: 'NOT_FOUND', message: `Tour ${id} not found` } },
-            { status: 404 }
-          ),
-          requestId
-        );
-      }
+    const body = await request.json().catch(() => ({}));
+    const data = UpdateTourSchema.parse(body);
 
-      mockTours[tourIndex] = { 
-        ...mockTours[tourIndex], 
-        ...data,
-        updatedAt: new Date().toISOString() 
-      };
-
-      return addRequestIdHeaders(successResponse(mockTours[tourIndex], { requestId }), requestId);
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
+    const tourIndex = mockTours.findIndex(t => t.id === id);
+    if (tourIndex === -1) {
+      return addRequestIdHeaders(
+        NextResponse.json(
+          { success: false, error: { code: 'NOT_FOUND', message: `Tour ${id} not found` } },
+          { status: 404 }
+        ),
+        requestId
+      );
     }
+
+    mockTours[tourIndex] = { 
+      ...mockTours[tourIndex], 
+      ...data,
+      updatedAt: new Date().toISOString() 
+    };
+
+    return addRequestIdHeaders(successResponse(mockTours[tourIndex], { requestId }), requestId);
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}
 
 // DELETE /api/admin/tours/[id] - Delete tour
-export const DELETE = withAuth(
-  z.object({ id: z.string() }).optional(),
-  async (params, request, user) => {
-    const requestId = generateRequestId();
+export async function DELETE(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
     const id = request.nextUrl.pathname.split('/').pop() || '';
     
     const rateLimitResponse = await applyRateLimit(request, { limit: 10, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      if (user.role !== 'super_admin') {
-        throw new Error('Only super_admin can delete tours');
-      }
-
-      const tourIndex = mockTours.findIndex(t => t.id === id);
-      if (tourIndex === -1) {
-        return addRequestIdHeaders(
-          NextResponse.json(
-            { success: false, error: { code: 'NOT_FOUND', message: `Tour ${id} not found` } },
-            { status: 404 }
-          ),
-          requestId
-        );
-      }
-
-      mockTours.splice(tourIndex, 1);
-
-      return addRequestIdHeaders(noContentResponse(), requestId);
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
+    if (user.role !== 'super_admin') {
+      throw new Error('Only super_admin can delete tours');
     }
+
+    const tourIndex = mockTours.findIndex(t => t.id === id);
+    if (tourIndex === -1) {
+      return addRequestIdHeaders(
+        NextResponse.json(
+          { success: false, error: { code: 'NOT_FOUND', message: `Tour ${id} not found` } },
+          { status: 404 }
+        ),
+        requestId
+      );
+    }
+
+    mockTours.splice(tourIndex, 1);
+
+    return addRequestIdHeaders(noContentResponse(), requestId);
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}

@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import {
-  withAuth,
   handleApiError,
   successResponse,
   createdResponse,
@@ -11,6 +10,7 @@ import {
   addRequestIdHeaders,
   type RateLimitConfig,
 } from '@/lib/api/validation';
+import { getAuthUser, requireAdmin } from '@/lib/api/auth';
 import {
   GpuNodeSchema,
   UpdateGpuNodeSchema,
@@ -69,68 +69,71 @@ const mockGpuNodes: GpuNode[] = [
 ];
 
 // GET /api/admin/gpu - List GPU nodes
-export const GET = withAuth(
-  GpuFiltersSchema.merge(PaginationParamsSchema).optional(),
-  async (query, request, user) => {
-    const requestId = generateRequestId();
-    
+export async function GET(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
+
     const rateLimitResponse = await applyRateLimit(request, { limit: 100, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      let filtered = [...mockGpuNodes];
-      
-      if (query?.regionCode) filtered = filtered.filter(n => n.regionCode === query.regionCode);
-      if (query?.status) filtered = filtered.filter(n => n.status === query.status);
+    const { searchParams } = request.nextUrl;
+    const regionCode = searchParams.get('regionCode') || undefined;
+    const status = searchParams.get('status') || undefined;
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const pageSize = parseInt(searchParams.get('pageSize') || '20', 10);
 
-      // Pagination
-      const page = query?.page || 1;
-      const pageSize = query?.pageSize || 20;
-      const start = (page - 1) * pageSize;
-      const end = start + pageSize;
-      const paginated = filtered.slice(start, end);
+    let filtered = [...mockGpuNodes];
+    if (regionCode) filtered = filtered.filter(n => n.regionCode === regionCode);
+    if (status) filtered = filtered.filter(n => n.status === status);
 
-      return addRequestIdHeaders(
-        successResponse({
-          data: paginated,
-          total: filtered.length,
-          page,
-          pageSize,
-          totalPages: Math.ceil(filtered.length / pageSize),
-        }, { requestId }) as NextResponse,
-        requestId
-      );
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
-    }
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
+    const paginated = filtered.slice(start, end);
+
+    return addRequestIdHeaders(
+      successResponse({
+        data: paginated,
+        total: filtered.length,
+        page,
+        pageSize,
+        totalPages: Math.ceil(filtered.length / pageSize),
+      }, { requestId }) as NextResponse,
+      requestId
+    );
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}
 
 // POST /api/admin/gpu - Create GPU node (admin only)
-export const POST = withAuth(
-  GpuNodeSchema.omit({ id: true, createdAt: true, updatedAt: true }),
-  async (data, request, user) => {
-    const requestId = generateRequestId();
-    
+export async function POST(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
+
     const rateLimitResponse = await applyRateLimit(request, { limit: 10, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      if (user.role !== 'super_admin' && user.role !== 'admin') {
-        throw new Error('Insufficient permissions');
-      }
-
-      const newNode: GpuNode = {
-        ...data,
-        id: `gpu-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      mockGpuNodes.push(newNode);
-
-      return addRequestIdHeaders(createdResponse(newNode, { requestId }), requestId);
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
+    if (user.role !== 'super_admin' && user.role !== 'admin') {
+      throw new Error('Insufficient permissions');
     }
+
+    const body = await request.json().catch(() => ({}));
+    const data = GpuNodeSchema.omit({ id: true, createdAt: true, updatedAt: true }).parse(body);
+
+    const newNode: GpuNode = {
+      ...data,
+      id: `gpu-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    mockGpuNodes.push(newNode);
+
+    return addRequestIdHeaders(createdResponse(newNode, { requestId }), requestId);
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}

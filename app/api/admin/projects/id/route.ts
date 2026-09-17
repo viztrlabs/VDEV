@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import {
-  withAuth,
   handleApiError,
   successResponse,
   noContentResponse,
@@ -11,6 +10,7 @@ import {
   addRequestIdHeaders,
   type RateLimitConfig,
 } from '@/lib/api/validation';
+import { getAuthUser, requireAdmin } from '@/lib/api/auth';
 import {
   ManagedProjectSchema,
   UpdateProjectSchema,
@@ -62,150 +62,151 @@ const mockProjects: ManagedProject[] = [
 ];
 
 // GET /api/admin/projects/[id] - Get single project
-export const GET = withAuth(
-  z.object({ id: z.string() }).optional(),
-  async (params, request, user) => {
-    const requestId = generateRequestId();
+export async function GET(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
     const id = request.nextUrl.pathname.split('/').pop() || '';
     
     const rateLimitResponse = await applyRateLimit(request, { limit: 100, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      const project = mockProjects.find(p => p.id === id);
-      if (!project) {
-        return addRequestIdHeaders(
-          NextResponse.json(
-            { success: false, error: { code: 'NOT_FOUND', message: `Project ${id} not found` } },
-            { status: 404 }
-          ),
-          requestId
-        );
-      }
-
-      return addRequestIdHeaders(successResponse(project, { requestId }), requestId);
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
+    const project = mockProjects.find(p => p.id === id);
+    if (!project) {
+      return addRequestIdHeaders(
+        NextResponse.json(
+          { success: false, error: { code: 'NOT_FOUND', message: `Project ${id} not found` } },
+          { status: 404 }
+        ),
+        requestId
+      );
     }
+
+    return addRequestIdHeaders(successResponse(project, { requestId }), requestId);
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}
 
 // PATCH /api/admin/projects/[id] - Update project
-export const PATCH = withAuth(
-  UpdateProjectSchema,
-  async (data, request, user) => {
-    const requestId = generateRequestId();
+export async function PATCH(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
     const id = request.nextUrl.pathname.split('/').pop() || '';
     
     const rateLimitResponse = await applyRateLimit(request, { limit: 50, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      if (user.role !== 'super_admin' && user.role !== 'admin') {
-        throw new Error('Insufficient permissions');
-      }
-
-      const projectIndex = mockProjects.findIndex(p => p.id === id);
-      if (projectIndex === -1) {
-        return addRequestIdHeaders(
-          NextResponse.json(
-            { success: false, error: { code: 'NOT_FOUND', message: `Project ${id} not found` } },
-            { status: 404 }
-          ),
-          requestId
-        );
-      }
-
-      // Apply updates
-      mockProjects[projectIndex] = { ...mockProjects[projectIndex], ...data };
-
-      return addRequestIdHeaders(successResponse(mockProjects[projectIndex], { requestId }), requestId);
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
+    if (user.role !== 'super_admin' && user.role !== 'admin') {
+      throw new Error('Insufficient permissions');
     }
+
+    const body = await request.json().catch(() => ({}));
+    const data = UpdateProjectSchema.parse(body);
+
+    const projectIndex = mockProjects.findIndex(p => p.id === id);
+    if (projectIndex === -1) {
+      return addRequestIdHeaders(
+        NextResponse.json(
+          { success: false, error: { code: 'NOT_FOUND', message: `Project ${id} not found` } },
+          { status: 404 }
+        ),
+        requestId
+      );
+    }
+
+    mockProjects[projectIndex] = { ...mockProjects[projectIndex], ...data };
+
+    return addRequestIdHeaders(successResponse(mockProjects[projectIndex], { requestId }), requestId);
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}
 
 // DELETE /api/admin/projects/[id] - Delete project
-export const DELETE = withAuth(
-  z.object({ id: z.string() }).optional(),
-  async (params, request, user) => {
-    const requestId = generateRequestId();
+export async function DELETE(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
     const id = request.nextUrl.pathname.split('/').pop() || '';
     
     const rateLimitResponse = await applyRateLimit(request, { limit: 10, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      if (user.role !== 'super_admin') {
-        throw new Error('Only super_admin can delete projects');
-      }
-
-      const projectIndex = mockProjects.findIndex(p => p.id === id);
-      if (projectIndex === -1) {
-        return addRequestIdHeaders(
-          NextResponse.json(
-            { success: false, error: { code: 'NOT_FOUND', message: `Project ${id} not found` } },
-            { status: 404 }
-          ),
-          requestId
-        );
-      }
-
-      mockProjects.splice(projectIndex, 1);
-
-      return addRequestIdHeaders(noContentResponse(), requestId);
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
+    if (user.role !== 'super_admin') {
+      throw new Error('Only super_admin can delete projects');
     }
+
+    const projectIndex = mockProjects.findIndex(p => p.id === id);
+    if (projectIndex === -1) {
+      return addRequestIdHeaders(
+        NextResponse.json(
+          { success: false, error: { code: 'NOT_FOUND', message: `Project ${id} not found` } },
+          { status: 404 }
+        ),
+        requestId
+      );
+    }
+
+    mockProjects.splice(projectIndex, 1);
+
+    return addRequestIdHeaders(noContentResponse(), requestId);
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}
 
 // POST /api/admin/projects/[id]/hours - Log hours
-export const POST = withAuth(
-  z.object({
-    date: z.string().datetime(),
-    hours: z.number().positive(),
-    description: z.string().min(1),
-    billable: z.boolean(),
-  }),
-  async (data, request, user) => {
-    const requestId = generateRequestId();
+export async function POST(request: NextRequest) {
+  const requestId = generateRequestId();
+  try {
+    const user = await getAuthUser();
+    requireAdmin(user);
     const id = request.nextUrl.pathname.split('/').slice(-2)[0];
     
     const rateLimitResponse = await applyRateLimit(request, { limit: 50, window: '60 s' });
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
-    try {
-      const projectIndex = mockProjects.findIndex(p => p.id === id);
-      if (projectIndex === -1) {
-        return addRequestIdHeaders(
-          NextResponse.json(
-            { success: false, error: { code: 'NOT_FOUND', message: `Project ${id} not found` } },
-            { status: 404 }
-          ),
-          requestId
-        );
-      }
+    const body = await request.json().catch(() => ({}));
+    const data = z.object({
+      date: z.string().datetime(),
+      hours: z.number().positive(),
+      description: z.string().min(1),
+      billable: z.boolean(),
+    }).parse(body);
 
-      const newEntry = {
-        id: `ts-${Date.now()}`,
-        ...data,
-      };
-
-      mockProjects[projectIndex] = {
-        ...mockProjects[projectIndex],
-        hoursMonitoring: {
-          ...mockProjects[projectIndex].hoursMonitoring,
-          hoursSpent: mockProjects[projectIndex].hoursMonitoring.hoursSpent + data.hours,
-          hoursRemaining: Math.max(0, mockProjects[projectIndex].hoursMonitoring.hoursRemaining - data.hours),
-          timesheetEntries: [newEntry, ...mockProjects[projectIndex].hoursMonitoring.timesheetEntries],
-        },
-      };
-
-      return addRequestIdHeaders(successResponse(mockProjects[projectIndex], { requestId }), requestId);
-    } catch (error) {
-      return addRequestIdHeaders(handleApiError(error), requestId);
+    const projectIndex = mockProjects.findIndex(p => p.id === id);
+    if (projectIndex === -1) {
+      return addRequestIdHeaders(
+        NextResponse.json(
+          { success: false, error: { code: 'NOT_FOUND', message: `Project ${id} not found` } },
+          { status: 404 }
+        ),
+        requestId
+      );
     }
+
+    const newEntry = {
+      id: `ts-${Date.now()}`,
+      ...data,
+    };
+
+    mockProjects[projectIndex] = {
+      ...mockProjects[projectIndex],
+      hoursMonitoring: {
+        ...mockProjects[projectIndex].hoursMonitoring,
+        hoursSpent: mockProjects[projectIndex].hoursMonitoring.hoursSpent + data.hours,
+        hoursRemaining: Math.max(0, mockProjects[projectIndex].hoursMonitoring.hoursRemaining - data.hours),
+        timesheetEntries: [newEntry, ...mockProjects[projectIndex].hoursMonitoring.timesheetEntries],
+      },
+    };
+
+    return addRequestIdHeaders(successResponse(mockProjects[projectIndex], { requestId }), requestId);
+  } catch (error) {
+    return addRequestIdHeaders(handleApiError(error), requestId);
   }
-);
+}
