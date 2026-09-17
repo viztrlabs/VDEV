@@ -15,7 +15,7 @@ import {
   ForbiddenError,
   NotFoundError,
 } from '@/lib/api/contracts/schemas';
-import { requireAuth } from '@/lib/api-guard';
+import { getAuthUser } from '@/lib/api/auth';
 import { applyRateLimit, rateLimitHeaders, type RateLimitConfig } from '@/lib/rate-limit';
 
 /**
@@ -51,19 +51,8 @@ export function withAuth<T extends z.ZodType<any, any, any>>(
   handler: (data: z.infer<T>, request: NextRequest, user: { id: string; email: string; role: string }) => Promise<NextResponse>
 ) {
   return withValidation(schema, async (data, request) => {
-    const guard = await requireAuth(request);
-    if (guard.error) {
-      throw new UnauthorizedError('Authentication required');
-    }
-
-    const { session, role, userId } = guard;
-    const user = {
-      id: userId,
-      email: (session?.user as any)?.email || '',
-      role,
-    };
-
-    return handler(data, request, user);
+    const authUser = await getAuthUser();
+    return handler(data, request, authUser);
   });
 }
 
