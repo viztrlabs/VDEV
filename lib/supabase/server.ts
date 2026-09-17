@@ -4,9 +4,13 @@ import { cookies } from 'next/headers';
 // Server-side Supabase client (user-scoped, RLS applies).
 // Reads/writes the auth cookie via next/headers. Returns null when env vars
 // are absent so pages stay renderable before credentials are configured.
+function stripBom(s: string): string {
+  return s.replace(/^\uFEFF/, '');
+}
+
 export async function createClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const url = stripBom(process.env.NEXT_PUBLIC_SUPABASE_URL || '');
+  const anonKey = stripBom(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '');
   if (!url || !anonKey) return null;
 
   const cookieStore = await cookies();
