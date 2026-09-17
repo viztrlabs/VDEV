@@ -36,7 +36,6 @@ interface VisualFeedbackSystemProps {
 }
 
 export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedbackSystemProps) {
-  const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [selectedAsset, setSelectedAsset] = useState<string>(assets[0]?.id || '');
   const [isAddingFeedback, setIsAddingFeedback] = useState(false);
   const [newFeedback, setNewFeedback] = useState<Partial<Feedback> | null>(null);
@@ -59,7 +58,7 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
   ];
 
   // Canonical store slice (hydrated by the fetch below; useFeedbackRealtime at
-  // the dashboard level pushes every later change via addFeedback).
+  // the dashboard level pushes INSERTs and upserts/removes UPDATEs/DELETEs).
   const feedbackItems = useAppStore((s) => s.feedbackItems);
 
   const mapRowToFeedback = (f: any): Feedback => ({
@@ -87,7 +86,6 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
       .then(res => res.json())
       .then(data => {
         if (data.success && Array.isArray(data.feedback)) {
-          setFeedbacks(data.feedback.map(mapRowToFeedback));
           useAppStore.getState().setFeedbackItems(data.feedback);
         }
       })
@@ -95,19 +93,23 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
       .finally(() => setLoading(false));
   }, [projectId]);
 
-  // Merge realtime rows from the store into local UI state (dedupe by id).
-  useEffect(() => {
-    if (feedbackItems.length === 0) return;
-    setFeedbacks(prev => {
-      const known = new Set(prev.map(f => f.id));
-      const incoming = feedbackItems
-        .filter((f: any) =>
-          f && f.id && !known.has(f.id) &&
-          (!projectId || !f.project_id || f.project_id === projectId))
-        .map(mapRowToFeedback);
-      return incoming.length > 0 ? [...prev, ...incoming] : prev;
-    });
-  }, [feedbackItems, projectId]);
+  // Derive the UI list directly from the store slice: realtime INSERT/UPDATE
+  // upserts by id in the store and DELETEs remove the row, so all three
+  // propagate here with no parallel local copy. Dedupe defensively
+  // (last-write-wins via store prepend order), scoped to this project.
+  const scopedItems = projectId
+    ? feedbackItems.filter((f: any) => !f.project_id || f.project_id === projectId)
+    : feedbackItems;
+  const feedbacks: Feedback[] = (() => {
+    const seen = new Set<string>();
+    const out: Feedback[] = [];
+    for (const row of scopedItems) {
+      if (!row || !row.id || seen.has(row.id)) continue;
+      seen.add(row.id);
+      out.push(mapRowToFeedback(row));
+    }
+    return out;
+  })();
 
   const addFeedback = async (feedbackData: Partial<Feedback>) => {
     setSubmitting(true);
@@ -132,25 +134,7 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
       });
       const data = await res.json();
       if (data.success && data.feedback) {
-        const f = data.feedback;
-        const mapped: Feedback = {
-          id: f.id,
-          assetId: f.experience_id || selectedAsset,
-          assetName: assets.find(a => a.id === selectedAsset)?.name || '',
-          assetType: assets.find(a => a.id === selectedAsset)?.type || 'image',
-          x: f.annotation?.x || 0,
-          y: f.annotation?.y || 0,
-          width: f.annotation?.width || 100,
-          height: f.annotation?.height || 100,
-          comment: f.content,
-          author: f.author_name,
-          authorRole: currentUser.role,
-          assignedTo: feedbackData.assignedTo || teamMembers[0].id,
-          status: 'open',
-          createdAt: new Date(f.created_at),
-          resolution: '',
-        };
-        setFeedbacks(prev => [...prev, mapped]);
+        // Publish via the store; the derived list above picks it up.
         useAppStore.getState().addFeedback(data.feedback);
       }
     } catch {
@@ -163,16 +147,28 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
   };
 
   const resolveFeedback = (feedbackId: string, resolution: string) => {
-    setFeedbacks(prev => prev.map(fb =>
-      fb.id === feedbackId
-        ? { ...fb, status: 'resolved', resolvedAt: new Date(), resolution }
-        : fb
-    ));
+    // Local-only status change (no server call, as before) applied to the
+    // store so the derived list stays the single source of truth.
+    useAppStore.getState().setFeedbackItems(
+      feedbackItems.map((f: any) =>
+        f.id === feedbackId
+          ? {
+              ...f,
+              status: 'resolved',
+              updated_at: new Date().toISOString(),
+              annotation: { ...(f.annotation || {}), resolution },
+            }
+          : f
+      )
+    );
     setShowResolution(null);
   };
 
   const deleteFeedback = (feedbackId: string) => {
-    setFeedbacks(prev => prev.filter(fb => fb.id !== feedbackId));
+    // Local-only removal (no server call, as before) applied to the store.
+    useAppStore.getState().setFeedbackItems(
+      feedbackItems.filter((f: any) => f.id !== feedbackId)
+    );
   };
 
   const getStatusColor = (status: string) => {

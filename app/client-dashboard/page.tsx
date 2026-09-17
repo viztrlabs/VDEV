@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
@@ -46,40 +46,52 @@ export default function ClientDashboardPage() {
   const { projects: apiProjects, loading: projectsLoading, error: projectsError, refresh: refreshProjects } = useClientProjects();
 
   // --- Phase 2 Task 1: Supabase Realtime wiring ---
-  // projectId is the `projects.id` text value (e.g. `proj_smart_luxury_villa`).
-  // Prefer the first assigned project; fall back to the client-id proxy historically
-  // used across this dashboard. All hooks stay unconditional (Rules of Hooks) and
+  // realtimeId is the `projects.id` text value (e.g. `proj_smart_luxury_villa`).
+  // The hook filters are `id=eq.<id>` / `project_id=eq.<id>`, so only a real
+  // projects.id may be used here. Empty string subscribes to a match-nothing
+  // set until a real project resolves — never feed the clientId proxy into
+  // these filters. All hooks stay unconditional (Rules of Hooks) and
   // resubscribe automatically when the id resolves via the filter dependency.
-  const projectId = apiProjects[0]?.id ?? clientId ?? '';
+  const realtimeId = apiProjects[0]?.id ?? '';
 
   const noop = () => {};
-  useProjectRealtime(projectId, noop);
-  useExperienceRealtime(projectId, noop);
-  useActivityRealtime(projectId, noop);
-  useDeliverableRealtime(projectId, noop);
-  useFeedbackRealtime(projectId, noop);
+  useProjectRealtime(realtimeId, noop);
+  useExperienceRealtime(realtimeId, noop);
+  useActivityRealtime(realtimeId, noop);
+  useDeliverableRealtime(realtimeId, noop);
+  useFeedbackRealtime(realtimeId, noop);
 
   const projects = useAppStore((s) => s.projects);
   const experiences = useAppStore((s) => s.experiences);
   const activityFeed = useAppStore((s) => s.activityFeed);
   const deliverables = useAppStore((s) => s.deliverables);
   const feedbackItems = useAppStore((s) => s.feedbackItems);
-  // activityFeed + feedbackItems are rendered by the Activity / Feedback tabs
-  // (ActivityLog, VisualFeedbackSystem read the same slices); subscribing here
-  // keeps this page re-rendering whenever any slice changes.
+  // activityFeed + feedbackItems + deliverables are rendered by the Activity /
+  // Feedback tabs (ActivityLog, VisualFeedbackSystem read the same slices) or held
+  // for Task 3 consumers; subscribing here keeps this page re-rendering whenever
+  // any slice changes.
 
   // Hydration: the initial fetch populates the canonical store slices.
   // Realtime (+ the 30s hook fallback) covers every later update — no polling.
+  // Each slice tracks which project it was hydrated for and refetches (clearing
+  // stale rows first) whenever the scoped project changes.
   useEffect(() => {
     if (apiProjects.length > 0) {
       useAppStore.getState().setProjects(apiProjects);
     }
   }, [apiProjects]);
 
+  const hydratedExperiencesFor = useRef<string | null>(null);
+  const hydratedDeliverablesFor = useRef<string | null>(null);
+
   useEffect(() => {
-    if (!projectId || experiences.length > 0) return;
+    if (hydratedExperiencesFor.current === realtimeId) return;
+    hydratedExperiencesFor.current = realtimeId;
+    const { setExperiences } = useAppStore.getState();
+    setExperiences([]);
+    if (!realtimeId) return;
     let cancelled = false;
-    fetch(`/api/experiences?projectId=${encodeURIComponent(projectId)}`, { cache: 'no-store' })
+    fetch(`/api/experiences?projectId=${encodeURIComponent(realtimeId)}`, { cache: 'no-store' })
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled && data?.success && Array.isArray(data.experiences)) {
@@ -90,12 +102,16 @@ export default function ClientDashboardPage() {
     return () => {
       cancelled = true;
     };
-  }, [projectId, experiences.length]);
+  }, [realtimeId]);
 
   useEffect(() => {
-    if (!projectId || deliverables.length > 0) return;
+    if (hydratedDeliverablesFor.current === realtimeId) return;
+    hydratedDeliverablesFor.current = realtimeId;
+    const { setDeliverables } = useAppStore.getState();
+    setDeliverables([]);
+    if (!realtimeId) return;
     let cancelled = false;
-    fetch(`/api/deliverables?projectId=${encodeURIComponent(projectId)}`, { cache: 'no-store' })
+    fetch(`/api/deliverables?projectId=${encodeURIComponent(realtimeId)}`, { cache: 'no-store' })
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled && data?.success && Array.isArray(data.deliverables)) {
@@ -106,7 +122,7 @@ export default function ClientDashboardPage() {
     return () => {
       cancelled = true;
     };
-  }, [projectId, deliverables.length]);
+  }, [realtimeId]);
 
   // Render from the store slices. The API may return Supabase rows (snake_case)
   // or ManagedProject objects (camelCase) depending on source — normalize both.
@@ -575,7 +591,7 @@ export default function ClientDashboardPage() {
         {activeDashboardTab === 'meetings' && <MeetingsManager />}
         {activeDashboardTab === 'team' && <ClientTeamManager />}
         {activeDashboardTab === 'support' && <SupportSystem />}
-        {activeDashboardTab === 'activity' && <ActivityLog projectId={projectId} />}
+        {activeDashboardTab === 'activity' && <ActivityLog projectId={realtimeId || undefined} />}
         {activeDashboardTab === 'search' && <ClientSearch />}
         {activeDashboardTab === 'deadlines' && <DeadlineTracker />}
         {activeDashboardTab === 'documents' && <div className="p-8 text-center"><p className="text-[var(--text-muted)] text-xs">Documents view coming soon...</p></div>}

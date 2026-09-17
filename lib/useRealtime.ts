@@ -73,7 +73,11 @@ function applyRealtimePayload(table: string, payload: any): void {
       if (!isDelete && payload?.new) store.addActivity(payload.new);
       break;
     case 'feedback':
-      if (!isDelete && payload?.new) store.addFeedback(payload.new);
+      if (isDelete) {
+        store.setFeedbackItems(store.feedbackItems.filter((f) => f.id !== row.id));
+      } else if (payload?.new) {
+        store.setFeedbackItems([payload.new, ...store.feedbackItems.filter((f) => f.id !== payload.new.id)]);
+      }
       break;
     default:
       break;
