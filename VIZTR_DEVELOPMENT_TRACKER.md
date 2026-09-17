@@ -91,6 +91,25 @@ Client → Auth (NextAuth.js) → API Route → Service Layer → Supabase (or f
   - `app/api/admin/logs/route.ts` — mock logs replaced with `AuditLog` table
 - **Verification:** `tsc --noEmit` clean on all touched files; jest affected suites at baseline parity (84 passed, 6 pre-existing env failures in `projects/client` request-scope tests)
 
+### Phase-2 Delivery (Live Dashboards + Experience Delivery)
+- **Status:** ✅ Complete (2026-09-18)
+- **Task commits:** Task 1 `eda7d69`+`ffe9c86`, Task 2 `9d140a2`+`6da5d46`, Task 3 `43499bc`, Task 4 `03db55e`+`20ccb45`
+- **Task 1 — Client dashboard live wiring (`app/client-dashboard/`):**
+  - `app/client-dashboard/page.tsx` — subscribes to Supabase Realtime, per-project hydration
+  - `app/client-dashboard/components/ActivityLog.tsx`, `components/VisualFeedbackSystem.tsx` — realtime upsert/delete for feedback
+  - `lib/useRealtime.ts` — strict realtime id filtering
+- **Task 2 — Admin dashboard live wiring (`app/admin/dashboard/`):**
+  - `app/admin/dashboard/layout.tsx` — realtime project normalization at admin boundary, all slices wired to render path
+- **Task 3 — Experience viewers (`app/experience/[projectId]/page.tsx`):**
+  - Real viewer rendering per service tab (1-click service switching against live data)
+- **Task 4 — Seed (`supabase/seed_smart_luxury_villa.sql`):**
+  - Smart Luxury Villa pilot: 6 published experiences (one per viewer-capable service) + assets
+- **Task 5 — Realtime publication fix + verification:**
+  - `supabase_realtime` publication was EMPTY — added all 6 tables (`projects`, `experiences`, `assets`, `deliverables`, `activity_logs`, `feedback`); anon SELECT confirmed on all except `projects` (authenticated-only RLS — anon realtime on `projects` receives nothing; left as-is, needs product decision)
+  - `tsc --noEmit`: zero errors in Task 1–3 files (456 pre-existing errors elsewhere, untouched)
+  - jest affected set: 84 passed / 6 failed (failures only pre-existing `projects/client` request-scope env tests); full suite: 430 passed / 12 failed (all pre-existing incl. stale `.kilo/worktrees` duplicates) — zero new failures
+  - E2E not run: Playwright browsers not installed and all specs target production (`https://viztr.vercel.app`) with mutating steps — unsafe to execute as verification
+
 ---
 
 ## Technology Stack
