@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Pin, MessageSquare, User, Clock, CheckCircle2, AlertCircle, MapPin, Trash2, Edit3 } from 'lucide-react';
+import { useAppStore } from '@/lib/store';
 
 interface Feedback {
   id: string;
@@ -57,36 +58,56 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
     { id: '3dartist1', name: 'David Kim', role: '3d-artist' }
   ];
 
+  // Canonical store slice (hydrated by the fetch below; useFeedbackRealtime at
+  // the dashboard level pushes every later change via addFeedback).
+  const feedbackItems = useAppStore((s) => s.feedbackItems);
+
+  const mapRowToFeedback = (f: any): Feedback => ({
+    id: f.id,
+    assetId: f.experience_id || '',
+    assetName: '',
+    assetType: 'image' as const,
+    x: (f.annotation?.x) || 0,
+    y: (f.annotation?.y) || 0,
+    width: (f.annotation?.width) || 100,
+    height: (f.annotation?.height) || 100,
+    comment: f.content,
+    author: f.author_name,
+    authorRole: (f.annotation?.role || 'client') as 'client' | 'designer' | 'architect',
+    assignedTo: f.annotation?.assignedTo || teamMembers[0].id,
+    status: f.status || 'open',
+    createdAt: new Date(f.created_at),
+    resolvedAt: f.updated_at !== f.created_at ? new Date(f.updated_at) : undefined,
+    resolution: f.annotation?.resolution || '',
+  });
+
   useEffect(() => {
     if (!projectId) { setLoading(false); return; }
     fetch(`/api/feedback?projectId=${encodeURIComponent(projectId)}`)
       .then(res => res.json())
       .then(data => {
         if (data.success && Array.isArray(data.feedback)) {
-          const mapped: Feedback[] = data.feedback.map((f: any) => ({
-            id: f.id,
-            assetId: f.experience_id || '',
-            assetName: '',
-            assetType: 'image' as const,
-            x: (f.annotation?.x) || 0,
-            y: (f.annotation?.y) || 0,
-            width: (f.annotation?.width) || 100,
-            height: (f.annotation?.height) || 100,
-            comment: f.content,
-            author: f.author_name,
-            authorRole: (f.annotation?.role || 'client') as 'client' | 'designer' | 'architect',
-            assignedTo: f.annotation?.assignedTo || teamMembers[0].id,
-            status: f.status || 'open',
-            createdAt: new Date(f.created_at),
-            resolvedAt: f.updated_at !== f.created_at ? new Date(f.updated_at) : undefined,
-            resolution: f.annotation?.resolution || '',
-          }));
-          setFeedbacks(mapped);
+          setFeedbacks(data.feedback.map(mapRowToFeedback));
+          useAppStore.getState().setFeedbackItems(data.feedback);
         }
       })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [projectId]);
+
+  // Merge realtime rows from the store into local UI state (dedupe by id).
+  useEffect(() => {
+    if (feedbackItems.length === 0) return;
+    setFeedbacks(prev => {
+      const known = new Set(prev.map(f => f.id));
+      const incoming = feedbackItems
+        .filter((f: any) =>
+          f && f.id && !known.has(f.id) &&
+          (!projectId || !f.project_id || f.project_id === projectId))
+        .map(mapRowToFeedback);
+      return incoming.length > 0 ? [...prev, ...incoming] : prev;
+    });
+  }, [feedbackItems, projectId]);
 
   const addFeedback = async (feedbackData: Partial<Feedback>) => {
     setSubmitting(true);
@@ -130,6 +151,7 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
           resolution: '',
         };
         setFeedbacks(prev => [...prev, mapped]);
+        useAppStore.getState().addFeedback(data.feedback);
       }
     } catch {
       // silently fail

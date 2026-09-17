@@ -9,6 +9,13 @@ import { signOut, useSession } from 'next-auth/react';
 import { useAppStore } from '@/lib/store';
 import { useClientSession } from '@/lib/hooks/useClientSession';
 import { useClientProjects } from '@/lib/hooks/useClientProjects';
+import {
+  useProjectRealtime,
+  useExperienceRealtime,
+  useActivityRealtime,
+  useDeliverableRealtime,
+  useFeedbackRealtime,
+} from '@/lib/useRealtime';
 import ThemeSwitcherDropdown from '@/components/ui/ThemeSwitcherDropdown';
 
 // Import all dashboard subcomponents
@@ -37,6 +44,82 @@ export default function ClientDashboardPage() {
   const { status: nextAuthStatus } = useSession();
   const { clientId, clientFirm, assignedDirector, isAuthenticated } = useClientSession();
   const { projects: apiProjects, loading: projectsLoading, error: projectsError, refresh: refreshProjects } = useClientProjects();
+
+  // --- Phase 2 Task 1: Supabase Realtime wiring ---
+  // projectId is the `projects.id` text value (e.g. `proj_smart_luxury_villa`).
+  // Prefer the first assigned project; fall back to the client-id proxy historically
+  // used across this dashboard. All hooks stay unconditional (Rules of Hooks) and
+  // resubscribe automatically when the id resolves via the filter dependency.
+  const projectId = apiProjects[0]?.id ?? clientId ?? '';
+
+  const noop = () => {};
+  useProjectRealtime(projectId, noop);
+  useExperienceRealtime(projectId, noop);
+  useActivityRealtime(projectId, noop);
+  useDeliverableRealtime(projectId, noop);
+  useFeedbackRealtime(projectId, noop);
+
+  const projects = useAppStore((s) => s.projects);
+  const experiences = useAppStore((s) => s.experiences);
+  const activityFeed = useAppStore((s) => s.activityFeed);
+  const deliverables = useAppStore((s) => s.deliverables);
+  const feedbackItems = useAppStore((s) => s.feedbackItems);
+  // activityFeed + feedbackItems are rendered by the Activity / Feedback tabs
+  // (ActivityLog, VisualFeedbackSystem read the same slices); subscribing here
+  // keeps this page re-rendering whenever any slice changes.
+
+  // Hydration: the initial fetch populates the canonical store slices.
+  // Realtime (+ the 30s hook fallback) covers every later update — no polling.
+  useEffect(() => {
+    if (apiProjects.length > 0) {
+      useAppStore.getState().setProjects(apiProjects);
+    }
+  }, [apiProjects]);
+
+  useEffect(() => {
+    if (!projectId || experiences.length > 0) return;
+    let cancelled = false;
+    fetch(`/api/experiences?projectId=${encodeURIComponent(projectId)}`, { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && data?.success && Array.isArray(data.experiences)) {
+          useAppStore.getState().setExperiences(data.experiences);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [projectId, experiences.length]);
+
+  useEffect(() => {
+    if (!projectId || deliverables.length > 0) return;
+    let cancelled = false;
+    fetch(`/api/deliverables?projectId=${encodeURIComponent(projectId)}`, { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && data?.success && Array.isArray(data.deliverables)) {
+          useAppStore.getState().setDeliverables(data.deliverables);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [projectId, deliverables.length]);
+
+  // Render from the store slices. The API may return Supabase rows (snake_case)
+  // or ManagedProject objects (camelCase) depending on source — normalize both.
+  // Falls back to the hook result while hydration is in flight.
+  const displayProjects = (projects.length > 0 ? projects : apiProjects).map((p: any) => ({
+    id: p.id,
+    name: p.name ?? p.title ?? p.id,
+    status: p.status ?? '—',
+    projectType: p.projectType ?? p.project_type ?? '—',
+    category: p.category ?? '—',
+    progress: typeof p.progress === 'number' ? p.progress : 0,
+    lastUpdate: p.lastUpdate ?? p.last_update ?? p.updated_at ?? '',
+  }));
 
   // Authentication states
   const [isAuthenticatedWithProject, setIsAuthenticatedWithProject] = useState(false);
@@ -342,12 +425,12 @@ export default function ClientDashboardPage() {
 
             {!projectsLoading && !projectsError && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {apiProjects.length === 0 ? (
+                {displayProjects.length === 0 ? (
                   <div className="col-span-full p-8 text-center text-[#71717A] text-sm font-mono">
                     No projects found. Please contact your account manager.
                   </div>
                 ) : (
-                  apiProjects.map((project) => (
+                  displayProjects.map((project) => (
                     <div key={project.id} className="p-5 rounded-xl bg-[#18181B] border border-[#27272A] hover:border-[#3ECF8E]/40 transition-all space-y-4">
                       <div className="flex items-center justify-between">
                         <span className="px-2 py-0.5 rounded bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] text-[10px] font-mono font-bold">
@@ -385,7 +468,51 @@ export default function ClientDashboardPage() {
         )}
 
         {activeDashboardTab === 'action-required' && <ActionRequiredPanel />}
-        {activeDashboardTab === 'experience' && <ExperiencePanels />}
+        {activeDashboardTab === 'experience' && (
+          <div className="space-y-8">
+            <ExperiencePanels />
+            {experiences.length > 0 && (
+              <section className="space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#27272A]">
+                  <div>
+                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                      <span>⚡ Live Experiences</span>
+                    </h2>
+                    <p className="text-xs text-[#A1A1AA] mt-0.5">
+                      Synced in realtime from Supabase — updates appear without refresh
+                    </p>
+                  </div>
+                  <span className="px-2 py-0.5 rounded bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] text-[10px] font-mono font-bold">
+                    {experiences.length} synced
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {experiences.map((exp: any) => (
+                    <div key={exp.id} className="p-5 rounded-xl bg-[#18181B] border border-[#27272A] hover:border-[#3ECF8E]/40 transition-all space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2 py-0.5 rounded bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] text-[10px] font-mono font-bold">
+                          {exp.slug ?? exp.id}
+                        </span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase font-bold border bg-[#27272A] text-[#A1A1AA] border-[#3f3f46]">
+                          {exp.status ?? '—'}
+                        </span>
+                      </div>
+                      <div>
+                        <h3 className="text-base font-bold text-white">{exp.title ?? exp.id}</h3>
+                        {exp.description && (
+                          <p className="text-xs text-[#A1A1AA] mt-1 line-clamp-2">{exp.description}</p>
+                        )}
+                      </div>
+                      <div className="pt-3 border-t border-[#27272A] text-xs font-mono text-[#71717A]">
+                        Updated {exp.updated_at ?? exp.created_at ?? '—'}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+        )}
         {activeDashboardTab === 'files' && (
           <div className="space-y-8">
             <FileVersioningPanel />
@@ -448,7 +575,7 @@ export default function ClientDashboardPage() {
         {activeDashboardTab === 'meetings' && <MeetingsManager />}
         {activeDashboardTab === 'team' && <ClientTeamManager />}
         {activeDashboardTab === 'support' && <SupportSystem />}
-        {activeDashboardTab === 'activity' && <ActivityLog />}
+        {activeDashboardTab === 'activity' && <ActivityLog projectId={projectId} />}
         {activeDashboardTab === 'search' && <ClientSearch />}
         {activeDashboardTab === 'deadlines' && <DeadlineTracker />}
         {activeDashboardTab === 'documents' && <div className="p-8 text-center"><p className="text-[var(--text-muted)] text-xs">Documents view coming soon...</p></div>}
