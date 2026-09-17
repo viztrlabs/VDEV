@@ -6,8 +6,12 @@ import { createServiceClient } from '@/lib/supabase/admin';
 // data/tour/, so the entire feature set is demoable before credentials exist
 // (same pattern as lib/toursRepo.ts). With creds + schema, they hit Supabase.
 
+function stripBom(s: string): string {
+  return s.replace(/^\uFEFF/, '');
+}
+
 const READY =
-  Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+  Boolean(stripBom(process.env.NEXT_PUBLIC_SUPABASE_URL || '') && stripBom(process.env.SUPABASE_SERVICE_ROLE_KEY || ''));
 
 function svc() {
   return READY ? createServiceClient() : null;

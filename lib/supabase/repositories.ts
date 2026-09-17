@@ -38,9 +38,13 @@ function rowToRecord(r: ClientRow): ClientRecord {
   };
 }
 
+function stripBom(s: string): string {
+  return s.replace(/^\uFEFF/, '');
+}
+
 export function isSupabaseAdminReady(): boolean {
   return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY,
+    stripBom(process.env.NEXT_PUBLIC_SUPABASE_URL || '') && stripBom(process.env.SUPABASE_SERVICE_ROLE_KEY || ''),
   );
 }
 

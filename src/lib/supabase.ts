@@ -7,9 +7,13 @@ import { createClient } from '@supabase/supabase-js'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder-project.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key'
-export const isSupabaseConfigured = !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+function stripBom(s: string): string {
+  return s.replace(/^\uFEFF/, '');
+}
+
+const supabaseUrl = stripBom(process.env.NEXT_PUBLIC_SUPABASE_URL || '') || 'https://placeholder-project.supabase.co'
+const supabaseAnonKey = stripBom(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '') || 'placeholder-anon-key'
+export const isSupabaseConfigured = !!(stripBom(process.env.NEXT_PUBLIC_SUPABASE_URL || '') && stripBom(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''));
 
 // Client-side Supabase client (SSR-safe for browser)
 export const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
@@ -56,7 +60,7 @@ export function getSupabaseServer() {
 // Admin client for server-side operations
 export const supabaseAdmin = createClient(
   supabaseUrl,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || supabaseAnonKey,
+  stripBom(process.env.SUPABASE_SERVICE_ROLE_KEY || '') || supabaseAnonKey,
   {
     auth: {
       autoRefreshToken: false,
