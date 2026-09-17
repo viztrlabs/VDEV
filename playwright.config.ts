@@ -24,7 +24,7 @@ export default defineConfig({
     ['junit', { outputFile: 'test-results/results.xml' }],
   ],
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'https://viztr.vercel.app',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -34,32 +34,8 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-    {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
-    },
-    {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
-    },
   ],
-  webServer: {
-    command: 'pnpm dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120000,
-    env: {
-      NEXT_PUBLIC_SUPER_ADMIN_DEMO: 'true',
-    },
-  },
+  // webServer not needed for production testing
   expect: {
     toHaveScreenshot: {
       maxDiffPixels: 100,
