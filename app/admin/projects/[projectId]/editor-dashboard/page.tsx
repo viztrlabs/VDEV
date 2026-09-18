@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams, notFound } from 'next/navigation';
+import { SERVICE_META } from '@/lib/service-meta';
 import {
   Plus,
   Grid3X3,
@@ -28,26 +29,10 @@ import {
   Zap,
 } from 'lucide-react';
 
-const SERVICE_META: Record<
-  string,
-  { title: string; category: 'studio' | 'xr'; icon: string; description: string }
-> = {
-  exterior: { title: 'Exterior', category: 'studio', icon: '🏠', description: 'Exterior renders and imagery' },
-  interior: { title: 'Interior', category: 'studio', icon: '🛋️', description: 'Interior renders and walkthroughs' },
-  'animation-walkthrough': { title: 'Animation / Walkthrough', category: 'studio', icon: '🎬', description: '3D animation and walkthrough videos' },
-  'virtual-tour': { title: 'Virtual Tour', category: 'xr', icon: '🌐', description: '360° interactive panoramic tours' },
-  webar: { title: 'WebAR', category: 'xr', icon: '📱', description: 'Browser-based augmented reality' },
-  webxr: { title: 'WebXR', category: 'xr', icon: '🥽', description: 'Immersive WebXR experiences' },
-  'virtual-reality': { title: 'Virtual Reality', category: 'xr', icon: '🎮', description: 'Full VR experience' },
-  'gaussian-splat': { title: 'Gaussian Splat', category: 'xr', icon: '🧊', description: '3D Gaussian Splatting viewer' },
-  'pixel-streaming': { title: 'Pixel Streaming', category: 'xr', icon: '📺', description: 'Unreal Engine pixel streaming' },
-};
-
 type ServiceSlug = keyof typeof SERVICE_META;
 
 export default function EditorDashboardLauncherPage() {
-  const params = useParams<{ userId: string; projectId: string }>();
-  const userId = params?.userId;
+  const params = useParams<{ projectId: string }>();
   const projectId = params?.projectId;
 
   const [loading, setLoading] = useState(true);
@@ -58,7 +43,7 @@ export default function EditorDashboardLauncherPage() {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    if (!userId || !projectId) return;
+    if (!projectId) return;
     let cancelled = false;
     setLoading(true);
     setError(null);
@@ -107,7 +92,7 @@ export default function EditorDashboardLauncherPage() {
     return () => {
       cancelled = true;
     };
-  }, [userId, projectId]);
+  }, [projectId]);
 
   const filtered = services.filter((slug) => {
     if (!search) return true;
@@ -119,7 +104,7 @@ export default function EditorDashboardLauncherPage() {
     );
   });
 
-  if (!userId || !projectId) {
+  if (!projectId) {
     notFound();
   }
 
@@ -181,7 +166,7 @@ export default function EditorDashboardLauncherPage() {
               return (
                 <Link
                   key={slug}
-                  href={`/under-admin/users/${userId}/projects/${projectId}/editor-dashboard/${slug}`}
+                  href={`/admin/projects/${projectId}/editor-dashboard/${slug}`}
                   className="rounded-lg border border-[#27272A] bg-[#0c0c0f] p-4 hover:border-[#3ECF8E] transition-colors"
                 >
                   <div className="text-xl mb-2">{meta.icon}</div>
@@ -220,7 +205,7 @@ export default function EditorDashboardLauncherPage() {
                     <td className="p-2 text-[#A1A1AA]">{meta.description}</td>
                     <td className="p-2 text-right">
                       <Link
-                        href={`/under-admin/users/${userId}/projects/${projectId}/editor-dashboard/${slug}`}
+                        href={`/admin/projects/${projectId}/editor-dashboard/${slug}`}
                         className="inline-flex items-center gap-1 px-2 py-1 rounded bg-[#18181B] border border-[#27272A] text-[#A1A1AA] hover:text-white hover:border-[#3ECF8E]"
                       >
                         <Edit3 className="w-3 h-3" />
