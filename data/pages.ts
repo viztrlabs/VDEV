@@ -636,19 +636,6 @@ export const servicePagesData: Record<ServicePageKey, ServicePageData> = {
         ],
         href: '/xr-world/super-splat',
         image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80'
-      },
-      {
-        id: 'xr-editor',
-        title: 'XR Editor (PlayCanvas)',
-        desc: 'Collaborative PlayCanvas Editor for real-time 3D scene editing and asset management',
-        features: [
-          'Real-time collaborative editing',
-          'ShareDB-powered scene sync',
-          'Asset pipeline & publishing',
-          'Entity-component workflow'
-        ],
-        href: '/xr-world/xr-editor',
-        image: 'https://images.unsplash.com/photo-1560518881-e2c60c24623f?auto=format&fit=crop&w=800&q=80'
       }
     ]
   },

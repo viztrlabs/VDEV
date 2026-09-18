@@ -28,7 +28,6 @@ const ROUTE_LABELS: Record<string, string> = {
   'app': 'App',
   'admin': 'Admin',
   'client-dashboard': 'Client Dashboard',
-  'under-admin': 'Under Admin',
 };
 
 export default function Breadcrumbs() {

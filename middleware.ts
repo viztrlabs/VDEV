@@ -7,7 +7,7 @@ import { isEnabledServer } from './lib/feature-flags';
 import { verifyClientPortalToken, getClientPortalTokenFromRequest } from './lib/client-auth';
 
 const PROTECTED_CLIENT_PATHS = ['/client-dashboard'];
-const ADMIN_PATHS = ['/admin/dashboard', '/admin', '/under-admin'];
+const ADMIN_PATHS = ['/admin/dashboard', '/admin'];
 const CLIENT_PORTAL_PATHS = ['/app/client'];
 
 export async function middleware(req: NextRequest) {
@@ -142,6 +142,6 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/client-dashboard/:path*', '/admin/:path*', '/under-admin/:path*', '/app/:path*', '/app/client/:path*', '/api/:path*'],
+  matcher: ['/client-dashboard/:path*', '/admin/:path*', '/app/:path*', '/app/client/:path*', '/api/:path*'],
 };
 

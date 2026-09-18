@@ -135,7 +135,14 @@ export default function TourEditorPage() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace('/under-admin/users/demo-user/projects/demo-project/editor-dashboard/virtual-tour');
+    (async () => {
+      let pid = 'proj_smart_luxury_villa';
+      try {
+        const data = await (await fetch('/api/projects')).json();
+        pid = data?.projects?.[0]?.id || data?.project?.id || pid;
+      } catch {}
+      router.replace(`/admin/projects/${pid}/editor-dashboard/virtual-tour`);
+    })();
   }, [router]);
   const { showToast } = useAppStore();
   const { undo, redo, canUndo, canRedo } = useEditorHistory();

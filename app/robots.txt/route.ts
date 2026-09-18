@@ -6,7 +6,6 @@ Allow: /
 
 # Disallow admin and private areas
 Disallow: /admin/
-Disallow: /under-admin/
 Disallow: /app/
 Disallow: /_next/
 Disallow: /api/admin/

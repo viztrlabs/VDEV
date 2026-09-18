@@ -110,6 +110,26 @@ Client → Auth (NextAuth.js) → API Route → Service Layer → Supabase (or f
   - jest affected set: 84 passed / 6 failed (failures only pre-existing `projects/client` request-scope env tests); full suite: 430 passed / 12 failed (all pre-existing incl. stale `.kilo/worktrees` duplicates) — zero new failures
   - E2E not run: Playwright browsers not installed and all specs target production (`https://viztr.vercel.app`) with mutating steps — unsafe to execute as verification
 
+### Phase-3 Delivery (Admin/Editor Consolidation)
+- **Status:** ✅ Complete (2026-09-18)
+- **Task commits:** Task 1 `a3c1d1b`, Task 2 `f109f3b`, Task 3 `40ba45d`, Task 4 `ddf6746`
+- **Task 1 — Canonical admin project editor launcher (`/admin/projects/[projectId]/editor-dashboard`):**
+  - Launcher moved from orphaned `/under-admin` tree to the canonical admin tree; `userId` route segment dropped (session supplies identity)
+  - `lib/service-meta.ts` — shared 9-service `SERVICE_META` map extracted for reuse; jest `launcher.test.tsx`
+- **Task 2 — Dynamic per-service editor (`/admin/projects/[projectId]/editor-dashboard/[service]`):**
+  - DRY collapse: 9 near-identical per-service CRUD pages → 1 dynamic route driven by `SERVICE_META` + shared tab builder `lib/service-editor-tabs.tsx`; jest `service-editor.test.tsx`
+- **Task 3 — Remove `/under-admin` tree:**
+  - Deleted `app/under-admin/`; re-pointed all references in `middleware.ts`, `components/editor/service-shell.tsx`, `components/ui/Breadcrumbs.tsx`, `app/robots.txt/route.ts`
+  - `app/xr-world/virtual-tour/editor/page.tsx` redirect → `/admin/projects/${pid}/editor-dashboard/virtual-tour` (project id resolved from `/api/projects`, fallback `proj_smart_luxury_villa`)
+- **Task 4 — Remove dead XR editor routes:**
+  - Deleted `unified-editor`, `xr-editor` stub, `virtual-tour/[tourId]/editor`, `virtual-tour/editor-dashboard`
+  - Removed `xr-editor` entry from `data/pages.ts` `xrHub.services`; inert `case 'xr-editor':` icon-mapper left in `app/xr-world/page.tsx` (plan-sanctioned)
+- **Task 5 — Verification + records:**
+  - jest affected set: 6 suites / 54 tests PASS, 0 new failures (includes `.kilo/worktrees/shy-server` mirror duplicates, harmless)
+  - `tsc --noEmit`: 454 pre-existing baseline errors repo-wide; ZERO errors in Phase 3 files (8 hits in kept `app/xr-world/virtual-tour/editor/page.tsx` are pre-existing `TourRoom`/`EditorRoom` baseline at lines 740–1362, outside the edited redirect range); no TS2307 references any deleted route
+  - `pnpm build`: succeeds — 102 routes; canonical launcher + dynamic `[service]` editor present, all deleted routes absent
+  - grep cleanliness: Step-4 pattern zero code matches; only residue is the inert `app/xr-world/page.tsx:39` icon case
+
 ---
 
 ## Technology Stack

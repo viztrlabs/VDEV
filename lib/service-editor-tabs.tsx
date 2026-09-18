@@ -1,23 +1,7 @@
-'use client';
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { ServiceEditorPanels, Tab } from '@/components/editor/service-editor-panels';
-import { EditorErrorBoundary } from '@/components/editor/editor-error-boundary';
-import { PermissionProvider } from '@/components/editor/permissions';
+import type { Tab } from '@/components/editor/service-editor-panels';
 
-export default function GaussianEditorPage() {
-  const params = useParams<{ userId: string; projectId: string }>();
-  const projectId = params?.projectId;
-  const serviceSlug = "gaussian-splat";
-  const serviceTitle = "Gaussian Splat";
-    
-  const [data, setData] = useState<Record<string, any[]>>({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | undefined>();
-
-  const experienceOptions = (data.experiences || []).map((e: any) => ({ label: e.title, value: e.id }));
-
-  const tabs: Tab[] = [
+export function buildServiceTabs(experienceOptions: { label: string; value: string }[]): Tab[] {
+  return [
     {
       key: 'experiences',
       label: 'Experiences',
@@ -164,62 +148,4 @@ export default function GaussianEditorPage() {
       rowIdField: 'id',
     },
   ];
-
-  useEffect(() => {
-    if (!projectId) return;
-    let cancelled = false;
-    async function load() {
-      setLoading(true);
-      setError(undefined);
-      try {
-        const [experiencesRes, configsRes, deliverablesRes, assetsRes, membersRes] = await Promise.all([
-          fetch(`/api/experiences?projectId=${encodeURIComponent(projectId)}`),
-          fetch(`/api/experience-configs?projectId=${encodeURIComponent(projectId)}`),
-          fetch(`/api/deliverables?projectId=${encodeURIComponent(projectId)}&service=${encodeURIComponent(serviceSlug)}`),
-          fetch(`/api/assets?projectId=${encodeURIComponent(projectId)}&service=${encodeURIComponent(serviceSlug)}`),
-          fetch(`/api/project-members?projectId=${encodeURIComponent(projectId)}`),
-        ]);
-        if (cancelled) return;
-        const [experiences, configs, deliverables, assets, members] = await Promise.all([
-          experiencesRes.json(),
-          configsRes.json(),
-          deliverablesRes.json(),
-          assetsRes.json(),
-          membersRes.json(),
-        ]);
-        if (!experiencesRes.ok) throw new Error(experiences.error || 'Failed to load experiences');
-        if (!configsRes.ok) throw new Error(configs.error || 'Failed to load configs');
-        if (!deliverablesRes.ok) throw new Error(deliverables.error || 'Failed to load deliverables');
-        if (!assetsRes.ok) throw new Error(assets.error || 'Failed to load assets');
-        if (!membersRes.ok) throw new Error(members.error || 'Failed to load members');
-        setData({
-          experiences: experiences.experiences || [],
-          configs: configs.configs || [],
-          deliverables: deliverables.deliverables || [],
-          assets: assets.assets || [],
-          members: members.members || [],
-        });
-      } catch (err: any) {
-        setError(err?.message || 'Failed to load project data');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [projectId, serviceSlug]);
-
-  return (
-    <div className="min-h-screen bg-[#09090B] text-white">
-      <div className="px-4 sm:px-6 py-3 border-b border-[#27272A]">
-        <h1 className="text-sm font-mono font-bold text-white capitalize">{serviceTitle}</h1>
-        <p className="text-[10px] font-mono text-[#71717A]">{params?.userId} / {params?.projectId} / {serviceSlug}</p>
-      </div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-        <ServiceEditorPanels tabs={tabs} tabData={data} loading={loading} error={error} />
-      </div>
-    </div>
-  );
 }
