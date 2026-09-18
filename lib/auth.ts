@@ -133,7 +133,15 @@ function toClientLookup(c: ClientDirectoryRecord): ClientAuthLookup {
   };
 }
 
-const isProduction = (): boolean => process.env.NODE_ENV === 'production';
+const isProduction = (): boolean => {
+  // On Vercel, every preview deployment exposes NODE_ENV=production even though
+  // it is not the live site. Treat preview/development environments as
+  // non-production so demo accounts remain usable for testing there.
+  if (process.env.VERCEL_ENV && process.env.VERCEL_ENV !== 'production') {
+    return false;
+  }
+  return process.env.NODE_ENV === 'production';
+};
 
 function getSessionSecret(): string {
   const secret = process.env.NEXTAUTH_SECRET;
