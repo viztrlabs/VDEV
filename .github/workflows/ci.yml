@@ -33,7 +33,14 @@ jobs:
           if [ -s changed_files.txt ]; then
             pnpm exec eslint $(cat changed_files.txt) --max-warnings=0
           fi
-      - run: pnpm exec tsc --noEmit
+      - name: Typecheck changed files
+        if: ${{ steps.changed-files.outputs.stdout != '' }}
+        run: |
+          if [ -s changed_files.txt ]; then
+            pnpm exec tsc --noEmit $(cat changed_files.txt)
+          else
+            pnpm exec tsc --noEmit
+          fi
 
   test:
     name: Unit Tests
@@ -50,7 +57,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm test -- --no-coverage
         env:
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_SECRET: ci-dummy-secret-for-testing
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
@@ -70,7 +77,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
         env:
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_SECRET: ci-dummy-secret-for-build
 
   e2e:
     name: E2E Tests
@@ -89,7 +96,7 @@ jobs:
       - run: pnpm run test:e2e
         env:
           CI: true
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_SECRET: ci-dummy-secret-for-e2e
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
