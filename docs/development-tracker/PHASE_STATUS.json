@@ -396,7 +396,7 @@
       {
         "name": "Experience Page with 1-Click Service Switching",
         "status": "completed",
-        "files": ["app/experience/[projectId]/page.tsx"]
+        "files": ["app/experience-live/[projectId]/page.tsx"]
       },
       {
         "name": "All 9 Services Enabled for Pilot Project",
@@ -430,9 +430,9 @@
         "files": ["app/admin/dashboard/layout.tsx"]
       },
       {
-        "name": "Task 3: Experience viewers per service tab (app/experience/[projectId]/page.tsx)",
+        "name": "Task 3: Experience viewers per service tab (app/experience-live/[projectId]/page.tsx)",
         "status": "completed",
-        "files": ["app/experience/[projectId]/page.tsx"]
+        "files": ["app/experience-live/[projectId]/page.tsx"]
       },
       {
         "name": "Task 4: Smart Luxury Villa seed (supabase/seed_smart_luxury_villa.sql, 6 published experiences)",

@@ -10,7 +10,7 @@
 --   viztr-assets/a0000000-0000-0000-0000-000000000002/scene.glb     model/gltf-binary    13960096 bytes
 --   viztr-assets/a0000000-0000-0000-0000-000000000002/new+kitchen.ply  application/octet-stream 12011208 bytes
 --
--- Asset-key contract (app/experience/[projectId]/page.tsx):
+-- Asset-key contract (app/experience-live/[projectId]/page.tsx):
 -- the page binds viewers ONLY from experience_configs.assets[].url, falling
 -- back to metadata/config keys
 -- asset_url|model_url|panorama_url|tour_url|pano_url|splat_url|image_url|url.

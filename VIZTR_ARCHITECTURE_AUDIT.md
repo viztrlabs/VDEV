@@ -388,7 +388,7 @@ PHASE 7: Full Regression + Documentation
 - Each service renders its appropriate viewer/experience
 
 ### Implementation Plan
-- Create `app/experience/[projectId]/page.tsx`
+- Create `app/experience-live/[projectId]/page.tsx`
 - Service selector component with 1-click switching
 - Dynamic import of service-specific viewers (XRViewer, TourViewer, SplatViewer, PixelStreamingPlayer)
 - URL state for current service selection

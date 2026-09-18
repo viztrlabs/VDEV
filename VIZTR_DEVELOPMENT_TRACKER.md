@@ -63,7 +63,7 @@ Client → Auth (NextAuth.js) → API Route → Service Layer → Supabase (or f
 
 ### Dedicated Experience Page (1-Click Service Switching)
 - **Status:** ✅ Implemented
-- **File:** `app/experience/[projectId]/page.tsx`
+- **File:** `app/experience-live/[projectId]/page.tsx`
 - **Features:**
   - 6 service tabs: WebXR, WebAR, VR, Virtual Tour, Gaussian Splat, Pixel Streaming
   - Studio mode: Still Renders, Interior, Animation
@@ -100,7 +100,7 @@ Client → Auth (NextAuth.js) → API Route → Service Layer → Supabase (or f
   - `lib/useRealtime.ts` — strict realtime id filtering
 - **Task 2 — Admin dashboard live wiring (`app/admin/dashboard/`):**
   - `app/admin/dashboard/layout.tsx` — realtime project normalization at admin boundary, all slices wired to render path
-- **Task 3 — Experience viewers (`app/experience/[projectId]/page.tsx`):**
+- **Task 3 — Experience viewers (`app/experience-live/[projectId]/page.tsx`):**
   - Real viewer rendering per service tab (1-click service switching against live data)
 - **Task 4 — Seed (`supabase/seed_smart_luxury_villa.sql`):**
   - Smart Luxury Villa pilot: 6 published experiences (one per viewer-capable service) + assets
@@ -414,7 +414,7 @@ let filtered = [...mockXrLinks]; // No Supabase query anywhere
 - **Status:** ✅ COMPLETE
 - **Purpose:** Client portal access via access code
 
-### 33. **Experience Page** (`app/experience/[projectId]/page.tsx`)
+### 33. **Experience Page** (`app/experience-live/[projectId]/page.tsx`)
 - **Status:** ✅ COMPLETE
 - **Purpose:** 1-click service switching page (WebXR, WebAR, VR, Virtual Tour, Gaussian Splat, Pixel Streaming, Still Renders, Interior, Animation)
 - **Features:** Dynamic viewer rendering, project context awareness, service selector tabs
