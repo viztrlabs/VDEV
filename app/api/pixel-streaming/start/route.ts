@@ -2,8 +2,7 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api-guard';
 
-const CONTROLLER_URL =
-  process.env.STREAM_CONTROLLER_URL || 'http://localhost:3001';
+const CONTROLLER_URL = process.env.STREAM_CONTROLLER_URL;
 
 interface SessionConfig {
   streamId: string;
@@ -24,9 +23,20 @@ export async function POST(req: NextRequest) {
       quality: body.quality || 'epic',
     };
 
-    // Forward to the GPU-PC stream controller sidecar. If the controller is
-    // unreachable (dev machine without GPU PC), fall back to a simulated
-    // allocation so the UI still works for demos.
+    // Forward to the GPU-PC stream controller sidecar. There is no local
+    // simulation: if no controller is configured or reachable, fail loudly
+    // with 503 so callers never mistake a fake session for a real GPU stream.
+    if (!CONTROLLER_URL) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: 'STREAM_CONTROLLER_UNAVAILABLE',
+          error: 'Pixel streaming is not configured: STREAM_CONTROLLER_URL is not set.',
+        },
+        { status: 503 }
+      );
+    }
+
     try {
       const upstream = await fetch(`${CONTROLLER_URL}/start`, {
         method: 'POST',
@@ -52,32 +62,25 @@ export async function POST(req: NextRequest) {
           ],
         });
       }
-    } catch {
-      // controller unreachable — fall through to simulation
-    }
-
-    // Simulated allocation (no GPU-PC controller online)
-    return NextResponse.json({
-      success: true,
-      simulated: true,
-      sessionId: `stream_${Date.now()}`,
-      status: 'ALLOCATED',
-      webrtcSignalingUrl:
-        process.env.NEXT_PUBLIC_PS_SIGNALING_URL || 'wss://stream.viztr.io',
-      nodeRegion: 'eu-central-1 (Frankfurt)',
-      gpuModel: 'NVIDIA RTX 4090 Dedicated (24GB VRAM)',
-      streamId: config.streamId,
-      resolution: config.resolution,
-      fps: config.fps,
-      quality: config.quality,
-      createdAt: new Date().toISOString(),
-      iceServers: [
+      const upstreamBody = await upstream.text().catch(() => '');
+      return NextResponse.json(
         {
-          urls: process.env.PS_TURN_URL || 'turn:turn.viztr.io:3478',
-          username: process.env.PS_TURN_USER || 'viztr',
+          success: false,
+          code: 'STREAM_CONTROLLER_ERROR',
+          error: `Stream controller responded with status ${upstream.status}${upstreamBody ? `: ${upstreamBody.slice(0, 200)}` : ''}`,
         },
-      ],
-    });
+        { status: 502 }
+      );
+    } catch {
+      return NextResponse.json(
+        {
+          success: false,
+          code: 'STREAM_CONTROLLER_UNREACHABLE',
+          error: `Stream controller at ${CONTROLLER_URL} is unreachable.`,
+        },
+        { status: 503 }
+      );
+    }
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to start pixel streaming instance' },

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Activity, Download, Eye, CheckCircle2, MessageSquare, Loader2 } from 'lucide-react';
+import { useAppStore } from '@/lib/store';
 
 interface ActivityLogEntry {
   id: string;
@@ -41,7 +42,10 @@ function getIcon(type: string) {
 }
 
 export default function ActivityLog({ projectId }: { projectId?: string }) {
-  const [logs, setLogs] = useState<ActivityLogEntry[]>([]);
+  // Render from the canonical store slice. The initial fetch below is the
+  // hydration path; useActivityRealtime (subscribed at the dashboard level)
+  // pushes every later change via addActivity.
+  const activityFeed = useAppStore((s) => s.activityFeed);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -53,12 +57,16 @@ export default function ActivityLog({ projectId }: { projectId?: string }) {
       .then((res) => res.json())
       .then((data) => {
         if (data.success && Array.isArray(data.logs)) {
-          setLogs(data.logs);
+          useAppStore.getState().setActivityFeed(data.logs);
         }
       })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [projectId]);
+
+  const logs = (projectId
+    ? activityFeed.filter((l) => !l.project_id || l.project_id === projectId)
+    : activityFeed) as unknown as ActivityLogEntry[];
 
   return (
     <section className="space-y-6">

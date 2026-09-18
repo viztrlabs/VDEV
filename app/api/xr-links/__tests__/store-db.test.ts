@@ -7,16 +7,14 @@ import {
   deleteXRLinkFromDB,
   buildXRLinkRecord,
 } from '@/lib/xr-links-store';
-import { adminClient } from '@/lib/supabase-admin';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 
 jest.mock('@/lib/supabase-admin', () => ({
-  isSupabaseAdminConfigured: true,
-  adminClient: {
-    from: jest.fn(),
-  },
+  getSupabaseAdmin: jest.fn(),
 }));
 
-const mockedFrom = adminClient!.from as jest.Mock;
+const mockedGetSupabaseAdmin = getSupabaseAdmin as jest.Mock;
+const mockedFrom = jest.fn();
 
 const snakeRow = {
   id: 'xr_db_1',
@@ -52,6 +50,7 @@ const snakeRow = {
 describe('xr-links-store admin DB path', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockedGetSupabaseAdmin.mockReturnValue({ from: mockedFrom });
   });
 
   it('getXRLinksFromDB maps snake_case rows to camelCase records', async () => {

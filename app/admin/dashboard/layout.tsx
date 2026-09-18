@@ -56,9 +56,9 @@ import HermesButton from '@/components/admin/HermesButton';
 import CollapsibleLeftFilterPanel from '@/components/dashboard/CollapsibleLeftFilterPanel';
 import CollapsibleRightInspectorPanel from '@/components/dashboard/CollapsibleRightInspectorPanel';
 import { useAppStore } from '@/lib/store';
+import { useAdminRealtime } from '@/lib/useRealtime';
 import { clearAssetCache } from '@/lib/asset-pipeline';
 import {
-  INITIAL_MANAGED_PROJECTS,
   ManagedProject,
   ProjectType,
   ProjectStatus,
@@ -260,6 +260,7 @@ function AdminTopBar({
   setMobileSidebarOpen,
   showToast,
   user,
+  activityCount,
 }: {
   searchQuery: string;
   setSearchQuery: (q: string) => void;
@@ -270,6 +271,7 @@ function AdminTopBar({
   setMobileSidebarOpen: (v: boolean) => void;
   showToast: (msg: string, type?: 'success' | 'error' | 'info') => void;
   user: any;
+  activityCount: number;
 }) {
   return (
     <header className="h-16 border-b border-[#27272A] bg-[#18181B] px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-40 w-full">
@@ -328,10 +330,16 @@ function AdminTopBar({
         <button
           onClick={() => showToast('Cluster healthy: 0 critical pipeline alerts.', 'info')}
           className="p-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] hover:text-white relative cursor-pointer"
-          title="Notifications"
+          title={activityCount > 0 ? `${activityCount} live activity updates` : 'Notifications'}
         >
           <Bell className="w-4 h-4" />
-          <span className="w-2 h-2 rounded-full bg-[#3ECF8E] absolute top-1.5 right-1.5" />
+          {activityCount > 0 ? (
+            <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#3ECF8E] text-black text-[9px] font-mono font-bold flex items-center justify-center">
+              {activityCount > 99 ? '99+' : activityCount}
+            </span>
+          ) : (
+            <span className="w-2 h-2 rounded-full bg-[#3ECF8E] absolute top-1.5 right-1.5" />
+          )}
         </button>
         <div className="flex items-center gap-2 pl-2 border-l border-[#27272A]">
           <div className="w-8 h-8 rounded-full bg-[#3ECF8E]/20 border border-[#3ECF8E]/40 flex items-center justify-center text-xs font-mono font-bold text-[#3ECF8E]">SA</div>
@@ -427,6 +435,122 @@ function AdminSidebar({
 }
 
 // =====================================================================
+// ADMIN LAYOUT BOUNDARY: RAW ROW -> ManagedProject MAPPER
+// =====================================================================
+//
+// Realtime payloads (`payload.new`) arrive as raw snake_case Supabase rows with
+// no `hoursMonitoring`/camelCase fields, while `/api/admin/projects` rows are
+// already mapped. This normalizer accepts both shapes idempotently, so every
+// render-path consumer always sees a complete `ManagedProject` — no `as` casts,
+// defensive defaults throughout.
+
+const KNOWN_PROJECT_TYPES: ProjectType[] = [
+  'WebXR',
+  'WebAR',
+  'Virtual Reality',
+  'Virtual Tour 360',
+  'Pixel Streaming',
+  'Animation',
+  'Still Renders',
+];
+
+const KNOWN_PROJECT_STATUSES: ProjectStatus[] = [
+  'Complete',
+  'Work in Progress',
+  'Client Review',
+  'Awaited',
+  'Hold',
+];
+
+const KNOWN_PAYMENT_STATUSES: PaymentStatus[] = [
+  'Paid',
+  'Partial 50%',
+  'Milestone Pending',
+  'Invoiced',
+  'Deposit Received',
+];
+
+function toProjectType(value: unknown): ProjectType {
+  const match = KNOWN_PROJECT_TYPES.find((t) => t === value);
+  return match ?? 'Virtual Tour 360';
+}
+
+function toProjectStatus(value: unknown): ProjectStatus {
+  const match = KNOWN_PROJECT_STATUSES.find((s) => s === value);
+  return match ?? 'Awaited';
+}
+
+function toPaymentStatus(value: unknown): PaymentStatus {
+  const match = KNOWN_PAYMENT_STATUSES.find((s) => s === value);
+  return match ?? 'Deposit Received';
+}
+
+function toFiniteNumber(value: unknown, fallback = 0): number {
+  const n = typeof value === 'number' ? value : Number(value);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function toSafeString(value: unknown, fallback = ''): string {
+  return typeof value === 'string' ? value : fallback;
+}
+
+// Normalizes a raw Supabase/API row into a complete ManagedProject.
+// Idempotent: already-mapped rows pass through with identical values.
+function mapApiProjectToManagedProject(row: Record<string, any>): ManagedProject {
+  const hours = row.hoursMonitoring ?? row.hours_monitoring ?? {};
+  const timesheetEntries = Array.isArray(hours.timesheetEntries)
+    ? hours.timesheetEntries
+    : Array.isArray(hours.timesheet_entries)
+      ? hours.timesheet_entries
+      : [];
+  const pipeline = row.pipeline ?? {};
+  return {
+    id: toSafeString(row.id),
+    name: toSafeString(row.name ?? row.title, 'Untitled project'),
+    clientName: toSafeString(row.clientName ?? row.client_name),
+    clientEmail: toSafeString(row.clientEmail ?? row.client_email),
+    clientCompany: toSafeString(row.clientCompany ?? row.client_company ?? row.client_name),
+    category: toSafeString(row.category),
+    projectType: toProjectType(row.projectType ?? row.project_type),
+    status: toProjectStatus(row.status),
+    paymentStatus: toPaymentStatus(row.paymentStatus ?? row.payment_status),
+    bookingAmount: toFiniteNumber(row.bookingAmount ?? row.booking_amount),
+    progress: toFiniteNumber(row.progress),
+    leadArchitect: toSafeString(row.leadArchitect ?? row.lead_architect),
+    image: toSafeString(row.image),
+    lastUpdate: toSafeString(row.lastUpdate ?? row.last_update ?? row.updated_at ?? row.created_at),
+    xrAvailable: Boolean(row.xrAvailable ?? row.xr_available ?? false),
+    pixelStreamingAvailable: Boolean(
+      row.pixelStreamingAvailable ?? row.pixel_streaming_available ?? false
+    ),
+    hoursMonitoring: {
+      estimatedHours: toFiniteNumber(
+        hours.estimatedHours ?? hours.estimated_hours ?? row.estimated_hours
+      ),
+      hoursSpent: toFiniteNumber(hours.hoursSpent ?? hours.hours_spent ?? row.hours_spent),
+      hourlyRate: toFiniteNumber(hours.hourlyRate ?? hours.hourly_rate),
+      disciplineBreakdown: Array.isArray(hours.disciplineBreakdown)
+        ? hours.disciplineBreakdown
+        : [],
+      timesheetEntries,
+    },
+    pipeline: {
+      pipelineType: toSafeString(pipeline.pipelineType ?? pipeline.pipeline_type),
+      currentStageIndex: toFiniteNumber(
+        pipeline.currentStageIndex ?? pipeline.current_stage_index
+      ),
+      stages: Array.isArray(pipeline.stages) ? pipeline.stages : [],
+    },
+    documents: Array.isArray(row.documents) ? row.documents : [],
+    pendingRevisionsCount: toFiniteNumber(
+      row.pendingRevisionsCount ?? row.pending_revisions_count
+    ),
+    revisionsSummary: toSafeString(row.revisionsSummary ?? row.revisions_summary),
+    notes: row.notes ?? undefined,
+  };
+}
+
+// =====================================================================
 // MAIN LAYOUT COMPONENT
 // =====================================================================
 
@@ -454,8 +578,40 @@ export default function AdminDashboardLayout() {
   });
 
   const { user, showToast } = useAppStore();
-  const [projectsList, setProjectsList] = useState<ManagedProject[]>(INITIAL_MANAGED_PROJECTS);
-  const [selectedProjectId, setSelectedProjectId] = useState<string>(INITIAL_MANAGED_PROJECTS[0]?.id || 'VIZTR-882');
+
+  // --- Phase 2 Task 2: Supabase Realtime wiring (admin scope) ---
+  // The shared data provider lives in this layout, so the subscription lives
+  // here. The shared hook writes raw rows into the store first; this callback
+  // then (a) overwrites raw `projects` rows with the normalized ManagedProject
+  // via `upsertProject`, and (b) fires toasts/counters. No polling — the hook's
+  // channels cover every operational table.
+  useAdminRealtime((table, payload) => {
+    if (table === 'projects' && payload?.eventType !== 'DELETE' && payload?.new?.id) {
+      useAppStore.getState().upsertProject(mapApiProjectToManagedProject(payload.new));
+    }
+    if (table === 'activity_logs' && payload?.eventType === 'INSERT') {
+      const action = payload?.new?.action ?? 'activity';
+      showToast(`Live activity: ${action}`, 'info');
+    }
+  });
+
+  // Canonical realtime slices. projectsList is derived from the store's
+  // projects slice through the boundary mapper (no casts), so admin sections
+  // render live, fully-shaped ManagedProjects without refresh. The remaining
+  // slices are consumed via sectionProps below (activityFeed also feeds the
+  // top-bar live counter).
+  const rawProjects = useAppStore((s) => s.projects);
+  const projectsList: ManagedProject[] = rawProjects.map(mapApiProjectToManagedProject);
+  // NOTE: experiences/assets/deliverables have no unscoped (admin-global)
+  // hydration endpoint — /api/experiences, /api/assets and /api/deliverables
+  // all require a projectId — so these slices are realtime-only until an
+  // admin-global endpoint exists.
+  const experiences = useAppStore((s) => s.experiences);
+  const assets = useAppStore((s) => s.assets);
+  const deliverables = useAppStore((s) => s.deliverables);
+  const activityFeed = useAppStore((s) => s.activityFeed);
+  const feedbackItems = useAppStore((s) => s.feedbackItems);
+  const [selectedProjectId, setSelectedProjectId] = useState<string>('');
 
   const selectedProject = projectsList.find((p) => p.id === selectedProjectId) || projectsList[0];
 
@@ -471,36 +627,65 @@ export default function AdminDashboardLayout() {
     }
   }, []);
 
-  // Fetch projects from Supabase when available
+  // One-time hydration: the existing /api/admin/* fetches populate the
+  // canonical store slices. Realtime (useAdminRealtime above) covers every
+  // later update — no polling.
   useEffect(() => {
     const fetchProjects = async () => {
       try {
         const res = await fetch('/api/admin/projects?pageSize=100');
         const data = await res.json();
         if (data.success && data.data && data.data.length > 0) {
-          setProjectsList(data.data);
-          if (data.data.length > 0 && !selectedProjectId) {
-            setSelectedProjectId(data.data[0].id);
-          }
+          useAppStore.getState().setProjects(data.data.map(mapApiProjectToManagedProject));
+          setSelectedProjectId((prev) => prev || data.data[0].id);
         }
       } catch {
-        // Keep initial mock data
+        // Store stays as-is; realtime updates still flow when connected.
       }
     };
     fetchProjects();
   }, []);
 
+  // Admin-global hydration for slices whose endpoints allow unscoped reads.
+  // experiences/assets/deliverables require a projectId-scoped endpoint, so
+  // at admin scope those slices populate via realtime only.
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/activity?limit=50', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && data?.success && Array.isArray(data.logs)) {
+          useAppStore.getState().setActivityFeed(data.logs);
+        }
+      })
+      .catch(() => {});
+    fetch('/api/feedback', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && data?.success && Array.isArray(data.feedback)) {
+          useAppStore.getState().setFeedbackItems(data.feedback);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const handleAddProject = (newProject: ManagedProject) => {
-    setProjectsList((prev) => [newProject, ...prev]);
+    const { projects, setProjects } = useAppStore.getState();
+    setProjects([newProject, ...projects]);
     setSelectedProjectId(newProject.id);
   };
 
   const handleUpdateProject = (updated: ManagedProject) => {
-    setProjectsList((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+    const { projects, setProjects } = useAppStore.getState();
+    setProjects(projects.map((p) => (p.id === updated.id ? updated : p)));
   };
 
   const handleDeleteProject = (id: string) => {
-    setProjectsList((prev) => prev.filter((p) => p.id !== id));
+    const { projects, setProjects } = useAppStore.getState();
+    setProjects(projects.filter((p) => p.id !== id));
   };
 
   const handleLogHours = (projectId: string, entry: Omit<TimesheetEntry, 'id'>) => {
@@ -508,8 +693,12 @@ export default function AdminDashboardLayout() {
       ...entry,
       id: `ts-${Date.now()}`,
     };
-    setProjectsList((prev) =>
-      prev.map((p) => {
+    const { setProjects } = useAppStore.getState();
+    // Normalize on read: stored rows may include raw realtime rows, so every
+    // entry is guaranteed a complete hoursMonitoring object here.
+    const current = useAppStore.getState().projects.map(mapApiProjectToManagedProject);
+    setProjects(
+      current.map((p) => {
         if (p.id === projectId) {
           const updatedHoursSpent = p.hoursMonitoring.hoursSpent + entry.hours;
           return {
@@ -558,6 +747,14 @@ export default function AdminDashboardLayout() {
     activeRoleView,
     setActiveRoleView,
     showToast,
+    // Live store slices available to every section render path (Task 3
+    // consumers read experiences/assets/deliverables from here; activityFeed
+    // additionally feeds the top-bar live counter above).
+    experiences,
+    assets,
+    deliverables,
+    activityFeed,
+    feedbackItems,
   };
 
   return (
@@ -572,6 +769,7 @@ export default function AdminDashboardLayout() {
         setMobileSidebarOpen={setMobileSidebarOpen}
         showToast={showToast}
         user={user}
+        activityCount={activityFeed.length}
       />
       <div className="flex-1 flex overflow-hidden w-full max-w-[2400px] mx-auto">
         <AdminSidebar
@@ -597,13 +795,17 @@ export default function AdminDashboardLayout() {
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-8 min-w-0">
           {renderSection(activeSection, sectionProps)}
         </main>
-        <CollapsibleRightInspectorPanel
-          isOpen={rightPanelOpen}
-          onToggle={() => setRightPanelOpen(!rightPanelOpen)}
-          project={selectedProject}
-          onLogHours={handleLogHours}
-          userRole="SUPER_ADMIN"
-        />
+        {/* Selected project resolves after store hydration; until then the
+            inspector has nothing to show (it requires a project). */}
+        {selectedProject && (
+          <CollapsibleRightInspectorPanel
+            isOpen={rightPanelOpen}
+            onToggle={() => setRightPanelOpen(!rightPanelOpen)}
+            project={selectedProject}
+            onLogHours={handleLogHours}
+            userRole="SUPER_ADMIN"
+          />
+        )}
       </div>
       <HermesButton user={user} />
     </div>
@@ -629,6 +831,11 @@ function renderSection(section: ActiveSection, props: {
   activeRoleView: 'super_admin' | 'admin' | 'user' | 'client';
   setActiveRoleView: (r: 'super_admin' | 'admin' | 'user' | 'client') => void;
   showToast: (msg: string, type?: 'success' | 'error' | 'info') => void;
+  experiences: Array<Record<string, any>>;
+  assets: Array<Record<string, any>>;
+  deliverables: Array<Record<string, any>>;
+  activityFeed: Array<Record<string, any>>;
+  feedbackItems: Array<Record<string, any>>;
 }) {
   switch (section) {
     case 'dashboard':

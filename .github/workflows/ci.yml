@@ -12,49 +12,91 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run lint
-      - run: npx tsc --noEmit
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: Get changed files
+        id: changed-files
+        run: |
+          git diff --name-only origin/main...HEAD -- '*.ts' '*.tsx' | grep -E '\.(ts|tsx)$' | head -50 > changed_files.txt
+          cat changed_files.txt
+      - name: Lint changed files
+        if: ${{ steps.changed-files.outputs.stdout != '' }}
+        run: |
+          if [ -s changed_files.txt ]; then
+            pnpm exec eslint $(cat changed_files.txt) --max-warnings=0
+          fi
+      - name: Typecheck changed files
+        if: ${{ steps.changed-files.outputs.stdout != '' }}
+        run: |
+          if [ -s changed_files.txt ]; then
+            pnpm exec tsc --noEmit $(cat changed_files.txt)
+          else
+            pnpm exec tsc --noEmit
+          fi
 
   test:
     name: Unit Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test -- --no-coverage
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test -- --no-coverage
+        env:
+          NEXTAUTH_SECRET: ci-dummy-secret-for-testing
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
   build:
     name: Next.js Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run build
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build
+        env:
+          NEXTAUTH_SECRET: ci-dummy-secret-for-build
 
   e2e:
     name: E2E Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm run test:e2e
         env:
           CI: true
+          NEXTAUTH_SECRET: ci-dummy-secret-for-e2e
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

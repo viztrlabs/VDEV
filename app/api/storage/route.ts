@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api-guard';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 import { getAssetTypeByMime, validateMagicBytes } from '@/lib/asset-types';
 
 const MAX_FILE_SIZE_MB = 500; // Increased for chunked uploads
@@ -23,8 +24,54 @@ function validateMimeMagicBytes(buf: Buffer, mimeType: string): boolean {
   return validateMagicBytes(buf, assetType);
 }
 
-// In-memory chunk storage (in production, use Redis)
-const chunkStore = new Map<string, { chunks: Map<number, Buffer>; totalChunks: number; fileName: string; mimeType: string }>();
+// Chunked-upload sessions are persisted in Supabase (`public.upload_sessions`)
+// with chunk objects staged in the bucket under `chunks/<uploadId>/`, so
+// uploads survive restarts and work across instances. Staging prefix:
+const CHUNK_PREFIX = 'chunks';
+
+function chunkObjectPath(uploadId: string, chunkIndex: number): string {
+  return `${CHUNK_PREFIX}/${uploadId}/${String(chunkIndex).padStart(4, '0')}`;
+}
+
+interface UploadSession {
+  upload_id: string;
+  user_id: string;
+  file_name: string;
+  mime_type: string;
+  total_chunks: number;
+  received_chunks: number;
+  expires_at: string;
+}
+
+async function getUploadSession(uploadId: string): Promise<UploadSession | null> {
+  const admin = getSupabaseAdmin();
+  if (!admin) return null;
+  const { data, error } = await admin
+    .from('upload_sessions')
+    .select('*')
+    .eq('upload_id', uploadId)
+    .maybeSingle();
+  if (error || !data) return null;
+  const session = data as UploadSession;
+  if (new Date(session.expires_at).getTime() < Date.now()) {
+    await admin.from('upload_sessions').delete().eq('upload_id', uploadId);
+    await admin.storage.from(BUCKET_NAME).remove(
+      (await admin.storage.from(BUCKET_NAME).list(`${CHUNK_PREFIX}/${uploadId}`)).data?.map(
+        (f) => `${CHUNK_PREFIX}/${uploadId}/${f.name}`
+      ) ?? []
+    );
+    return null;
+  }
+  return session;
+}
+
+async function countStagedChunks(uploadId: string): Promise<number> {
+  const admin = getSupabaseAdmin();
+  if (!admin) return 0;
+  const { data, error } = await admin.storage.from(BUCKET_NAME).list(`${CHUNK_PREFIX}/${uploadId}`);
+  if (error || !data) return 0;
+  return data.filter((f) => f.name !== '.keep').length;
+}
 
 export interface ChunkUploadRequest {
   uploadId: string;
@@ -97,7 +144,7 @@ export async function POST(req: NextRequest) {
 
     // Handle chunked upload initialization
     if (body.action === 'init' && body.fileName && body.mimeType && body.totalChunks) {
-      return initChunkedUpload(body.fileName, body.mimeType, body.totalChunks);
+      return initChunkedUpload(guard.userId, body.fileName, body.mimeType, body.totalChunks);
     }
 
     return NextResponse.json({ success: false, error: 'Invalid request format' }, { status: 400 });
@@ -106,9 +153,14 @@ export async function POST(req: NextRequest) {
   }
 }
 
-async function initChunkedUpload(fileName: string, mimeType: string, totalChunks: number) {
+async function initChunkedUpload(userId: string, fileName: string, mimeType: string, totalChunks: number) {
+  const admin = getSupabaseAdmin();
+  if (!admin) {
+    return NextResponse.json({ success: false, error: 'Chunked upload unavailable: server storage not configured' }, { status: 503 });
+  }
+
   const uploadId = `upload_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  
+
   // Validate
   if (totalChunks > 100) {
     return NextResponse.json({ success: false, error: 'Too many chunks (max 100)' }, { status: 400 });
@@ -118,16 +170,20 @@ async function initChunkedUpload(fileName: string, mimeType: string, totalChunks
     return NextResponse.json({ success: false, error: `File type "${mimeType}" is not allowed` }, { status: 415 });
   }
 
-  // Initialize chunk store
-  chunkStore.set(uploadId, {
-    chunks: new Map(),
-    totalChunks,
-    fileName,
-    mimeType
-  });
+  // Sweep expired sessions opportunistically
+  await admin.from('upload_sessions').delete().lt('expires_at', new Date().toISOString());
 
-  // Auto-cleanup after 1 hour
-  setTimeout(() => chunkStore.delete(uploadId), 60 * 60 * 1000);
+  const { error } = await admin.from('upload_sessions').insert({
+    upload_id: uploadId,
+    user_id: userId,
+    file_name: fileName,
+    mime_type: mimeType,
+    total_chunks: totalChunks,
+    received_chunks: 0,
+  });
+  if (error) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true, uploadId, chunkSize: CHUNK_SIZE });
 }
@@ -141,12 +197,17 @@ async function handleChunkedUpload(
   mimeType: string,
   chunk: File
 ) {
-  const upload = chunkStore.get(uploadId);
-  if (!upload) {
+  const admin = getSupabaseAdmin();
+  if (!admin) {
+    return NextResponse.json({ success: false, error: 'Chunked upload unavailable: server storage not configured' }, { status: 503 });
+  }
+
+  const upload = await getUploadSession(uploadId);
+  if (!upload || upload.user_id !== userId) {
     return NextResponse.json({ success: false, error: 'Upload session not found or expired' }, { status: 404 });
   }
 
-  if (chunkIndex >= totalChunks) {
+  if (chunkIndex >= upload.total_chunks) {
     return NextResponse.json({ success: false, error: 'Invalid chunk index' }, { status: 400 });
   }
 
@@ -158,31 +219,41 @@ async function handleChunkedUpload(
   // Validate magic bytes on first chunk
   if (chunkIndex === 0) {
     const header = Buffer.from(await chunk.arrayBuffer());
-    if (!validateMimeMagicBytes(header, upload.mimeType)) {
+    if (!validateMimeMagicBytes(header, upload.mime_type)) {
       return NextResponse.json(
-        { success: false, error: `File content does not match declared MIME type "${upload.mimeType}"` },
+        { success: false, error: `File content does not match declared MIME type "${upload.mime_type}"` },
         { status: 400 },
       );
     }
   }
 
-  // Store chunk
+  // Stage chunk object in Supabase Storage (idempotent per index)
   const buffer = Buffer.from(await chunk.arrayBuffer());
-  upload.chunks.set(chunkIndex, buffer);
+  const { error: stageError } = await admin.storage
+    .from(BUCKET_NAME)
+    .upload(chunkObjectPath(uploadId, chunkIndex), buffer, {
+      contentType: 'application/octet-stream',
+      upsert: true,
+    });
+  if (stageError) {
+    return NextResponse.json({ success: false, error: stageError.message }, { status: 500 });
+  }
 
   // Aggregate chunk size guard
-  let totalBytes = 0;
-  for (const c of upload.chunks.values()) totalBytes += c.length;
-  if (totalBytes > MAX_AGGREGATE_CHUNKS_MB * 1024 * 1024) {
-    chunkStore.delete(uploadId);
+  const received = await countStagedChunks(uploadId);
+  const approxBytes = received * CHUNK_SIZE;
+  if (approxBytes > MAX_AGGREGATE_CHUNKS_MB * 1024 * 1024) {
+    await admin.from('upload_sessions').delete().eq('upload_id', uploadId);
     return NextResponse.json(
       { success: false, error: `Upload exceeds ${MAX_AGGREGATE_CHUNKS_MB}MB limit` },
       { status: 413 },
     );
   }
 
+  await admin.from('upload_sessions').update({ received_chunks: received }).eq('upload_id', uploadId);
+
   // Check if complete
-  const complete = upload.chunks.size === totalChunks;
+  const complete = received === upload.total_chunks;
 
   return NextResponse.json({
     success: true,
@@ -190,39 +261,55 @@ async function handleChunkedUpload(
     chunkIndex,
     received: true,
     complete,
-    progress: Math.round((upload.chunks.size / totalChunks) * 100)
+    progress: Math.round((received / upload.total_chunks) * 100)
   } as ChunkUploadResponse);
 }
 
 async function completeChunkedUpload(userId: string, uploadId: string, fileName: string, mimeType: string) {
-  const upload = chunkStore.get(uploadId);
-  if (!upload) {
+  const admin = getSupabaseAdmin();
+  if (!admin) {
+    return NextResponse.json({ success: false, error: 'Chunked upload unavailable: server storage not configured' }, { status: 503 });
+  }
+
+  const upload = await getUploadSession(uploadId);
+  if (!upload || upload.user_id !== userId) {
     return NextResponse.json({ success: false, error: 'Upload session not found or expired' }, { status: 404 });
   }
 
-  if (upload.chunks.size !== upload.totalChunks) {
-    return NextResponse.json({ 
-      success: false, 
-      error: `Incomplete upload: ${upload.chunks.size}/${upload.totalChunks} chunks received` 
+  const finishWithCleanup = async () => {
+    const staged = await admin.storage.from(BUCKET_NAME).list(`${CHUNK_PREFIX}/${uploadId}`);
+    if (staged.data && staged.data.length > 0) {
+      await admin.storage.from(BUCKET_NAME).remove(
+        staged.data.map((f) => `${CHUNK_PREFIX}/${uploadId}/${f.name}`)
+      );
+    }
+    await admin.from('upload_sessions').delete().eq('upload_id', uploadId);
+  };
+
+  const received = await countStagedChunks(uploadId);
+  if (received !== upload.total_chunks) {
+    return NextResponse.json({
+      success: false,
+      error: `Incomplete upload: ${received}/${upload.total_chunks} chunks received`
     }, { status: 400 });
   }
 
-  // Reassemble file
+  // Reassemble file from staged chunk objects
   const chunks: Buffer[] = [];
-  for (let i = 0; i < upload.totalChunks; i++) {
-    const chunk = upload.chunks.get(i);
-    if (!chunk) {
+  for (let i = 0; i < upload.total_chunks; i++) {
+    const { data, error } = await admin.storage.from(BUCKET_NAME).download(chunkObjectPath(uploadId, i));
+    if (error || !data) {
       return NextResponse.json({ success: false, error: `Missing chunk ${i}` }, { status: 400 });
     }
-    chunks.push(chunk);
+    chunks.push(Buffer.from(await data.arrayBuffer()));
   }
   const fileBuffer = Buffer.concat(chunks);
 
   // Validate magic bytes
-  if (!validateMimeMagicBytes(fileBuffer, upload.mimeType)) {
-    chunkStore.delete(uploadId);
+  if (!validateMimeMagicBytes(fileBuffer, upload.mime_type)) {
+    await finishWithCleanup();
     return NextResponse.json(
-      { success: false, error: `File content does not match declared MIME type "${upload.mimeType}"` },
+      { success: false, error: `File content does not match declared MIME type "${upload.mime_type}"` },
       { status: 400 },
     );
   }
@@ -230,7 +317,7 @@ async function completeChunkedUpload(userId: string, uploadId: string, fileName:
   // Validate file size
   const fileSizeMB = fileBuffer.length / (1024 * 1024);
   if (fileSizeMB > MAX_FILE_SIZE_MB) {
-    chunkStore.delete(uploadId);
+    await finishWithCleanup();
     return NextResponse.json({ success: false, error: `File exceeds ${MAX_FILE_SIZE_MB}MB limit` }, { status: 413 });
   }
 
@@ -238,7 +325,7 @@ async function completeChunkedUpload(userId: string, uploadId: string, fileName:
   const folder = userId;
   const safeFileName = `${folder}/${Date.now()}_${fileName.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
 
-  const { data, error } = await retryWithBackoff(() => 
+  const { data, error } = await retryWithBackoff(() =>
     supabase!.storage.from(BUCKET_NAME).upload(safeFileName, fileBuffer, {
       contentType: mimeType,
       upsert: false,
@@ -251,8 +338,8 @@ async function completeChunkedUpload(userId: string, uploadId: string, fileName:
 
   const { data: urlData } = supabase!.storage.from(BUCKET_NAME).getPublicUrl(data!.path);
 
-  // Cleanup
-  chunkStore.delete(uploadId);
+  // Cleanup staged chunks + session
+  await finishWithCleanup();
 
   return NextResponse.json({
     success: true,
@@ -266,7 +353,7 @@ async function completeChunkedUpload(userId: string, uploadId: string, fileName:
       uploadedAt: new Date().toISOString(),
       uploadedBy: userId,
       chunked: true,
-      totalChunks: upload.totalChunks
+      totalChunks: upload.total_chunks
     }
   }, { status: 201 });
 }
@@ -342,18 +429,19 @@ export async function GET(req: NextRequest) {
   // Handle chunked upload status check
   const uploadId = searchParams.get('uploadId');
   if (uploadId) {
-    const upload = chunkStore.get(uploadId);
-    if (!upload) {
+    const upload = await getUploadSession(uploadId);
+    if (!upload || upload.user_id !== guard.userId) {
       return NextResponse.json({ success: false, error: 'Upload session not found' }, { status: 404 });
     }
+    const received = await countStagedChunks(uploadId);
     return NextResponse.json({
       success: true,
       uploadId,
-      fileName: upload.fileName,
-      mimeType: upload.mimeType,
-      totalChunks: upload.totalChunks,
-      receivedChunks: upload.chunks.size,
-      progress: Math.round((upload.chunks.size / upload.totalChunks) * 100)
+      fileName: upload.file_name,
+      mimeType: upload.mime_type,
+      totalChunks: upload.total_chunks,
+      receivedChunks: received,
+      progress: Math.round((received / upload.total_chunks) * 100)
     });
   }
 
@@ -372,7 +460,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({
           success: true,
           files: data || [],
-          storage: action === 'status' ? getStorageStatus() : undefined,
+          storage: action === 'status' ? await getStorageStatus() : undefined,
         });
       }
     } catch (err) {
@@ -382,8 +470,8 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({
     success: true,
-    storage: getStorageStatus(),
-    message: 'VizTR Multi-Cloud Object Storage Cluster Operational',
+    storage: await getStorageStatus(),
+    message: 'VizTR Object Storage (Supabase) Operational',
   });
 }
 
@@ -411,23 +499,29 @@ export async function DELETE(req: NextRequest) {
   return NextResponse.json({ success: true });
 }
 
-function getStorageStatus() {
+async function getStorageStatus() {
+  // Real values only: active chunked-upload sessions from the DB.
+  // Bucket-wide capacity/file counts are not exposed by the Storage API
+  // without full traversal, so they are reported as unknown rather than fabricated.
+  let activeSessions = 0;
+  const admin = getSupabaseAdmin();
+  if (admin) {
+    const { count } = await admin
+      .from('upload_sessions')
+      .select('upload_id', { count: 'exact', head: true })
+      .gte('expires_at', new Date().toISOString());
+    activeSessions = count ?? 0;
+  }
   return {
-    totalCapacityTB: 64.0,
-    usedCapacityTB: 48.6,
-    percentageUsed: 75.9,
-    activeFilesCount: 14820,
-    cloudProviders: [
-      { name: 'AWS S3 (US-East-1)', region: 'N. Virginia', status: 'online' as const, allocatedTB: 32.0, usedTB: 24.8 },
-      { name: 'Cloudflare R2 (Global CDN)', region: 'Edge Anycast', status: 'online' as const, allocatedTB: 20.0, usedTB: 15.4 },
-      { name: 'Google Cloud Storage (EU-West)', region: 'Frankfurt', status: 'online' as const, allocatedTB: 12.0, usedTB: 8.4 },
-    ],
+    bucket: BUCKET_NAME,
+    backend: 'supabase-storage',
+    configured: isSupabaseConfigured,
     chunkedUpload: {
       maxFileSizeMB: MAX_FILE_SIZE_MB,
       chunkSizeMB: CHUNK_SIZE / (1024 * 1024),
       maxRetries: MAX_RETRIES,
       retryDelayMs: RETRY_DELAY_MS,
-      activeSessions: chunkStore.size
-    }
+      activeSessions,
+    },
   };
 }

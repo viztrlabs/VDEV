@@ -1,58 +1,43 @@
 export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
 import {
   handleApiError,
   successResponse,
-  createdResponse,
   applyRateLimit,
   generateRequestId,
   addRequestIdHeaders,
-  type RateLimitConfig,
 } from '@/lib/api/validation';
 import { getAuthUser, requireAdmin } from '@/lib/api/auth';
 import {
-  SystemHealthLogSchema,
   CreateSystemLogSchema,
-  LogFiltersSchema,
-  PaginationParamsSchema,
-  LogLevelSchema,
   type SystemHealthLog,
-  type CreateSystemLog,
 } from '@/lib/api/contracts/schemas';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 
-const mockSystemLogs: SystemHealthLog[] = [
-  {
-    id: 'log-001',
-    timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-    level: 'info',
-    service: 'super-admin-store',
-    message: 'User session initialized',
-    details: 'User alex.sterling@viztr.studio logged in from 192.168.1.1',
-    region: 'us-east-1',
-    ip: '192.168.1.1',
-  },
-  {
-    id: 'log-002',
-    timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-    level: 'warn',
-    service: 'gpu-cluster',
-    message: 'High GPU temperature detected',
-    details: 'Node gpu-eu-west reporting 68°C, approaching thermal throttle threshold',
-    region: 'eu-central-1',
-    ip: '10.0.1.5',
-  },
-  {
-    id: 'log-003',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-    level: 'error',
-    service: 'pixel-streaming',
-    message: 'WebRTC connection failed',
-    details: 'ICE candidate gathering timeout for session ps-8472',
-    region: 'us-east-1',
-    ip: '203.0.113.42',
-  },
-];
+function requireDb() {
+  const db = getSupabaseAdmin();
+  if (!db) {
+    throw new Error('Database unavailable: server storage not configured');
+  }
+  return db;
+}
+
+// System logs are persisted in the Prisma `AuditLog` table:
+// service -> entity, message -> action, level/details/region/ip -> metadata.
+function toLog(row: any): SystemHealthLog {
+  const meta = (row.metadata ?? {}) as Record<string, any>;
+  const level = meta.level === 'warn' || meta.level === 'error' || meta.level === 'critical' ? meta.level : 'info';
+  return {
+    id: row.id,
+    timestamp: new Date(row.createdAt).toISOString(),
+    level,
+    service: row.entity,
+    message: row.action,
+    details: meta.details,
+    region: meta.region,
+    ip: meta.ip,
+  };
+}
 
 // GET /api/admin/logs - List system logs with filtering and pagination
 export async function GET(request: NextRequest) {
@@ -65,41 +50,45 @@ export async function GET(request: NextRequest) {
     if (rateLimitResponse) return addRequestIdHeaders(rateLimitResponse, requestId);
 
     const { searchParams } = request.nextUrl;
-    const query: any = {};
-    for (const [key, value] of searchParams.entries()) {
-      if (key === 'page' || key === 'pageSize') query[key] = parseInt(value, 10);
-      else query[key] = value;
-    }
+    const level = searchParams.get('level') || undefined;
+    const service = searchParams.get('service') || undefined;
+    const search = searchParams.get('search') || undefined;
+    const dateFrom = searchParams.get('dateFrom') || undefined;
+    const dateTo = searchParams.get('dateTo') || undefined;
+    const page = Math.max(parseInt(searchParams.get('page') || '1', 10), 1);
+    const pageSize = Math.min(Math.max(parseInt(searchParams.get('pageSize') || '50', 10), 1), 200);
 
-    let filtered = [...mockSystemLogs].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-    
-    if (query.level) filtered = filtered.filter(l => l.level === query.level);
-    if (query.service) filtered = filtered.filter(l => l.service === query.service);
-    if (query.search) {
-      const s = query.search.toLowerCase();
-      filtered = filtered.filter(l => 
-        l.message.toLowerCase().includes(s) ||
-        l.service.toLowerCase().includes(s) ||
-        l.details?.toLowerCase().includes(s)
+    const db = requireDb();
+    const { data, error } = await db
+      .from('AuditLog')
+      .select('*')
+      .order('createdAt', { ascending: false })
+      .limit(500);
+    if (error) throw new Error(error.message);
+
+    let filtered = ((data ?? []) as any[]).map(toLog);
+    if (level) filtered = filtered.filter((l) => l.level === level);
+    if (service) filtered = filtered.filter((l) => l.service === service);
+    if (search) {
+      const s = search.toLowerCase();
+      filtered = filtered.filter(
+        (l) =>
+          l.message.toLowerCase().includes(s) ||
+          l.service.toLowerCase().includes(s) ||
+          l.details?.toLowerCase().includes(s)
       );
     }
-    if (query.dateFrom) filtered = filtered.filter(l => l.timestamp >= query.dateFrom);
-    if (query.dateTo) filtered = filtered.filter(l => l.timestamp <= query.dateTo);
+    if (dateFrom) filtered = filtered.filter((l) => l.timestamp >= dateFrom);
+    if (dateTo) filtered = filtered.filter((l) => l.timestamp <= dateTo);
 
-    const page = query.page || 1;
-    const pageSize = query.pageSize || 50;
     const start = (page - 1) * pageSize;
-    const end = start + pageSize;
-    const paginated = filtered.slice(start, end);
+    const paginated = filtered.slice(start, start + pageSize);
 
     return addRequestIdHeaders(
-      successResponse({
-        data: paginated,
-        total: filtered.length,
-        page,
-        pageSize,
-        totalPages: Math.ceil(filtered.length / pageSize),
-      }, { requestId }) as NextResponse,
+      successResponse(
+        { data: paginated, total: filtered.length, page, pageSize, totalPages: Math.ceil(filtered.length / pageSize) },
+        { requestId }
+      ) as NextResponse,
       requestId
     );
   } catch (error) {
@@ -120,20 +109,27 @@ export async function POST(request: NextRequest) {
     const body = await request.json().catch(() => ({}));
     const data = CreateSystemLogSchema.parse(body);
 
-    const newLog: SystemHealthLog = {
-      ...data,
+    const db = requireDb();
+    const row = {
       id: `log-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-      timestamp: new Date().toISOString(),
+      userId: user.id,
+      action: data.message,
+      entity: data.service,
+      entityId: null,
+      metadata: {
+        level: data.level,
+        details: data.details ?? null,
+        region: data.region ?? null,
+        ip: data.ip ?? null,
+      },
+      createdAt: new Date().toISOString(),
     };
-    mockSystemLogs.unshift(newLog);
-    
-    if (mockSystemLogs.length > 10000) {
-      mockSystemLogs.length = 10000;
-    }
+    const { data: inserted, error } = await db.from('AuditLog').insert(row).select('*').single();
+    if (error) throw new Error(error.message);
 
     return addRequestIdHeaders(
       NextResponse.json(
-        { success: true, data: newLog, meta: { timestamp: new Date().toISOString(), requestId } },
+        { success: true, data: toLog(inserted), meta: { timestamp: new Date().toISOString(), requestId } },
         { status: 201 }
       ),
       requestId
@@ -157,12 +153,11 @@ export async function DELETE(request: NextRequest) {
       throw new Error('Only super_admin can clear system logs');
     }
 
-    mockSystemLogs.length = 0;
+    const db = requireDb();
+    const { error } = await db.from('AuditLog').delete().gte('createdAt', '1970-01-01T00:00:00.000Z');
+    if (error) throw new Error(error.message);
 
-    return addRequestIdHeaders(
-      new NextResponse(null, { status: 204 }),
-      requestId
-    );
+    return addRequestIdHeaders(new NextResponse(null, { status: 204 }), requestId);
   } catch (error) {
     return addRequestIdHeaders(handleApiError(error), requestId);
   }

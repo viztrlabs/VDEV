@@ -102,6 +102,25 @@ interface AppState {
   // Messaging Agent State
   isAgentClosed: boolean;
   setAgentClosed: (closed: boolean) => void;
+
+  // Real-time synced collections (populated by lib/useRealtime consumers;
+  // dashboards subscribe via useRealtime/useAdminRealtime and push here)
+  projects: Array<Record<string, any>>;
+  experiences: Array<Record<string, any>>;
+  assets: Array<Record<string, any>>;
+  deliverables: Array<Record<string, any>>;
+  activityFeed: Array<Record<string, any>>;
+  feedbackItems: Array<Record<string, any>>;
+  setProjects: (projects: Array<Record<string, any>>) => void;
+  setExperiences: (experiences: Array<Record<string, any>>) => void;
+  setAssets: (assets: Array<Record<string, any>>) => void;
+  setDeliverables: (deliverables: Array<Record<string, any>>) => void;
+  setActivityFeed: (activity: Array<Record<string, any>>) => void;
+  setFeedbackItems: (feedback: Array<Record<string, any>>) => void;
+  addActivity: (entry: Record<string, any>) => void;
+  addFeedback: (entry: Record<string, any>) => void;
+  upsertProject: (project: Record<string, any>) => void;
+  upsertExperience: (experience: Record<string, any>) => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -149,6 +168,42 @@ export const useAppStore = create<AppState>((set, get) => ({
   // Messaging Agent State
   isAgentClosed: false,
   setAgentClosed: (closed) => set({ isAgentClosed: closed }),
+
+  // Real-time synced collections
+  projects: [],
+  experiences: [],
+  assets: [],
+  deliverables: [],
+  activityFeed: [],
+  feedbackItems: [],
+  setProjects: (projects) => set({ projects: Array.isArray(projects) ? projects : [] }),
+  setExperiences: (experiences) => set({ experiences: Array.isArray(experiences) ? experiences : [] }),
+  setAssets: (assets) => set({ assets: Array.isArray(assets) ? assets : [] }),
+  setDeliverables: (deliverables) => set({ deliverables: Array.isArray(deliverables) ? deliverables : [] }),
+  setActivityFeed: (activity) => set({ activityFeed: Array.isArray(activity) ? activity : [] }),
+  setFeedbackItems: (feedback) => set({ feedbackItems: Array.isArray(feedback) ? feedback : [] }),
+  addActivity: (entry) =>
+    set((s) => ({ activityFeed: [entry, ...s.activityFeed].slice(0, 100) })),
+  addFeedback: (entry) =>
+    set((s) => ({ feedbackItems: [entry, ...s.feedbackItems].slice(0, 100) })),
+  upsertProject: (project) =>
+    set((s) => {
+      if (!project || typeof project.id === 'undefined') return s;
+      const idx = s.projects.findIndex((p) => p.id === project.id);
+      if (idx === -1) return { projects: [project, ...s.projects] };
+      const next = [...s.projects];
+      next[idx] = { ...next[idx], ...project };
+      return { projects: next };
+    }),
+  upsertExperience: (experience) =>
+    set((s) => {
+      if (!experience || typeof experience.id === 'undefined') return s;
+      const idx = s.experiences.findIndex((e) => e.id === experience.id);
+      if (idx === -1) return { experiences: [experience, ...s.experiences] };
+      const next = [...s.experiences];
+      next[idx] = { ...next[idx], ...experience };
+      return { experiences: next };
+    }),
 
   // Notification Defaults
   desktopNotificationsEnabled: true,
