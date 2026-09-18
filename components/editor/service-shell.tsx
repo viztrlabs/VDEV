@@ -6,7 +6,6 @@ import { useParams, notFound } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 
 interface ServiceEditorShellProps {
-  userId: string;
   projectId: string;
   serviceSlug: string;
   serviceTitle: string;
@@ -15,14 +14,13 @@ interface ServiceEditorShellProps {
 }
 
 export function ServiceEditorShell({
-  userId,
   projectId,
   serviceSlug,
   serviceTitle,
   serviceIcon,
   children,
 }: ServiceEditorShellProps) {
-  if (!userId || !projectId || !serviceSlug) {
+  if (!projectId || !serviceSlug) {
     notFound();
   }
 
@@ -31,7 +29,7 @@ export function ServiceEditorShell({
       <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-[#27272A]">
         <div className="flex items-center gap-3">
           <Link
-            href={`/under-admin/users/${userId}/projects/${projectId}/editor-dashboard`}
+            href={`/admin/projects/${projectId}/editor-dashboard`}
             className="inline-flex items-center gap-1 text-[10px] font-mono text-[#A1A1AA] hover:text-white"
           >
             <ChevronLeft className="w-3 h-3" />
@@ -43,7 +41,7 @@ export function ServiceEditorShell({
               {serviceTitle} Editor
             </h1>
             <p className="text-[10px] font-mono text-[#71717A]">
-              {userId} / {projectId} / {serviceSlug}
+              {projectId} / {serviceSlug}
             </p>
           </div>
         </div>
