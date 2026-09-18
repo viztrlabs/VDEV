@@ -2,8 +2,8 @@
   "project": "VizTR — Architecture Visualization Studio & XR World Platform",
   "tracking_system": "Hermes Development Progress Tracker",
   "last_updated": "2026-09-18T00:00:00Z",
-  "current_phase": "P2",
-  "current_phase_name": "Live Dashboards & Experience Delivery",
+  "current_phase": "P3",
+  "current_phase_name": "Admin/Editor Consolidation",
   "current_phase_progress": 100,
   "current_phase_start": "2026-09-18",
   "current_phase_target_completion": "2026-09-18",
@@ -445,6 +445,58 @@
         "files": [
           "docs/development-tracker/PHASE_STATUS.json",
           "VIZTR_DEVELOPMENT_TRACKER.md"
+        ]
+      }
+    ]
+  },
+  "phase-3": {
+    "id": "P3",
+    "name": "Admin/Editor Consolidation",
+    "status": "completed",
+    "progress": 100,
+    "start_date": "2026-09-18",
+    "completion_date": "2026-09-18",
+    "duration_days": 1,
+    "deliverables": [
+      {
+        "name": "Task 1: Canonical admin project editor launcher (/admin/projects/[projectId]/editor-dashboard)",
+        "status": "completed",
+        "files": [
+          "app/admin/projects/[projectId]/editor-dashboard/page.tsx",
+          "lib/service-meta.ts",
+          "app/admin/projects/[projectId]/editor-dashboard/__tests__/launcher.test.tsx"
+        ]
+      },
+      {
+        "name": "Task 2: DRY 9 service editors to 1 dynamic route (/admin/projects/[projectId]/editor-dashboard/[service])",
+        "status": "completed",
+        "files": [
+          "app/admin/projects/[projectId]/editor-dashboard/[service]/page.tsx",
+          "lib/service-editor-tabs.tsx",
+          "app/admin/projects/[projectId]/editor-dashboard/[service]/__tests__/service-editor.test.tsx"
+        ]
+      },
+      {
+        "name": "Task 3: Removed /under-admin tree, re-pointed references to /admin/projects",
+        "status": "completed",
+        "files": [
+          "app/under-admin/",
+          "middleware.ts",
+          "components/editor/service-shell.tsx",
+          "components/ui/Breadcrumbs.tsx",
+          "app/robots.txt/route.ts",
+          "app/xr-world/virtual-tour/editor/page.tsx"
+        ]
+      },
+      {
+        "name": "Task 4: Removed dead XR editor routes (unified-editor, xr-editor stub, legacy editors)",
+        "status": "completed",
+        "files": [
+          "app/xr-world/unified-editor/",
+          "app/xr-world/xr-editor/",
+          "app/virtual-tour/[tourId]/editor/",
+          "app/xr-world/virtual-tour/editor-dashboard/",
+          "data/pages.ts"
         ]
       }
     ]
