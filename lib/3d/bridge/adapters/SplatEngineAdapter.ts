@@ -13,6 +13,8 @@ import {
   EngineType,
   SceneSnapshot,
   TelemetryMetrics,
+  SpatialAlignment,
+  AlignmentMarker,
 } from '../types';
 
 export class SplatEngineAdapter implements EngineAdapter {
@@ -22,6 +24,7 @@ export class SplatEngineAdapter implements EngineAdapter {
   private container: HTMLElement | null = null;
   private canvas: HTMLCanvasElement | null = null;
   private splatEvents: any = null;
+  private splatUpdateHandler: (() => void) | null = null;
   private eventHandlers: Set<(event: EngineEvent) => void> = new Set();
   private splatCount = 250000;
   private currentFps = 60;
@@ -37,6 +40,18 @@ export class SplatEngineAdapter implements EngineAdapter {
       if (hasWebGPU && process.env.NODE_ENV === 'production') {
         const editorModule = await import('@/splat-editor/main');
         await editorModule.main();
+        const scene = (window as any).scene;
+        this.splatEvents = scene?.events || null;
+        if (this.splatEvents && scene?.camera) {
+          let lastCameraEmit = 0;
+          this.splatUpdateHandler = () => {
+            const now = performance.now();
+            if (now - lastCameraEmit < 50) return;
+            lastCameraEmit = now;
+            this.emit({ type: 'CAMERA_MOVED', payload: this.readCameraPose(scene) });
+          };
+          this.splatEvents.on('update', this.splatUpdateHandler);
+        }
       }
 
       // Create fallback/preview canvas if not provided
@@ -68,12 +83,16 @@ export class SplatEngineAdapter implements EngineAdapter {
   }
 
   public destroy(): void {
+    if (this.splatEvents && this.splatUpdateHandler) {
+      this.splatEvents.off?.('update', this.splatUpdateHandler);
+    }
     if (this.canvas && this.canvas.parentElement) {
       this.canvas.parentElement.removeChild(this.canvas);
       this.canvas = null;
     }
     this.container = null;
     this.splatEvents = null;
+    this.splatUpdateHandler = null;
     this.isInitialized = false;
     this.eventHandlers.clear();
   }
@@ -131,16 +150,18 @@ export class SplatEngineAdapter implements EngineAdapter {
   }
 
   public getSceneSnapshot(): SceneSnapshot {
+    const scene = typeof window !== 'undefined' ? (window as any).scene : null;
+    const camera = scene?.camera ? this.readCameraPose(scene) : {
+      position: { x: 0, y: 2, z: 5 },
+      target: { x: 0, y: 0, z: 0 },
+      fov: 55,
+    };
     return {
       id: 'splat-scene',
       version: 1,
       name: 'Gaussian Splat Model',
       engine: 'playcanvas',
-      camera: {
-        position: { x: 0, y: 2, z: 5 },
-        target: { x: 0, y: 0, z: 0 },
-        fov: 55,
-      },
+      camera,
       entities: [
         {
           id: 'splat-root',
@@ -159,6 +180,9 @@ export class SplatEngineAdapter implements EngineAdapter {
   }
 
   public async loadSceneSnapshot(snapshot: SceneSnapshot): Promise<void> {
+    if (snapshot.camera) {
+      await this.dispatchCommand({ type: 'SET_CAMERA_POSE', payload: snapshot.camera });
+    }
     this.emit({ type: 'SCENE_LOADED', payload: { snapshot } });
   }
 
@@ -173,7 +197,38 @@ export class SplatEngineAdapter implements EngineAdapter {
     };
   }
 
+  // --- Alignment Methods ---
+
+  setAlignment(_alignment: SpatialAlignment): void {
+    // Store alignment for future use (e.g., rendering markers in world space)
+  }
+
+  addAlignmentMarker(_marker: AlignmentMarker): void {
+    // TODO: Render 3D marker sphere at marker.worldPoint in the PlayCanvas scene
+  }
+
+  removeAlignmentMarker(_markerId: string): void {
+    // TODO: Remove 3D marker sphere from the PlayCanvas scene
+  }
+
+  setRenderSuspended(suspended: boolean): void {
+    // When alignment mode focuses on panorama, reduce splat rendering quality
+    // This is a no-op for now — the actual quality reduction will be implemented
+    // when we have the PlayCanvas scene reference available
+  }
+
   private emit(event: EngineEvent): void {
     this.eventHandlers.forEach((h) => h(event));
+  }
+
+  private readCameraPose(scene: any): SceneSnapshot['camera'] {
+    const camera = scene.camera;
+    const position = camera.position;
+    const target = camera.focalPoint;
+    return {
+      position: { x: position.x, y: position.y, z: position.z },
+      target: { x: target.x, y: target.y, z: target.z },
+      fov: camera.fov,
+    };
   }
 }

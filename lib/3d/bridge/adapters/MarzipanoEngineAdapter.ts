@@ -14,7 +14,10 @@ import {
   SceneSnapshot,
   TelemetryMetrics,
   HotspotData,
+  SpatialAlignment,
+  AlignmentMarker,
 } from '../types';
+import { IDENTITY_ALIGNMENT, yawPitchToDirection } from '../spatial';
 
 let cachedMarzipano: any = null;
 async function loadMarzipano() {
@@ -32,6 +35,7 @@ export class MarzipanoEngineAdapter implements EngineAdapter {
   private viewer: any = null;
   private currentScene: any = null;
   private view: any = null;
+  private spatialAlignment = IDENTITY_ALIGNMENT;
   private hotspots: Map<string, { data: HotspotData; domElement: HTMLElement }> = new Map();
   private eventHandlers: Set<(event: EngineEvent) => void> = new Set();
   private viewChangeUnsub: (() => void) | null = null;
@@ -92,7 +96,7 @@ export class MarzipanoEngineAdapter implements EngineAdapter {
         type: 'CAMERA_MOVED',
         payload: {
           position: { x: 0, y: 0, z: 0 },
-          target: { x: Math.sin(this.view.yaw()), y: Math.sin(this.view.pitch()), z: Math.cos(this.view.yaw()) },
+          target: yawPitchToDirection(yawDeg, pitchDeg),
           yaw: yawDeg,
           pitch: pitchDeg,
           fov: fovDeg,
@@ -226,7 +230,7 @@ export class MarzipanoEngineAdapter implements EngineAdapter {
       engine: 'marzipano',
       camera: {
         position: { x: 0, y: 0, z: 0 },
-        target: { x: 0, y: 0, z: 1 },
+        target: yawPitchToDirection(yawDeg, pitchDeg),
         yaw: yawDeg,
         pitch: pitchDeg,
         fov: this.view ? (this.view.fov() * 180) / Math.PI : 60,
@@ -234,11 +238,13 @@ export class MarzipanoEngineAdapter implements EngineAdapter {
       entities: [],
       materials: [],
       hotspots,
+      spatialAlignment: this.spatialAlignment,
       updatedAt: new Date().toISOString(),
     };
   }
 
   public async loadSceneSnapshot(snapshot: SceneSnapshot): Promise<void> {
+    this.spatialAlignment = snapshot.spatialAlignment || IDENTITY_ALIGNMENT;
     this.hotspots.forEach(({ domElement }) => {
       if (this.currentScene) {
         this.currentScene.hotspotContainer().destroyHotspot(domElement);
@@ -302,6 +308,83 @@ export class MarzipanoEngineAdapter implements EngineAdapter {
 
     this.currentScene.hotspotContainer().createHotspot(el, coords);
     this.hotspots.set(data.id, { data, domElement: el });
+  }
+
+  // --- Alignment Methods ---
+
+  setAlignment(alignment: SpatialAlignment): void {
+    this.spatialAlignment = alignment;
+  }
+
+  addAlignmentMarker(marker: AlignmentMarker): void {
+    if (!this.currentScene) return;
+    const el = document.createElement('div');
+    el.className = 'alignment-marker';
+    el.style.width = '16px';
+    el.style.height = '16px';
+    el.style.borderRadius = '50%';
+    el.style.backgroundColor = '#f59e0b';
+    el.style.border = '2px solid white';
+    el.style.boxShadow = '0 0 8px rgba(245,158,11,0.5)';
+    el.style.position = 'absolute';
+    el.style.pointerEvents = 'none';
+    el.title = marker.label || `Marker ${marker.id}`;
+    el.dataset.markerId = marker.id;
+
+    const coords = {
+      yaw: (marker.yaw * Math.PI) / 180,
+      pitch: (marker.pitch * Math.PI) / 180,
+    };
+
+    this.currentScene.hotspotContainer().createHotspot(el, coords);
+  }
+
+  removeAlignmentMarker(markerId: string): void {
+    if (!this.currentScene) return;
+    const container = this.currentScene.hotspotContainer();
+    const hotspots = container?.hotspots?.() || [];
+    for (const h of hotspots) {
+      const domEl = h.domElement?.();
+      if (domEl?.dataset?.markerId === markerId) {
+        container?.destroyHotspot(h);
+        break;
+      }
+    }
+  }
+
+  setAlignmentOverlayVisibility(visible: boolean): void {
+    if (!this.currentScene) return;
+    const container = this.currentScene.hotspotContainer();
+    const hotspots = container?.hotspots?.() || [];
+    for (const h of hotspots) {
+      const domEl = h.domElement?.();
+      if (domEl?.classList?.contains('alignment-marker')) {
+        domEl.style.display = visible ? '' : 'none';
+      }
+    }
+  }
+
+  beginAlignmentPointPick(markerId: string): void {
+    if (!this.currentScene || !this.container) return;
+    const container = this.container;
+    const onClick = (e: MouseEvent) => {
+      if (!this.view) return;
+      const rect = container.getBoundingClientRect();
+      const coords = this.view.screenToCoordinates(
+        { x: e.clientX - rect.left, y: e.clientY - rect.top },
+      );
+      if (coords) {
+        const yaw = (coords.yaw * 180) / Math.PI;
+        const pitch = (coords.pitch * 180) / Math.PI;
+        const direction = yawPitchToDirection(yaw, pitch);
+        this.emit({
+          type: 'ALIGNMENT_POINT_PICKED',
+          payload: { markerId, yaw, pitch, worldPoint: direction },
+        });
+      }
+      container.removeEventListener('click', onClick);
+    };
+    container.addEventListener('click', onClick, { once: true });
   }
 
   private emit(event: EngineEvent): void {

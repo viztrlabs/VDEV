@@ -20,6 +20,7 @@ const TABS: ReadonlyArray<readonly [SectionTab, string]> = [
   ['model', 'Model'],
   ['marketing', 'Marketing'],
   ['settings', 'Settings'],
+  ['alignment', 'Alignment'],
 ] as const;
 
 function SectionTabsBase({ active, onChange }: SectionTabsProps) {

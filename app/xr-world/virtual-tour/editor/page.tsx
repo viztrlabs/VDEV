@@ -3,8 +3,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import { useParams } from 'next/navigation';
 import HotspotStyleTabs from '@/components/editor/HotspotStyleTabs';
 import OrientationBar from '@/components/editor/OrientationBar';
+import { notifyEditorSave } from '@/lib/editor-sync';
 // Code-split heavy tab panels to keep initial bundle small.
 const SceneConfigPanel = dynamic(
   () => import('@/components/editor/SceneConfigPanel'),
@@ -46,6 +48,10 @@ const ContentSettingsPanel = dynamic(
   () => import('@/components/editor/ContentSettingsPanel'),
   { ssr: false },
 );
+const AlignmentPanel = dynamic(
+  () => import('@/components/editor/alignment/AlignmentPanel'),
+  { ssr: false, loading: () => <div className="p-4 text-[10px] font-mono text-[#71717A]">Loading alignment…</div> },
+);
 import { EditorHeader } from '@/components/editor/shell/EditorHeader';
 import { SectionTabs } from '@/components/editor/shell/SectionTabs';
 import { NodeListSidebar } from '@/components/editor/shell/NodeListSidebar';
@@ -77,7 +83,8 @@ import {
   FolderUp,
   Compass,
 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { initTourConfigSaveHook } from '@/forks/editor-src/src/editor/tour-config-hook';
+import { serializeMarzipanoTour } from '@/forks/editor-src/src/editor/marzipano-config-serializer';
 
 type HotspotColor = 'rose' | 'emerald' | 'cyan' | 'amber' | 'violet' | 'blue';
 type HotspotCategory =
@@ -132,19 +139,9 @@ interface TourRoom {
 }
 
 export default function TourEditorPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    (async () => {
-      let pid = 'proj_smart_luxury_villa';
-      try {
-        const data = await (await fetch('/api/projects')).json();
-        pid = data?.projects?.[0]?.id || data?.project?.id || pid;
-      } catch {}
-      router.replace(`/admin/projects/${pid}/editor-dashboard/virtual-tour`);
-    })();
-  }, [router]);
-  const { showToast } = useAppStore();
+  const params = useParams<{ projectId?: string; experienceId?: string }>();
+  const projectId = params?.projectId || 'proj_smart_luxury_villa';
+  const experienceId = params?.experienceId;
   const { undo, redo, canUndo, canRedo } = useEditorHistory();
 
   // Keyboard shortcuts for undo/redo
@@ -212,10 +209,26 @@ export default function TourEditorPage() {
     try {
       const url = new URL(typeof window !== 'undefined' ? window.location.href : 'http://localhost/');
       const queryTour = url.searchParams.get('tour');
+      const queryExperience = url.searchParams.get('experience');
       const lsTour = typeof window !== 'undefined' ? localStorage.getItem('viztr_active_tour') : null;
       const tourId = queryTour || lsTour || '';
-      const res = await fetch(`/api/tour${tourId ? `?tour=${tourId}` : ''}`);
-      const data = await res.json();
+      
+      // If experienceId is provided, try to load from experience config first
+      let data: any = null;
+      if (experienceId) {
+        const expRes = await fetch(`/api/experience-configs?experienceId=${encodeURIComponent(experienceId)}`);
+        const expData = await expRes.json();
+        if (expData.success && expData.configs && expData.configs.length > 0) {
+          data = expData.configs[0].config;
+        }
+      }
+      
+      // Fallback to tour API
+      if (!data) {
+        const res = await fetch(`/api/tour${tourId ? `?tour=${tourId}` : ''}`);
+        data = await res.json();
+      }
+      
       setRooms(data.rooms || []);
       setSelectedId((prev) => prev || data.rooms?.[0]?.id || '');
     } catch (e: any) {
@@ -830,6 +843,29 @@ export default function TourEditorPage() {
       });
       if (!res.ok) throw new Error('save failed');
       setSaved(true);
+
+      // Also serialize and send to VizTR Experience Config API
+      try {
+        const config = serializeMarzipanoTour(rooms, settings, projectId, experienceId);
+        await fetch('/api/experience-configs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            experience_id: experienceId,
+            config: { tour: config.tour },
+            assets: config.assets,
+            settings: {
+              tour: config.settings,
+              assets: config.assets,
+              metadata: config.metadata,
+            },
+          }),
+        });
+      } catch (e) {
+        console.warn('[TourEditor] Failed to sync to VizTR Experience Config:', e);
+      }
+      notifyEditorSave();
     } catch (e: any) {
       setError(e?.message || 'save failed');
     } finally {
@@ -1487,6 +1523,10 @@ export default function TourEditorPage() {
           ) : (
             <SettingsUnavailable loading={settingsLoading} onRetry={loadSettings} />
           )}
+        </div>
+      ) : sectionTab === 'alignment' ? (
+        <div className="flex-1 min-h-0">
+          <AlignmentPanel projectId={projectId} />
         </div>
       ) : (
         renderNonEditorTab()
