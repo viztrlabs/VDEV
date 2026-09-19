@@ -20,7 +20,10 @@ import {
   Vector3D,
   EulerRotation,
   EngineEvent,
+  SpatialAlignment,
+  AlignmentMarker,
 } from '@/lib/3d/bridge/types';
+import { IDENTITY_ALIGNMENT } from '@/lib/3d/bridge/spatial';
 
 export interface HistoryCommand {
   description: string;
@@ -50,6 +53,11 @@ export interface EngineStoreState {
   // History (Undo / Redo)
   undoStack: HistoryCommand[];
   redoStack: HistoryCommand[];
+
+  // Alignment State
+  spatialAlignment: SpatialAlignment;
+  alignmentMarkers: AlignmentMarker[];
+  alignmentDirty: boolean;
 
   // Actions
   loadSnapshot: (snapshot: SceneSnapshot) => void;
@@ -84,6 +92,12 @@ export interface EngineStoreState {
   // Persistence
   saveScene: () => Promise<boolean>;
   resetDirty: () => void;
+
+  // Alignment Actions
+  setSpatialAlignment: (alignment: SpatialAlignment) => void;
+  addAlignmentMarker: (marker: AlignmentMarker) => void;
+  removeAlignmentMarker: (markerId: string) => void;
+  resetAlignment: () => void;
 }
 
 export const useEngineStore = create<EngineStoreState>()(
@@ -146,6 +160,10 @@ export const useEngineStore = create<EngineStoreState>()(
 
     undoStack: [],
     redoStack: [],
+
+    spatialAlignment: { ...IDENTITY_ALIGNMENT },
+    alignmentMarkers: [],
+    alignmentDirty: false,
 
     loadSnapshot: (snapshot) => {
       set((state) => {
@@ -439,6 +457,51 @@ export const useEngineStore = create<EngineStoreState>()(
     resetDirty: () => {
       set((state) => {
         state.isDirty = false;
+      });
+    },
+
+    setSpatialAlignment: (alignment) => {
+      set((state) => {
+        state.spatialAlignment = alignment;
+        state.alignmentDirty = true;
+      });
+      engineBridge.dispatch({
+        type: 'SET_SPATIAL_ALIGNMENT',
+        payload: { alignment },
+      });
+    },
+
+    addAlignmentMarker: (marker) => {
+      set((state) => {
+        state.alignmentMarkers.push(marker);
+        state.alignmentDirty = true;
+      });
+      engineBridge.dispatch({
+        type: 'ADD_ALIGNMENT_MARKER',
+        payload: { marker },
+      });
+    },
+
+    removeAlignmentMarker: (markerId) => {
+      set((state) => {
+        state.alignmentMarkers = state.alignmentMarkers.filter((m) => m.id !== markerId);
+        state.alignmentDirty = true;
+      });
+      engineBridge.dispatch({
+        type: 'REMOVE_ALIGNMENT_MARKER',
+        payload: { markerId },
+      });
+    },
+
+    resetAlignment: () => {
+      set((state) => {
+        state.spatialAlignment = { ...IDENTITY_ALIGNMENT };
+        state.alignmentMarkers = [];
+        state.alignmentDirty = true;
+      });
+      engineBridge.dispatch({
+        type: 'SET_SPATIAL_ALIGNMENT',
+        payload: { alignment: { ...IDENTITY_ALIGNMENT } },
       });
     },
   }))

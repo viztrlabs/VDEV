@@ -22,7 +22,8 @@ export type SectionTab =
   | 'content'
   | 'model'
   | 'marketing'
-  | 'settings';
+  | 'settings'
+  | 'alignment';
 
 export interface EditorState {
   // Tour data

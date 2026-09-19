@@ -3,6 +3,8 @@
  * Production-ready virtual tour pipeline with image upload, linking, and management.
  */
 
+import type { SpatialAlignment, AlignmentMarker } from '@/lib/3d/bridge/types';
+
 export type HotspotType = 'metadata' | 'room_link' | 'image_overlay' | 'info_popup';
 export type HotspotCategory =
   | 'material'
@@ -72,6 +74,9 @@ export interface TourRoom {
   sunLight?: Record<string, unknown>;
   stagingMode?: string;
   nadirFix?: Record<string, unknown>;
+  // Alignment (optional, additive non-breaking)
+  spatialAlignment?: SpatialAlignment;
+  alignmentMarkers?: AlignmentMarker[];
 }
 
 export interface StandaloneImage {
