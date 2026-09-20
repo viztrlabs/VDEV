@@ -12,6 +12,7 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
   const isEditor = pathname.startsWith('/editor/');
   const isDashboard = pathname.startsWith('/app/') || pathname.startsWith('/dashboard/');
   const isTourBuilder = pathname.startsWith('/xr-world/virtual-tour/tour-builder');
+  const isTourEditor = pathname.startsWith('/xr-world/virtual-tour/editor');
 
   // Listen for client-side navigation between pages
   useEffect(() => {
@@ -58,8 +59,8 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
     setIsNavigating(false);
   }, [pathname]);
 
-  // Hide header and footer for editor and dashboard layouts, keep sidebar
-  if (isEditor || isDashboard || isTourBuilder) {
+  // Hide header and footer for editor, dashboard, and tour editor layouts
+  if (isEditor || isDashboard || isTourBuilder || isTourEditor) {
     return (
       <>
         {isNavigating && <ViztrIntroOverlay mode="loading" isLoading={isNavigating} />}
