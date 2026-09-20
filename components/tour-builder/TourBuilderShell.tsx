@@ -7,6 +7,7 @@ import { PanoramaViewport } from './PanoramaViewport';
 import { InspectorPanel } from './InspectorPanel';
 import { Toolbar } from './Toolbar';
 import { ShortcutProvider } from './ShortcutProvider';
+import { ContextMenuProvider } from './ContextMenu';
 
 interface TourBuilderShellProps {
   projectId: string;
@@ -36,56 +37,58 @@ export function TourBuilderShell({ projectId, experienceId }: TourBuilderShellPr
   };
 
   return (
-    <ShortcutProvider
-      activeTool={activeTool}
-      onToolChange={setActiveTool}
-      onSave={handleSave}
-      onUndo={handleUndo}
-      onRedo={handleRedo}
-      onPreview={() => console.log('Preview')}
-      onDelete={() => console.log('Delete')}
-    >
-      <div className="h-screen flex flex-col bg-[#09090B] text-white overflow-hidden">
-        <TourToolbar
-          projectId={projectId}
-          experienceId={experienceId}
-          leftOpen={leftOpen}
-          rightOpen={rightOpen}
-          onToggleLeft={() => setLeftOpen(!leftOpen)}
-          onToggleRight={() => setRightOpen(!rightOpen)}
-        />
+    <ContextMenuProvider>
+      <ShortcutProvider
+        activeTool={activeTool}
+        onToolChange={setActiveTool}
+        onSave={handleSave}
+        onUndo={handleUndo}
+        onRedo={handleRedo}
+        onPreview={() => console.log('Preview')}
+        onDelete={() => console.log('Delete')}
+      >
+        <div className="h-screen flex flex-col bg-[#09090B] text-white overflow-hidden">
+          <TourToolbar
+            projectId={projectId}
+            experienceId={experienceId}
+            leftOpen={leftOpen}
+            rightOpen={rightOpen}
+            onToggleLeft={() => setLeftOpen(!leftOpen)}
+            onToggleRight={() => setRightOpen(!rightOpen)}
+          />
 
-        <div className="flex-1 flex overflow-hidden">
-          {leftOpen && (
-            <div className="w-64 border-r border-[#27272A] flex-shrink-0">
-              <RoomManager
-                selectedRoomId={selectedRoomId}
-                onSelectRoom={setSelectedRoomId}
+          <div className="flex-1 flex overflow-hidden">
+            {leftOpen && (
+              <div className="w-64 border-r border-[#27272A] flex-shrink-0">
+                <RoomManager
+                  selectedRoomId={selectedRoomId}
+                  onSelectRoom={setSelectedRoomId}
+                />
+              </div>
+            )}
+
+            <div className="flex-1 relative">
+              <PanoramaViewport
+                roomId={selectedRoomId}
+                activeTool={activeTool}
+                selectedHotspotId={selectedHotspotId}
+                onSelectHotspot={setSelectedHotspotId}
               />
             </div>
-          )}
 
-          <div className="flex-1 relative">
-            <PanoramaViewport
-              roomId={selectedRoomId}
-              activeTool={activeTool}
-              selectedHotspotId={selectedHotspotId}
-              onSelectHotspot={setSelectedHotspotId}
-            />
+            {rightOpen && (
+              <div className="w-72 border-l border-[#27272A] flex-shrink-0">
+                <InspectorPanel
+                  roomId={selectedRoomId}
+                  hotspotId={selectedHotspotId}
+                />
+              </div>
+            )}
           </div>
 
-          {rightOpen && (
-            <div className="w-72 border-l border-[#27272A] flex-shrink-0">
-              <InspectorPanel
-                roomId={selectedRoomId}
-                hotspotId={selectedHotspotId}
-              />
-            </div>
-          )}
+          <Toolbar activeTool={activeTool} onSelectTool={setActiveTool} />
         </div>
-
-        <Toolbar activeTool={activeTool} onSelectTool={setActiveTool} />
-      </div>
-    </ShortcutProvider>
+      </ShortcutProvider>
+    </ContextMenuProvider>
   );
 }
