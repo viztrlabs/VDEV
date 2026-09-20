@@ -11,6 +11,7 @@ import {
   ChevronUp,
   Eye,
   FolderOpen,
+  Upload,
 } from 'lucide-react';
 import { useTourStore } from '@/lib/tourClientStore';
 import type { TourScene } from '@/lib/tourClientStore';
@@ -28,6 +29,7 @@ export function RoomManager({ selectedRoomId, onSelectRoom }: RoomManagerProps) 
   const duplicateRoom = useTourStore((s) => s.duplicateRoom);
   const reorderRoom = useTourStore((s) => s.reorderRoom);
   const setCurrentScene = useTourStore((s) => s.setCurrentScene);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [expandedFloors, setExpandedFloors] = useState<Record<string, boolean>>({});
   const [editingId, setEditingId] = useState<string>('');
   const [editName, setEditName] = useState('');
@@ -109,6 +111,32 @@ export function RoomManager({ selectedRoomId, onSelectRoom }: RoomManagerProps) 
     dragIdRef.current = '';
   };
 
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const url = event.target?.result as string;
+        const name = file.name.replace(/\.[^/.]+$/, '');
+        const id = addRoom({
+          name,
+          type: '360',
+          url,
+          thumbnailUrl: url,
+          initialYaw: 0,
+          initialPitch: 0,
+          initialFov: 75,
+          hotspots: [],
+        });
+        onSelectRoom(id);
+      };
+      reader.readAsDataURL(file);
+    });
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
   return (
     <div className="h-full flex flex-col bg-[#09090B]">
       <div className="flex items-center justify-between px-3 py-2 border-b border-[#27272A]">
@@ -128,6 +156,21 @@ export function RoomManager({ selectedRoomId, onSelectRoom }: RoomManagerProps) 
           >
             <FolderOpen className="w-3.5 h-3.5 text-[#71717A]" />
           </button>
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="p-1 rounded hover:bg-white/5"
+            title="Upload Panorama"
+          >
+            <Upload className="w-3.5 h-3.5 text-[#71717A]" />
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleUpload}
+            className="hidden"
+          />
           <button onClick={handleAddRoom} className="p-1 rounded hover:bg-white/5" title="Add Room">
             <Plus className="w-3.5 h-3.5 text-[#71717A]" />
           </button>

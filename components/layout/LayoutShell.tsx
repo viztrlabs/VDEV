@@ -5,13 +5,13 @@ import { usePathname } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ViztrIntroOverlay from '@/components/landing/ViztrIntroOverlay';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
 
 export default function LayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isNavigating, setIsNavigating] = useState(false);
   const isEditor = pathname.startsWith('/editor/');
   const isDashboard = pathname.startsWith('/app/') || pathname.startsWith('/dashboard/');
+  const isTourEditor = pathname.startsWith('/xr-world/virtual-tour/editor');
 
   // Listen for client-side navigation between pages
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
   }, [pathname]);
 
   // Hide header and footer for editor and dashboard layouts, keep sidebar
-  if (isEditor || isDashboard) {
+  if (isEditor || isDashboard || isTourEditor) {
     return (
       <>
         {isNavigating && <ViztrIntroOverlay mode="loading" isLoading={isNavigating} />}
@@ -72,12 +72,7 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
     <>
       {isNavigating && <ViztrIntroOverlay mode="loading" isLoading={isNavigating} />}
       <Header />
-      <div className="flex-1 flex flex-col">
-        <div className="max-w-[2400px] mx-auto w-full px-4 sm:px-6 lg:px-8 pt-4">
-          <Breadcrumbs />
-        </div>
-        {children}
-      </div>
+      <div className="flex-1 flex flex-col">{children}</div>
       <Footer />
     </>
   );

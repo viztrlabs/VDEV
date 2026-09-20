@@ -61,6 +61,8 @@ export function TourBuilderShell({ projectId, experienceId }: TourBuilderShellPr
             onToggleLeft={() => setLeftOpen(!leftOpen)}
             onToggleRight={() => setRightOpen(!rightOpen)}
             onToggleValidation={() => setValidationOpen(!validationOpen)}
+            selectedRoomId={selectedRoomId}
+            onSelectRoom={setSelectedRoomId}
           />
 
           <div className="flex-1 flex overflow-hidden">
