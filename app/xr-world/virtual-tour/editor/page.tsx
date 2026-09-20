@@ -64,6 +64,7 @@ import {
   type SectionTab,
 } from '@/lib/editorStore';
 import { useEngineStore } from '@/lib/editor/engineStore';
+import type { SpatialAlignment, AlignmentMarker } from '@/lib/3d/bridge/types';
 import { analyzeZip, importTourFromZip } from '@/lib/marzipano/importer';
 import { exportTourToZip, makeExportFilename } from '@/lib/marzipano/exporter';
 import type { ImportAnalysis } from '@/lib/marzipano/importer';
@@ -136,6 +137,8 @@ interface TourRoom {
   lng?: number;
   floorPlanX?: number;
   floorPlanY?: number;
+  spatialAlignment?: SpatialAlignment;
+  alignmentMarkers?: AlignmentMarker[];
 }
 
 export default function TourEditorPage() {

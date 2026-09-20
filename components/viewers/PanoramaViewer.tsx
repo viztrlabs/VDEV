@@ -8,6 +8,7 @@ import { usePanoramaPreloader } from '@/hooks/use-panorama-preloader';
 import { useTourNavigation } from '@/hooks/use-tour-navigation';
 import { useFullscreen } from '@/hooks/use-fullscreen';
 import { useMarzipanoPanorama as usePanoramaRenderer } from './usePanoramaRenderer';
+import type { SpatialAlignment, AlignmentMarker } from '@/lib/3d/bridge/types';
 import HotspotLayer from './HotspotLayer';
 import ControlBar from './ControlBar';
 
@@ -67,6 +68,8 @@ export interface TourRoom {
   nadirLogoUrl?: string;
   brightness?: number;
   contrast?: number;
+  spatialAlignment?: SpatialAlignment;
+  alignmentMarkers?: AlignmentMarker[];
 }
 
 import { LOCAL_TOUR_ROOMS } from '@/lib/localTour';

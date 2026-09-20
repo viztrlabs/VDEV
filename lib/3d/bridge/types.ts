@@ -8,7 +8,9 @@
 
 export type EngineType = 'three' | 'playcanvas' | 'marzipano';
 
-export type ToolType = 'select' | 'move' | 'rotate' | 'scale' | 'hotspot' | 'measure';
+export type ToolType = 'select' | 'move' | 'rotate' | 'scale' | 'hotspot' | 'measure' | 'align';
+
+export type EngineTarget = 'primary' | 'marzipano' | 'splat';
 
 export interface Vector3D {
   x: number;
@@ -21,6 +23,46 @@ export interface EulerRotation {
   y: number;
   z: number;
   order?: 'XYZ' | 'YXZ' | 'ZXY' | 'ZYX' | 'YZX' | 'XZY';
+}
+
+/** A normalized rotation quaternion using the PlayCanvas (+Y-up) convention. */
+export interface Quaternion {
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+}
+
+/** Converts coordinates from a panorama-local frame into a PlayCanvas world frame. */
+export interface SpatialAlignment {
+  version: 1;
+  position: Vector3D;
+  rotation: Quaternion;
+  scale: number;
+  calibratedAt?: string;
+  calibratedBy?: string;
+  residualErrorMeters?: number;
+  /** Mean angular reprojection error from the fixed-scale pose solve. */
+  residualAngularErrorDegrees?: number;
+}
+
+/** A 2D panorama bearing paired with a picked point in the splat world. */
+export interface AlignmentMarker {
+  id: string;
+  yaw: number;
+  pitch: number;
+  panoramaDirection: Vector3D;
+  worldPoint: Vector3D;
+  label?: string;
+}
+
+export interface AlignmentModeState {
+  isActive: boolean;
+  markers: AlignmentMarker[];
+  draftAlignment: SpatialAlignment;
+  isDirty: boolean;
+  residualAngularErrorDegrees: number | null;
+  calibrationStatus: 'idle' | 'ready' | 'solving' | 'solved' | 'invalid';
 }
 
 export interface CameraPose {
@@ -72,6 +114,8 @@ export interface HotspotData {
   mediaUrl?: string;
   color?: string;
   icon?: string;
+  /** Saved when a spherical hotspot has been calibrated in 3D space. */
+  worldPosition?: Vector3D;
 }
 
 export interface TelemetryMetrics {
@@ -104,6 +148,8 @@ export interface SceneSnapshot {
   materials: PBRMaterialData[];
   hotspots: HotspotData[];
   settings?: Record<string, unknown>;
+  spatialAlignment?: SpatialAlignment;
+  alignmentMarkers?: AlignmentMarker[];
   updatedAt: string;
 }
 
@@ -125,7 +171,13 @@ export type EngineCommand =
   | { type: 'SET_GRID_VISIBLE'; payload: { visible: boolean } }
   | { type: 'FOCUS_ENTITY'; payload: { entityId: string } }
   | { type: 'RESET_VIEW'; payload?: Record<string, never> }
-  | { type: 'TAKE_SCREENSHOT'; payload: { width?: number; height?: number; callback: (dataUrl: string) => void } };
+  | { type: 'TAKE_SCREENSHOT'; payload: { width?: number; height?: number; callback: (dataUrl: string) => void } }
+  | { type: 'SET_SPATIAL_ALIGNMENT'; payload: { alignment: SpatialAlignment } }
+  | { type: 'ADD_ALIGNMENT_MARKER'; payload: { marker: AlignmentMarker } }
+  | { type: 'REMOVE_ALIGNMENT_MARKER'; payload: { markerId: string } }
+  | { type: 'SET_ALIGNMENT_OVERLAY_VISIBILITY'; payload: { visible: boolean } }
+  | { type: 'BEGIN_ALIGNMENT_POINT_PICK'; payload: { markerId: string } }
+  | { type: 'SET_RENDER_SUSPENDED'; payload: { suspended: boolean } };
 
 // ============================================================================
 // Engine Events (Engine -> UI)
@@ -138,12 +190,16 @@ export type EngineEvent =
   | { type: 'SELECTION_CHANGED'; payload: { selectedIds: string[] } }
   | { type: 'TRANSFORM_INTERIM'; payload: { entityId: string; position: Vector3D; rotation: EulerRotation; scale: Vector3D } }
   | { type: 'TRANSFORM_COMMITTED'; payload: { entityId: string; position: Vector3D; rotation: EulerRotation; scale: Vector3D; previousState: { position: Vector3D; rotation: EulerRotation; scale: Vector3D } } }
-  | { type: 'CAMERA_MOVED'; payload: CameraPose }
+  | { type: 'CAMERA_MOVED'; payload: CameraPose; source?: EngineTarget; origin?: string }
   | { type: 'POINTER_CLICK'; payload: { hit: RaycastHit | null; rawEvent: MouseEvent } }
   | { type: 'POINTER_HOVER'; payload: { hit: RaycastHit | null } }
   | { type: 'TELEMETRY_UPDATED'; payload: TelemetryMetrics }
   | { type: 'HOTSPOT_SELECTED'; payload: { hotspotId: string } }
-  | { type: 'DIRTY_STATE_CHANGED'; payload: { isDirty: boolean } };
+  | { type: 'DIRTY_STATE_CHANGED'; payload: { isDirty: boolean } }
+  | { type: 'ALIGNMENT_CHANGED'; payload: { alignment: SpatialAlignment } }
+  | { type: 'ALIGNMENT_MARKER_ADDED'; payload: { marker: AlignmentMarker } }
+  | { type: 'ALIGNMENT_MARKER_REMOVED'; payload: { markerId: string } }
+  | { type: 'ALIGNMENT_POINT_PICKED'; payload: { markerId: string; yaw?: number; pitch?: number; worldPoint?: Vector3D } };
 
 // ============================================================================
 // Engine Adapter Contract
@@ -173,4 +229,11 @@ export interface EngineAdapter {
   getSceneSnapshot(): SceneSnapshot;
   loadSceneSnapshot(snapshot: SceneSnapshot): Promise<void>;
   getTelemetry(): TelemetryMetrics;
+
+  setAlignment?: (alignment: SpatialAlignment) => void;
+  addAlignmentMarker?: (marker: AlignmentMarker) => void;
+  removeAlignmentMarker?: (markerId: string) => void;
+  setAlignmentOverlayVisibility?: (visible: boolean) => void;
+  beginAlignmentPointPick?: (markerId: string) => void;
+  setRenderSuspended?: (suspended: boolean) => void;
 }

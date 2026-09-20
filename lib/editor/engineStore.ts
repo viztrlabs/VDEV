@@ -176,6 +176,13 @@ export const useEngineStore = create<EngineStoreState>()(
         state.isDirty = false;
         state.undoStack = [];
         state.redoStack = [];
+        // Restore alignment state from snapshot
+        if (snapshot.spatialAlignment) {
+          state.spatialAlignment = snapshot.spatialAlignment;
+        }
+        if (snapshot.alignmentMarkers) {
+          state.alignmentMarkers = snapshot.alignmentMarkers;
+        }
       });
 
       engineBridge.dispatch({
