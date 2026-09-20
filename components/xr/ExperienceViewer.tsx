@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { SharedExperienceProvider, useSharedExperience } from './SharedExperienceContext';
+import { SharedExperienceProvider } from './SharedExperienceContext';
 import { ExperienceLayout } from './ExperienceLayout';
 import TourViewer from './TourViewer';
 import GaussianSplatViewer from './GaussianSplatViewer';
@@ -13,8 +13,6 @@ interface ExperienceViewerProps {
 }
 
 function ExperienceViewerInner({ config }: { config: Record<string, any> }) {
-  const { setOrientation } = useSharedExperience();
-
   const engine = config.engine as string;
   const hasSplat = !!config.splat?.url;
   const hasTour = !!config.tour;
