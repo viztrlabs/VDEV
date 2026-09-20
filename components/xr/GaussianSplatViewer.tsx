@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { Loader2, Box, Eye, EyeOff, SlidersHorizontal } from 'lucide-react';
 import { useSplatProcessing } from './hooks/useSplatProcessing';
+import { useSharedExperience } from './SharedExperienceContext';
 
 interface SplatSceneDef {
   id: string;
@@ -34,7 +35,9 @@ export default function GaussianSplatViewer({
 }: GaussianSplatViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<any>(null);
-  const renderCtxRef = useRef<{ renderer?: THREE.WebGLRenderer; camera?: THREE.PerspectiveCamera; raf?: number }>({});
+  const renderCtxRef = useRef<{ renderer?: THREE.WebGLRenderer; camera?: THREE.PerspectiveCamera; raf?: number; theta?: number; phi?: number }>({});
+  const localUpdateRef = useRef(false);
+  const { yaw: sharedYaw, pitch: sharedPitch, setOrientation } = useSharedExperience();
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -100,6 +103,8 @@ export default function GaussianSplatViewer({
           phi = Math.max(-1.2, Math.min(1.2, phi));
           lastX = e.clientX;
           lastY = e.clientY;
+          renderCtxRef.current.theta = theta;
+          renderCtxRef.current.phi = phi;
           const radius = 4;
           camera.position.set(
             Math.sin(phi) * Math.sin(theta) * radius,
@@ -107,6 +112,9 @@ export default function GaussianSplatViewer({
             Math.sin(phi) * Math.cos(theta) * radius
           );
           camera.lookAt(0, 0, 0);
+          localUpdateRef.current = true;
+          setOrientation(theta, -phi);
+          setTimeout(() => { localUpdateRef.current = false; }, 0);
         };
         renderer.domElement.addEventListener('pointerdown', onDown);
         window.addEventListener('pointerup', onUp);
@@ -148,6 +156,24 @@ export default function GaussianSplatViewer({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Camera sync: shared context → Three.js camera
+  useEffect(() => {
+    if (localUpdateRef.current) return;
+    const camera = renderCtxRef.current.camera;
+    if (!camera) return;
+    const theta = sharedYaw;
+    const phi = -sharedPitch;
+    renderCtxRef.current.theta = theta;
+    renderCtxRef.current.phi = phi;
+    const radius = 4;
+    camera.position.set(
+      Math.sin(phi) * Math.sin(theta) * radius,
+      Math.cos(phi) * radius,
+      Math.sin(phi) * Math.cos(theta) * radius
+    );
+    camera.lookAt(0, 0, 0);
+  }, [sharedYaw, sharedPitch]);
 
   const loadScene = async (viewer: any, scene: SplatSceneDef, index: number) => {
     setProgress(0);
