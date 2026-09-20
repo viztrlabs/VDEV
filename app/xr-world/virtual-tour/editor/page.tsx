@@ -186,7 +186,7 @@ export default function TourEditorPage() {
   const [settingsLoading, setSettingsLoading] = useState(false);
   const [draggingOver, setDraggingOver] = useState(false);
   const [editingNodeId, setEditingNodeId] = useState<string>('');
-  const [sectionTab, setSectionTab] = useState<'editor' | 'design' | 'components' | 'content' | 'settings' | 'model' | 'marketing' | 'floorplan' | 'map' | 'canvas' | 'cta'>('editor');
+  const [sectionTab, setSectionTab] = useState<SectionTab>('editor');
   const [mediaAssets, setMediaAssets] = useState<{ name: string; url: string }[]>([]);
   const imgRef = useRef<HTMLImageElement>(null);
   const dragHpRef = useRef<string | null>(null);
