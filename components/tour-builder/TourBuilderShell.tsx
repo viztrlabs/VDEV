@@ -42,6 +42,8 @@ export function TourBuilderShell({ projectId, experienceId }: TourBuilderShellPr
       onSave={handleSave}
       onUndo={handleUndo}
       onRedo={handleRedo}
+      onPreview={() => console.log('Preview')}
+      onDelete={() => console.log('Delete')}
     >
       <div className="h-screen flex flex-col bg-[#09090B] text-white overflow-hidden">
         <TourToolbar
