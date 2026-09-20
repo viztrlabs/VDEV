@@ -28,10 +28,15 @@ export default function ExperiencePage({ params }: PageProps) {
 
   useEffect(() => {
     params.then(({ slug }) => {
-      getExperience(slug).then((d) => {
-        setData(d);
-        setLoading(false);
-      });
+      getExperience(slug)
+        .then((d) => {
+          setData(d);
+          setLoading(false);
+        })
+        .catch(() => {
+          setData(null);
+          setLoading(false);
+        });
     });
   }, [params]);
 
@@ -42,9 +47,9 @@ export default function ExperiencePage({ params }: PageProps) {
     return () => clearTimeout(timer);
   }, [showChrome]);
 
-  // Show chrome on mouse move
+  // Show chrome on mouse move — only setState when value changes
   const handleMouseMove = () => {
-    setShowChrome(true);
+    setShowChrome((prev) => (prev ? prev : true));
   };
 
   if (loading) {
