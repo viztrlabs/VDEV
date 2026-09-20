@@ -11,7 +11,7 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
   const [isNavigating, setIsNavigating] = useState(false);
   const isEditor = pathname.startsWith('/editor/');
   const isDashboard = pathname.startsWith('/app/') || pathname.startsWith('/dashboard/');
-  const isTourEditor = pathname.startsWith('/xr-world/virtual-tour/editor');
+  const isTourBuilder = pathname.startsWith('/xr-world/virtual-tour/tour-builder');
 
   // Listen for client-side navigation between pages
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
   }, [pathname]);
 
   // Hide header and footer for editor and dashboard layouts, keep sidebar
-  if (isEditor || isDashboard || isTourEditor) {
+  if (isEditor || isDashboard || isTourBuilder) {
     return (
       <>
         {isNavigating && <ViztrIntroOverlay mode="loading" isLoading={isNavigating} />}
