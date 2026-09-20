@@ -98,6 +98,7 @@ export interface EngineStoreState {
   addAlignmentMarker: (marker: AlignmentMarker) => void;
   removeAlignmentMarker: (markerId: string) => void;
   resetAlignment: () => void;
+  clearAlignmentDirty: () => void;
 }
 
 export const useEngineStore = create<EngineStoreState>()(
@@ -502,6 +503,12 @@ export const useEngineStore = create<EngineStoreState>()(
       engineBridge.dispatch({
         type: 'SET_SPATIAL_ALIGNMENT',
         payload: { alignment: { ...IDENTITY_ALIGNMENT } },
+      });
+    },
+
+    clearAlignmentDirty: () => {
+      set((state) => {
+        state.alignmentDirty = false;
       });
     },
   }))

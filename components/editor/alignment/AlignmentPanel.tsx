@@ -5,23 +5,36 @@
  *
  * Main shell for Alignment Mode. Integrates SplitViewport, AlignmentControls,
  * and LandmarkManager into a cohesive alignment workflow.
+ *
+ * Accepts onAlignmentSave callback to sync alignment data back to TourRoom
+ * for persistence through the existing save path.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import SplitViewport from './SplitViewport';
 import AlignmentControls from './AlignmentControls';
 import LandmarkManager from './LandmarkManager';
 import { useEngineStore } from '@/lib/editor/engineStore';
+import { Save } from 'lucide-react';
 
 interface AlignmentPanelProps {
   projectId?: string;
   experienceId?: string;
+  onAlignmentSave?: (alignment: import('@/lib/3d/bridge/types').SpatialAlignment, markers: import('@/lib/3d/bridge/types').AlignmentMarker[]) => void;
 }
 
-export default function AlignmentPanel({ projectId, experienceId }: AlignmentPanelProps) {
+export default function AlignmentPanel({ projectId, experienceId, onAlignmentSave }: AlignmentPanelProps) {
   const spatialAlignment = useEngineStore((s) => s.spatialAlignment);
   const alignmentMarkers = useEngineStore((s) => s.alignmentMarkers);
   const alignmentDirty = useEngineStore((s) => s.alignmentDirty);
+  const clearAlignmentDirty = useEngineStore((s) => s.clearAlignmentDirty);
+
+  const handleSaveAlignment = () => {
+    if (onAlignmentSave) {
+      onAlignmentSave(spatialAlignment, alignmentMarkers);
+      clearAlignmentDirty();
+    }
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -35,8 +48,17 @@ export default function AlignmentPanel({ projectId, experienceId }: AlignmentPan
             </span>
           )}
         </div>
-        <div className="flex items-center gap-2 text-xs text-[#71717A] font-mono">
-          <span>{alignmentMarkers.length} markers</span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-[#71717A] font-mono">{alignmentMarkers.length} markers</span>
+          {onAlignmentSave && (
+            <button
+              onClick={handleSaveAlignment}
+              className="flex items-center gap-1 px-2 py-1 rounded bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-mono border border-[#3ECF8E]/30 hover:bg-[#3ECF8E]/20"
+            >
+              <Save size={12} />
+              Save Alignment
+            </button>
+          )}
         </div>
       </div>
 

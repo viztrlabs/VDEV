@@ -63,6 +63,7 @@ import {
   useEditorHistory,
   type SectionTab,
 } from '@/lib/editorStore';
+import { useEngineStore } from '@/lib/editor/engineStore';
 import { analyzeZip, importTourFromZip } from '@/lib/marzipano/importer';
 import { exportTourToZip, makeExportFilename } from '@/lib/marzipano/exporter';
 import type { ImportAnalysis } from '@/lib/marzipano/importer';
@@ -241,6 +242,22 @@ export default function TourEditorPage() {
   useEffect(() => {
     load();
   }, [load]);
+
+  // Sync alignment from selected TourRoom to engineStore when alignment tab is active
+  const setSpatialAlignment = useEngineStore((s) => s.setSpatialAlignment);
+  const setAlignmentMarkers = useEngineStore((s) => s.alignmentMarkers);
+  useEffect(() => {
+    if (sectionTab !== 'alignment' || !selectedId) return;
+    const room = rooms.find((r) => r.id === selectedId);
+    if (room) {
+      if (room.spatialAlignment) {
+        setSpatialAlignment(room.spatialAlignment);
+      }
+      if (room.alignmentMarkers) {
+        useEngineStore.setState({ alignmentMarkers: room.alignmentMarkers });
+      }
+    }
+  }, [sectionTab, selectedId, rooms, setSpatialAlignment]);
 
   const loadMedia = useCallback(async () => {
     try {
@@ -1526,7 +1543,19 @@ export default function TourEditorPage() {
         </div>
       ) : sectionTab === 'alignment' ? (
         <div className="flex-1 min-h-0">
-          <AlignmentPanel projectId={projectId} />
+          <AlignmentPanel
+            projectId={projectId}
+            onAlignmentSave={(alignment, markers) => {
+              setRooms((prev) =>
+                prev.map((room) =>
+                  room.id === selectedId
+                    ? { ...room, spatialAlignment: alignment, alignmentMarkers: markers }
+                    : room,
+                ),
+              );
+              setSaved(false);
+            }}
+          />
         </div>
       ) : (
         renderNonEditorTab()
