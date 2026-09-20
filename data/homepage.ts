@@ -1,8 +1,8 @@
 export const homepageData = {
   hero: {
     headline: 'VIZTR',
-    subheadline: 'Visualize. Experience. Transform.',
-    description: 'Architectural visualization, immersive XR experiences and powerful 3D creation tools — all in one platform.',
+    subheadline: 'Studio. XR World. Project Hub. Creator.',
+    description: 'Professional architectural visualization, immersive XR experiences, real-time project tracking, and powerful creation tools — all in one platform.',
     primaryCTA: { label: 'Start a Project', href: '/app/register' },
     secondaryCTA: { label: 'Explore XR World', href: '/xr-world' },
     images: [
@@ -104,25 +104,25 @@ export const homepageData = {
     speed: 35
   },
   serviceCategories: {
-    title: 'Dual Architectural Core',
-    subtitle: 'Choose between pure photorealistic studio renders or interactive real-time spatial worlds.',
+    title: 'The VizTR Platform',
+    subtitle: 'Four pillars powering architectural visualization from creation to delivery.',
     studio: {
       title: 'Studio',
-      subtitle: 'Architecture Visualization Studio',
-      description: 'Photorealistic renders, cinematic walkthroughs, and detailed visual narratives for master plans, high-rises, and private villas.',
+      subtitle: 'Create.',
+      description: 'Professional architectural visualization with photorealistic renders, cinematic walkthroughs, and detailed visual narratives.',
       image: '/images/renders/front-dusk-view.jpg',
-      cta: 'Explore Studio Services',
+      cta: 'Explore Studio',
       href: '/studio',
       services: ['Exterior Visualization', 'Interior Visualization', 'Walkthrough Animation']
     },
     xrWorld: {
       title: 'XR World',
-      subtitle: 'Immersive Technology Experiences',
-      description: 'WebXR, WebAR, VR, virtual tours, and cloud pixel streaming — zero software installation required on client devices.',
+      subtitle: 'Experience.',
+      description: 'Interactive, immersive property experiences with WebXR, WebAR, VR, virtual tours, and cloud pixel streaming.',
       image: '/images/renders/clubhouse-pool.jpg',
       cta: 'Explore XR World',
       href: '/xr-world',
-      services: ['WebXR In-Browser', 'WebAR Mobile Projection', 'Virtual Reality Tour', '360° Spherical Hub', 'Unreal Pixel Streaming']
+      services: ['WebXR In-Browser', 'WebAR Mobile Projection', 'Virtual Reality Tour', '360° Virtual Tour', 'Pixel Streaming']
     }
   },
   studioPreview: {

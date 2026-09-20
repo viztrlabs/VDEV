@@ -4,6 +4,7 @@ import React from 'react';
 import ViztrIntroOverlay from '@/components/landing/ViztrIntroOverlay';
 import HeroSection from '@/components/sections/HeroSection';
 import MarqueeSection from '@/components/sections/MarqueeSection';
+import FourPillarsSection from '@/components/sections/FourPillarsSection';
 import StudioSection from '@/components/sections/StudioSection';
 import XRWorldSection from '@/components/sections/XRWorldSection';
 import CreatorSection from '@/components/sections/CreatorSection';
@@ -31,7 +32,10 @@ export default function HomePage() {
       {/* SECTION 2: MARQUEE - Animated ticker */}
       <MarqueeSection />
 
-      {/* SECTION 3: STUDIO - Section 01 */}
+      {/* SECTION 3: FOUR PILLARS - Studio, XR World, Project Hub, Creator */}
+      <FourPillarsSection />
+
+      {/* SECTION 4: STUDIO - Section 01 */}
       <StudioSection />
 
       {/* SECTION 4: XR WORLD - Section 02 */}
