@@ -54,6 +54,9 @@ interface TourClientState {
   setScenes: (scenes: TourScene[]) => void;
   updateScene: (id: string, patch: Partial<TourScene>) => void;
   deleteScene: (id: string) => void;
+  addRoom: (room: Partial<TourScene>) => string;
+  renameRoom: (id: string, name: string) => void;
+  duplicateRoom: (id: string) => string;
   setCurrentScene: (id: string) => void;
   setView: (v: { yaw: number; pitch: number; fov: number }) => void;
 }
@@ -84,6 +87,48 @@ export const useTourStore = create<TourClientState>()(
             s.scenes = s.scenes.filter((x) => x.id !== id);
             if (s.currentSceneId === id) s.currentSceneId = s.scenes[0]?.id ?? '';
           }),
+        addRoom: (room) => {
+          const id = `room-${Date.now().toString(36)}`;
+          set((s) => {
+            s.scenes.push({
+              id,
+              name: room.name || 'New Room',
+              type: room.type || '360',
+              url: room.url || '',
+              tileUrl: room.tileUrl,
+              thumbnailUrl: room.thumbnailUrl || '',
+              initialYaw: room.initialYaw || 0,
+              initialPitch: room.initialPitch || 0,
+              initialFov: room.initialFov || 75,
+              hotspots: room.hotspots || [],
+              viewConstraints: room.viewConstraints || {
+                top: -90, bottom: 90, left: -180, right: 180,
+                zoomMin: 60, zoomMax: 120, mobileZoomEnabled: false,
+              },
+              autorotateEnabled: room.autorotateEnabled ?? true,
+              autorotateSpeed: room.autorotateSpeed || 0.5,
+              spatialAlignment: room.spatialAlignment,
+              alignmentMarkers: room.alignmentMarkers,
+            } as TourScene);
+          });
+          return id;
+        },
+        renameRoom: (id, name) =>
+          set((s) => {
+            const sc = s.scenes.find((x) => x.id === id);
+            if (sc) sc.name = name;
+          }),
+        duplicateRoom: (id) => {
+          const newId = `room-${Date.now().toString(36)}`;
+          set((s) => {
+            const original = s.scenes.find((x) => x.id === id);
+            if (original) {
+              const clone = { ...original, id: newId, name: `${original.name} (copy)` };
+              s.scenes.push(clone as TourScene);
+            }
+          });
+          return newId;
+        },
         setCurrentScene: (id) => set({ currentSceneId: id }),
         setView: (v) => set({ currentView: v }),
       })),
