@@ -163,7 +163,7 @@ export default function GaussianSplatViewer({
     const camera = renderCtxRef.current.camera;
     if (!camera) return;
     const theta = sharedYaw;
-    const phi = -sharedPitch;
+    const phi = Math.max(-1.2, Math.min(1.2, -sharedPitch));
     renderCtxRef.current.theta = theta;
     renderCtxRef.current.phi = phi;
     const radius = 4;
