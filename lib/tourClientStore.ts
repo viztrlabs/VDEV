@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { temporal } from 'zundo';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import type { AlignmentMarker, SpatialAlignment } from '@/lib/3d/bridge/types';
 
 export interface ViewConstraints {
   top: number;
@@ -38,17 +39,8 @@ export interface TourScene {
   viewConstraints: ViewConstraints;
   autorotateEnabled: boolean;
   autorotateSpeed: number;
-  spatialAlignment?: {
-    position: { x: number; y: number; z: number };
-    rotation: { x: number; y: number; z: number; w: number };
-    scale: number;
-  };
-  alignmentMarkers?: Array<{
-    id: string;
-    panoramaPoint: { yaw: number; pitch: number };
-    worldPoint: { x: number; y: number; z: number };
-    label?: string;
-  }>;
+  spatialAlignment?: SpatialAlignment;
+  alignmentMarkers?: AlignmentMarker[];
 }
 
 interface TourClientState {

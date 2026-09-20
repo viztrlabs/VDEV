@@ -9,6 +9,7 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Eye, Compass, MessageSquare, Send } from 'lucide-react';
+import type { AlignmentMarker, SpatialAlignment } from '@/lib/3d/bridge/types';
 
 const TourViewer = dynamic(() => import('@/components/xr/TourViewer'), { ssr: false });
 
@@ -17,17 +18,8 @@ interface Room {
   name: string;
   panoramaUrl: string;
   thumbnailUrl: string;
-  spatialAlignment?: {
-    position: { x: number; y: number; z: number };
-    rotation: { x: number; y: number; z: number; w: number };
-    scale: number;
-  };
-  alignmentMarkers?: Array<{
-    id: string;
-    panoramaPoint: { yaw: number; pitch: number };
-    worldPoint: { x: number; y: number; z: number };
-    label?: string;
-  }>;
+  spatialAlignment?: SpatialAlignment;
+  alignmentMarkers?: AlignmentMarker[];
 }
 interface Comment {
   id: string;
