@@ -65,6 +65,7 @@ export function ShortcutProvider({
   onSaveAs,
   onUndo,
   onRedo,
+  onPreview,
   onDelete,
   onSelectRoom,
   onSelectViewport,

@@ -18,8 +18,10 @@ interface TourToolbarProps {
   experienceId?: string;
   leftOpen: boolean;
   rightOpen: boolean;
+  validationOpen: boolean;
   onToggleLeft: () => void;
   onToggleRight: () => void;
+  onToggleValidation: () => void;
 }
 
 export function TourToolbar({
@@ -27,8 +29,10 @@ export function TourToolbar({
   experienceId,
   leftOpen,
   rightOpen,
+  validationOpen,
   onToggleLeft,
   onToggleRight,
+  onToggleValidation,
 }: TourToolbarProps) {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -64,7 +68,11 @@ export function TourToolbar({
         <button onClick={() => {}} className="p-1.5 rounded hover:bg-white/5" title="Tour Map">
           <Map className="w-4 h-4" />
         </button>
-        <button onClick={() => {}} className="p-1.5 rounded hover:bg-white/5" title="Validate">
+        <button
+          onClick={onToggleValidation}
+          className={`p-1.5 rounded hover:bg-white/5 ${validationOpen ? 'text-[#3ECF8E]' : ''}`}
+          title="Validate"
+        >
           <CheckCircle className="w-4 h-4" />
         </button>
         <div className="h-4 w-px bg-[#27272A]" />

@@ -8,6 +8,7 @@ import { InspectorPanel } from './InspectorPanel';
 import { Toolbar } from './Toolbar';
 import { ShortcutProvider } from './ShortcutProvider';
 import { ContextMenuProvider } from './ContextMenu';
+import { ValidationPanel } from './ValidationPanel';
 
 interface TourBuilderShellProps {
   projectId: string;
@@ -17,6 +18,7 @@ interface TourBuilderShellProps {
 export function TourBuilderShell({ projectId, experienceId }: TourBuilderShellProps) {
   const [leftOpen, setLeftOpen] = useState(true);
   const [rightOpen, setRightOpen] = useState(true);
+  const [validationOpen, setValidationOpen] = useState(false);
   const [activeTool, setActiveTool] = useState<string>('select');
   const [selectedRoomId, setSelectedRoomId] = useState<string>('');
   const [selectedHotspotId, setSelectedHotspotId] = useState<string>('');
@@ -53,8 +55,10 @@ export function TourBuilderShell({ projectId, experienceId }: TourBuilderShellPr
             experienceId={experienceId}
             leftOpen={leftOpen}
             rightOpen={rightOpen}
+            validationOpen={validationOpen}
             onToggleLeft={() => setLeftOpen(!leftOpen)}
             onToggleRight={() => setRightOpen(!rightOpen)}
+            onToggleValidation={() => setValidationOpen(!validationOpen)}
           />
 
           <div className="flex-1 flex overflow-hidden">
@@ -76,7 +80,13 @@ export function TourBuilderShell({ projectId, experienceId }: TourBuilderShellPr
               />
             </div>
 
-            {rightOpen && (
+            {validationOpen && (
+              <div className="w-72 border-l border-[#27272A] flex-shrink-0">
+                <ValidationPanel />
+              </div>
+            )}
+
+            {rightOpen && !validationOpen && (
               <div className="w-72 border-l border-[#27272A] flex-shrink-0">
                 <InspectorPanel
                   roomId={selectedRoomId}
