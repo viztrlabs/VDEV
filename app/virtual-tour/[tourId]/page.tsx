@@ -17,6 +17,17 @@ interface Room {
   name: string;
   panoramaUrl: string;
   thumbnailUrl: string;
+  spatialAlignment?: {
+    position: { x: number; y: number; z: number };
+    rotation: { x: number; y: number; z: number; w: number };
+    scale: number;
+  };
+  alignmentMarkers?: Array<{
+    id: string;
+    panoramaPoint: { yaw: number; pitch: number };
+    worldPoint: { x: number; y: number; z: number };
+    label?: string;
+  }>;
 }
 interface Comment {
   id: string;
@@ -109,6 +120,9 @@ export default function VirtualTourPublicPage() {
     viewConstraints: { top: -90, bottom: 90, left: -180, right: 180, zoomMin: 60, zoomMax: 120, mobileZoomEnabled: false },
     autorotateEnabled: true,
     autorotateSpeed: 0.5,
+    // Alignment metadata — preserved for runtime spatial relationship
+    spatialAlignment: currentRoom.spatialAlignment,
+    alignmentMarkers: currentRoom.alignmentMarkers,
   };
 
   return (

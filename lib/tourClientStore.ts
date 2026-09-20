@@ -38,6 +38,17 @@ export interface TourScene {
   viewConstraints: ViewConstraints;
   autorotateEnabled: boolean;
   autorotateSpeed: number;
+  spatialAlignment?: {
+    position: { x: number; y: number; z: number };
+    rotation: { x: number; y: number; z: number; w: number };
+    scale: number;
+  };
+  alignmentMarkers?: Array<{
+    id: string;
+    panoramaPoint: { yaw: number; pitch: number };
+    worldPoint: { x: number; y: number; z: number };
+    label?: string;
+  }>;
 }
 
 interface TourClientState {
