@@ -9,6 +9,7 @@ import { Toolbar } from './Toolbar';
 import { ShortcutProvider } from './ShortcutProvider';
 import { ContextMenuProvider } from './ContextMenu';
 import { ValidationPanel } from './ValidationPanel';
+import { OnboardingOverlay } from './OnboardingOverlay';
 
 interface TourBuilderShellProps {
   projectId: string;
@@ -40,6 +41,7 @@ export function TourBuilderShell({ projectId, experienceId }: TourBuilderShellPr
 
   return (
     <ContextMenuProvider>
+      <OnboardingOverlay onComplete={() => {}} />
       <ShortcutProvider
         activeTool={activeTool}
         onToolChange={setActiveTool}
