@@ -84,8 +84,7 @@ import {
   FolderUp,
   Compass,
 } from 'lucide-react';
-import { initTourConfigSaveHook } from '@/forks/editor-src/src/editor/tour-config-hook';
-import { serializeMarzipanoTour } from '@/forks/editor-src/src/editor/marzipano-config-serializer';
+import { serializeTourForExperienceConfig } from '@/lib/marzipano/tour-config-serializer';
 
 type HotspotColor = 'rose' | 'emerald' | 'cyan' | 'amber' | 'violet' | 'blue';
 type HotspotCategory =
@@ -863,7 +862,7 @@ export default function TourEditorPage() {
 
       // Also serialize and send to VizTR Experience Config API
       try {
-        const config = serializeMarzipanoTour(rooms, settings, projectId, experienceId);
+        const config = serializeTourForExperienceConfig(rooms, settings, projectId, experienceId);
         await fetch('/api/experience-configs', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
