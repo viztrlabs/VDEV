@@ -9,6 +9,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { ZoomIn, ZoomOut, Maximize } from 'lucide-react';
 import type { TourScene } from '@/lib/tourClientStore';
+import { worldDirectionToPanorama } from '@/lib/3d/bridge/spatial';
 
 // ponytail: marzipano is not TS-typed — any is required
 type MarzipanoAny = any;
@@ -140,10 +141,28 @@ export default function TourViewer({ scene, onHotspotClick, onSceneChange }: Tou
           (vc.zoomMax * Math.PI) / 180
         );
 
+        // Compute alignment-adjusted initial view
+        let initialYaw = ((scene.initialYaw || 0) * Math.PI) / 180;
+        let initialPitch = ((scene.initialPitch || 0) * Math.PI) / 180;
+
+        if (scene.spatialAlignment) {
+          const a = scene.spatialAlignment;
+          // Extract euler angles from alignment rotation quaternion
+          const sinYaw = 2 * (a.rotation.w * a.rotation.y + a.rotation.x * a.rotation.z);
+          const cosYaw = 1 - 2 * (a.rotation.y * a.rotation.y + a.rotation.z * a.rotation.z);
+          const yawOffset = Math.atan2(sinYaw, cosYaw);
+
+          const sinPitch = 2 * (a.rotation.w * a.rotation.x - a.rotation.y * a.rotation.z);
+          const pitchOffset = Math.asin(Math.max(-1, Math.min(1, sinPitch)));
+
+          initialYaw += yawOffset;
+          initialPitch += pitchOffset;
+        }
+
         const view = new Marzipano.RectilinearView(
           {
-            yaw: ((scene.initialYaw || 0) * Math.PI) / 180,
-            pitch: ((scene.initialPitch || 0) * Math.PI) / 180,
+            yaw: initialYaw,
+            pitch: initialPitch,
             fov: Math.PI / 2,
           },
           limiter
@@ -193,6 +212,32 @@ export default function TourViewer({ scene, onHotspotClick, onSceneChange }: Tou
               },
               destroy: (el: HTMLElement) => {
                 el.removeEventListener('click', () => {});
+                el.remove();
+              },
+            });
+          });
+        }
+
+        // Alignment markers — rendered as amber dots on the panorama
+        if (scene.alignmentMarkers?.length) {
+          scene.alignmentMarkers.forEach((marker) => {
+            ms.hotspots().create({
+              pitch: marker.pitch,
+              yaw: marker.yaw,
+              type: 'custom',
+              create: () => {
+                const el = document.createElement('div');
+                el.className = 'viztr-alignment-marker';
+                el.setAttribute('role', 'img');
+                el.setAttribute('aria-label', `Alignment marker: ${marker.label || marker.id}`);
+                el.innerHTML = `
+                  <div class="w-3 h-3 bg-amber-500 rounded-full shadow-lg border border-amber-300 cursor-help hover:scale-125 transition-transform"
+                       title="${marker.label || `Marker ${marker.id}`}">
+                  </div>
+                `;
+                return el;
+              },
+              destroy: (el: HTMLElement) => {
                 el.remove();
               },
             });

@@ -271,5 +271,8 @@ export function editorRoomToMarzipanoScene(room: EditorRoom): MarzipanoScene {
     initialViewParameters: { yaw: yawRad, pitch: pitchRad, fov: Math.PI / 2 },
     linkHotspots,
     infoHotspots,
+    // Preserve alignment data through export
+    spatialAlignment: room.spatialAlignment as MarzipanoScene['spatialAlignment'],
+    alignmentMarkers: room.alignmentMarkers as MarzipanoScene['alignmentMarkers'],
   };
 }

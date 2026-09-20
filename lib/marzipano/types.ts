@@ -8,6 +8,8 @@
  * Coordinate convention: yaw ∈ [-π, π], pitch ∈ [-π/2, π/2]. See coords.ts.
  */
 
+import type { SpatialAlignment, AlignmentMarker } from '@/lib/3d/bridge/types';
+
 export interface MarzipanoLevel {
   tileSize: number;
   size: number;
@@ -38,6 +40,10 @@ export interface MarzipanoScene {
   infoHotspots: MarzipanoInfoHotspot[];
   /** Optional pre-tiled equirect source URL. Upstream doesn't emit one. */
   sourceUrl?: string;
+  /** Spatial alignment relative to Gaussian Splat world coordinates. */
+  spatialAlignment?: SpatialAlignment;
+  /** Landmark markers placed during alignment calibration. */
+  alignmentMarkers?: AlignmentMarker[];
 }
 
 export interface MarzipanoSettings {
