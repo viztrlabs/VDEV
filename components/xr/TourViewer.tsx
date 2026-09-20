@@ -10,6 +10,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { ZoomIn, ZoomOut, Maximize } from 'lucide-react';
 import type { TourScene } from '@/lib/tourClientStore';
 import { worldDirectionToPanorama } from '@/lib/3d/bridge/spatial';
+import { useSharedExperience } from './SharedExperienceContext';
 
 // ponytail: marzipano is not TS-typed — any is required
 type MarzipanoAny = any;
@@ -25,6 +26,10 @@ export default function TourViewer({ scene, onHotspotClick, onSceneChange }: Tou
   const viewerRef = useRef<MarzipanoAny>(null);
   const sceneRef = useRef<MarzipanoAny>(null);
   const autorotateRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const localUpdateRef = useRef(false);
+  const viewChangeHandlerRef = useRef<(() => void) | null>(null);
+
+  const { yaw: sharedYaw, pitch: sharedPitch, setOrientation } = useSharedExperience();
 
   const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -69,7 +74,10 @@ export default function TourViewer({ scene, onHotspotClick, onSceneChange }: Tou
         const ms = viewer.scene?.();
         if (ms) {
           ms.hotspots?.().getAll?.().forEach((h: MarzipanoAny) => h.destroy?.());
-          ms.view?.()?.removeEventListener?.('change', () => {});
+          if (viewChangeHandlerRef.current) {
+            ms.view?.()?.removeEventListener?.('change', viewChangeHandlerRef.current);
+            viewChangeHandlerRef.current = null;
+          }
           ms.stop?.();
         }
         viewer.destroy?.();
@@ -181,6 +189,18 @@ export default function TourViewer({ scene, onHotspotClick, onSceneChange }: Tou
         ms.switch();
         sceneRef.current = ms;
         setProgress(0.7);
+
+        // Camera sync: Marzipano → shared context
+        const sceneView = ms.view();
+        if (sceneView) {
+          const handleChange = () => {
+            localUpdateRef.current = true;
+            setOrientation(sceneView.yaw(), sceneView.pitch());
+            setTimeout(() => { localUpdateRef.current = false; }, 0);
+          };
+          viewChangeHandlerRef.current = handleChange;
+          sceneView.addEventListener('change', handleChange);
+        }
 
         // Hotspots with ARIA labels
         if (scene.hotspots?.length) {
@@ -309,6 +329,17 @@ export default function TourViewer({ scene, onHotspotClick, onSceneChange }: Tou
     el.addEventListener('keydown', handleKey);
     return () => el.removeEventListener('keydown', handleKey);
   }, [toggleFullscreen]);
+
+  // --- Camera sync: shared context → Marzipano view ---
+  useEffect(() => {
+    if (localUpdateRef.current) return;
+    const ms = sceneRef.current;
+    if (!ms) return;
+    const view = ms.view();
+    if (!view) return;
+    view.yaw(sharedYaw);
+    view.pitch(sharedPitch);
+  }, [sharedYaw, sharedPitch]);
 
   if (error) {
     return (
