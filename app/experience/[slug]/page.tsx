@@ -10,7 +10,7 @@ interface PageProps {
 }
 
 async function getExperience(slug: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
   const res = await fetch(`${baseUrl}/api/experiences/public/${slug}`, {
     cache: 'no-store',
   });
