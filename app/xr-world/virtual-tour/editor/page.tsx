@@ -53,6 +53,7 @@ const AlignmentPanel = dynamic(
   { ssr: false, loading: () => <div className="p-4 text-[10px] font-mono text-[#71717A]">Loading alignment…</div> },
 );
 import { EditorHeader } from '@/components/editor/shell/EditorHeader';
+import { EditorBottomBar } from '@/components/editor/shell/EditorBottomBar';
 import { SectionTabs } from '@/components/editor/shell/SectionTabs';
 import { NodeListSidebar } from '@/components/editor/shell/NodeListSidebar';
 import { EditorRightSidebar } from '@/components/editor/shell/EditorRightSidebar';
@@ -201,6 +202,7 @@ export default function TourEditorPage() {
   const [exporting, setExporting] = useState(false);
   const [leftOpen, setLeftOpen] = useState(true);
   const [rightOpen, setRightOpen] = useState(true);
+  const [activeTool, setActiveTool] = useState<string>('select');
   const [viewerSettings, setViewerSettings] = useState({
     mouseViewMode: 'drag' as 'drag' | 'qtvr',
     autorotateEnabled: false,
@@ -901,7 +903,7 @@ export default function TourEditorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#09090B] text-white flex flex-col">
+    <div className="h-screen flex flex-col bg-[#09090B] text-white overflow-hidden">
       <EditorHeader
         roomsCount={rooms.length}
         hotspotsCount={rooms.reduce((a, r) => a + r.defaultHotspots.length, 0)}
@@ -916,6 +918,10 @@ export default function TourEditorPage() {
         onExportTour={handleExport}
         onNewTour={handleNewTour}
         busy={importing || uploading || exporting}
+        leftOpen={leftOpen}
+        rightOpen={rightOpen}
+        onToggleLeft={() => setLeftOpen(!leftOpen)}
+        onToggleRight={() => setRightOpen(!rightOpen)}
       />
 
       <input
@@ -1562,6 +1568,47 @@ export default function TourEditorPage() {
       ) : (
         renderNonEditorTab()
       )}
+
+      <EditorBottomBar
+        activeTool={activeTool}
+        onSelectTool={(tool) => {
+          setActiveTool(tool);
+          if (tool === 'metadata') {
+            setAddMode(true);
+            setAddHotspotKind('metadata');
+          } else if (tool === 'info') {
+            setAddMode(true);
+            setAddHotspotKind('info');
+          } else if (tool === 'portal') {
+            setAddMode(true);
+            setAddHotspotKind('room_link');
+          } else if (tool === 'select') {
+            setAddMode(false);
+            setAddHotspotKind(null);
+          } else if (tool === 'settings') {
+            setSectionTab('settings');
+          } else if (tool === 'preview') {
+            window.open(`/xr-world/virtual-tour/showcase?tour=${projectId}`, '_blank');
+          } else {
+            setAddMode(false);
+            setAddHotspotKind(null);
+          }
+        }}
+        canUndo={canUndo}
+        canRedo={canRedo}
+        onUndo={undo}
+        onRedo={redo}
+        onSetStartView={() => {
+          if (selected) {
+            updateRoom(selected.id, (r) => ({
+              ...r,
+              initialYaw: Math.round(currentYaw * 10) / 10,
+              initialPitch: Math.round(currentPitch * 10) / 10,
+            }));
+            showToast(`Default view set: ${Math.round(currentYaw)}° / ${Math.round(currentPitch)}°.`, 'success');
+          }
+        }}
+      />
     </div>
   );
 }

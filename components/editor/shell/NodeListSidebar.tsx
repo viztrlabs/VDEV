@@ -221,7 +221,7 @@ export function NodeListSidebar({
   onCollapse,
 }: NodeListSidebarProps) {
   return (
-    <aside className="w-60 shrink-0 border-r border-[#27272A] overflow-y-auto p-2 space-y-1">
+    <aside className="w-64 shrink-0 border-r border-[#27272A] overflow-y-auto p-2 space-y-1 bg-[#09090B]">
       {/* Header */}
       <div className="flex items-center justify-between px-1 pb-1">
         <span className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">Nodes</span>

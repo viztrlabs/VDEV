@@ -38,7 +38,7 @@ export function EditorRightSidebar({
   onCollapse,
 }: EditorRightSidebarProps) {
   return (
-    <aside className="w-80 shrink-0 border-l border-[#27272A] overflow-y-auto p-3 space-y-3">
+    <aside className="w-72 shrink-0 border-l border-[#27272A] overflow-y-auto p-3 space-y-3 bg-[#09090B]">
       {onCollapse && (
         <div className="flex items-center justify-between -mt-1 -mx-1">
           <span className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">
