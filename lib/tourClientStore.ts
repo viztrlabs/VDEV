@@ -57,6 +57,7 @@ interface TourClientState {
   addRoom: (room: Partial<TourScene>) => string;
   renameRoom: (id: string, name: string) => void;
   duplicateRoom: (id: string) => string;
+  reorderRoom: (id: string, direction: 'up' | 'down') => void;
   setCurrentScene: (id: string) => void;
   setView: (v: { yaw: number; pitch: number; fov: number }) => void;
 }
@@ -129,6 +130,15 @@ export const useTourStore = create<TourClientState>()(
           });
           return newId;
         },
+        reorderRoom: (id, direction) =>
+          set((s) => {
+            const idx = s.scenes.findIndex((x) => x.id === id);
+            if (idx === -1) return;
+            const newIdx = direction === 'up' ? idx - 1 : idx + 1;
+            if (newIdx < 0 || newIdx >= s.scenes.length) return;
+            const [moved] = s.scenes.splice(idx, 1);
+            s.scenes.splice(newIdx, 0, moved);
+          }),
         setCurrentScene: (id) => set({ currentSceneId: id }),
         setView: (v) => set({ currentView: v }),
       })),
