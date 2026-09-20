@@ -14,6 +14,8 @@ export function PlayCanvasPublicViewer({ scene, camera }: PlayCanvasPublicProps)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { setOrientation } = useSharedExperience();
+  const prevYawRef = useRef<number>(0);
+  const prevPitchRef = useRef<number>(0);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -21,15 +23,34 @@ export function PlayCanvasPublicViewer({ scene, camera }: PlayCanvasPublicProps)
 
     const init = async () => {
       try {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.playcanvas.com/engine/v181/playcanvas.min.js';
-        script.async = true;
-
-        await new Promise<void>((resolve, reject) => {
-          script.onload = () => resolve();
-          script.onerror = () => reject(new Error('Failed to load PlayCanvas'));
-          document.head.appendChild(script);
-        });
+        const pcUrl = 'https://cdn.playcanvas.com/engine/v181/playcanvas.min.js';
+        const existingScript = document.querySelector(`script[src="${pcUrl}"]`);
+        if (!existingScript) {
+          const script = document.createElement('script');
+          script.src = pcUrl;
+          script.async = true;
+          await new Promise<void>((resolve, reject) => {
+            script.onload = () => resolve();
+            script.onerror = () => reject(new Error('Failed to load PlayCanvas'));
+            document.head.appendChild(script);
+          });
+        }
+        // Wait for PlayCanvas engine to be available
+        if (!(window as any).pc) {
+          await new Promise<void>((resolve, reject) => {
+            const startTime = Date.now();
+            const check = () => {
+              if ((window as any).pc) {
+                resolve();
+              } else if (Date.now() - startTime > 5000) {
+                reject(new Error('PlayCanvas engine failed to load'));
+              } else {
+                setTimeout(check, 50);
+              }
+            };
+            check();
+          });
+        }
 
         if (cancelled) return;
 
@@ -67,14 +88,68 @@ export function PlayCanvasPublicViewer({ scene, camera }: PlayCanvasPublicProps)
         light.setEulerAngles(45, -45, 0);
         app.root.addChild(light);
 
+        // Add entities from scene data
+        if (scene.entities) {
+          Object.values(scene.entities).forEach((entityData: any) => {
+            if (!entityData || entityData.type === 'camera') return;
+            const entity = new pc.Entity(entityData.name || 'Entity');
+            switch (entityData.type) {
+              case 'mesh':
+                entity.addComponent('model', { type: 'box' });
+                if (entityData.materialId) {
+                  // Material loading not implemented in this simplified viewer
+                }
+                break;
+              case 'light':
+                entity.addComponent('light', {
+                  type: 'directional',
+                  color: new pc.Color(1, 1, 1),
+                  intensity: 1,
+                });
+                break;
+              default:
+                // generic entity
+                break;
+            }
+            if (entityData.position) {
+              entity.setLocalPosition(
+                entityData.position.x || 0,
+                entityData.position.y || 0,
+                entityData.position.z || 0
+              );
+            }
+            if (entityData.rotation) {
+              entity.setLocalEulerAngles(
+                entityData.rotation.x || 0,
+                entityData.rotation.y || 0,
+                entityData.rotation.z || 0
+              );
+            }
+            if (entityData.scale) {
+              entity.setLocalScale(
+                entityData.scale.x || 1,
+                entityData.scale.y || 1,
+                entityData.scale.z || 1
+              );
+            }
+            entity.enabled = entityData.visible !== false;
+            app.root.addChild(entity);
+          });
+        }
+
         app.on('update', () => {
           const rot = cameraEntity.getRotation();
           const euler = new pc.Vec3();
           rot.getEulerAngles(euler);
-          setOrientation(
-            (euler.y * Math.PI) / 180,
-            (euler.x * Math.PI) / 180
-          );
+          const yaw = (euler.y * Math.PI) / 180;
+          const pitch = (euler.x * Math.PI) / 180;
+          const deltaYaw = Math.abs(yaw - prevYawRef.current);
+          const deltaPitch = Math.abs(pitch - prevPitchRef.current);
+          if (deltaYaw > 0.001 || deltaPitch > 0.001) {
+            setOrientation(yaw, pitch);
+            prevYawRef.current = yaw;
+            prevPitchRef.current = pitch;
+          }
         });
 
         app.start();
