@@ -59,6 +59,7 @@ import { NodeListSidebar } from '@/components/editor/shell/NodeListSidebar';
 import { EditorRightSidebar } from '@/components/editor/shell/EditorRightSidebar';
 import PanoramaPreview from '@/components/editor/PanoramaPreview';
 import ImportPreviewModal from '@/components/editor/ImportPreviewModal';
+import { GalleryHotspotPanel } from '@/components/editor/GalleryHotspotPanel';
 import {
   useEditorStore,
   useEditorHistory,
@@ -204,6 +205,7 @@ export default function TourEditorPage() {
   const [leftOpen, setLeftOpen] = useState(true);
   const [rightOpen, setRightOpen] = useState(true);
   const [activeTool, setActiveTool] = useState<string>('select');
+  const [galleryPanelOpen, setGalleryPanelOpen] = useState(false);
   const [viewerSettings, setViewerSettings] = useState({
     mouseViewMode: 'drag' as 'drag' | 'qtvr',
     autorotateEnabled: false,
@@ -913,6 +915,27 @@ export default function TourEditorPage() {
     }
   };
 
+  const handleGallerySelect = (url: string) => {
+    if (!selected) return;
+    const newHp: Hotspot = {
+      id: `hp-${Date.now()}-${Math.random()}`,
+      xPercent: 50,
+      yPercent: 50,
+      title: 'Gallery',
+      type: 'image',
+      category: 'custom',
+      description: '',
+      mediaUrl: url,
+      color: 'cyan',
+      icon: 'image',
+    };
+    updateRoom(selected.id, (r) => ({
+      ...r,
+      defaultHotspots: [...r.defaultHotspots, newHp],
+    }));
+    showToast('Gallery hotspot added. Click to position it.', 'success');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#09090B] text-white flex items-center justify-center gap-2">
@@ -1603,6 +1626,8 @@ export default function TourEditorPage() {
           } else if (tool === 'portal') {
             setAddMode(true);
             setAddHotspotKind('room_link');
+          } else if (tool === 'gallery') {
+            setGalleryPanelOpen(true);
           } else if (tool === 'select') {
             setAddMode(false);
             setAddHotspotKind(null);
@@ -1629,6 +1654,14 @@ export default function TourEditorPage() {
             showToast(`Default view set: ${Math.round(currentYaw)}° / ${Math.round(currentPitch)}°.`, 'success');
           }
         }}
+      />
+
+      <GalleryHotspotPanel
+        open={galleryPanelOpen}
+        onClose={() => setGalleryPanelOpen(false)}
+        onSelectMedia={handleGallerySelect}
+        mediaAssets={mediaAssets}
+        onRefreshMedia={loadMedia}
       />
     </div>
   );
