@@ -1,7 +1,7 @@
 'use client';
 
 import React, { memo } from 'react';
-import { Save, Loader2, CheckCircle2, Undo2, Redo2, FolderUp, FolderDown, FilePlus, User, PanelLeftOpen, PanelRightOpen } from 'lucide-react';
+import { Save, Loader2, CheckCircle2, Undo2, Redo2, FolderUp, FolderDown, FilePlus, User, PanelLeftOpen, PanelRightOpen, Globe } from 'lucide-react';
 import Link from 'next/link';
 import type { SectionTab } from '@/lib/editorStore';
 
@@ -18,6 +18,8 @@ interface EditorHeaderProps {
   onImportTour?: () => void;
   onExportTour?: () => void;
   onNewTour?: () => void;
+  onPublish?: () => void;
+  publishing?: boolean;
   busy?: boolean;
   leftOpen?: boolean;
   rightOpen?: boolean;
@@ -38,6 +40,8 @@ function EditorHeaderBase({
   onImportTour,
   onExportTour,
   onNewTour,
+  onPublish,
+  publishing,
   busy,
   leftOpen = true,
   rightOpen = true,
@@ -157,8 +161,15 @@ function EditorHeaderBase({
         </button>
         <button
           type="button"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#3ECF8E] hover:bg-[#34BF7D] text-black text-xs font-mono font-bold"
+          onClick={onPublish}
+          disabled={publishing}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#3ECF8E] hover:bg-[#34BF7D] text-black text-xs font-mono font-bold disabled:opacity-50"
         >
+          {publishing ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : (
+            <Globe className="w-3.5 h-3.5" />
+          )}
           Publish
         </button>
         {onToggleRight && (

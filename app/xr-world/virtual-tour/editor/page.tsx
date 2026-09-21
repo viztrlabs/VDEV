@@ -183,6 +183,7 @@ export default function TourEditorPage() {
   const [currentYaw, setCurrentYaw] = useState(0);
   const [currentPitch, setCurrentPitch] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [publishing, setPublishing] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
@@ -894,6 +895,24 @@ export default function TourEditorPage() {
     }
   };
 
+  const handlePublish = async () => {
+    if (publishing) return;
+    await save();
+    if (settings) {
+      setPublishing(true);
+      try {
+        await persistSettings({ ...settings, live: true });
+        showToast('Tour published and set live!', 'success');
+        const publicUrl = settings.publicUrl || '/xr-world/virtual-tour';
+        showToast(`Public URL: ${publicUrl}`, 'info');
+      } catch (e: any) {
+        showToast(e?.message || 'Publish failed.', 'error');
+      } finally {
+        setPublishing(false);
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#09090B] text-white flex items-center justify-center gap-2">
@@ -917,6 +936,8 @@ export default function TourEditorPage() {
         onImportTour={openFilePicker}
         onExportTour={handleExport}
         onNewTour={handleNewTour}
+        onPublish={handlePublish}
+        publishing={publishing}
         busy={importing || uploading || exporting}
         leftOpen={leftOpen}
         rightOpen={rightOpen}
