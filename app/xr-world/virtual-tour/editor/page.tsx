@@ -1613,48 +1613,50 @@ export default function TourEditorPage() {
         renderNonEditorTab()
       )}
 
-      <EditorBottomBar
-        activeTool={activeTool}
-        onSelectTool={(tool) => {
-          setActiveTool(tool);
-          if (tool === 'metadata') {
-            setAddMode(true);
-            setAddHotspotKind('metadata');
-          } else if (tool === 'info') {
-            setAddMode(true);
-            setAddHotspotKind('info');
-          } else if (tool === 'portal') {
-            setAddMode(true);
-            setAddHotspotKind('room_link');
-          } else if (tool === 'gallery') {
-            setGalleryPanelOpen(true);
-          } else if (tool === 'select') {
-            setAddMode(false);
-            setAddHotspotKind(null);
-          } else if (tool === 'settings') {
-            setSectionTab('settings');
-          } else if (tool === 'preview') {
-            window.open(`/xr-world/virtual-tour/showcase?tour=${projectId}`, '_blank');
-          } else {
-            setAddMode(false);
-            setAddHotspotKind(null);
-          }
-        }}
-        canUndo={canUndo}
-        canRedo={canRedo}
-        onUndo={undo}
-        onRedo={redo}
-        onSetStartView={() => {
-          if (selected) {
-            updateRoom(selected.id, (r) => ({
-              ...r,
-              initialYaw: Math.round(currentYaw * 10) / 10,
-              initialPitch: Math.round(currentPitch * 10) / 10,
-            }));
-            showToast(`Default view set: ${Math.round(currentYaw)}° / ${Math.round(currentPitch)}°.`, 'success');
-          }
-        }}
-      />
+      {sectionTab === 'editor' && (
+        <EditorBottomBar
+          activeTool={activeTool}
+          onSelectTool={(tool) => {
+            setActiveTool(tool);
+            if (tool === 'metadata') {
+              setAddMode(true);
+              setAddHotspotKind('metadata');
+            } else if (tool === 'info') {
+              setAddMode(true);
+              setAddHotspotKind('info');
+            } else if (tool === 'portal') {
+              setAddMode(true);
+              setAddHotspotKind('room_link');
+            } else if (tool === 'gallery') {
+              setGalleryPanelOpen(true);
+            } else if (tool === 'select') {
+              setAddMode(false);
+              setAddHotspotKind(null);
+            } else if (tool === 'settings') {
+              setSectionTab('settings');
+            } else if (tool === 'preview') {
+              window.open(`/xr-world/virtual-tour/showcase?tour=${projectId}`, '_blank');
+            } else {
+              setAddMode(false);
+              setAddHotspotKind(null);
+            }
+          }}
+          canUndo={canUndo}
+          canRedo={canRedo}
+          onUndo={undo}
+          onRedo={redo}
+          onSetStartView={() => {
+            if (selected) {
+              updateRoom(selected.id, (r) => ({
+                ...r,
+                initialYaw: Math.round(currentYaw * 10) / 10,
+                initialPitch: Math.round(currentPitch * 10) / 10,
+              }));
+              showToast(`Default view set: ${Math.round(currentYaw)}° / ${Math.round(currentPitch)}°.`, 'success');
+            }
+          }}
+        />
+      )}
 
       <GalleryHotspotPanel
         open={galleryPanelOpen}
