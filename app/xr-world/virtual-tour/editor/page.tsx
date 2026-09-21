@@ -149,7 +149,7 @@ export default function TourEditorPage() {
   const experienceId = params?.experienceId;
   const { undo, redo, canUndo, canRedo } = useEditorHistory();
 
-  // Keyboard shortcuts for undo/redo
+  // Keyboard shortcuts
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
@@ -160,20 +160,91 @@ export default function TourEditorPage() {
           target.isContentEditable);
       if (inEditable) return;
       const mod = e.ctrlKey || e.metaKey;
-      if (mod && !e.shiftKey && e.key.toLowerCase() === 'z') {
-        e.preventDefault();
-        undo();
-      } else if (
-        mod &&
-        (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))
-      ) {
-        e.preventDefault();
-        redo();
+      if (mod) {
+        switch (e.key.toLowerCase()) {
+          case 'z':
+            e.preventDefault();
+            if (e.shiftKey) redo();
+            else undo();
+            return;
+          case 'y':
+            e.preventDefault();
+            redo();
+            return;
+          case 's':
+            e.preventDefault();
+            save();
+            return;
+        }
+        return;
+      }
+      if (sectionTab !== 'editor') return;
+      switch (e.key.toLowerCase()) {
+        case 'v':
+          e.preventDefault();
+          setActiveTool('select');
+          setAddMode(false);
+          setAddHotspotKind(null);
+          break;
+        case 'm':
+          e.preventDefault();
+          setActiveTool('metadata');
+          setAddMode(true);
+          setAddHotspotKind('metadata');
+          break;
+        case 'i':
+          e.preventDefault();
+          setActiveTool('info');
+          setAddMode(true);
+          setAddHotspotKind('info');
+          break;
+        case 'p':
+          e.preventDefault();
+          setActiveTool('portal');
+          setAddMode(true);
+          setAddHotspotKind('room_link');
+          break;
+        case 'g':
+          e.preventDefault();
+          setActiveTool('gallery');
+          setGalleryPanelOpen(true);
+          break;
+        case 's':
+          e.preventDefault();
+          if (selected) {
+            updateRoom(selected.id, (r) => ({
+              ...r,
+              initialYaw: Math.round(currentYaw * 10) / 10,
+              initialPitch: Math.round(currentPitch * 10) / 10,
+            }));
+            showToast(`Starting view saved: ${Math.round(currentYaw)}° / ${Math.round(currentPitch)}°`, 'success');
+          }
+          break;
+        case 'r':
+          e.preventDefault();
+          window.open(`/xr-world/virtual-tour/showcase?tour=${projectId}`, '_blank');
+          break;
+        case 't':
+          e.preventDefault();
+          setSectionTab('settings');
+          break;
+        case 'escape':
+          e.preventDefault();
+          setActiveTool('select');
+          setAddMode(false);
+          setAddHotspotKind(null);
+          setLinkTargetId('');
+          setGalleryPanelOpen(false);
+          break;
+        case 'a':
+          e.preventDefault();
+          setSectionTab('alignment');
+          break;
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [undo, redo]);
+  }, [undo, redo, save, sectionTab, selected, currentYaw, currentPitch, projectId, setActiveTool, setAddMode, setAddHotspotKind, setLinkTargetId, setGalleryPanelOpen, setSectionTab, updateRoom, showToast]);
 
   const [rooms, setRooms] = useState<TourRoom[]>([]);
   const [loading, setLoading] = useState(true);
