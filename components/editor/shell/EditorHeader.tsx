@@ -1,7 +1,7 @@
 'use client';
 
 import React, { memo } from 'react';
-import { Save, Loader2, CheckCircle2, Undo2, Redo2, FolderUp, FolderDown, FilePlus, User, PanelLeftOpen, PanelRightOpen, Globe } from 'lucide-react';
+import { Save, Loader2, CheckCircle2, Undo2, Redo2, FolderUp, FolderDown, FilePlus, User, PanelLeftOpen, PanelRightOpen, Globe, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import type { SectionTab } from '@/lib/editorStore';
 
@@ -25,6 +25,8 @@ interface EditorHeaderProps {
   rightOpen?: boolean;
   onToggleLeft?: () => void;
   onToggleRight?: () => void;
+  onValidate?: () => void;
+  validationIssueCount?: number;
 }
 
 function EditorHeaderBase({
@@ -47,6 +49,8 @@ function EditorHeaderBase({
   rightOpen = true,
   onToggleLeft,
   onToggleRight,
+  onValidate,
+  validationIssueCount = 0,
 }: EditorHeaderProps) {
   return (
     <header className="flex items-center justify-between gap-3 px-4 py-2 border-b border-[#27272A] bg-[#09090B]">
@@ -159,6 +163,23 @@ function EditorHeaderBase({
           )}
           Save
         </button>
+        {onValidate && (
+          <button
+            type="button"
+            onClick={onValidate}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#27272A] hover:bg-[#3F3F46] text-xs font-mono relative"
+            title="Validate tour"
+            aria-label="Validate tour"
+          >
+            <ShieldCheck className="w-3.5 h-3.5" />
+            Validate
+            {validationIssueCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 flex items-center justify-center rounded-full bg-amber-500 text-black text-[9px] font-mono font-bold px-1">
+                {validationIssueCount}
+              </span>
+            )}
+          </button>
+        )}
         <button
           type="button"
           onClick={onPublish}

@@ -57,6 +57,7 @@ import { EditorBottomBar } from '@/components/editor/shell/EditorBottomBar';
 import { SectionTabs } from '@/components/editor/shell/SectionTabs';
 import { NodeListSidebar } from '@/components/editor/shell/NodeListSidebar';
 import { EditorRightSidebar } from '@/components/editor/shell/EditorRightSidebar';
+import { EditorValidationPanel } from '@/components/editor/EditorValidationPanel';
 import PanoramaPreview from '@/components/editor/PanoramaPreview';
 import ImportPreviewModal from '@/components/editor/ImportPreviewModal';
 import { GalleryHotspotPanel } from '@/components/editor/GalleryHotspotPanel';
@@ -277,12 +278,34 @@ export default function TourEditorPage() {
   const [rightOpen, setRightOpen] = useState(true);
   const [activeTool, setActiveTool] = useState<string>('select');
   const [galleryPanelOpen, setGalleryPanelOpen] = useState(false);
+  const [validationOpen, setValidationOpen] = useState(false);
   const [viewerSettings, setViewerSettings] = useState({
     mouseViewMode: 'drag' as 'drag' | 'qtvr',
     autorotateEnabled: false,
     fullscreenButton: true,
     viewControlButtons: true,
   });
+
+  // Compute validation issue count for the header badge
+  const validationIssueCount = (() => {
+    let count = 0;
+    if (rooms.length === 0) { count++; return count; }
+    if (rooms.length === 1) count++;
+    rooms.forEach((room) => {
+      if (!room.panoramaUrl) count++;
+      if (!room.name || room.name === 'Untitled' || room.name === 'New Scene') count++;
+      room.defaultHotspots.forEach((hs) => {
+        if (!hs.title || hs.title === 'New Hotspot') count++;
+        if (hs.type === 'room_link') {
+          if (!hs.targetRoomId) count++;
+          else if (!rooms.some((r) => r.id === hs.targetRoomId)) count++;
+        }
+        if (hs.type === 'image' && !hs.mediaUrl) count++;
+      });
+      if (rooms.length > 1 && room.defaultHotspots.filter((h) => h.type === 'room_link').length === 0) count++;
+    });
+    return count;
+  })();
 
   const load = useCallback(async () => {
     try {
@@ -1037,6 +1060,8 @@ export default function TourEditorPage() {
         rightOpen={rightOpen}
         onToggleLeft={() => setLeftOpen(!leftOpen)}
         onToggleRight={() => setRightOpen(!rightOpen)}
+        onValidate={() => setValidationOpen(!validationOpen)}
+        validationIssueCount={validationIssueCount}
       />
 
       <input
@@ -1383,8 +1408,27 @@ export default function TourEditorPage() {
           )}
         </main>
 
-        {/* Hotspot inspector */}
-        {selected && rightOpen && (
+        {/* Right panel: validation or hotspot inspector */}
+        {validationOpen && rightOpen && (
+          <div className="w-72 shrink-0 border-l border-[#27272A] h-full">
+            <EditorValidationPanel
+              rooms={rooms}
+              onSelectRoom={(id) => {
+                setSelectedId(id);
+                setValidationOpen(false);
+              }}
+              onSelectHotspot={(roomId, hotspotId) => {
+                setSelectedId(roomId);
+                setValidationOpen(false);
+                setTimeout(() => {
+                  const el = document.querySelector(`[data-hotspot-inspector="${hotspotId}"]`);
+                  el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+              }}
+            />
+          </div>
+        )}
+        {!validationOpen && selected && rightOpen && (
           <EditorRightSidebar
             selected={selected}
             allRooms={rooms}
@@ -1411,7 +1455,7 @@ export default function TourEditorPage() {
             onCollapse={() => setRightOpen(false)}
           />
         )}
-        {selected && !rightOpen && (
+        {(selected || validationOpen) && !rightOpen && (
           <button
             type="button"
             onClick={() => setRightOpen(true)}
