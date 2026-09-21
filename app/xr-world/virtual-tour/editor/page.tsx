@@ -250,7 +250,8 @@ export default function TourEditorPage() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [undo, redo, save, sectionTab, selected, currentYaw, currentPitch, projectId, setActiveTool, setAddMode, setAddHotspotKind, setLinkTargetId, setGalleryPanelOpen, setSectionTab, updateRoom, showToast]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [undo, redo, sectionTab, selected, currentYaw, currentPitch, projectId, setActiveTool, setAddMode, setAddHotspotKind, setLinkTargetId, setGalleryPanelOpen, setSectionTab, updateRoom, showToast]);
 
   const [rooms, setRooms] = useState<TourRoom[]>([]);
   const [loading, setLoading] = useState(true);
