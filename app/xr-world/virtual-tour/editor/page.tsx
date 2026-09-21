@@ -223,7 +223,10 @@ export default function TourEditorPage() {
           break;
         case 'r':
           e.preventDefault();
-          window.open(`/xr-world/virtual-tour/showcase?tour=${projectId}`, '_blank');
+          {
+            const tId = new URL(window.location.href).searchParams.get('tour') || localStorage.getItem('viztr_active_tour') || '';
+            window.open(`/xr-world/virtual-tour/showcase?tour=${tId || projectId}`, '_blank');
+          }
           break;
         case 't':
           e.preventDefault();
@@ -1754,7 +1757,10 @@ export default function TourEditorPage() {
             } else if (tool === 'settings') {
               setSectionTab('settings');
             } else if (tool === 'preview') {
-              window.open(`/xr-world/virtual-tour/showcase?tour=${projectId}`, '_blank');
+              {
+                const tId = new URL(window.location.href).searchParams.get('tour') || localStorage.getItem('viztr_active_tour') || '';
+                window.open(`/xr-world/virtual-tour/showcase?tour=${tId || projectId}`, '_blank');
+              }
             } else {
               setAddMode(false);
               setAddHotspotKind(null);
