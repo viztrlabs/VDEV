@@ -36,9 +36,9 @@ function SectionTabsBase({ active, onChange }: SectionTabsProps) {
           role="tab"
           aria-selected={active === tab}
           onClick={() => onChange(tab)}
-          className={`px-3 py-1.5 rounded-lg text-xs font-mono whitespace-nowrap ${
+          className={`px-2 py-1 rounded text-[10px] font-mono whitespace-nowrap ${
             active === tab
-              ? 'bg-[#3ECF8E] text-black font-bold'
+              ? 'border-b-2 border-[#3ECF8E] text-[#3ECF8E] font-bold'
               : 'bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA]'
           }`}
         >
