@@ -87,7 +87,9 @@ import {
   Upload,
   FolderUp,
   Compass,
+  Link as LinkIcon,
 } from 'lucide-react';
+import EditorContextMenu, { type ContextMenuItem } from '@/components/editor/EditorContextMenu';
 import { serializeTourForExperienceConfig } from '@/lib/marzipano/tour-config-serializer';
 
 type HotspotColor = 'rose' | 'emerald' | 'cyan' | 'amber' | 'violet' | 'blue';
@@ -282,6 +284,11 @@ export default function TourEditorPage() {
   const [activeTool, setActiveTool] = useState<string>('select');
   const [galleryPanelOpen, setGalleryPanelOpen] = useState(false);
   const [validationOpen, setValidationOpen] = useState(false);
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    items: ContextMenuItem[];
+  } | null>(null);
   const [viewerSettings, setViewerSettings] = useState({
     mouseViewMode: 'drag' as 'drag' | 'qtvr',
     autorotateEnabled: false,
@@ -1153,7 +1160,61 @@ export default function TourEditorPage() {
         )}
 
         {/* Preview + placement */}
-        <main className="flex-1 flex flex-col min-w-0" onPointerMove={onHpPointerMove} onPointerUp={onHpPointerUp}>
+        <main
+          className="flex-1 flex flex-col min-w-0"
+          onPointerMove={onHpPointerMove}
+          onPointerUp={onHpPointerUp}
+          onContextMenu={(e) => {
+            if (sectionTab !== 'editor') return;
+            e.preventDefault();
+            const items: ContextMenuItem[] = [
+              {
+                label: 'Add Metadata Hotspot',
+                icon: <MapPin className="w-3.5 h-3.5" />,
+                action: () => {
+                  setActiveTool('metadata');
+                  setAddMode(true);
+                  setAddHotspotKind('metadata');
+                },
+              },
+              {
+                label: 'Add Info Hotspot',
+                icon: <Info className="w-3.5 h-3.5" />,
+                action: () => {
+                  setActiveTool('info');
+                  setAddMode(true);
+                  setAddHotspotKind('info');
+                },
+              },
+              {
+                label: 'Add Portal',
+                icon: <LinkIcon className="w-3.5 h-3.5" />,
+                action: () => {
+                  setActiveTool('portal');
+                  setAddMode(true);
+                  setAddHotspotKind('room_link');
+                },
+                disabled: rooms.filter((r) => r.id !== selectedId).length === 0,
+              },
+              { label: '---', icon: null, action: () => {} },
+              {
+                label: 'Set Starting View',
+                icon: <Compass className="w-3.5 h-3.5" />,
+                action: () => {
+                  if (selected) {
+                    updateRoom(selected.id, (r) => ({
+                      ...r,
+                      initialYaw: Math.round(currentYaw * 10) / 10,
+                      initialPitch: Math.round(currentPitch * 10) / 10,
+                    }));
+                    showToast(`Default view set: ${Math.round(currentYaw)}° / ${Math.round(currentPitch)}°.`, 'success');
+                  }
+                },
+              },
+            ];
+            setContextMenu({ x: e.clientX, y: e.clientY, items });
+          }}
+        >
           {selected ? (
             <>
               <div className="relative flex-1 bg-black overflow-hidden flex items-center justify-center">
@@ -1790,6 +1851,15 @@ export default function TourEditorPage() {
         mediaAssets={mediaAssets}
         onRefreshMedia={loadMedia}
       />
+
+      {contextMenu && (
+        <EditorContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          items={contextMenu.items}
+          onClose={() => setContextMenu(null)}
+        />
+      )}
     </div>
   );
 }
