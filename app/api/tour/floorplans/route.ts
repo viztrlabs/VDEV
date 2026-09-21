@@ -1,5 +1,6 @@
 export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/api-guard';
 import {
   getFloorplans,
   getFloorplan,
@@ -26,6 +27,11 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const isDev = process.env.NODE_ENV !== 'production';
+  if (!isDev) {
+    const guard = await requireAuth(req);
+    if (guard.error) return guard.error;
+  }
   try {
     const body = await req.json();
      const fp = await createFloorplan({
@@ -43,6 +49,11 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
+  const isDev = process.env.NODE_ENV !== 'production';
+  if (!isDev) {
+    const guard = await requireAuth(req);
+    if (guard.error) return guard.error;
+  }
   try {
     const body = await req.json();
     if (!body.id) {
@@ -65,6 +76,11 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const isDev = process.env.NODE_ENV !== 'production';
+  if (!isDev) {
+    const guard = await requireAuth(req);
+    if (guard.error) return guard.error;
+  }
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
   if (!id) {
