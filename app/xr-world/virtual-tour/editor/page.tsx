@@ -1296,6 +1296,7 @@ export default function TourEditorPage() {
                         const next = addMode && addHotspotKind === 'metadata' ? false : true;
                         setAddMode(next);
                         setAddHotspotKind(next ? 'metadata' : null);
+                        setActiveTool(next ? 'metadata' : 'select');
                       }}
                       className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold ${
                         addMode && addHotspotKind === 'metadata'
@@ -1312,6 +1313,7 @@ export default function TourEditorPage() {
                         const next = addMode && addHotspotKind === 'info' ? false : true;
                         setAddMode(next);
                         setAddHotspotKind(next ? 'info' : null);
+                        setActiveTool(next ? 'info' : 'select');
                       }}
                       className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold ${
                         addMode && addHotspotKind === 'info'
@@ -1328,6 +1330,7 @@ export default function TourEditorPage() {
                         const next = addMode && addHotspotKind === 'room_link' ? false : true;
                         setAddMode(next);
                         setAddHotspotKind(next ? 'room_link' : null);
+                        setActiveTool(next ? 'portal' : 'select');
                         if (!next) setLinkTargetId('');
                       }}
                       disabled={rooms.filter((r) => r.id !== selected.id).length === 0}
@@ -1347,6 +1350,7 @@ export default function TourEditorPage() {
                           setAddMode(false);
                           setAddHotspotKind(null);
                           setLinkTargetId('');
+                          setActiveTool('select');
                         }}
                         className="ml-1 px-2 py-1 rounded-full text-[10px] font-mono text-[#A1A1AA] hover:text-white"
                         title="Cancel"
