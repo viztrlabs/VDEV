@@ -87,9 +87,14 @@ function EditorHeaderBase({
       </div>
 
       <div className="flex items-center gap-1.5">
-        {saved && (
+        {saved ? (
           <span className="hidden md:flex items-center gap-1 text-[10px] font-mono text-[#3ECF8E]">
             <CheckCircle2 className="w-3.5 h-3.5" /> Saved
+          </span>
+        ) : (
+          <span className="hidden md:flex items-center gap-1 text-[10px] font-mono text-amber-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+            Unsaved
           </span>
         )}
         <button
