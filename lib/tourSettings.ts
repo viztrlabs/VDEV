@@ -1,9 +1,14 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import { sanitizeKeyForFile } from './tourIdentity';
 
-// Admin-controlled settings for the PUBLIC virtual tour. Separate from a visitor's
+// Admin-controlled settings for a PUBLIC virtual tour. Separate from a visitor's
 // own localStorage preferences: this is what the tour operator toggles in the
 // admin dashboard to publish/unpublish and to show/hide public features.
+// Settings are namespaced per tour identity so publishing one tour never flips
+// another tour's live state (P0-3). When Supabase is unavailable this file
+// store is the persistence layer; when Supabase is configured it acts as the
+// merge base for feature/theme defaults.
 
 export interface TourFeatureToggles {
   hotspots: boolean;
@@ -35,7 +40,7 @@ export interface TourSettings {
   vted?: import('./vted-types').VtedSettings;
 }
 
-const DEFAULT_SETTINGS: TourSettings = {
+export const DEFAULT_SETTINGS: TourSettings = {
   live: true,
   publicUrl: '/xr-world/virtual-tour',
   features: {
@@ -59,36 +64,51 @@ const DEFAULT_SETTINGS: TourSettings = {
   version: 1,
 };
 
-const DATA_DIR = path.join(process.cwd(), '.data', 'tour');
-const SETTINGS_FILE = path.join(DATA_DIR, 'settings.json');
+export function mergeSettings(input: Partial<TourSettings>): TourSettings {
+  const base = DEFAULT_SETTINGS;
+  return {
+    ...base,
+    ...input,
+    features: { ...base.features, ...(input.features || {}) },
+    theme: { ...base.theme, ...(input.theme || {}) },
+    live: input.live ?? base.live,
+    accessLevel: input.accessLevel === 'private' ? 'private' : 'public',
+    version: typeof input.version === 'number' ? input.version : base.version,
+    publicUrl: input.publicUrl ?? base.publicUrl,
+    vted: { ...(base.vted || {}), ...(input.vted || {}) },
+  };
+}
 
-export async function getTourSettings(): Promise<TourSettings> {
+function dataDir(): string {
+  return process.env.TOUR_STORE_DIR || path.join(process.cwd(), '.data', 'tour');
+}
+
+function filePath(key?: string): string {
+  const name = key ? `settings-${sanitizeKeyForFile(key)}.json` : 'settings.json';
+  return path.join(dataDir(), name);
+}
+
+export async function getTourSettings(key?: string): Promise<TourSettings> {
+  const parsed = await readTourSettings(key);
+  return parsed ? mergeSettings(parsed) : DEFAULT_SETTINGS;
+}
+
+// Non-seeding read: returns null when no settings file exists yet.
+export async function readTourSettings(key?: string): Promise<Partial<TourSettings> | null> {
   try {
-    const raw = await fs.readFile(SETTINGS_FILE, 'utf8');
-    const parsed = JSON.parse(raw) as Partial<TourSettings>;
-    // Merge so new fields get defaults.
-    return {
-      ...DEFAULT_SETTINGS,
-      ...parsed,
-      features: { ...DEFAULT_SETTINGS.features, ...(parsed.features || {}) },
-      theme: { ...DEFAULT_SETTINGS.theme, ...(parsed.theme || {}) },
-      accessLevel: parsed.accessLevel === 'private' ? 'private' : 'public',
-      version: typeof parsed.version === 'number' ? parsed.version : 1,
-    };
+    const raw = await fs.readFile(filePath(key), 'utf8');
+    return JSON.parse(raw) as Partial<TourSettings>;
   } catch {
-    return DEFAULT_SETTINGS;
+    return null;
   }
 }
 
-export async function saveTourSettings(settings: TourSettings): Promise<TourSettings> {
-  console.warn('[tourSettings] Local filesystem save is deprecated — use Supabase via toursRepo.saveTourSettings()');
-  const merged: TourSettings = {
-    ...DEFAULT_SETTINGS,
-    ...settings,
-    features: { ...DEFAULT_SETTINGS.features, ...(settings.features || {}) },
-    theme: { ...DEFAULT_SETTINGS.theme, ...(settings.theme || {}) },
-    accessLevel: settings.accessLevel === 'private' ? 'private' : 'public',
-    version: typeof settings.version === 'number' ? settings.version : 1,
-  };
+export async function saveTourSettings(
+  settings: TourSettings,
+  key?: string,
+): Promise<TourSettings> {
+  const merged = mergeSettings(settings);
+  await fs.mkdir(dataDir(), { recursive: true });
+  await fs.writeFile(filePath(key), JSON.stringify(merged, null, 2), 'utf8');
   return merged;
 }
