@@ -112,7 +112,11 @@ function rowMatches(row: any, scope: TourScope): boolean {
 
 // Resolve the single row addressed by `scope` — always deterministic, never
 // "global newest". Returns null when no row exists for this identity.
-async function resolveTourRow(scope: TourScope, svc: any): Promise<any | null> {
+export async function resolveTourRow(scope: TourScope, svc: any): Promise<any | null> {
+  const hasScopeAxis = Boolean(
+    scope.slug ?? scope.tourId ?? scope.experienceId ?? scope.projectId ?? scope.ownerId,
+  );
+  if (!hasScopeAxis) return null;
   let query = svc.from(TABLE).select('*');
   // When resolving by a globally-unique identity (id or slug) we must NOT
   // pre-filter by owner/project — the unique key itself is the address and the
