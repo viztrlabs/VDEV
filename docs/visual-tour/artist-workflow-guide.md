@@ -25,6 +25,7 @@ what is still to come.
 | Room labels strip on the public page | ✅ Works |
 | Live comments on the public page | ✅ Works |
 | Undo / redo in the editor (Ctrl+Z / Ctrl+Y) | ✅ Works |
+| Manage the media library in the left panel (upload / add / delete / dedupe) | ✅ Works |
 | Publish + set live | ✅ Works (see §6 guardrails) |
 | Background / ambience audio per room | 🚧 Coming soon |
 | Pinch / FOV limits per platform | 🚧 Coming soon |
@@ -50,6 +51,14 @@ If a feature is marked 🚧, do not rely on it for a client delivery yet.
 - Audio: direct `.mp3`/`.ogg` URL.
 - When adding photos to an info/metadata hotspot, pick from the media library
   (multi-select) — see §5.
+- The **Media Library** panel in the left sidebar is a mini file manager:
+  - **Upload** — add new 360° panoramas straight from the panel.
+  - **+** on an asset — insert it as a new scene (or click its thumbnail).
+  - **🗑** on an asset — delete it from the library (you will be asked to confirm;
+    this also removes its cached tiles).
+  - **⟳** — refresh the list after uploading elsewhere.
+  - Duplicate files are collapsed automatically ("N duplicates hidden") — delete
+    the extras you don't need.
 
 ---
 
@@ -90,6 +99,40 @@ room** (`targetRoomId`). Any of these approaches creates a valid link:
 
 > The public viewer never auto-generates links. If a link is missing, it was
 > never authored — go back to Process A or B.
+
+### 4.1 Hub example — link one scene (00) to many scenes (01, 02, 03, 04)
+
+This is the standard "hub" pattern: the visitor stands in scene **00** and sees
+one door/arrow per neighbouring scene.
+
+1. Click scene **00** in the left panel (its panorama opens in the middle).
+2. Press **P** (or click the **Link** button in the bottom toolbar — it turns violet).
+3. A **Target:** dropdown appears above the toolbar. Choose **01**.
+4. Click on the panorama exactly where the arrow to 01 should sit — usually the
+   real doorway / corridor that leads there. The hotspot `→ 01` appears.
+5. **Stay in link mode.** Change the Target dropdown to **02**, click the right
+   spot on the image. Repeat for **03** and **04**.
+6. You now have 4 separate link hotspots in scene 00 — one per destination.
+   There is no limit: one scene can link to every other scene in the tour.
+7. Drag any hotspot to fine-tune its position; rename it (e.g. "Kitchen") and
+   pick icon/colour in the right-hand inspector.
+8. Press **Esc** or click **Cancel** when you are done placing links.
+
+### 4.2 Set the view the visitor lands on (per target)
+
+Every scene has its own **Starting View** — the exact angle the visitor sees
+when they arrive through any door (and when the tour opens, for the featured room).
+
+1. Click scene **01** in the left panel.
+2. Rotate the panorama to the angle you want people to see first — for example
+   the view back towards the door they "came from", or the room's best feature.
+3. Press **S** (or right-click the panorama → **Set Starting View**).
+   The toast confirms the saved angle, e.g. `Starting view saved: 135° / -5°`.
+4. Repeat for **02**, **03**, **04** — each scene remembers its own angle.
+
+That is all "set the view according to the images" means: link from 00 → each
+target (§4.1), and give each target its own landing angle (this section).
+Verify with **R** (preview): click your links and check where you land.
 
 ---
 
@@ -147,7 +190,10 @@ To give an info hotspot several photos:
 | `I` | Add info hotspot |
 | `P` | Portal mode (add room-link hotspots) |
 | `G` | Open the media gallery |
+| `S` | Set the selected scene's starting view (same as right-click → Set Starting View) |
 | `R` | Preview current room |
+| `T` | Jump to tour settings tab |
+| `A` | Jump to alignment tab |
 | `Esc` | Exit preview / cancel |
 | `Ctrl+Z`, `Ctrl+Shift+Z`, `Ctrl+Y` | Undo / redo |
 | `Ctrl+S` | Save |
@@ -164,6 +210,7 @@ To give an info hotspot several photos:
 | Tour shows "Tour not found" | No authored rooms stored yet — add rooms, save, then publish. |
 | Default view is wrong per room | Re-set **Set default view** after rotating to the desired angle. |
 | Photos missing on info hotspot | Photos live on the hotspot (`images`). Re-add via **+ Add photos from library**. |
+| Same panorama appears twice in the library | Exact duplicates (same file/URL) are hidden automatically. Different files of the same shot (e.g. `kitchen.jpg` + `kitchen-1.jpg`) — delete the extra with **🗑** in the Media Library panel. |
 
 ---
 
