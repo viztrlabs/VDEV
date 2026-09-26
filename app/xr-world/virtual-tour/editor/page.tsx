@@ -63,9 +63,9 @@ import ImportPreviewModal from '@/components/editor/ImportPreviewModal';
 import { GalleryHotspotPanel } from '@/components/editor/GalleryHotspotPanel';
 import {
   useEditorStore,
-  useEditorHistory,
   type SectionTab,
 } from '@/lib/editorStore';
+import { useHistoryState } from '@/lib/useHistoryState';
 import { useEngineStore } from '@/lib/editor/engineStore';
 import type { SpatialAlignment, AlignmentMarker } from '@/lib/3d/bridge/types';
 import { analyzeZip, importTourFromZip } from '@/lib/marzipano/importer';
@@ -182,10 +182,8 @@ export default function TourEditorPage() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, params?.experienceId]);
-  const { undo, redo, canUndo, canRedo } = useEditorHistory();
+  const [rooms, setRooms, { undo, redo, canUndo, canRedo, reset: resetHistory }] = useHistoryState<TourRoom[]>([]);
   const { showToast } = useAppStore();
-
-  const [rooms, setRooms] = useState<TourRoom[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string>('');
   const [addMode, setAddMode] = useState(false);
@@ -283,6 +281,7 @@ export default function TourEditorPage() {
 
       const rooms = Array.isArray(data?.rooms) ? data.rooms : [];
       setRooms(rooms.map((r: any) => ({ ...r, panoramaUrl: r.panoramaUrl || '', defaultHotspots: r.defaultHotspots || [] })));
+      resetHistory();
       setSelectedId((prev) => prev || rooms[0]?.id || '');
       if (data?.slug && typeof window !== 'undefined') {
         localStorage.setItem('viztr_active_tour', data.slug);
@@ -863,6 +862,7 @@ export default function TourEditorPage() {
         return;
       }
       setRooms(result.tour.rooms.map((r: any) => ({ ...r, defaultHotspots: r.defaultHotspots || [] })));
+      resetHistory();
       setSelectedId(result.tour.rooms[0]?.id || '');
       setSaved(false);
       const importedCount = result.tour.rooms.length;
@@ -964,6 +964,7 @@ export default function TourEditorPage() {
       if (!res.ok) throw new Error('save failed');
       const savedData = await res.json();
       setSaved(true);
+      resetHistory();
       const slug = savedData?.slug || tourId;
       if (typeof window !== 'undefined') {
         localStorage.setItem('viztr_active_tour', slug);
