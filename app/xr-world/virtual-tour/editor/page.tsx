@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { useParams } from 'next/navigation';
@@ -61,6 +61,8 @@ import { EditorValidationPanel } from '@/components/editor/EditorValidationPanel
 import PanoramaPreview from '@/components/editor/PanoramaPreview';
 import ImportPreviewModal from '@/components/editor/ImportPreviewModal';
 import { GalleryHotspotPanel } from '@/components/editor/GalleryHotspotPanel';
+import SceneGalaxy from '@/components/xr/SceneGalaxy';
+import { buildTourManifest } from '@/lib/tourManifest';
 import {
   useEditorStore,
   type SectionTab,
@@ -216,6 +218,7 @@ export default function TourEditorPage() {
   const [galleryPanelOpen, setGalleryPanelOpen] = useState(false);
   const [galleryMulti, setGalleryMulti] = useState(false);
   const [galleryTargetId, setGalleryTargetId] = useState<string | null>(null);
+  const [galaxyOpen, setGalaxyOpen] = useState(false);
   const [validationOpen, setValidationOpen] = useState(false);
   const [contextMenu, setContextMenu] = useState<{
     x: number;
@@ -1094,6 +1097,8 @@ export default function TourEditorPage() {
     setGalleryTargetId(null);
   };
 
+  const manifest = useMemo(() => buildTourManifest(rooms), [rooms]);
+
   // Keyboard shortcuts
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -1426,6 +1431,15 @@ export default function TourEditorPage() {
           {selected ? (
             <>
               <div className="relative flex-1 bg-black overflow-hidden flex items-center justify-center">
+                {!previewMode && (
+                  <button
+                    type="button"
+                    onClick={() => setGalaxyOpen(true)}
+                    className="absolute bottom-3 right-3 z-40 px-3 py-1.5 rounded-lg bg-[#18181B]/95 border border-[#27272A] text-xs font-mono text-[#A1A1AA] hover:text-white hover:border-[#3ECF8E] shadow-xl backdrop-blur"
+                  >
+                    Map
+                  </button>
+                )}
                 <PanoramaPreview
                   panoramaUrl={selected.panoramaUrl}
                   hotspots={selected.defaultHotspots.map((h) => ({
@@ -2052,6 +2066,16 @@ export default function TourEditorPage() {
           }}
         />
       )}
+
+      <SceneGalaxy
+        open={galaxyOpen}
+        scenes={manifest.scenes}
+        links={manifest.links}
+        currentId={selectedId}
+        onSelect={(id) => setSelectedId(id)}
+        onClose={() => setGalaxyOpen(false)}
+        title="Tour map — click a room to select it"
+      />
 
       <GalleryHotspotPanel
         open={galleryPanelOpen}
