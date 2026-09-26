@@ -335,6 +335,22 @@ export default function TourEditorPage() {
     }
   }, []);
 
+  const deleteAsset = useCallback(
+    async (name: string) => {
+      if (!window.confirm(`Delete "${name}" from the media library? This cannot be undone.`)) return;
+      try {
+        const res = await fetch(`/api/tour/media?name=${encodeURIComponent(name)}`, { method: 'DELETE' });
+        const data = await res.json().catch(() => null);
+        if (!res.ok) throw new Error(data?.error || `delete failed (${res.status})`);
+        await loadMedia();
+        showToast(`Deleted ${name}.`, 'success');
+      } catch (e: any) {
+        showToast(e?.message || 'Delete failed.', 'error');
+      }
+    },
+    [loadMedia, showToast],
+  );
+
   const addFromLibrary = (url: string) => {
     const name = url.split('/').pop()?.split('.')[0] || `Node ${rooms.length + 1}`;
     const id = `node-${Date.now().toString(36)}`;
@@ -1356,6 +1372,8 @@ export default function TourEditorPage() {
             onDelete={deleteNode}
             onAddFromLibrary={addFromLibrary}
             onUploadFiles={uploadFiles}
+            onDeleteAsset={deleteAsset}
+            onRefreshMedia={loadMedia}
             onSetDraggingOver={setDraggingOver}
             onCollapse={() => setLeftOpen(false)}
           />

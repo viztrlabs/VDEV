@@ -1,7 +1,7 @@
 'use client';
 
-import React, { memo, useState } from 'react';
-import { Upload, Loader2, Pencil, ChevronUp, ChevronDown, Copy, Trash2, Star, PanelLeftClose } from 'lucide-react';
+import React, { memo, useMemo, useState } from 'react';
+import { Upload, Loader2, Pencil, ChevronUp, ChevronDown, Copy, Trash2, Star, Plus, RefreshCw, PanelLeftClose } from 'lucide-react';
 import type { TourRoom } from '@/data/tour-config';
 
 // ============================================================================
@@ -141,36 +141,130 @@ interface MediaAsset {
 interface MediaLibraryPanelProps {
   assets: MediaAsset[];
   onAdd: (url: string) => void;
+  onUploadFiles?: (files: FileList | File[]) => void;
+  onDeleteAsset?: (name: string) => void;
+  onRefreshMedia?: () => void;
+  uploading?: boolean;
 }
 
-function MediaLibraryPanelBase({ assets, onAdd }: MediaLibraryPanelProps) {
+function MediaLibraryPanelBase({
+  assets,
+  onAdd,
+  onUploadFiles,
+  onDeleteAsset,
+  onRefreshMedia,
+  uploading,
+}: MediaLibraryPanelProps) {
+  const [open, setOpen] = useState(true);
+  const unique = useMemo(() => {
+    const seen = new Set<string>();
+    const out: MediaAsset[] = [];
+    for (const a of assets) {
+      if (!a?.url || seen.has(a.url)) continue;
+      seen.add(a.url);
+      out.push(a);
+    }
+    return out;
+  }, [assets]);
+
   return (
-    <details className="group">
-      <summary className="cursor-pointer text-[10px] font-mono uppercase tracking-wider text-[#71717A] px-1 py-1 select-none">
-        Media Library ({assets.length})
-      </summary>
-      <div className="mt-1 space-y-1 max-h-48 overflow-y-auto">
-        {assets.length === 0 ? (
-          <div className="text-[10px] font-mono text-[#555] px-1">No assets yet</div>
-        ) : (
-          assets.map((a) => (
-            <button
-              key={a.url}
-              type="button"
-              onClick={() => onAdd(a.url)}
-              className="w-full flex items-center gap-2 rounded border border-[#27272A] hover:border-[#3ECF8E]/40 p-1"
-              title={`Add ${a.name} as new node`}
-            >
-              <div
-                className="w-7 h-7 rounded bg-cover bg-center shrink-0 border border-[#27272A]"
-                style={{ backgroundImage: `url(${a.url})` }}
-              />
-              <span className="text-[10px] font-mono text-[#A1A1AA] truncate">{a.name}</span>
-            </button>
-          ))
+    <div className="rounded-lg border border-[#27272A] bg-[#0c0c0f] overflow-hidden">
+      <div className="flex items-center">
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          title={open ? 'Collapse media library' : 'Expand media library'}
+          className="flex-1 min-w-0 flex items-center gap-1 px-1 py-1 text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA] hover:text-white select-none"
+        >
+          {open ? <ChevronUp className="w-3 h-3 shrink-0" /> : <ChevronDown className="w-3 h-3 shrink-0" />}
+          <span className="truncate">Media Library ({unique.length})</span>
+        </button>
+        {onRefreshMedia && (
+          <button
+            type="button"
+            onClick={onRefreshMedia}
+            title="Refresh media library"
+            aria-label="Refresh media library"
+            className="p-1 rounded text-[#71717A] hover:text-white hover:bg-white/10"
+          >
+            <RefreshCw className="w-3 h-3" />
+          </button>
         )}
       </div>
-    </details>
+
+      {open && (
+        <div className="px-1 pb-1 space-y-1">
+          {onUploadFiles && !uploading && (
+            <label className="flex items-center gap-1 px-1.5 py-1 rounded border border-[#27272A] hover:border-[#3ECF8E]/40 text-[10px] font-mono text-[#3ECF8E] cursor-pointer">
+              <Upload className="w-3 h-3" /> Upload
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={(e) => e.target.files && onUploadFiles(e.target.files)}
+              />
+            </label>
+          )}
+          {onUploadFiles && uploading && (
+            <div className="flex items-center gap-1 px-1 py-1 text-[10px] font-mono text-[#71717A]">
+              <Loader2 className="w-3 h-3 animate-spin" /> Uploading…
+            </div>
+          )}
+          <div className="space-y-1 max-h-48 overflow-y-auto">
+            {unique.length === 0 ? (
+              <div className="text-[10px] font-mono text-[#555] px-1">No assets yet</div>
+            ) : (
+              unique.map((a) => (
+                <div
+                  key={a.url}
+                  className="flex items-center gap-1 rounded border border-[#27272A] p-1"
+                >
+                  <button
+                    type="button"
+                    onClick={() => onAdd(a.url)}
+                    title={`Add ${a.name} as new node`}
+                    className="flex-1 min-w-0 flex items-center gap-2 text-left rounded hover:border-[#3ECF8E]/40"
+                  >
+                    <div
+                      className="w-7 h-7 rounded bg-cover bg-center shrink-0 border border-[#27272A]"
+                      style={{ backgroundImage: `url(${a.url})` }}
+                    />
+                    <span className="text-[10px] font-mono text-[#A1A1AA] truncate">{a.name}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onAdd(a.url)}
+                    title="Add as new node"
+                    aria-label={`Add ${a.name}`}
+                    className="p-1 rounded text-[#71717A] hover:text-[#3ECF8E] hover:bg-white/10"
+                  >
+                    <Plus className="w-3 h-3" />
+                  </button>
+                  {onDeleteAsset && (
+                    <button
+                      type="button"
+                      onClick={() => onDeleteAsset(a.name)}
+                      title={`Delete ${a.name} from media library`}
+                      aria-label={`Delete ${a.name}`}
+                      className="p-1 rounded text-[#71717A] hover:text-rose-400 hover:bg-rose-500/10"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+          {assets.length !== unique.length && (
+            <div className="text-[9px] font-mono text-[#555] px-1">
+              {assets.length - unique.length} duplicate{assets.length - unique.length > 1 ? 's' : ''} hidden
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -197,6 +291,8 @@ interface NodeListSidebarProps {
   onDelete: (id: string) => void;
   onAddFromLibrary: (url: string) => void;
   onUploadFiles: (files: FileList | File[]) => void;
+  onDeleteAsset?: (name: string) => void;
+  onRefreshMedia?: () => void;
   onSetDraggingOver: (dragging: boolean) => void;
   onCollapse?: () => void;
 }
@@ -217,6 +313,8 @@ export function NodeListSidebar({
   onDelete,
   onAddFromLibrary,
   onUploadFiles,
+  onDeleteAsset,
+  onRefreshMedia,
   onSetDraggingOver,
   onCollapse,
 }: NodeListSidebarProps) {
@@ -251,7 +349,14 @@ export function NodeListSidebar({
         </div>
       </div>
 
-      <MediaLibraryPanel assets={mediaAssets} onAdd={onAddFromLibrary} />
+      <MediaLibraryPanel
+        assets={mediaAssets}
+        onAdd={onAddFromLibrary}
+        onUploadFiles={onUploadFiles}
+        onDeleteAsset={onDeleteAsset}
+        onRefreshMedia={onRefreshMedia}
+        uploading={uploading}
+      />
 
       {/* Drag-drop zone */}
       <div
