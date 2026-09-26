@@ -1082,11 +1082,12 @@ export default function TourEditorPage() {
     if (!hpId) return;
     updateRoom(selected.id, (r) => ({
       ...r,
-      defaultHotspots: r.defaultHotspots.map((hp) =>
-        hp.id === hpId
-          ? { ...hp, images: Array.from(new Set([...(hp.images || []), ...urls])) }
-          : hp,
-      ),
+      defaultHotspots: r.defaultHotspots.map((hp) => {
+        const existing = (hp as { images?: string[] }).images || [];
+        return hp.id === hpId
+          ? { ...hp, images: Array.from(new Set([...existing, ...urls])) }
+          : hp;
+      }),
     }));
     showToast(`Added ${urls.length} photo(s).`, 'success');
   };
