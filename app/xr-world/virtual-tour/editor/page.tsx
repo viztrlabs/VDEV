@@ -214,6 +214,8 @@ export default function TourEditorPage() {
   const [rightOpen, setRightOpen] = useState(true);
   const [activeTool, setActiveTool] = useState<string>('select');
   const [galleryPanelOpen, setGalleryPanelOpen] = useState(false);
+  const [galleryMulti, setGalleryMulti] = useState(false);
+  const [galleryTargetId, setGalleryTargetId] = useState<string | null>(null);
   const [validationOpen, setValidationOpen] = useState(false);
   const [contextMenu, setContextMenu] = useState<{
     x: number;
@@ -1064,6 +1066,34 @@ export default function TourEditorPage() {
     showToast('Gallery hotspot added. Click to position it.', 'success');
   };
 
+  const openGalleryMulti = (hpId: string) => {
+    setGalleryTargetId(hpId);
+    setGalleryMulti(true);
+    setGalleryPanelOpen(true);
+    if (loadMedia) loadMedia();
+  };
+
+  const handleGalleryMultiSelect = (urls: string[]) => {
+    if (!selected) return;
+    const hpId = galleryTargetId;
+    if (!hpId) return;
+    updateRoom(selected.id, (r) => ({
+      ...r,
+      defaultHotspots: r.defaultHotspots.map((hp) =>
+        hp.id === hpId
+          ? { ...hp, images: Array.from(new Set([...(hp.images || []), ...urls])) }
+          : hp,
+      ),
+    }));
+    showToast(`Added ${urls.length} photo(s).`, 'success');
+  };
+
+  const closeGalleryPanel = () => {
+    setGalleryPanelOpen(false);
+    setGalleryMulti(false);
+    setGalleryTargetId(null);
+  };
+
   // Keyboard shortcuts
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -1122,6 +1152,8 @@ export default function TourEditorPage() {
         case 'g':
           e.preventDefault();
           setActiveTool('gallery');
+          setGalleryMulti(false);
+          setGalleryTargetId(null);
           setGalleryPanelOpen(true);
           break;
         case 's':
@@ -1149,7 +1181,7 @@ export default function TourEditorPage() {
           setAddMode(false);
           setAddHotspotKind(null);
           setLinkTargetId('');
-          setGalleryPanelOpen(false);
+          closeGalleryPanel();
           break;
         case 'a':
           e.preventDefault();
@@ -1176,8 +1208,8 @@ export default function TourEditorPage() {
     setAddMode,
     setAddHotspotKind,
     setLinkTargetId,
-    setGalleryPanelOpen,
     setSectionTab,
+    closeGalleryPanel,
     updateRoom,
     showToast,
   ]);
@@ -1696,6 +1728,7 @@ export default function TourEditorPage() {
               }
             }}
             onSetPortalTarget={setPortalTarget}
+            onAddPhotos={(hpId) => openGalleryMulti(hpId)}
             onCollapse={() => setRightOpen(false)}
           />
         )}
@@ -1988,6 +2021,8 @@ export default function TourEditorPage() {
               setAddMode(true);
               setAddHotspotKind('room_link');
             } else if (tool === 'gallery') {
+              setGalleryMulti(false);
+              setGalleryTargetId(null);
               setGalleryPanelOpen(true);
             } else if (tool === 'select') {
               setAddMode(false);
@@ -2020,10 +2055,12 @@ export default function TourEditorPage() {
 
       <GalleryHotspotPanel
         open={galleryPanelOpen}
-        onClose={() => setGalleryPanelOpen(false)}
+        onClose={closeGalleryPanel}
         onSelectMedia={handleGallerySelect}
+        onSelectMediaMulti={galleryMulti ? handleGalleryMultiSelect : undefined}
         mediaAssets={mediaAssets}
         onRefreshMedia={loadMedia}
+        multiple={galleryMulti}
       />
 
       {contextMenu && (
