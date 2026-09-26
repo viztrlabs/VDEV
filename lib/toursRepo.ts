@@ -1,6 +1,5 @@
 import { createServiceClient } from '@/lib/supabase/admin';
 import { isUsableSupabaseEnv } from '@/lib/supabase/env';
-import { LOCAL_TOUR_ROOMS } from './localTour';
 import { identityKey, buildSlug, TourScope } from './tourIdentity';
 import {
   getTour as localGetTour,
@@ -297,6 +296,12 @@ export async function saveTourSettings(
   return saveTourSettingsLocal(input, scope);
 }
 
+export function resolveRoomsForSave(currentData: Record<string, unknown> | null | undefined): unknown {
+  const rooms = currentData?.rooms;
+  if (Array.isArray(rooms) && rooms.length > 0) return rooms;
+  return currentData?.rooms ?? [];
+}
+
 async function saveTourSettingsDb(
   svc: any,
   input: Parameters<typeof saveTourSettings>[0],
@@ -307,11 +312,11 @@ async function saveTourSettingsDb(
   const base = await localGetSettings(identityKey(scope));
   const merged = mergeSettingsInput(input, base);
   const slug = computeSlug(scope, row);
-  const current = row?.data ?? { version: 1, rooms: LOCAL_TOUR_ROOMS, identity: {} };
+  const current = row?.data ?? ({} as Record<string, unknown>);
   const data = {
-    ...current,
+    ...(current ?? {}),
     version: merged.version,
-    rooms: current.rooms ?? LOCAL_TOUR_ROOMS,
+    rooms: resolveRoomsForSave(current),
     identity: buildIdentity(scope, row, slug),
     settings: {
       live: merged.live,
