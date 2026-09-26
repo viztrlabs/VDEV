@@ -70,5 +70,7 @@ export function tourRoomToScene(
     annotations: [],
     teleportPoints: [],
     preload,
+    initialYaw: (room as any).initialYaw ?? 0,
+    initialPitch: (room as any).initialPitch ?? 0,
   };
 }

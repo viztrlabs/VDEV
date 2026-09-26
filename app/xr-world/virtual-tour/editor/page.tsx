@@ -91,6 +91,16 @@ import {
 } from 'lucide-react';
 import EditorContextMenu, { type ContextMenuItem } from '@/components/editor/EditorContextMenu';
 import { serializeTourForExperienceConfig } from '@/lib/marzipano/tour-config-serializer';
+import { tourRoomToScene } from '@/lib/tourRoomToScene';
+import { resolveExperienceId } from '@/lib/experienceResolver';
+
+// The XR viewer used in preview mode. It takes an XRScene built from the
+// currently selected room (see `tourRoomToScene`) — NOT the old room/yaw/
+// pitch/onMove signature, which was never wired up.
+const MarzipanoViewer = dynamic(
+  () => import('@/components/xr/MarzipanoViewer'),
+  { ssr: false },
+);
 
 type HotspotColor = 'rose' | 'emerald' | 'cyan' | 'amber' | 'violet' | 'blue';
 type HotspotCategory =
@@ -150,108 +160,30 @@ export default function TourEditorPage() {
   const params = useParams<{ projectId?: string; experienceId?: string }>();
   const projectId = params?.projectId || 'proj_smart_luxury_villa';
   const experienceId = params?.experienceId;
-  const { undo, redo, canUndo, canRedo } = useEditorHistory();
-
-  // Keyboard shortcuts
+  // Experience identity for the tour. Resolved lazily: URL path/query wins,
+  // otherwise a saved tour row's identity, otherwise resolved against the
+  // experiences API (find, then create) with failures surfaced, never fatal.
+  const [resolvedExperienceId, setResolvedExperienceId] = useState<string | null>(null);
+  const savedExpIdRef = useRef<string | null>(null);
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement | null;
-      const inEditable =
-        target &&
-        (target.tagName === 'INPUT' ||
-          target.tagName === 'TEXTAREA' ||
-          target.isContentEditable);
-      if (inEditable) return;
-      const mod = e.ctrlKey || e.metaKey;
-      if (mod) {
-        switch (e.key.toLowerCase()) {
-          case 'z':
-            e.preventDefault();
-            if (e.shiftKey) redo();
-            else undo();
-            return;
-          case 'y':
-            e.preventDefault();
-            redo();
-            return;
-          case 's':
-            e.preventDefault();
-            save();
-            return;
-        }
+    let cancelled = false;
+    (async () => {
+      const url = new URL(window.location.href);
+      const urlExperience = url.searchParams.get('experience') || params?.experienceId || null;
+      if (urlExperience) {
+        setResolvedExperienceId(urlExperience);
         return;
       }
-      if (sectionTab !== 'editor') return;
-      switch (e.key.toLowerCase()) {
-        case 'v':
-          e.preventDefault();
-          setActiveTool('select');
-          setAddMode(false);
-          setAddHotspotKind(null);
-          break;
-        case 'm':
-          e.preventDefault();
-          setActiveTool('metadata');
-          setAddMode(true);
-          setAddHotspotKind('metadata');
-          break;
-        case 'i':
-          e.preventDefault();
-          setActiveTool('info');
-          setAddMode(true);
-          setAddHotspotKind('info');
-          break;
-        case 'p':
-          e.preventDefault();
-          setActiveTool('portal');
-          setAddMode(true);
-          setAddHotspotKind('room_link');
-          break;
-        case 'g':
-          e.preventDefault();
-          setActiveTool('gallery');
-          setGalleryPanelOpen(true);
-          break;
-        case 's':
-          e.preventDefault();
-          if (selected) {
-            updateRoom(selected.id, (r) => ({
-              ...r,
-              initialYaw: Math.round(currentYaw * 10) / 10,
-              initialPitch: Math.round(currentPitch * 10) / 10,
-            }));
-            showToast(`Starting view saved: ${Math.round(currentYaw)}° / ${Math.round(currentPitch)}°`, 'success');
-          }
-          break;
-        case 'r':
-          e.preventDefault();
-          {
-            const tId = new URL(window.location.href).searchParams.get('tour') || localStorage.getItem('viztr_active_tour') || '';
-            window.open(`/xr-world/virtual-tour/showcase?tour=${tId || projectId}`, '_blank');
-          }
-          break;
-        case 't':
-          e.preventDefault();
-          setSectionTab('settings');
-          break;
-        case 'escape':
-          e.preventDefault();
-          setActiveTool('select');
-          setAddMode(false);
-          setAddHotspotKind(null);
-          setLinkTargetId('');
-          setGalleryPanelOpen(false);
-          break;
-        case 'a':
-          e.preventDefault();
-          setSectionTab('alignment');
-          break;
-      }
+      const res = await resolveExperienceId({ projectId, savedExperienceId: savedExpIdRef.current });
+      if (!cancelled && res.experienceId) setResolvedExperienceId(res.experienceId);
+    })();
+    return () => {
+      cancelled = true;
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [undo, redo, sectionTab, selected, currentYaw, currentPitch, projectId, setActiveTool, setAddMode, setAddHotspotKind, setLinkTargetId, setGalleryPanelOpen, setSectionTab, updateRoom, showToast]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId, params?.experienceId]);
+  const { undo, redo, canUndo, canRedo } = useEditorHistory();
+  const { showToast } = useAppStore();
 
   const [rooms, setRooms] = useState<TourRoom[]>([]);
   const [loading, setLoading] = useState(true);
@@ -296,6 +228,7 @@ export default function TourEditorPage() {
     fullscreenButton: true,
     viewControlButtons: true,
   });
+  const [previewMode, setPreviewMode] = useState(false);
 
   // Compute validation issue count for the header badge
   const validationIssueCount = (() => {
@@ -305,7 +238,7 @@ export default function TourEditorPage() {
     rooms.forEach((room) => {
       if (!room.panoramaUrl) count++;
       if (!room.name || room.name === 'Untitled' || room.name === 'New Scene') count++;
-      room.defaultHotspots.forEach((hs) => {
+      (room.defaultHotspots || []).forEach((hs) => {
         if (!hs.title || hs.title === 'New Hotspot') count++;
         if (hs.type === 'room_link') {
           if (!hs.targetRoomId) count++;
@@ -313,7 +246,7 @@ export default function TourEditorPage() {
         }
         if (hs.type === 'image' && !hs.mediaUrl) count++;
       });
-      if (rooms.length > 1 && room.defaultHotspots.filter((h) => h.type === 'room_link').length === 0) count++;
+      if (rooms.length > 1 && (room.defaultHotspots || []).filter((h) => h.type === 'room_link').length === 0) count++;
     });
     return count;
   })();
@@ -328,22 +261,39 @@ export default function TourEditorPage() {
       
       // If experienceId is provided, try to load from experience config first
       let data: any = null;
-      if (experienceId) {
-        const expRes = await fetch(`/api/experience-configs?experienceId=${encodeURIComponent(experienceId)}`);
+      if (experienceId || queryExperience) {
+        const expId = experienceId || queryExperience;
+        const expRes = await fetch(`/api/experience-configs?experienceId=${encodeURIComponent(expId!)}`);
         const expData = await expRes.json();
-        if (expData.success && expData.configs && expData.configs.length > 0) {
+        if (expData.success && expData.configs && expData.configs.length > 0 && expData.configs[0].config?.rooms) {
           data = expData.configs[0].config;
         }
       }
       
       // Fallback to tour API
       if (!data) {
-        const res = await fetch(`/api/tour${tourId ? `?tour=${tourId}` : ''}`);
-        data = await res.json();
+        const res = await fetch(`/api/tour${tourId ? `?tour=${encodeURIComponent(tourId)}` : ''}`);
+        if (!res.ok) {
+          // A 404 is fine here (fresh tour): empty canvas, not an error banner.
+          if (res.status !== 404) setError(`failed to load tour (${res.status})`);
+        } else {
+          data = await res.json();
+        }
       }
-      
-      setRooms(data.rooms || []);
-      setSelectedId((prev) => prev || data.rooms?.[0]?.id || '');
+
+      const rooms = Array.isArray(data?.rooms) ? data.rooms : [];
+      setRooms(rooms.map((r: any) => ({ ...r, panoramaUrl: r.panoramaUrl || '', defaultHotspots: r.defaultHotspots || [] })));
+      setSelectedId((prev) => prev || rooms[0]?.id || '');
+      if (data?.slug && typeof window !== 'undefined') {
+        localStorage.setItem('viztr_active_tour', data.slug);
+        const next = new URL(window.location.href);
+        next.searchParams.set('tour', data.slug);
+        window.history.replaceState({}, '', next.toString());
+      }
+      if (data?.experienceId) {
+        savedExpIdRef.current = data.experienceId;
+        setResolvedExperienceId((prev) => prev || data.experienceId);
+      }
     } catch (e: any) {
       setError(e?.message || 'failed to load tour');
     } finally {
@@ -416,7 +366,9 @@ export default function TourEditorPage() {
     const requestId = ++settingsRequestIdRef.current;
     setSettingsLoading(true);
     try {
-      const res = await fetch('/api/tour/settings');
+      const url = new URL(typeof window !== 'undefined' ? window.location.href : 'http://localhost/');
+      const tourParam = url.searchParams.get('tour') || (typeof window !== 'undefined' ? localStorage.getItem('viztr_active_tour') : null) || '';
+      const res = await fetch(`/api/tour/settings${tourParam ? `?tour=${encodeURIComponent(tourParam)}` : ''}`);
       if (requestId !== settingsRequestIdRef.current) return;
       if (!res.ok) {
         setSettings(null);
@@ -424,21 +376,28 @@ export default function TourEditorPage() {
       }
       const data = await res.json();
       if (requestId !== settingsRequestIdRef.current) return;
-      if (!data || typeof data !== 'object') {
+      const bundle = data && typeof data === 'object' && data.settings ? data.settings : data;
+      if (!bundle || typeof bundle !== 'object') {
         setSettings(null);
         return;
       }
+      if (data?.slug && typeof window !== 'undefined') {
+        localStorage.setItem('viztr_active_tour', data.slug);
+        const next = new URL(window.location.href);
+        next.searchParams.set('tour', data.slug);
+        window.history.replaceState({}, '', next.toString());
+      }
       setSettings({
-        live: data.live !== false,
-        publicUrl: data.publicUrl || '/xr-world/virtual-tour',
+        live: bundle.live !== false,
+        publicUrl: bundle.publicUrl || `/virtual-tour/${data?.slug || ''}`,
         theme: {
           accentColor: '#3ECF8E',
           logoUrl: '',
           title: 'VizTR Virtual Tour',
-          ...(data.theme || {}),
+          ...(bundle.theme || {}),
         },
-        accessLevel: data.accessLevel === 'private' ? 'private' : 'public',
-        version: typeof data.version === 'number' ? data.version : 1,
+        accessLevel: bundle.accessLevel === 'private' ? 'private' : 'public',
+        version: typeof bundle.version === 'number' ? bundle.version : 1,
       });
     } catch {
       if (requestId !== settingsRequestIdRef.current) return;
@@ -450,7 +409,9 @@ export default function TourEditorPage() {
 
   const persistSettings = useCallback(async (next: any) => {
     try {
-      const res = await fetch('/api/tour/settings', {
+      const url = new URL(typeof window !== 'undefined' ? window.location.href : 'http://localhost/');
+      const tourParam = url.searchParams.get('tour') || (typeof window !== 'undefined' ? localStorage.getItem('viztr_active_tour') : null) || '';
+      const res = await fetch(`/api/tour/settings${tourParam ? `?tour=${encodeURIComponent(tourParam)}` : ''}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(next),
@@ -694,6 +655,26 @@ export default function TourEditorPage() {
   };
 
   // ---- Upload 360 image and create a node ----
+  const parseFilename = (name: string): { floor?: string; room?: string } => {
+    const base = name.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
+    const floorPatterns = [
+      { regex: /\b(GF|Ground\s*Floor?)\b/i, floor: 'Ground Floor' },
+      { regex: /\b(FF|First\s*Floor?)\b/i, floor: 'First Floor' },
+      { regex: /\b(SF|Second\s*Floor?)\b/i, floor: 'Second Floor' },
+      { regex: /\b(B1|Basement)\b/i, floor: 'Basement' },
+      { regex: /\b(T|Terrace|Roof)\b/i, floor: 'Terrace' },
+    ];
+    let floor: string | undefined;
+    for (const p of floorPatterns) {
+      if (p.regex.test(base)) { floor = p.floor; break; }
+    }
+    const room = base
+      .replace(/\b(GF|FF|SF|B1|Ground|First|Second|Basement|Terrace|Roof)\b/gi, '')
+      .replace(/^\d+[\s._-]*/, '')
+      .trim();
+    return { floor, room: room || undefined };
+  };
+
   const uploadFiles = async (files: FileList | File[]) => {
     setUploading(true);
     setError('');
@@ -702,13 +683,15 @@ export default function TourEditorPage() {
         const fd = new FormData();
         fd.append('file', file);
         const res = await fetch('/api/tour/upload', { method: 'POST', body: fd });
-        if (!res.ok) throw new Error('upload failed');
-        const { url } = await res.json();
+        const data = await res.json().catch(() => null);
+        if (!res.ok) throw new Error(data?.error || `upload failed (${res.status})`);
+        const { url } = data;
         const id = `node-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+        const parsed = parseFilename(file.name);
         const newRoom: TourRoom = {
           id,
-          name: file.name.replace(/\.[^.]+$/, '').slice(0, 40) || 'New Scene',
-          subtitle: 'User Upload',
+          name: (parsed.room || file.name.replace(/\.[^.]+$/, '')).slice(0, 40) || 'New Scene',
+          subtitle: parsed.floor || 'User Upload',
           panoramaUrl: url,
           thumbnailUrl: url,
           initialYaw: 180,
@@ -879,7 +862,7 @@ export default function TourEditorPage() {
         showToast(result.fatal || 'Import failed.', 'error');
         return;
       }
-      setRooms(result.tour.rooms);
+      setRooms(result.tour.rooms.map((r: any) => ({ ...r, defaultHotspots: r.defaultHotspots || [] })));
       setSelectedId(result.tour.rooms[0]?.id || '');
       setSaved(false);
       const importedCount = result.tour.rooms.length;
@@ -965,34 +948,58 @@ export default function TourEditorPage() {
       const queryTour = url.searchParams.get('tour');
       const lsTour = typeof window !== 'undefined' ? localStorage.getItem('viztr_active_tour') : null;
       const tourId = queryTour || lsTour || '';
-      const res = await fetch(`/api/tour${tourId ? `?tour=${tourId}` : ''}`, {
+      const expId = resolvedExperienceId || savedExpIdRef.current || url.searchParams.get('experience') || undefined;
+      const body: Record<string, unknown> = {
+        version: settings?.version ?? 1,
+        rooms,
+        title: tourName,
+        projectId,
+      };
+      if (expId) body.experienceId = expId;
+      const res = await fetch(`/api/tour${tourId ? `?tour=${encodeURIComponent(tourId)}` : ''}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ version: settings?.version ?? 1, rooms }),
+        body: JSON.stringify(body),
       });
       if (!res.ok) throw new Error('save failed');
+      const savedData = await res.json();
       setSaved(true);
+      const slug = savedData?.slug || tourId;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('viztr_active_tour', slug);
+        const next = new URL(window.location.href);
+        next.searchParams.set('tour', slug);
+        if (projectId) next.searchParams.set('project', projectId);
+        if (expId) next.searchParams.set('experience', expId);
+        window.history.replaceState({}, '', next.toString());
+      }
 
-      // Also serialize and send to VizTR Experience Config API
-      try {
-        const config = serializeTourForExperienceConfig(rooms, settings, projectId, experienceId);
-        await fetch('/api/experience-configs', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            experience_id: experienceId,
-            config: { tour: config.tour },
-            assets: config.assets,
-            settings: {
-              tour: config.settings,
+      // Also serialize and send to VizTR Experience Config API — surfaced but
+      // non-blocking: a tour save must never fail because config sync did.
+      if (expId) {
+        try {
+          const config = serializeTourForExperienceConfig(rooms, settings, projectId, expId);
+          const cfgRes = await fetch('/api/experience-configs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              experience_id: expId,
+              config: { tour: config.tour },
               assets: config.assets,
-              metadata: config.metadata,
-            },
-          }),
-        });
-      } catch (e) {
-        console.warn('[TourEditor] Failed to sync to VizTR Experience Config:', e);
+              settings: {
+                tour: config.settings,
+                assets: config.assets,
+                metadata: config.metadata,
+              },
+            }),
+          });
+          if (!cfgRes.ok && cfgRes.status !== 401) {
+            setError('Tour saved, but Experience Config sync failed.');
+          }
+        } catch {
+          setError('Tour saved, but Experience Config sync failed.');
+        }
       }
       notifyEditorSave();
     } catch (e: any) {
@@ -1008,10 +1015,25 @@ export default function TourEditorPage() {
     if (settings) {
       setPublishing(true);
       try {
-        await persistSettings({ ...settings, live: true });
+        const url = new URL(typeof window !== 'undefined' ? window.location.href : 'http://localhost/');
+        const tourParam = url.searchParams.get('tour') || (typeof window !== 'undefined' ? localStorage.getItem('viztr_active_tour') : null) || '';
+        const res = await fetch(`/api/tour/settings${tourParam ? `?tour=${encodeURIComponent(tourParam)}` : ''}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ live: true, accessLevel: 'public' }),
+        });
+        if (!res.ok) throw new Error(`Publish failed (${res.status})`);
+        const data = await res.json();
+        const slug = data?.slug || tourParam;
+        const publicUrl = `/virtual-tour/${slug}`;
+        await persistSettings({ ...settings, live: true, publicUrl });
         showToast('Tour published and set live!', 'success');
-        const publicUrl = settings.publicUrl || '/xr-world/virtual-tour';
         showToast(`Public URL: ${publicUrl}`, 'info');
+        if (typeof window !== 'undefined') {
+          const next = new URL(window.location.href);
+          next.searchParams.set('tour', slug);
+          window.history.replaceState({}, '', next.toString());
+        }
       } catch (e: any) {
         showToast(e?.message || 'Publish failed.', 'error');
       } finally {
@@ -1040,6 +1062,124 @@ export default function TourEditorPage() {
     }));
     showToast('Gallery hotspot added. Click to position it.', 'success');
   };
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const inEditable =
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable);
+      if (inEditable) return;
+      const mod = e.ctrlKey || e.metaKey;
+      if (mod) {
+        switch (e.key.toLowerCase()) {
+          case 'z':
+            e.preventDefault();
+            if (e.shiftKey) redo();
+            else undo();
+            return;
+          case 'y':
+            e.preventDefault();
+            redo();
+            return;
+          case 's':
+            e.preventDefault();
+            save();
+            return;
+        }
+        return;
+      }
+      if (sectionTab !== 'editor') return;
+      switch (e.key.toLowerCase()) {
+        case 'v':
+          e.preventDefault();
+          setActiveTool('select');
+          setAddMode(false);
+          setAddHotspotKind(null);
+          break;
+        case 'm':
+          e.preventDefault();
+          setActiveTool('metadata');
+          setAddMode(true);
+          setAddHotspotKind('metadata');
+          break;
+        case 'i':
+          e.preventDefault();
+          setActiveTool('info');
+          setAddMode(true);
+          setAddHotspotKind('info');
+          break;
+        case 'p':
+          e.preventDefault();
+          setActiveTool('portal');
+          setAddMode(true);
+          setAddHotspotKind('room_link');
+          break;
+        case 'g':
+          e.preventDefault();
+          setActiveTool('gallery');
+          setGalleryPanelOpen(true);
+          break;
+        case 's':
+          e.preventDefault();
+          if (selected) {
+            updateRoom(selected.id, (r) => ({
+              ...r,
+              initialYaw: Math.round(currentYaw * 10) / 10,
+              initialPitch: Math.round(currentPitch * 10) / 10,
+            }));
+            showToast(`Starting view saved: ${Math.round(currentYaw)}° / ${Math.round(currentPitch)}°`, 'success');
+          }
+          break;
+        case 'r':
+          e.preventDefault();
+          if (!previewMode) setPreviewMode(true);
+          break;
+        case 't':
+          e.preventDefault();
+          setSectionTab('settings');
+          break;
+        case 'escape':
+          e.preventDefault();
+          setActiveTool('select');
+          setAddMode(false);
+          setAddHotspotKind(null);
+          setLinkTargetId('');
+          setGalleryPanelOpen(false);
+          break;
+        case 'a':
+          e.preventDefault();
+          setSectionTab('alignment');
+          break;
+        case 'Escape':
+          if (previewMode) { setPreviewMode(false); return; }
+          break;
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [
+    undo,
+    redo,
+    save,
+    sectionTab,
+    selected,
+    currentYaw,
+    currentPitch,
+    projectId,
+    previewMode,
+    setActiveTool,
+    setAddMode,
+    setAddHotspotKind,
+    setLinkTargetId,
+    setGalleryPanelOpen,
+    setSectionTab,
+    updateRoom,
+    showToast,
+  ]);
 
   if (loading) {
     return (
@@ -1119,6 +1259,40 @@ export default function TourEditorPage() {
       )}
 
       {sectionTab === 'editor' ? (
+      previewMode ? (
+        <div className="flex-1 relative">
+          {selected ? (
+            <MarzipanoViewer
+              key={selected.id}
+              scene={tourRoomToScene(selected, { rooms: rooms as any })}
+              onHotspotClick={(hotspot) => {
+                if (hotspot.action === 'teleport' && hotspot.target) {
+                  const target = rooms.find((r) => r.id === hotspot.target);
+                  if (target) {
+                    setSelectedId(target.id);
+                    return;
+                  }
+                }
+                setSectionTab('editor');
+                requestAnimationFrame(() => {
+                  const el = document.querySelector(`[data-hotspot-inspector="${hotspot.id}"]`);
+                  el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+              }}
+            />
+          ) : (
+            <div className="h-full flex items-center justify-center text-xs font-mono text-[#71717A]">
+              No scenes yet — upload a 360° image to see a live preview.
+            </div>
+          )}
+          <button
+            onClick={() => setPreviewMode(false)}
+            className="absolute top-4 right-4 z-50 px-3 py-1.5 rounded-lg bg-black/80 text-white text-xs font-mono backdrop-blur"
+          >
+            Exit Preview (Esc)
+          </button>
+        </div>
+      ) : (
       <div className="flex flex-1 min-h-0">
         <div
           className={
@@ -1537,6 +1711,7 @@ export default function TourEditorPage() {
           </button>
         )}
       </div>
+      )
       ) : sectionTab === 'design' ? (
         <div className="flex-1 overflow-y-auto">
           {settings ? (
@@ -1819,10 +1994,7 @@ export default function TourEditorPage() {
             } else if (tool === 'settings') {
               setSectionTab('settings');
             } else if (tool === 'preview') {
-              {
-                const tId = new URL(window.location.href).searchParams.get('tour') || localStorage.getItem('viztr_active_tour') || '';
-                window.open(`/xr-world/virtual-tour/showcase?tour=${tId || projectId}`, '_blank');
-              }
+              setPreviewMode(true);
             } else {
               setAddMode(false);
               setAddHotspotKind(null);

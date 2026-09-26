@@ -40,7 +40,7 @@ interface TourScene {
     id: string;
     yaw: number;
     pitch: number;
-    type: 'link' | 'info' | 'image' | 'video' | 'audio' | 'product';
+    type: 'link' | 'info';
     targetSceneId?: string;
     targetYaw?: number;
     title: string;
@@ -78,8 +78,8 @@ export default function MarzipanoViewer({ scene, onHotspotClick }: MarzipanoView
       url: scene.url,
       tileUrl: undefined, // Will use fallback full-res if no tileUrl
       thumbnailUrl: scene.thumbnail || scene.url,
-      initialYaw: 0,
-      initialPitch: 0,
+      initialYaw: scene.initialYaw ?? 0,
+      initialPitch: scene.initialPitch ?? 0,
       initialFov: 90,
       hotspots: (scene.hotspots || []).map((hs) => {
         const yaw = Array.isArray(hs.position) ? hs.position[0] : hs.position.yaw;
@@ -123,7 +123,11 @@ export default function MarzipanoViewer({ scene, onHotspotClick }: MarzipanoView
   return (
     <TourViewer
       scene={tourScene}
-      onHotspotClick={onHotspotClick}
+      onHotspotClick={(sceneId, hotspotId) => {
+        const hs = (scene.hotspots || []).find((h) => h.id === hotspotId);
+        if (!hs) return;
+        onHotspotClick?.(hs);
+      }}
     />
   );
 }

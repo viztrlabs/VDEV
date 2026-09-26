@@ -38,6 +38,8 @@ export interface XRScene {
   annotations: AnnotationItem[];
   teleportPoints: TeleportPointItem[];
   preload?: string[];
+  initialYaw?: number;
+  initialPitch?: number;
 }
 
 export interface DeviceCapabilities {
