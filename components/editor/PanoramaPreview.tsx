@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { MapPin, DoorOpen, Loader2, AlertTriangle, Move3D, ZoomIn, ZoomOut } from 'lucide-react';
+import { xyPercentsToYawPitch, yawPitchToXYPercents } from '@/lib/marzipano/coords';
 
 // ============================================================================
 // Types
@@ -65,6 +66,7 @@ export default function PanoramaPreview({
   onRequestAddHotspot,
   className = '',
 }: PanoramaPreviewProps) {
+  const hasPanorama = Boolean(panoramaUrl && panoramaUrl.trim());
   const containerRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<any>(null);
   const viewRef = useRef<any>(null);
@@ -75,8 +77,44 @@ export default function PanoramaPreview({
   const [loading, setLoading] = useState(true);
   const [zoomLevel, setZoomLevel] = useState(1);
 
+  // Sphere-anchored hotspot positions: id → screen pixels (null when the
+  // hotspot is behind the camera). Recomputed on every view change so
+  // markers stay glued to the scene while the artist looks around.
+  const [projected, setProjected] = useState<Record<string, { x: number; y: number } | null>>({});
+  // Local drag override (id → screen pixels) for instant visual feedback.
+  const [dragPos, setDragPos] = useState<{ id: string; x: number; y: number } | null>(null);
+
+  // Keep hotspots fresh for the view-change listener registered once at init.
+  const hotspotsRef = useRef<PreviewHotspot[]>(hotspots);
+  hotspotsRef.current = hotspots;
+
   // Hotspot drag state
   const draggingRef = useRef<{ id: string; pointerId: number } | null>(null);
+
+  // -------------------------------------------------------------------------
+  // Projection: equirect image percents ⇄ screen pixels
+  // -------------------------------------------------------------------------
+  // Hotspots are stored in equirect IMAGE coordinates (xPercent/yPercent of
+  // the flat 360 image — the same convention the public viewer uses via
+  // lib/marzipano/coords). Display positions come from Marzipano's
+  // coordinatesToScreen on every view change, so markers move with the
+  // image exactly like they do on the published tour.
+  const reproject = useCallback(() => {
+    const view = viewRef.current;
+    if (!view) return;
+    const next: Record<string, { x: number; y: number } | null> = {};
+    for (const h of hotspotsRef.current) {
+      const { yaw, pitch } = xyPercentsToYawPitch(h.xPercent, h.yPercent);
+      let screen: any = null;
+      try {
+        screen = view.coordinatesToScreen([yaw, pitch]);
+      } catch {
+        screen = null;
+      }
+      next[h.id] = screen ? { x: screen[0], y: screen[1] } : null;
+    }
+    setProjected(next);
+  }, []);
 
   // -------------------------------------------------------------------------
   // Initialize Marzipano
@@ -87,6 +125,12 @@ export default function PanoramaPreview({
 
     const init = async () => {
       try {
+        if (!hasPanorama) {
+          setLoading(false);
+          setReady(false);
+          setError(null);
+          return;
+        }
         setLoading(true);
         setError(null);
         const Marzipano = await loadMarzipano();
@@ -138,12 +182,13 @@ export default function PanoramaPreview({
         sceneRef.current = scene;
         scene.switchTo();
 
-        // Track view changes for orientation bar
+        // Track view changes for orientation bar + hotspot re-anchoring
         const handleViewChange = () => {
-          if (!viewRef.current || !onViewChange) return;
+          if (!viewRef.current) return;
           const yaw = (viewRef.current.yaw() * 180) / Math.PI;
           const pitch = (viewRef.current.pitch() * 180) / Math.PI;
-          onViewChange(yaw, pitch);
+          onViewChange?.(yaw, pitch);
+          reproject();
         };
         view.addEventListener('change', handleViewChange);
 
@@ -183,6 +228,13 @@ export default function PanoramaPreview({
   }, [initialYaw, initialPitch]);
 
   // -------------------------------------------------------------------------
+  // Re-anchor markers whenever hotspots change or the viewer becomes ready
+  // -------------------------------------------------------------------------
+  useEffect(() => {
+    reproject();
+  }, [hotspots, ready, reproject]);
+
+  // -------------------------------------------------------------------------
   // Hotspot drag handlers (overlay 2D)
   // -------------------------------------------------------------------------
   const onHotspotPointerDown = useCallback(
@@ -200,18 +252,27 @@ export default function PanoramaPreview({
       const drag = draggingRef.current;
       if (!drag || !containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-      const xPct = Math.max(
-        0,
-        Math.min(100, ((e.clientX - rect.left) / rect.width) * 100),
-      );
-      const yPct = Math.max(
-        0,
-        Math.min(100, ((e.clientY - rect.top) / rect.height) * 100),
-      );
-      onHotspotPositionChange?.(
+      const px = e.clientX - rect.left;
+      const py = e.clientY - rect.top;
+      // Instant visual feedback while dragging.
+      setDragPos({ id: drag.id, x: px, y: py });
+      // Persist in equirect image coords by unprojecting the pointer.
+      const view = viewRef.current;
+      if (!view || typeof view.screenToCoordinates !== 'function' || !onHotspotPositionChange) return;
+      let yaw = 0;
+      let pitch = 0;
+      try {
+        const coords = view.screenToCoordinates([px, py]);
+        yaw = coords[0];
+        pitch = coords[1];
+      } catch {
+        return;
+      }
+      const p = yawPitchToXYPercents(yaw, pitch);
+      onHotspotPositionChange(
         drag.id,
-        Math.round(xPct * 10) / 10,
-        Math.round(yPct * 10) / 10,
+        Math.round(p.x * 10) / 10,
+        Math.round(p.y * 10) / 10,
       );
     },
     [onHotspotPositionChange],
@@ -223,6 +284,7 @@ export default function PanoramaPreview({
       (e.currentTarget as HTMLElement).releasePointerCapture?.(drag.pointerId);
       draggingRef.current = null;
     }
+    setDragPos(null);
   }, []);
 
   // -------------------------------------------------------------------------
@@ -234,11 +296,27 @@ export default function PanoramaPreview({
       // Ignore clicks that originated on hotspot markers
       if ((e.target as HTMLElement).closest('[data-hotspot-marker]')) return;
       const rect = containerRef.current.getBoundingClientRect();
-      const xPct = ((e.clientX - rect.left) / rect.width) * 100;
-      const yPct = ((e.clientY - rect.top) / rect.height) * 100;
+      const px = e.clientX - rect.left;
+      const py = e.clientY - rect.top;
+      // Unproject the click to the world position on the sphere, then store
+      // it as equirect image percents — the same convention the public
+      // viewer reads. Storing raw screen percents made hotspots drift away
+      // from the clicked spot as soon as the camera moved.
+      const view = viewRef.current;
+      if (!view || typeof view.screenToCoordinates !== 'function') return;
+      let yaw = 0;
+      let pitch = 0;
+      try {
+        const coords = view.screenToCoordinates([px, py]);
+        yaw = coords[0];
+        pitch = coords[1];
+      } catch {
+        return;
+      }
+      const p = yawPitchToXYPercents(yaw, pitch);
       onRequestAddHotspot(
-        Math.round(xPct * 10) / 10,
-        Math.round(yPct * 10) / 10,
+        Math.round(p.x * 10) / 10,
+        Math.round(p.y * 10) / 10,
       );
     },
     [addMode, onRequestAddHotspot],
@@ -261,6 +339,23 @@ export default function PanoramaPreview({
   // -------------------------------------------------------------------------
   // Error / loading UI
   // -------------------------------------------------------------------------
+  // -------------------------------------------------------------------------
+  // Empty state (no panorama URL)
+  // -------------------------------------------------------------------------
+  if (!hasPanorama) {
+    return (
+      <div
+        className={`flex items-center justify-center bg-black text-[#71717A] p-4 ${className}`}
+      >
+        <div className="text-xs font-mono space-y-1 text-center">
+          <Move3D className="w-6 h-6 mx-auto mb-1 opacity-40" />
+          <div className="text-[#A1A1AA]">No panorama image</div>
+          <div>Upload a 360° image for this room to preview it here.</div>
+        </div>
+      </div>
+    );
+  }
+
   if (error) {
     return (
       <div
@@ -297,37 +392,41 @@ export default function PanoramaPreview({
         </div>
       )}
 
-      {/* Hotspot markers (2D overlay) */}
+      {/* Hotspot markers (2D overlay, sphere-anchored) */}
       {ready &&
-        hotspots.map((hotspot) => (
-          <button
-            key={hotspot.id}
-            data-hotspot-marker
-            onPointerDown={(e) => onHotspotPointerDown(e, hotspot.id)}
-            onClick={(e) => {
-              e.stopPropagation();
-              onHotspotClick?.(hotspot.id);
-            }}
-            className="absolute -translate-x-1/2 -translate-y-1/2 z-20 cursor-move touch-none"
-            style={{
-              left: `${hotspot.xPercent}%`,
-              top: `${hotspot.yPercent}%`,
-            }}
-            title={hotspot.title}
-          >
-            <span
-              className={`flex items-center justify-center w-5 h-5 rounded-full text-white shadow-lg ${
-                hotspot.type === 'room_link' ? 'bg-[#3ECF8E]' : 'bg-[#ec4899]'
-              }`}
+        hotspots.map((hotspot) => {
+          const p = dragPos?.id === hotspot.id ? dragPos : projected[hotspot.id];
+          if (!p) return null;
+          return (
+            <button
+              key={hotspot.id}
+              data-hotspot-marker
+              onPointerDown={(e) => onHotspotPointerDown(e, hotspot.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onHotspotClick?.(hotspot.id);
+              }}
+              className="absolute -translate-x-1/2 -translate-y-1/2 z-20 cursor-move touch-none"
+              style={{
+                left: `${p.x}px`,
+                top: `${p.y}px`,
+              }}
+              title={hotspot.title}
             >
-              {hotspot.type === 'room_link' ? (
-                <DoorOpen className="w-3 h-3" />
-              ) : (
-                <MapPin className="w-3 h-3" />
-              )}
-            </span>
-          </button>
-        ))}
+              <span
+                className={`flex items-center justify-center w-5 h-5 rounded-full text-white shadow-lg ${
+                  hotspot.type === 'room_link' ? 'bg-[#3ECF8E]' : 'bg-[#ec4899]'
+                }`}
+              >
+                {hotspot.type === 'room_link' ? (
+                  <DoorOpen className="w-3 h-3" />
+                ) : (
+                  <MapPin className="w-3 h-3" />
+                )}
+              </span>
+            </button>
+          );
+        })}
 
       {/* Zoom controls (always visible) */}
       {ready && (

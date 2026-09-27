@@ -118,6 +118,10 @@ one door/arrow per neighbouring scene.
    pick icon/colour in the right-hand inspector.
 8. Press **Esc** or click **Cancel** when you are done placing links.
 
+> Hotspots are **glued to the scene**: as you look around in the editor, the
+> markers move with the image and stay on the wall/door you pinned them to —
+> exactly where visitors will see them on the published tour.
+
 ### 4.2 Set the view the visitor lands on (per target)
 
 Every scene has its own **Starting View** — the exact angle the visitor sees
