@@ -22,8 +22,10 @@ import {
   Tag,
   Crown,
   Star,
+  Copy,
+  Globe,
 } from 'lucide-react';
-import type { VtedProject } from '@/lib/vted-types';
+import type { TourSummary } from '@/lib/tourCollaboration';
 
 const AIFloorplanWizard = dynamic(() => import('@/components/editor/AIFloorplanWizard'), {
   ssr: false,
@@ -39,21 +41,22 @@ const PROMOTION_CARDS = [
 
 export default function TourDashboardPage() {
   const [tab, setTab] = useState<Tab>('projects');
-  const [projects, setProjects] = useState<VtedProject[]>([]);
+  const [tours, setTours] = useState<TourSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<'grid' | 'list'>('grid');
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<'all' | 'draft' | 'published'>('all');
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [showFloorplanWizard, setShowFloorplanWizard] = useState(false);
 
-  const fetchProjects = async () => {
+  const fetchTours = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/projects');
+      const res = await fetch('/api/tours');
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'failed');
-      setProjects(data.projects || []);
+      setTours(data.tours || []);
     } catch (e: any) {
       setError(e?.message || 'failed to load');
     } finally {
@@ -62,37 +65,91 @@ export default function TourDashboardPage() {
   };
 
   useEffect(() => {
-    if (tab === 'projects') fetchProjects();
+    if (tab === 'projects') fetchTours();
   }, [tab]);
 
-  const createProject = async () => {
-    const name = prompt('Project name?');
-    if (!name) return;
+  const createTour = async () => {
+    const title = prompt('Tour name?');
+    if (!title) return;
     try {
-      await fetch('/api/projects', {
+      const res = await fetch('/api/tours', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, tourId: 'default', author: 'You', sceneCount: 0, status: 'draft' }),
+        body: JSON.stringify({ title }),
       });
-      fetchProjects();
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.error || `create failed (${res.status})`);
+      setNotice(`Tour "${title}" created. Open it in the editor to add scenes.`);
+      fetchTours();
     } catch (e: any) {
       setError(e?.message || 'create failed');
     }
   };
 
-  const removeProject = async (id: string) => {
-    if (!confirm('Delete this project?')) return;
+  const removeTour = async (t: TourSummary) => {
+    if (!confirm(`Delete tour "${t.title}"? This cannot be undone.`)) return;
     try {
-      await fetch(`/api/projects?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
-      fetchProjects();
+      const res = await fetch(`/api/tours?id=${encodeURIComponent(t.id)}`, { method: 'DELETE' });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.error || `delete failed (${res.status})`);
+      setNotice(`Tour "${t.title}" deleted.`);
+      fetchTours();
     } catch (e: any) {
       setError(e?.message || 'delete failed');
     }
   };
 
-  const filtered = projects.filter((p) => {
-    if (filter !== 'all' && p.status !== filter) return false;
-    if (search && !p.name.toLowerCase().includes(search.toLowerCase())) return false;
+  const togglePublish = async (t: TourSummary) => {
+    try {
+      const res = await fetch(`/api/tours?id=${encodeURIComponent(t.id)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(
+          t.is_live
+            ? { is_live: false }
+            : { is_live: true, access_level: 'public' },
+        ),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.error || `update failed (${res.status})`);
+      setNotice(t.is_live ? `"${t.title}" unpublished.` : `"${t.title}" is live at /virtual-tour/${t.slug || t.id}`);
+      fetchTours();
+    } catch (e: any) {
+      setError(e?.message || 'update failed');
+    }
+  };
+
+  const duplicateTour = async (t: TourSummary) => {
+    try {
+      const res = await fetch(`/api/tours?id=${encodeURIComponent(t.id)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'duplicate' }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.error || `duplicate failed (${res.status})`);
+      setNotice(`Duplicated "${t.title}".`);
+      fetchTours();
+    } catch (e: any) {
+      setError(e?.message || 'duplicate failed');
+    }
+  };
+
+  const shareTour = async (t: TourSummary) => {
+    const url = `${window.location.origin}/virtual-tour/${t.slug || t.id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setNotice(`Public link copied: ${url}`);
+    } catch {
+      setNotice(`Public link: ${url}`);
+    }
+  };
+
+  const filtered = tours.filter((t) => {
+    const published = t.is_live;
+    if (filter === 'published' && !published) return false;
+    if (filter === 'draft' && published) return false;
+    if (search && !t.title.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
 
@@ -103,8 +160,15 @@ export default function TourDashboardPage() {
         {tab === 'projects' && (
           <div className="p-4 sm:p-6 max-w-7xl mx-auto">
             {error && (
-              <div className="mb-3 px-3 py-2 bg-rose-950/40 border border-rose-900 text-rose-300 text-xs font-mono rounded">
-                {error}
+              <div className="mb-3 px-3 py-2 bg-rose-950/40 border border-rose-900 text-rose-300 text-xs font-mono rounded flex items-center justify-between gap-2">
+                <span>{error}</span>
+                <button type="button" onClick={() => setError(null)} className="text-rose-400 hover:text-white">×</button>
+              </div>
+            )}
+            {notice && (
+              <div className="mb-3 px-3 py-2 bg-emerald-950/40 border border-emerald-900 text-emerald-300 text-xs font-mono rounded flex items-center justify-between gap-2">
+                <span>{notice}</span>
+                <button type="button" onClick={() => setNotice(null)} className="text-emerald-400 hover:text-white">×</button>
               </div>
             )}
 
@@ -137,11 +201,11 @@ export default function TourDashboardPage() {
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
-                  onClick={createProject}
+                  onClick={createTour}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-pink-500 hover:bg-pink-600 text-white text-xs font-bold font-mono"
                 >
                   <Plus className="w-3.5 h-3.5" />
-                  New Project
+                  New Tour
                 </button>
                 <button
                   type="button"
@@ -178,82 +242,125 @@ export default function TourDashboardPage() {
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search projects…"
+                  placeholder="Search tours…"
                   className="pl-7 pr-2 py-1.5 rounded bg-[#18181B] border border-[#27272A] text-xs font-mono text-white w-48"
                 />
               </div>
             </div>
 
             {loading ? (
-              <div className="text-center text-xs font-mono text-[#71717A] py-12">Loading projects…</div>
+              <div className="text-center text-xs font-mono text-[#71717A] py-12">Loading tours…</div>
             ) : filtered.length === 0 ? (
               <div className="text-center text-xs font-mono text-[#71717A] py-12 border border-dashed border-[#27272A] rounded-lg">
-                {projects.length === 0 ? 'No projects yet. Click "New Project" to start.' : 'No projects match the filter.'}
+                {tours.length === 0 ? 'No tours yet. Click "New Tour" to start.' : 'No tours match the filter.'}
               </div>
             ) : view === 'grid' ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-                {filtered.map((p) => (
-                  <ProjectCard key={p.id} project={p} onDelete={() => removeProject(p.id)} />
+                {filtered.map((t) => (
+                  <TourCard
+                    key={t.id}
+                    tour={t}
+                    onTogglePublish={() => togglePublish(t)}
+                    onDuplicate={() => duplicateTour(t)}
+                    onShare={() => shareTour(t)}
+                    onDelete={() => removeTour(t)}
+                  />
                 ))}
               </div>
             ) : (
               <table className="w-full text-xs font-mono">
                 <thead>
                   <tr className="text-[#71717A] border-b border-[#27272A]">
-                    <th className="text-left p-2">Project</th>
-                    <th className="text-left p-2">Type</th>
+                    <th className="text-left p-2">Tour</th>
+                    <th className="text-left p-2">Scenes</th>
+                    <th className="text-left p-2">Views</th>
                     <th className="text-left p-2">Status</th>
                     <th className="text-left p-2">Modified</th>
                     <th className="text-right p-2">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filtered.map((p) => (
-                    <tr key={p.id} className="border-b border-[#18181B] hover:bg-[#0c0c0f]">
+                  {filtered.map((t) => (
+                    <tr key={t.id} className="border-b border-[#18181B] hover:bg-[#0c0c0f]">
                       <td className="p-2 flex items-center gap-2">
-                        {p.thumbnailUrl ? (
+                        {t.thumbnailUrl ? (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={p.thumbnailUrl} alt={p.name} className="w-8 h-8 rounded object-cover" />
+                          <img src={t.thumbnailUrl} alt={t.title} className="w-8 h-8 rounded object-cover" />
                         ) : (
                           <div className="w-8 h-8 rounded bg-[#27272A]" />
                         )}
                         <div>
-                          <div className="text-white">{p.name}</div>
-                          <div className="text-[9px] text-[#71717A]">{p.id.slice(-8)}</div>
+                          <div className="text-white">{t.title}</div>
+                          <div className="text-[9px] text-[#71717A]">{t.slug || t.id.slice(-8)}</div>
                         </div>
                       </td>
                       <td className="p-2 text-[#A1A1AA]">
-                        <span className="px-1.5 py-0.5 rounded bg-[#27272A]">{p.sceneCount} image</span>
+                        <span className="px-1.5 py-0.5 rounded bg-[#27272A]">{t.sceneCount ?? 0} scene{(t.sceneCount ?? 0) === 1 ? '' : 's'}</span>
                       </td>
+                      <td className="p-2 text-[#A1A1AA]">{t.views ?? 0}</td>
                       <td className="p-2">
                         <span
                           className={`px-1.5 py-0.5 rounded text-[10px] ${
-                            p.status === 'published'
+                            t.is_live
                               ? 'bg-[#3ECF8E]/15 text-[#3ECF8E]'
                               : 'bg-amber-500/15 text-amber-400'
                           }`}
                         >
-                          {p.status === 'published' ? 'Published' : 'Draft'}
+                          {t.is_live ? 'Live' : 'Draft'}
                         </span>
                       </td>
                       <td className="p-2 text-[#A1A1AA]">
-                        {new Date(p.updatedAt).toLocaleString()}
+                        {t.updated_at ? new Date(t.updated_at).toLocaleString() : '—'}
                       </td>
-                      <td className="p-2 text-right">
+                      <td className="p-2 text-right whitespace-nowrap">
                         <Link
-                          href={`/xr-world/virtual-tour/editor?tour=${p.tourId}`}
+                          href={`/xr-world/virtual-tour/editor?tour=${encodeURIComponent(t.id)}`}
                           className="inline-flex p-1 hover:text-[#3ECF8E]"
                           title="Edit"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
                         </Link>
-                        <Link
-                          href={`/xr-world/virtual-tour?project=${p.id}`}
+                        {t.is_live && (
+                          <Link
+                            href={`/virtual-tour/${t.slug || t.id}`}
+                            className="inline-flex p-1 hover:text-[#3ECF8E]"
+                            title="View public tour"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                          </Link>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => togglePublish(t)}
                           className="inline-flex p-1 hover:text-[#3ECF8E]"
-                          title="View"
+                          title={t.is_live ? 'Unpublish' : 'Publish'}
                         >
-                          <Eye className="w-3.5 h-3.5" />
-                        </Link>
+                          <Globe className={`w-3.5 h-3.5 ${t.is_live ? 'text-[#3ECF8E]' : ''}`} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => duplicateTour(t)}
+                          className="inline-flex p-1 hover:text-[#3ECF8E]"
+                          title="Duplicate"
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => shareTour(t)}
+                          className="inline-flex p-1 hover:text-[#3ECF8E]"
+                          title="Copy public link"
+                        >
+                          <Share2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => removeTour(t)}
+                          className="inline-flex p-1 hover:text-rose-400"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -279,13 +386,26 @@ export default function TourDashboardPage() {
   );
 }
 
-function ProjectCard({ project, onDelete }: { project: VtedProject; onDelete: () => void }) {
+function TourCard({
+  tour,
+  onTogglePublish,
+  onDuplicate,
+  onShare,
+  onDelete,
+}: {
+  tour: TourSummary;
+  onTogglePublish: () => void;
+  onDuplicate: () => void;
+  onShare: () => void;
+  onDelete: () => void;
+}) {
+  const publicHref = `/virtual-tour/${tour.slug || tour.id}`;
   return (
     <div className="group rounded-lg border border-[#27272A] bg-[#0c0c0f] overflow-hidden hover:border-[#3ECF8E]/40 transition-colors">
       <div className="relative aspect-video bg-[#18181B]">
-        {project.thumbnailUrl ? (
+        {tour.thumbnailUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={project.thumbnailUrl} alt={project.name} className="w-full h-full object-cover" />
+          <img src={tour.thumbnailUrl} alt={tour.title} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-[#27272A]">
             <Layers className="w-12 h-12" />
@@ -294,25 +414,43 @@ function ProjectCard({ project, onDelete }: { project: VtedProject; onDelete: ()
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
           <div className="flex items-center gap-1.5">
             <Link
-              href={`/xr-world/virtual-tour/editor?tour=${project.tourId}`}
+              href={`/xr-world/virtual-tour/editor?tour=${encodeURIComponent(tour.id)}`}
               className="p-2 rounded bg-[#3ECF8E] text-black"
               title="Edit"
             >
               <Edit3 className="w-4 h-4" />
             </Link>
-            <Link
-              href={`/xr-world/virtual-tour?project=${project.id}`}
-              className="p-2 rounded bg-white/10 backdrop-blur text-white border border-white/20"
-              title="View"
-            >
-              <Eye className="w-4 h-4" />
-            </Link>
+            {tour.is_live ? (
+              <Link
+                href={publicHref}
+                className="p-2 rounded bg-white/10 backdrop-blur text-white border border-white/20"
+                title="View public tour"
+              >
+                <Eye className="w-4 h-4" />
+              </Link>
+            ) : (
+              <span
+                className="p-2 rounded bg-white/10 backdrop-blur text-white/30 border border-white/10 cursor-not-allowed"
+                title="Publish first to view"
+              >
+                <Eye className="w-4 h-4" />
+              </span>
+            )}
             <button
               type="button"
+              onClick={onShare}
               className="p-2 rounded bg-white/10 backdrop-blur text-white border border-white/20"
-              title="Share"
+              title={tour.is_live ? 'Copy public link' : 'Copy link (publish first to make it public)'}
             >
               <Share2 className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={onDuplicate}
+              className="p-2 rounded bg-white/10 backdrop-blur text-white border border-white/20"
+              title="Duplicate"
+            >
+              <Copy className="w-4 h-4" />
             </button>
             <button
               type="button"
@@ -326,28 +464,39 @@ function ProjectCard({ project, onDelete }: { project: VtedProject; onDelete: ()
         </div>
         <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/70 text-[9px] font-mono text-white flex items-center gap-1">
           <Tag className="w-2.5 h-2.5" />
-          {project.author || 'You'}
+          {tour.is_live ? 'Live' : 'Draft'}
         </div>
         <div className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded bg-black/70 text-[9px] font-mono text-white">
-          {project.sceneCount} scenes
+          {tour.sceneCount ?? 0} scene{(tour.sceneCount ?? 0) === 1 ? '' : 's'}
         </div>
       </div>
       <div className="p-2.5 space-y-1">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-mono text-white truncate">{project.name}</span>
-          <span
-            className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
-              project.status === 'published'
-                ? 'bg-[#3ECF8E]/15 text-[#3ECF8E]'
-                : 'bg-amber-500/15 text-amber-400'
-            }`}
-          >
-            {project.status === 'published' ? 'Published' : 'Draft'}
+          <span className="text-sm font-mono text-white truncate" title={tour.title}>
+            {tour.title}
           </span>
+          <button
+            type="button"
+            onClick={onTogglePublish}
+            className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
+              tour.is_live
+                ? 'bg-[#3ECF8E]/15 text-[#3ECF8E] hover:bg-[#3ECF8E]/25'
+                : 'bg-amber-500/15 text-amber-400 hover:bg-amber-500/25'
+            }`}
+            title={tour.is_live ? 'Click to unpublish' : 'Click to publish'}
+          >
+            {tour.is_live ? 'Live' : 'Publish'}
+          </button>
         </div>
-        <div className="text-[10px] font-mono text-[#71717A] flex items-center gap-1">
-          <Calendar className="w-3 h-3" />
-          {new Date(project.updatedAt).toLocaleString()}
+        <div className="text-[10px] font-mono text-[#71717A] flex items-center gap-2 flex-wrap">
+          <span className="flex items-center gap-1">
+            <Calendar className="w-3 h-3" />
+            {tour.updated_at ? new Date(tour.updated_at).toLocaleDateString() : '—'}
+          </span>
+          <span className="flex items-center gap-1" title="Total public views">
+            <Eye className="w-3 h-3" />
+            {tour.views ?? 0}
+          </span>
         </div>
       </div>
     </div>
@@ -489,14 +638,14 @@ function EnterpriseSection() {
   );
 }
 
-function Card({ title, body, locked }: { title: string; body: string; locked?: boolean }) {
+function Card({ title, body, locked, children }: { title: string; body?: string; locked?: boolean; children?: React.ReactNode }) {
   return (
     <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-3 space-y-2">
       <div className="flex items-center gap-2 text-[#A1A1AA]">
         <span className="text-sm font-mono font-bold">{title}</span>
         {locked && <Lock className="w-3 h-3 ml-auto" />}
       </div>
-      <p className="text-[10px] font-mono text-[#71717A]">{body}</p>
+      <p className="text-[10px] font-mono text-[#71717A]">{body ?? children}</p>
     </div>
   );
 }

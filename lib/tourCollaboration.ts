@@ -1,4 +1,5 @@
 import { createServiceClient } from '@/lib/supabase/admin';
+import { buildSlug } from './tourIdentity';
 
 // Multi-tour + collaboration + guided-tour persistence layer.
 // Graceful local fallback: when Supabase is NOT configured, all functions
@@ -63,16 +64,58 @@ export interface TourSummary {
   guide_enabled?: boolean;
   auto_rotate?: boolean;
   updated_at?: string;
+  // Dashboard enrichment (additive, optional so existing consumers are unaffected)
+  slug?: string | null;
+  views?: number;
+  sceneCount?: number;
+  thumbnailUrl?: string | null;
+}
+
+// Pure tours-row → dashboard summary mapper (exported for unit tests).
+// Enriches the summary with the tour graph data the dashboard surfaces:
+// slug, total views, room count, and a thumbnail from the first room.
+export function toTourSummary(row: any): TourSummary {
+  const data = row?.data ?? {};
+  const rooms = Array.isArray(data?.rooms) ? data.rooms : [];
+  const first = rooms[0] ?? null;
+  return {
+    id: row.id,
+    title: row.title,
+    slug: row.slug ?? null,
+    is_live: row.is_live === true,
+    access_level: row.access_level === 'private' ? 'private' : 'public',
+    custom_domain: row.custom_domain,
+    streetview_status: row.streetview_status,
+    max_resolution: row.max_resolution,
+    guide_enabled: row.guide_enabled,
+    auto_rotate: row.auto_rotate,
+    updated_at: row.updated_at,
+    views: typeof data?.views === 'number' ? data.views : (typeof row?.views_count === 'number' ? row.views_count : 0),
+    sceneCount: rooms.length,
+    thumbnailUrl: first?.thumbnailUrl || first?.panoramaUrl || null,
+  };
 }
 
 export async function listTours(): Promise<TourSummary[]> {
   const c = svc();
   if (!c) return readLocal().map(stripLocal);
+  // Select only columns that exist on the real `tours` table.
   const { data } = await c
     .from('tours')
-    .select('id,title,is_live,access_level,custom_domain,streetview_status,max_resolution,guide_enabled,auto_rotate,updated_at')
+    .select('id,title,slug,is_live,access_level,views_count,updated_at,data')
     .order('updated_at', { ascending: false });
-  return (data as TourSummary[]) || [];
+  return (data ?? []).map(toTourSummary);
+}
+
+// owner_id is NOT NULL on the real tours table, and unauthenticated dev
+// writes have no session user. Bind to the platform's first user (same
+// fallback policy as lib/toursRepo.ts).
+async function resolveOwnerId(c: any): Promise<string> {
+  const { data, error } = await c.from('User').select('id').limit(1);
+  if (error || !data?.[0]?.id) {
+    throw new Error(`[tourCollaboration] no fallback owner available: ${error?.message ?? 'User table empty'}`);
+  }
+  return data[0].id;
 }
 
 export async function createTour(title: string): Promise<TourSummary | null> {
@@ -94,12 +137,22 @@ export async function createTour(title: string): Promise<TourSummary | null> {
     writeLocal(tours);
     return stripLocal(t);
   }
-  const { data } = await c
+  const owner_id = await resolveOwnerId(c);
+  const { data, error } = await c
     .from('tours')
-    .insert({ title, data: { version: 1, rooms: [], settings: {} } })
+    .insert({
+      title,
+      slug: buildSlug(title),
+      owner_id,
+      is_live: false,
+      access_level: 'public',
+      version: 1,
+      data: { version: 1, rooms: [], settings: {} },
+    })
     .select()
     .single();
-  return (data as TourSummary) || null;
+  if (error) throw new Error(`[tourCollaboration] createTour: ${error.message}`);
+  return data ? toTourSummary(data) : null;
 }
 
 export async function updateTourMeta(
@@ -127,7 +180,15 @@ export async function updateTourMeta(
     }
     return;
   }
-  await c.from('tours').update(patch).eq('id', id);
+  // Only columns that exist on the real `tours` table can be patched.
+  const SAFE_KEYS = ['title', 'is_live', 'access_level'] as const;
+  const safe: Record<string, unknown> = {};
+  for (const k of SAFE_KEYS) {
+    if ((patch as any)?.[k] !== undefined) safe[k] = (patch as any)[k];
+  }
+  if (Object.keys(safe).length === 0) return;
+  safe.updated_at = new Date().toISOString();
+  await c.from('tours').update(safe).eq('id', id);
 }
 
 export async function deleteTour(id: string): Promise<void> {
@@ -150,19 +211,26 @@ export async function duplicateTour(id: string): Promise<TourSummary | null> {
     writeLocal(tours);
     return stripLocal(copy);
   }
-  const { data: src } = await c.from('tours').select('*').eq('id', id).single();
-  if (!src) return null;
-  const { data } = await c
+  const { data: src, error: srcErr } = await c.from('tours').select('*').eq('id', id).single();
+  if (srcErr || !src) return null;
+  let slug = src.slug ? `${src.slug}-copy` : buildSlug(`${src.title} (copy)`);
+  const { data: clash } = await c.from('tours').select('id').eq('slug', slug).limit(1);
+  if (clash && clash.length > 0) slug = `${slug}-${Math.random().toString(36).slice(2, 6)}`;
+  const { data, error } = await c
     .from('tours')
     .insert({
       title: `${src.title} (copy)`,
-      data: src.data,
+      slug,
+      owner_id: src.owner_id,
       is_live: false,
-      access_level: 'private',
+      access_level: 'public',
+      version: typeof src.version === 'number' ? src.version : 1,
+      data: src.data,
     })
     .select()
     .single();
-  return (data as TourSummary) || null;
+  if (error) throw new Error(`[tourCollaboration] duplicateTour: ${error.message}`);
+  return data ? toTourSummary(data) : null;
 }
 
 function stripLocal(t: LocalTour): TourSummary {
