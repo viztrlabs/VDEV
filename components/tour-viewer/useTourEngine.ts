@@ -14,6 +14,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { TourScene } from '@/lib/tourClientStore';
+import { renderViewerHotspot, renderAlignmentMarker, destroyHotspotElement } from './hotspotRenderers';
 
 type MarzipanoAny = any;
 
@@ -62,6 +63,7 @@ export function useTourEngine(
   const viewerRef = useRef<MarzipanoAny>(null);
   const MarzipanoRef = useRef<MarzipanoAny>(null);
   const scenesCacheRef = useRef<Map<string, { ms: MarzipanoAny; signature: string }>>(new Map());
+  const hotspotElsRef = useRef<Map<string, { hotspot: MarzipanoAny; el: HTMLElement }[]>>(new Map());
   const viewChangeRef = useRef<(() => void) | null>(null);
   const canvasCleanupRef = useRef<(() => void) | null>(null);
   const optsRef = useRef(opts);
@@ -202,6 +204,10 @@ export function useTourEngine(
             try { viewer.destroyScene?.(ms); } catch { /* ignore */ }
           }
           scenesCacheRef.current.clear();
+          for (const els of hotspotElsRef.current.values()) {
+            for (const { el } of els) destroyHotspotElement(el);
+          }
+          hotspotElsRef.current.clear();
           viewer.destroy?.();
         } catch { /* swallow destroy errors */ }
         viewerRef.current = null;
@@ -239,6 +245,35 @@ export function useTourEngine(
 
     return () => { cancelled = true; };
   }, [ready, opts.activeSceneId, ensureScene, publishView]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // --- Hotspot sync for the active scene (re-syncs on list change; never
+  // recreates the scene) ---
+  useEffect(() => {
+    if (!ready) return;
+    const { scenes, activeSceneId, onHotspotClick } = optsRef.current;
+    const scene = scenes.find((s) => s.id === activeSceneId);
+    const ms = viewerRef.current?.scene?.();
+    if (!scene || !ms) return;
+    const container = ms.hotspotContainer?.();
+    if (!container) return;
+
+    for (const { hotspot, el } of hotspotElsRef.current.get(scene.id) || []) {
+      try { container.destroyHotspot?.(hotspot); } catch { /* ignore */ }
+      destroyHotspotElement(el);
+    }
+    const created: { hotspot: MarzipanoAny; el: HTMLElement }[] = [];
+    for (const hs of scene.hotspots || []) {
+      const el = renderViewerHotspot(hs, () => onHotspotClick?.(scene.id, hs.id));
+      const hotspot = container.createHotspot(el, { yaw: hs.yaw, pitch: hs.pitch });
+      created.push({ hotspot, el });
+    }
+    for (const marker of scene.alignmentMarkers || []) {
+      const el = renderAlignmentMarker(marker);
+      const hotspot = container.createHotspot(el, { yaw: marker.yaw, pitch: marker.pitch });
+      created.push({ hotspot, el });
+    }
+    hotspotElsRef.current.set(scene.id, created);
+  }, [ready, opts.activeSceneId, opts.scenes]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // --- API ---
   const getViewer = useCallback(() => viewerRef.current, []);

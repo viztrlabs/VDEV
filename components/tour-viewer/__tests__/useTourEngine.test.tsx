@@ -68,7 +68,8 @@ jest.mock('marzipano', () => {
     __viewers: viewers,
     Viewer,
     RectilinearView: class {
-      static limit = { traditional: jest.fn(() => ({})) };
+      static limit: { traditional: (w: number, f?: number, g?: number) => unknown } =
+        { traditional: jest.fn(() => ({})) as any };
     },
     EquirectGeometry: class {},
     ImageUrlSource: {
@@ -92,9 +93,17 @@ const makeScene = (id: string): TourScene => ({
 });
 
 let engine: EngineApi | null = null;
-function Harness(props: { scenes: TourScene[]; activeSceneId: string }) {
+function Harness(props: {
+  scenes: TourScene[];
+  activeSceneId: string;
+  onHotspotClick?: (sceneId: string, hotspotId: string) => void;
+}) {
   const ref = useRef<HTMLDivElement>(null);
-  engine = useTourEngine(ref, { scenes: props.scenes, activeSceneId: props.activeSceneId });
+  engine = useTourEngine(ref, {
+    scenes: props.scenes,
+    activeSceneId: props.activeSceneId,
+    onHotspotClick: props.onHotspotClick,
+  });
   return <div ref={ref} />;
 }
 
@@ -177,5 +186,72 @@ describe('useTourEngine lifecycle', () => {
     await waitFor(() => expect(lastScene().switchTo).toHaveBeenCalled());
     expect(() => unmount()).not.toThrow();
     expect(mockedMarzipano.__viewers[0].destroy).toHaveBeenCalled();
+  });
+});
+
+describe('useTourEngine hotspots + autorotate', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockedMarzipano.__viewers.length = 0;
+    engine = null;
+  });
+
+  it('creates engine hotspots for the active scene with radian coords', async () => {
+    const onHotspotClick = jest.fn();
+    const scene = makeScene('a');
+    scene.hotspots = [{ id: 'h1', yaw: Math.PI / 4, pitch: 0.1, type: 'navigation', title: 'Door', description: '' }];
+    render(<Harness scenes={[scene]} activeSceneId="a" onHotspotClick={onHotspotClick} />);
+    await waitFor(() => expect(lastScene().switchTo).toHaveBeenCalled());
+    const container = lastScene().__container;
+    await waitFor(() => expect(container.createHotspot).toHaveBeenCalled());
+    expect(container.createHotspot.mock.calls[0][1]).toEqual({ yaw: Math.PI / 4, pitch: 0.1 });
+    const el = container.createHotspot.mock.calls[0][0] as HTMLElement;
+    expect(el.getAttribute('role')).toBe('button');
+    el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(onHotspotClick).toHaveBeenCalledWith('a', 'h1');
+  });
+
+  it('re-syncs hotspots when the list changes without recreating the scene', async () => {
+    const scene = makeScene('a');
+    scene.hotspots = [{ id: 'h1', yaw: 0, pitch: 0, type: 'info', title: 'A', description: '' }];
+    const { rerender } = render(<Harness scenes={[scene]} activeSceneId="a" />);
+    await waitFor(() => expect(lastScene().switchTo).toHaveBeenCalled());
+    const container = lastScene().__container;
+    await waitFor(() => expect(container.createHotspot).toHaveBeenCalledTimes(1));
+    const updated = {
+      ...scene,
+      hotspots: [
+        { id: 'h1', yaw: 0.2, pitch: 0, type: 'info', title: 'A', description: '' },
+        { id: 'h2', yaw: 1, pitch: 0, type: 'info', title: 'B', description: '' },
+      ],
+    } as TourScene;
+    rerender(<Harness scenes={[updated]} activeSceneId="a" />);
+    await waitFor(() => expect(container.createHotspot).toHaveBeenCalledTimes(3));
+    expect(container.destroyHotspot).toHaveBeenCalled();
+    expect(mockedMarzipano.__viewers[0].createScene).toHaveBeenCalledTimes(1);
+  });
+
+  it('registers disabled idle movement (null) for autorotateEnabled=false scenes', async () => {
+    const scene = makeScene('a');
+    scene.autorotateEnabled = false;
+    render(<Harness scenes={[scene]} activeSceneId="a" />);
+    await waitFor(() => expect(lastScene().switchTo).toHaveBeenCalled());
+    const viewer = mockedMarzipano.__viewers[0];
+    await waitFor(() => {
+      const disabledCall = viewer.setIdleMovement.mock.calls.find((c: any[]) => c[1] === null);
+      expect(disabledCall).toBeTruthy();
+    });
+  });
+
+  it('setAutorotate(true, speed) starts a Marzipano autorotate movement', async () => {
+    render(<Harness scenes={[makeScene('a')]} activeSceneId="a" />);
+    await waitFor(() => expect(lastScene().switchTo).toHaveBeenCalled());
+    act(() => engine!.setAutorotate(true, 2));
+    const viewer = mockedMarzipano.__viewers[0];
+    await waitFor(() => expect(viewer.startMovement).toHaveBeenCalled());
+    expect(mockedMarzipano.autorotate).toHaveBeenCalledWith(
+      expect.objectContaining({ yawSpeed: (2 * Math.PI) / 180 })
+    );
+    expect(viewer.setIdleMovement).toHaveBeenCalledWith(3000, expect.any(Function));
   });
 });
