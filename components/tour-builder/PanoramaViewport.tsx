@@ -25,6 +25,7 @@ interface PanoramaViewportProps {
   activeTool: string;
   selectedHotspotId: string;
   onSelectHotspot: (id: string) => void;
+  onViewportClick?: (yaw: number, pitch: number) => void;
 }
 
 const HOTSPOT_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -41,6 +42,7 @@ export function PanoramaViewport({
   activeTool,
   selectedHotspotId,
   onSelectHotspot,
+  onViewportClick,
 }: PanoramaViewportProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<any>(null);
@@ -67,7 +69,8 @@ export function PanoramaViewport({
     const init = async () => {
       try {
         setError('');
-        const Marzipano = (await import('marzipano')).default;
+        const mod: any = await import('marzipano');
+        const Marzipano: any = mod.default ?? mod;
         if (cancelled || !containerRef.current) return;
 
         viewerRef.current?.destroy?.();
@@ -93,7 +96,7 @@ export function PanoramaViewport({
         );
 
         const ms = viewer.createScene({ source, geometry, view });
-        ms.switch();
+        ms.switchTo({ transitionDuration: 300 });
         sceneRef.current = ms;
 
         const sceneView = ms.view();
@@ -209,6 +212,13 @@ export function PanoramaViewport({
     const y = (e.clientY - rect.top) / rect.height;
     const yaw = (x - 0.5) * 2 * Math.PI;
     const pitch = (y - 0.5) * Math.PI;
+
+    if (activeTool === 'connect') {
+      if (onViewportClick) {
+        onViewportClick(yaw, pitch);
+      }
+      return;
+    }
 
     if (room && activeTool.startsWith('hotspot')) {
       const type = activeTool === 'hotspot-navigation' ? 'link' : 'info';
@@ -377,6 +387,12 @@ export function PanoramaViewport({
       {activeTool.startsWith('hotspot') && (
         <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-[#3ECF8E]/20 backdrop-blur-sm rounded px-3 py-1.5 text-xs font-mono text-[#3ECF8E]">
           Click to place {activeTool === 'hotspot-navigation' ? 'navigation' : 'info'} hotspot
+        </div>
+      )}
+
+      {activeTool === 'connect' && (
+        <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-[#3B82F6]/20 backdrop-blur-sm rounded px-3 py-1.5 text-xs font-mono text-[#3B82F6]">
+          Click to set connection origin, then choose target room
         </div>
       )}
 
