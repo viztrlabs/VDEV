@@ -2,10 +2,12 @@
 // tour manifest (scenes + only-authored links + featured start). FABRICATION-FREE:
 // links exist strictly for authored room_link hotspots whose target room resolves.
 import { xyPercentsToYawPitch } from './marzipano/coords';
+import { readHotspots, toManifestHotspot } from './tour-schema/compat';
+import type { ManifestHotspotKind } from './tour-schema';
 import type { TourScene, TourHotspot } from '@/lib/tourClientStore';
 import type { EditorRoomLike } from './tourRoomToScene';
 
-export type ManifestHotspotKind = 'nav' | 'info' | 'metadata' | 'media' | 'link' | 'other';
+export type { ManifestHotspotKind } from './tour-schema';
 
 export interface ManifestHotspot {
   id: string;
@@ -73,33 +75,24 @@ export function buildTourManifest(rooms: ManifestRoomLike[]): TourManifest {
   const idSet = new Set(valid.map((r) => r.id));
 
   const scenes: ManifestScene[] = valid.map((r) => {
-    const hotspots: ManifestHotspot[] = (r.defaultHotspots ?? ([] as any))
-      .filter((h: any) => h && h.id && typeof h.xPercent === 'number' && typeof h.yPercent === 'number')
+    const rawHotspots = readHotspots({
+      hotspots: (r as any).hotspots,
+      defaultHotspots: r.defaultHotspots,
+    });
+    const hotspots: ManifestHotspot[] = rawHotspots
       .map((h: any) => {
-        const { yaw, pitch } = xyPercentsToYawPitch(h.xPercent, h.yPercent);
-        const kind = classifyHotspot(h);
-        return {
-          id: h.id,
-          xPercent: h.xPercent,
-          yPercent: h.yPercent,
-          yaw,
-          pitch,
-          type: h.type || 'info',
-          kind,
-          title: h.title || 'Hotspot',
-          description: h.description || '',
-          targetRoomId: h.targetRoomId,
-          targetYaw: h.targetYaw,
-          images: Array.isArray(h.images) ? h.images : h.linkedImageUrl ? [h.linkedImageUrl] : undefined,
-          externalUrl: h.externalUrl,
-          icon: h.icon,
-          openMode: h.openMode,
-          color: h.color,
-        } as ManifestHotspot;
+        if (typeof h.yaw === 'number') return toManifestHotspot(h as TourHotspot);
+        if (typeof h.xPercent === 'number' && typeof h.yPercent === 'number') {
+          const { yaw, pitch } = xyPercentsToYawPitch(h.xPercent, h.yPercent);
+          return toManifestHotspot({ ...h, yaw, pitch } as TourHotspot);
+        }
+        return toManifestHotspot({ ...h, yaw: 0, pitch: 0 } as TourHotspot);
       })
+      .map((h) => h as ManifestHotspot)
       .filter((h: ManifestHotspot) => h.kind !== 'nav' || (h.targetRoomId && idSet.has(h.targetRoomId!)));
 
     return {
+      ...r,
       id: r.id,
       name: r.name || 'Untitled Scene',
       panoramaUrl: r.panoramaUrl ?? r.url ?? '',
@@ -128,10 +121,11 @@ export function buildTourManifest(rooms: ManifestRoomLike[]): TourManifest {
 export function manifestSceneToTourScene(room: ManifestRoomLike, manifest: TourManifest): TourScene {
   const sc = manifest.scenes.find((s) => s.id === room.id);
   const hotspots: TourHotspot[] = (sc?.hotspots ?? []).map((h) => ({
+    ...h,
     id: h.id,
     yaw: h.yaw,
     pitch: h.pitch,
-    type: h.kind === 'nav' ? 'navigation' : h.kind === 'link' ? 'link' : h.kind === 'media' ? 'gallery' : 'info',
+    type: h.type as TourHotspot['type'],
     title: h.title,
     description: h.description,
     targetSceneId: h.targetRoomId,

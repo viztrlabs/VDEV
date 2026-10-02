@@ -6,9 +6,12 @@ export function readHotspots(scene: {
   hotspots?: TourHotspot[] | null;
   defaultHotspots?: any[] | null;
 }): TourHotspot[] {
-  if (scene.hotspots && scene.hotspots.length > 0) return scene.hotspots;
-  const legacy = (scene.defaultHotspots ?? []) as any[];
-  return legacy.filter((h) => h && h.id).map((h) => normalizeLegacyHotspot(h));
+  const canonical = scene.hotspots ?? [];
+  const seen = new Set(canonical.map((h) => h.id));
+  const legacy = (scene.defaultHotspots ?? [])
+    .filter((h: any) => h && h.id && !seen.has(h.id))
+    .map((h: any) => normalizeLegacyHotspot(h));
+  return [...canonical, ...legacy];
 }
 
 export function normalizeLegacyHotspot(h: any): TourHotspot {

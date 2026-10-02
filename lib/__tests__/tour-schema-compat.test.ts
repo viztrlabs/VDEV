@@ -39,12 +39,16 @@ describe('kindForType', () => {
 });
 
 describe('readHotspots', () => {
-  it('prefers a non-empty canonical hotspots array', () => {
+  it('merges legacy defaultHotspots after canonical hotspots (no id collisions)', () => {
     const canonical = [hs({ id: 'c1' })];
-    const legacy = [{ id: 'l1', type: 'room_link', title: 'L' }];
+    const legacy = [
+      { id: 'l1', type: 'room_link', title: 'Lobby link', targetSceneId: 'r2' },
+      { id: 'c1', type: 'room_link', title: 'collides' },
+      { id: '', type: 'room_link', title: 'dropped' },
+    ];
     const out = readHotspots({ hotspots: canonical, defaultHotspots: legacy });
-    expect(out).toHaveLength(1);
-    expect(out[0].id).toBe('c1');
+    expect(out.map((h) => h.id)).toEqual(['c1', 'l1']);
+    expect(out[1]).toMatchObject({ type: 'navigation', targetSceneId: 'r2' });
   });
 
   it('falls back to defaultHotspots with legacy normalization', () => {
