@@ -1,104 +1,167 @@
-// Type declarations for Marzipano
+// Type declarations for Marzipano 0.10.2
+// Verified against node_modules/marzipano/src (Viewer.js, Scene.js,
+// HotspotContainer.js, Hotspot.js, views/Rectilinear.js, index.js).
 declare module 'marzipano' {
-  export interface Viewer {
-    elem(): HTMLElement;
-    pano(): Pano;
-    createScene(data: SceneData): Scene;
-    addScene(scene: Scene): void;
-    switchScene(scene: Scene, transition?: any): void;
-    destroy(): void;
-    findElement(): HTMLElement;
-    findScene(): Scene | null;
-    findSceneById(id: string): Scene | null;
-    isLoading(): boolean;
-    load(): void;
-    setOptions(options: any): void;
-    requestFullscreen(): void;
+  export interface SceneOptions {
+    source?: unknown;
+    geometry?: unknown;
+    view?: unknown;
+    pinFirstLevel?: boolean;
+    name?: string;
+    id?: string;
   }
 
-  export interface Pano {
-    setView(equiangular: boolean): void;
-    setAdaptiveQualityLimit(limit: number): void;
-    setMaxCacheSize(size: number): void;
-    setMaxFramesPerSampleCount(count: number): void;
-    setMaxTileCount(count: number): void;
-  }
-
-  export interface Scene {
-    obj(): any;
-    switchTo(options?: any): void;
-    start(): void;
-    stop(): void;
-    isActive(): boolean;
-    viewer(): Viewer;
-    pano(): Pano;
-    hotspots(): HotspotContainer;
-    rects(): any;
-  }
-
-  export interface HotspotContainer {
-    create(options: HotspotOptions): Hotspot;
-    getAll(): Hotspot[];
-  }
-
-  export interface Hotspot {
-    setLatLng(lat: number, lng: number): void;
-    setScene(scene: Scene): void;
-    setPano(pano: Pano): void;
-    setPitchYaw(pitch: number, yaw: number): void;
-    setRotation(rotation: number): void;
-    element(): HTMLElement | null;
-    destroy(): void;
-  }
-
-  export interface RectElement {
-    push(): void;
-    pop(): void;
-    destroy(): void;
-  }
-
-  export interface Options {
-    autoplay?: boolean;
-    defaultTransition?: any;
-    defaultViewParams?: any;
+  export interface ViewerOptions {
     controls?: {
-      mouseViewMode?: string;
+      mouseViewMode?: 'drag' | 'qtvr';
       scrollZoom?: boolean;
       scrollZoomSpeed?: number;
       dragRotateOnMobile?: boolean;
       dragRoll?: boolean;
     };
+    stage?: Record<string, unknown>;
+    cursors?: { drag?: Record<string, unknown> };
   }
 
-  export interface SceneData {
-    source: any;
-    levels?: any[];
-    faceSize?: number;
-    autoplay?: boolean;
-    repeat?: boolean;
-    name?: string;
-    id?: string;
+  export class Viewer {
+    constructor(container: HTMLElement, options?: ViewerOptions);
+    createScene(opts: SceneOptions): Scene;
+    createEmptyScene(opts?: SceneOptions): Scene;
+    destroyScene(scene: Scene): void;
+    scene(): Scene | null;
+    switchScene(
+      scene: Scene,
+      opts?: {
+        transitionDuration?: number;
+        transitionUpdate?: (t: number, newScene: Scene, oldScene: Scene) => void;
+      } | null,
+      done?: () => void
+    ): void;
+    lookTo(
+      params: { yaw?: number; pitch?: number; fov?: number },
+      opts?: { transitionDuration?: number },
+      done?: () => void
+    ): void;
+    startMovement(fn: (params: any, timestamp: number) => any, done?: () => void): void;
+    stopMovement(): void;
+    movement(): ((params: any, timestamp: number) => any) | undefined;
+    setIdleMovement(
+      timeoutMs: number,
+      movement: ((params: any, timestamp: number) => any) | null
+    ): void;
+    breakIdleMovement(): void;
+    updateSize(): void;
+    addEventListener(event: 'viewChange' | 'sceneChange', cb: () => void): void;
+    removeEventListener(event: 'viewChange' | 'sceneChange', cb: () => void): void;
+    controls(): {
+      registerMethod(name: string, instance: unknown, enabled?: boolean): void;
+      enableMethod(name: string): void;
+      disableMethod(name: string): void;
+    };
+    destroy(): void;
   }
 
-  export interface HotspotOptions {
-    pitch: number;
-    yaw: number;
-    rotation?: number;
-    scale?: number;
-    perspective?: boolean;
-    stereo?: boolean;
-    view?: any;
-    type?: string;
-    create?: (hotspot: Hotspot) => HTMLElement;
-    destroy?: (el: HTMLElement) => void;
+  export interface Scene {
+    switchTo(
+      opts?: { transitionDuration?: number } | null,
+      done?: () => void
+    ): void;
+    lookTo(
+      params: { yaw?: number; pitch?: number; fov?: number },
+      opts?: { transitionDuration?: number },
+      done?: () => void
+    ): void;
+    startMovement(fn: (params: any, timestamp: number) => any, done?: () => void): void;
+    stopMovement(): void;
+    view(): RectilinearView;
+    viewer(): Viewer;
+    hotspotContainer(): HotspotContainer;
+    destroy(): void;
   }
 
-  // Exported functions
-  export function Viewer(container: HTMLElement | string, options?: Options): Viewer;
-  export function Rect(viewer: Viewer, element: HTMLElement): RectElement;
-  export function classNames(obj: Record<string, boolean>): string;
-  export const VERSION: string;
-  export function panicube(url: string): any;
+  export interface HotspotContainer {
+    createHotspot(
+      el: HTMLElement,
+      coords: { yaw: number; pitch: number },
+      opts?: { perspective?: { radius: number }; extra?: Record<string, unknown> }
+    ): Hotspot;
+    destroyHotspot(hotspot: Hotspot): void;
+    listHotspots(): Hotspot[];
+    hasHotspot(hotspot: Hotspot): boolean;
+    domElement(): HTMLElement;
+    destroy(): void;
+  }
+
+  export interface Hotspot {
+    setPosition(coords: { yaw: number; pitch: number }): void;
+    position(): { yaw: number; pitch: number };
+    domElement(): HTMLElement;
+    destroy(): void;
+  }
+
+  export class RectilinearView {
+    constructor(
+      params?: { yaw?: number; pitch?: number; fov?: number },
+      limiter?: unknown
+    );
+    yaw(value?: number): number;
+    pitch(value?: number): number;
+    fov(value?: number): number;
+    yawRange(): [number, number];
+    pitchRange(): [number, number];
+    fovRange(): [number, number];
+    screenToCoordinates(
+      point: { x: number; y: number },
+      result?: { yaw: number; pitch: number }
+    ): { yaw: number; pitch: number };
+    coordinatesToScreen(
+      coords: { yaw: number; pitch: number },
+      result?: { x: number; y: number }
+    ): { x: number; y: number } | null;
+    static limit: {
+      traditional(maxWidth: number, maxVFov?: number, maxHFov?: number): unknown;
+    };
+  }
+
+  export class EquirectGeometry {
+    constructor(levels: Array<{ width: number }>);
+  }
+
+  export class FlatGeometry {
+    constructor(levels: Array<{ width: number }>);
+  }
+
+  export class ImageUrlSource {
+    constructor(opts?: Record<string, unknown>);
+    static fromString(url: string, opts?: { crossOrigin?: string }): unknown;
+    static fromTileUrl(
+      url: string,
+      opts?: { crossOrigin?: string; tileSize?: number; maxZoom?: number }
+    ): unknown;
+  }
+
+  export function autorotate(opts?: {
+    yawSpeed?: number;
+    targetPitch?: number | null;
+    targetFov?: number | null;
+  }): (params: any, timestamp: number) => any;
+
+  export class Dynamics {
+    offset: number;
+    velocity: number;
+    update(other: { offset: number; velocity: number }, elapsed: number): void;
+    reset(): void;
+  }
+
+  export const util: {
+    degToRad(d: number): number;
+    radToDeg(r: number): number;
+    clamp(v: number, min: number, max: number): number;
+  };
+
+  export const dependencies: {
+    eventEmitter(obj: object): void;
+  };
 }
 
 declare global {
