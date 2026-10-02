@@ -73,12 +73,12 @@ export default function TourViewer({ scene, onHotspotClick, onSceneChange }: Tou
       try {
         const ms = viewer.scene?.();
         if (ms) {
-          ms.hotspots?.().getAll?.().forEach((h: MarzipanoAny) => h.destroy?.());
+          ms.hotspotContainer?.().listHotspots?.().forEach((h: MarzipanoAny) => h.destroy?.());
           if (viewChangeHandlerRef.current) {
             ms.view?.()?.removeEventListener?.('change', viewChangeHandlerRef.current);
             viewChangeHandlerRef.current = null;
           }
-          ms.stop?.();
+          ms.stopMovement?.();
         }
         viewer.destroy?.();
       } catch { /* swallow destroy errors */ }
@@ -106,13 +106,12 @@ export default function TourViewer({ scene, onHotspotClick, onSceneChange }: Tou
         // Create viewer
         const viewer = new Marzipano.Viewer(containerRef.current!, {
           controls: {
-            mouseViewMode: 'qtilt',
+            mouseViewMode: 'drag',
             scrollZoom: true,
             scrollZoomSpeed: 0.3,
             dragRotateOnMobile: true,
             dragRoll: true,
           },
-          defaultTransition: { duration: 500 },
         });
         viewerRef.current = viewer;
 
@@ -186,7 +185,7 @@ export default function TourViewer({ scene, onHotspotClick, onSceneChange }: Tou
           pinFirstLevel: true,
         });
 
-        ms.switch();
+        ms.switchTo({ transitionDuration: 500 });
         sceneRef.current = ms;
         setProgress(0.7);
 
@@ -202,65 +201,46 @@ export default function TourViewer({ scene, onHotspotClick, onSceneChange }: Tou
           sceneView.addEventListener('change', handleChange);
         }
 
-        // Hotspots with ARIA labels
+        // Hotspots with ARIA labels — built as DOM elements, registered with
+        // the scene's hotspot container (Marzipano 0.10.2 API).
+        const hotspotContainer = ms.hotspotContainer();
         if (scene.hotspots?.length) {
           scene.hotspots.forEach((hs) => {
-            ms.hotspots().create({
-              pitch: hs.pitch,
-              yaw: hs.yaw,
-              type: 'custom',
-              create: () => {
-                const el = document.createElement('div');
-                el.className = 'viztr-hotspot';
-                el.setAttribute('role', 'button');
-                el.setAttribute('tabIndex', '0');
-                el.setAttribute('aria-label', `${hs.title}, ${hs.type} hotspot`);
-                el.innerHTML = `
-                  <div class="w-4 h-4 bg-[#3ECF8E] rounded-full shadow-lg animate-pulse border-2 border-white cursor-pointer hover:scale-125 transition-transform"
-                       title="${hs.title}">
-                  </div>
-                `;
-                const handleClick = (e: Event) => {
-                  e.stopPropagation();
-                  onHotspotClick?.(scene.id, hs.id);
-                };
-                el.addEventListener('click', handleClick);
-                el.addEventListener('keydown', (e: KeyboardEvent) => {
-                  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(e); }
-                });
-                return el;
-              },
-              destroy: (el: HTMLElement) => {
-                el.removeEventListener('click', () => {});
-                el.remove();
-              },
+            const el = document.createElement('div');
+            el.className = 'viztr-hotspot';
+            el.setAttribute('role', 'button');
+            el.setAttribute('tabIndex', '0');
+            el.setAttribute('aria-label', `${hs.title}, ${hs.type} hotspot`);
+            el.innerHTML = `
+              <div class="w-4 h-4 bg-[#3ECF8E] rounded-full shadow-lg animate-pulse border-2 border-white cursor-pointer hover:scale-125 transition-transform"
+                   title="${hs.title}">
+              </div>
+            `;
+            const handleClick = (e: Event) => {
+              e.stopPropagation();
+              onHotspotClick?.(scene.id, hs.id);
+            };
+            el.addEventListener('click', handleClick);
+            el.addEventListener('keydown', (e: KeyboardEvent) => {
+              if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(e); }
             });
+            hotspotContainer.createHotspot(el, { yaw: hs.yaw, pitch: hs.pitch });
           });
         }
 
         // Alignment markers — rendered as amber dots on the panorama
         if (scene.alignmentMarkers?.length) {
           scene.alignmentMarkers.forEach((marker) => {
-            ms.hotspots().create({
-              pitch: marker.pitch,
-              yaw: marker.yaw,
-              type: 'custom',
-              create: () => {
-                const el = document.createElement('div');
-                el.className = 'viztr-alignment-marker';
-                el.setAttribute('role', 'img');
-                el.setAttribute('aria-label', `Alignment marker: ${marker.label || marker.id}`);
-                el.innerHTML = `
-                  <div class="w-3 h-3 bg-amber-500 rounded-full shadow-lg border border-amber-300 cursor-help hover:scale-125 transition-transform"
-                       title="${marker.label || `Marker ${marker.id}`}">
-                  </div>
-                `;
-                return el;
-              },
-              destroy: (el: HTMLElement) => {
-                el.remove();
-              },
-            });
+            const el = document.createElement('div');
+            el.className = 'viztr-alignment-marker';
+            el.setAttribute('role', 'img');
+            el.setAttribute('aria-label', `Alignment marker: ${marker.label || marker.id}`);
+            el.innerHTML = `
+              <div class="w-3 h-3 bg-amber-500 rounded-full shadow-lg border border-amber-300 cursor-help hover:scale-125 transition-transform"
+                   title="${marker.label || `Marker ${marker.id}`}">
+              </div>
+            `;
+            hotspotContainer.createHotspot(el, { yaw: marker.yaw, pitch: marker.pitch });
           });
         }
 
