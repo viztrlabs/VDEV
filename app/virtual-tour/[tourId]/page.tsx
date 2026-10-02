@@ -14,10 +14,11 @@
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Eye, Compass, MessageSquare, Send, ExternalLink, Layers } from 'lucide-react';
+import { Eye, Compass, MessageSquare, Send, Layers } from 'lucide-react';
 import type { AlignmentMarker, SpatialAlignment } from '@/lib/3d/bridge/types';
 import { buildTourManifest, manifestSceneToTourScene } from '@/lib/tourManifest';
 import type { ManifestHotspot } from '@/lib/tourManifest';
+import { HotspotPopup } from '@/components/xr/HotspotPopup';
 
 const TourViewer = dynamic(() => import('@/components/xr/TourViewer'), { ssr: false });
 const SceneGalaxy = dynamic(() => import('@/components/xr/SceneGalaxy'), { ssr: false });
@@ -129,6 +130,14 @@ export default function VirtualTourPublicPage() {
     [manifest, rooms],
   );
 
+  const handleSelectScene = useCallback(
+    (id: string) => {
+      const r = rooms.find((x) => x.id === id);
+      if (r) setCurrentRoom(r);
+    },
+    [rooms],
+  );
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#09090B] flex items-center justify-center">
@@ -199,52 +208,16 @@ export default function VirtualTourPublicPage() {
       <div className="flex-1 flex min-h-0">
         {/* Tour viewer */}
         <div className="flex-1 min-h-0 relative">
-          <TourViewer scene={tourScene} onHotspotClick={handleHotspotClick} />
+          <TourViewer
+            scene={tourScene}
+            onHotspotClick={handleHotspotClick}
+            scenes={manifest.scenes as any}
+            activeSceneId={currentRoom?.id ?? undefined}
+            onSelectScene={handleSelectScene}
+          />
 
           {/* Typed hotspot popups (info / metadata / media) */}
-          {popup && (
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-[min(92vw,420px)] bg-[#09090B]/95 backdrop-blur rounded-xl border border-[#27272A] shadow-2xl overflow-hidden max-h-[70vh] flex flex-col">
-              <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#27272A]">
-                <div className="text-xs font-mono font-bold text-white truncate">{popup.title}</div>
-                <button onClick={() => setPopup(null)} className="text-[#71717A] hover:text-white text-xs px-1" aria-label="Close popup">
-                  ✕
-                </button>
-              </div>
-              <div className="overflow-y-auto p-4 space-y-3">
-                {popup.description && (
-                  <p className="text-xs text-[#A1A1AA] whitespace-pre-wrap">{popup.description}</p>
-                )}
-                {!!popup.images?.length && (
-                  <div className={`grid gap-2 ${popup.images.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
-                    {popup.images.map((src, i) => (
-                      <button
-                        key={src + i}
-                        onClick={() => window.open(src, '_blank', 'noopener,noreferrer')}
-                        className="block aspect-video w-full rounded-lg overflow-hidden border border-[#27272A]"
-                        aria-label={`Open photo ${i + 1} in new tab`}
-                      >
-                        <img
-                          src={src}
-                          alt={`${popup.title} photo ${i + 1}`}
-                          className="w-full h-full object-cover hover:scale-105 transition-transform"
-                        />
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {popup.externalUrl && (
-                  <a
-                    href={popup.externalUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#3ECF8E] text-black text-xs font-mono font-bold"
-                  >
-                    {popup.type === 'link' ? 'Open Link' : 'Learn more'} <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                )}
-              </div>
-            </div>
-          )}
+          {popup && <HotspotPopup hotspot={popup} onClose={() => setPopup(null)} />}
 
           {/* Galaxy map */}
           <SceneGalaxy
