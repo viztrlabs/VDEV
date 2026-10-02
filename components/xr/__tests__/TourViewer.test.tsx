@@ -47,21 +47,33 @@ jest.mock('marzipano', () => {
   const viewers: any[] = [];
   class Viewer {
     opts: any;
+    __currentScene: any = null;
     constructor(el: HTMLElement, opts: any) {
       this.opts = opts;
       el.appendChild(document.createElement('canvas'));
       viewers.push(this);
     }
-    createScene = jest.fn(() => makeScene());
-    scene = jest.fn(() => null);
+    createScene = jest.fn(() => {
+      const s = makeScene();
+      this.__currentScene = s;
+      return s;
+    });
+    scene = jest.fn(() => this.__currentScene);
     destroy = jest.fn();
     stopMovement = jest.fn();
+    addEventListener = jest.fn();
+    removeEventListener = jest.fn();
+    setIdleMovement = jest.fn();
+    startMovement = jest.fn();
+    lookTo = jest.fn();
+    controls = jest.fn(() => ({ registerMethod: jest.fn(), enableMethod: jest.fn(), disableMethod: jest.fn() }));
   }
   return {
     __viewers: viewers,
     Viewer,
     RectilinearView: class {
-      static limit = { traditional: jest.fn(() => ({})) };
+      static limit: { traditional: (w: number, f?: number, g?: number) => unknown } =
+        { traditional: jest.fn(() => ({})) as any };
     },
     EquirectGeometry: class {},
     ImageUrlSource: {
