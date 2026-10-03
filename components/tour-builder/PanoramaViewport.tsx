@@ -70,7 +70,9 @@ export function PanoramaViewport({
   const [radialOpen, setRadialOpen] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [rotateModeId, setRotateModeId] = useState<string | null>(null);
-  const [drag, setDrag] = useState<{ id: string; startX: number; startRotation: number; preview: number } | null>(null);
+  const [drag, setDrag] = useState<{ id: string; preview: number } | null>(null);
+  const dragRef = useRef<{ id: string; startX: number; startRotation: number } | null>(null);
+  const previewRef = useRef(0);
   const dragMovedRef = useRef(false);
   const [projected, setProjected] = useState<Record<string, { x: number; y: number } | null>>({});
   const { showContextMenu } = useContextMenu();
@@ -86,25 +88,39 @@ export function PanoramaViewport({
     setPopoverOpen(false);
     setRotateModeId(null);
     setDrag(null);
+    dragRef.current = null;
+    previewRef.current = 0;
   }, [roomId]);
 
+  const activeDragId = drag?.id ?? null;
+
   useEffect(() => {
-    if (!drag) return;
+    if (!activeDragId) return;
     const onMove = (e: MouseEvent) => {
-      const dx = e.clientX - drag.startX;
+      const session = dragRef.current;
+      if (!session) return;
+      const dx = e.clientX - session.startX;
       if (Math.abs(dx) > 2) dragMovedRef.current = true;
-      const preview = normalizeDeg(drag.startRotation + dx * 0.75);
-      setDrag({ ...drag, preview });
-      updateHotspot(roomId, drag.id, { rotation: preview });
+      const preview = normalizeDeg(session.startRotation + dx * 0.75);
+      previewRef.current = preview;
+      setDrag({ id: session.id, preview });
     };
-    const onUp = () => setDrag(null);
+    const onUp = () => {
+      const session = dragRef.current;
+      if (session) {
+        updateHotspot(roomId, session.id, { rotation: previewRef.current });
+        dragRef.current = null;
+        previewRef.current = 0;
+      }
+      setDrag(null);
+    };
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onUp);
     return () => {
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseup', onUp);
     };
-  }, [drag, roomId, updateHotspot]);
+  }, [activeDragId, roomId, updateHotspot]);
 
   useEffect(() => {
     if (!rotateModeId) return;
@@ -320,12 +336,13 @@ export function PanoramaViewport({
                 if (rotateModeId !== hs.id) return;
                 e.stopPropagation();
                 dragMovedRef.current = false;
-                setDrag({
+                dragRef.current = {
                   id: hs.id,
                   startX: e.clientX,
                   startRotation: hs.rotation ?? 0,
-                  preview: hs.rotation ?? 0,
-                });
+                };
+                previewRef.current = hs.rotation ?? 0;
+                setDrag({ id: hs.id, preview: hs.rotation ?? 0 });
               }}
               onClick={(e) => {
                 e.stopPropagation();

@@ -263,8 +263,9 @@ describe('PanoramaViewport rotate mode', () => {
     fireEvent.click(screen.getByLabelText('Rotate hotspot'));
     fireEvent.mouseDown(screen.getByText('01'), { clientX: 100 });
     fireEvent.mouseMove(window, { clientX: 180 });
-    expect(storeHotspot('h1').rotation).toBe(90);
+    expect(storeHotspot('h1').rotation).toBe(30);
     fireEvent.mouseUp(window);
+    expect(storeHotspot('h1').rotation).toBe(90);
   });
 
   it('normalizes rotation into 0-360', async () => {
@@ -274,9 +275,10 @@ describe('PanoramaViewport rotate mode', () => {
     fireEvent.click(screen.getByLabelText('Rotate hotspot'));
     fireEvent.mouseDown(screen.getByText('01'), { clientX: 100 });
     fireEvent.mouseMove(window, { clientX: -400 });
+    expect(storeHotspot('h1').rotation).toBe(30);
+    fireEvent.mouseUp(window);
     expect(storeHotspot('h1').rotation).toBeGreaterThanOrEqual(0);
     expect(storeHotspot('h1').rotation).toBeLessThan(360);
-    fireEvent.mouseUp(window);
   });
 
   it('Escape exits rotate mode', async () => {
