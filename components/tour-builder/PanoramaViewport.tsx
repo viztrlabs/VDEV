@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import {
   MapPin,
   Navigation,
@@ -13,12 +13,13 @@ import {
   RotateCcw,
   ZoomIn,
   ZoomOut,
-  Maximize,
   AlertTriangle,
 } from 'lucide-react';
 import { useTourStore } from '@/lib/tourClientStore';
-import type { TourHotspot } from '@/lib/tourClientStore';
+import type { TourHotspot, HotspotType } from '@/lib/tourClientStore';
 import { useContextMenu } from './ContextMenu';
+import { useTourEngine } from '@/components/tour-viewer/useTourEngine';
+import { setViewportView } from '@/lib/tour-builder/viewportView';
 
 interface PanoramaViewportProps {
   roomId: string;
@@ -37,6 +38,14 @@ const HOTSPOT_ICONS: Record<string, React.ComponentType<{ className?: string }>>
   product: Package,
 };
 
+const TOOL_TYPES: Record<string, HotspotType> = {
+  'hotspot-navigation': 'navigation',
+  'hotspot-info': 'info',
+  'hotspot-link': 'link',
+  'hotspot-gallery': 'gallery',
+  'hotspot-model3d': 'model3d',
+};
+
 export function PanoramaViewport({
   roomId,
   activeTool,
@@ -45,135 +54,93 @@ export function PanoramaViewport({
   onViewportClick,
 }: PanoramaViewportProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const viewerRef = useRef<any>(null);
-  const sceneRef = useRef<any>(null);
   const scenes = useTourStore((s) => s.scenes);
   const updateScene = useTourStore((s) => s.updateScene);
   const room = scenes.find((r) => r.id === roomId);
-  const [currentYaw, setCurrentYaw] = useState(0);
-  const [currentPitch, setCurrentPitch] = useState(0);
-  const [currentFov, setCurrentFov] = useState(75);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [error, setError] = useState<string>('');
   const [isDragging, setIsDragging] = useState(false);
+  const [projected, setProjected] = useState<Record<string, { x: number; y: number } | null>>({});
   const { showContextMenu } = useContextMenu();
 
+  const engine = useTourEngine(containerRef, {
+    scenes,
+    activeSceneId: roomId,
+    transitionDuration: 300,
+  });
+
+  // Current view readout (rad) derives from the engine's published view.
+  const currentYaw = engine.view.yaw;
+  const currentPitch = engine.view.pitch;
+  const currentFov = engine.view.fov;
+
+  // Publish the viewport view (deg) for the Inspector.
   useEffect(() => {
-    if (!containerRef.current || !room?.url) {
-      setError(room?.url ? '' : 'No panorama image URL set');
-      return;
+    setViewportView({
+      yaw: (engine.view.yaw * 180) / Math.PI,
+      pitch: (engine.view.pitch * 180) / Math.PI,
+      fov: (engine.view.fov * 180) / Math.PI,
+    });
+  }, [engine.view]);
+
+  // Project hotspots from sphere coords to screen pixels on every view change
+  // (PanoramaPreview pattern) so they stay glued to the scene.
+  useEffect(() => {
+    if (!room) { setProjected({}); return; }
+    const v = engine.getCurrentScene()?.view?.();
+    if (!v?.coordinatesToScreen) { setProjected({}); return; }
+    const next: Record<string, { x: number; y: number } | null> = {};
+    for (const hs of room.hotspots || []) {
+      const p = v.coordinatesToScreen({ yaw: hs.yaw, pitch: hs.pitch });
+      next[hs.id] = p ? { x: p.x, y: p.y } : null;
     }
+    setProjected(next);
+  }, [engine.view, room]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    let cancelled = false;
+  const containerRect = () => containerRef.current?.getBoundingClientRect();
 
-    const init = async () => {
-      try {
-        setError('');
-        const mod: any = await import('marzipano');
-        const Marzipano: any = mod.default ?? mod;
-        if (cancelled || !containerRef.current) return;
-
-        viewerRef.current?.destroy?.();
-
-        const viewer = new Marzipano.Viewer(containerRef.current, {
-          controls: {
-            mouseViewMode: 'drag',
-            scrollZoom: true,
-          },
-        });
-        viewerRef.current = viewer;
-
-        const source = Marzipano.ImageUrlSource.fromString(room.url);
-        const geometry = new Marzipano.EquirectGeometry([{ width: 4096 }]);
-        const limiter = Marzipano.RectilinearView.limit.traditional(4096, Math.PI / 2);
-        const view = new Marzipano.RectilinearView(
-          {
-            yaw: ((room.initialYaw || 0) * Math.PI) / 180,
-            pitch: ((room.initialPitch || 0) * Math.PI) / 180,
-            fov: ((room.initialFov || 75) * Math.PI) / 180,
-          },
-          limiter
-        );
-
-        const ms = viewer.createScene({ source, geometry, view });
-        ms.switchTo({ transitionDuration: 300 });
-        sceneRef.current = ms;
-
-        const sceneView = ms.view();
-        if (sceneView) {
-          sceneView.addEventListener('change', () => {
-            setCurrentYaw(sceneView.yaw());
-            setCurrentPitch(sceneView.pitch());
-            setCurrentFov(sceneView.fov());
-          });
-        }
-      } catch (err) {
-        console.error('Failed to init Marzipano:', err);
-        setError('Failed to load panorama');
-      }
-    };
-
-    init();
-
-    return () => {
-      cancelled = true;
-      viewerRef.current?.destroy?.();
-      viewerRef.current = null;
-    };
-  }, [room?.url, room?.initialYaw, room?.initialPitch, room?.initialFov]);
+  const placeHotspot = useCallback(
+    (clientX: number, clientY: number) => {
+      if (!room) return;
+      const rect = containerRect();
+      if (!rect) return;
+      const coords = engine.screenToCoordinates(clientX - rect.left, clientY - rect.top);
+      if (!coords) return;
+      const type = TOOL_TYPES[activeTool] || 'info';
+      const newHotspot: TourHotspot = {
+        id: `hs-${Date.now()}`,
+        yaw: coords.yaw,
+        pitch: coords.pitch,
+        type,
+        title: type === 'navigation' ? 'Navigate' : type === 'link' ? 'Link' : type === 'gallery' ? 'Gallery' : type === 'model3d' ? '3D Model' : 'Info',
+        description: '',
+      };
+      updateScene(room.id, {
+        hotspots: [...(room.hotspots || []), newHotspot],
+      });
+      onSelectHotspot(newHotspot.id);
+    },
+    [room, activeTool, engine, updateScene, onSelectHotspot],
+  );
 
   const handleContextMenu = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
-      const items = [
+      const addItems = [
         {
           label: 'Add Navigation Hotspot',
           icon: Navigation,
           shortcut: 'N',
-          onClick: () => {
-            if (!room) return;
-            const rect = containerRef.current?.getBoundingClientRect();
-            if (!rect) return;
-            const yaw = ((e.clientX - rect.left) / rect.width - 0.5) * 2 * Math.PI;
-            const pitch = ((e.clientY - rect.top) / rect.height - 0.5) * Math.PI;
-            const newHotspot: TourHotspot = {
-              id: `hs-${Date.now()}`,
-              yaw,
-              pitch,
-              type: 'link',
-              title: 'Navigate',
-              description: '',
-            };
-            updateScene(room.id, {
-              hotspots: [...(room.hotspots || []), newHotspot],
-            });
-            onSelectHotspot(newHotspot.id);
-          },
+          onClick: () => placeHotspot(e.clientX, e.clientY),
         },
         {
           label: 'Add Info Hotspot',
           icon: Info,
           shortcut: 'F',
-          onClick: () => {
-            if (!room) return;
-            const rect = containerRef.current?.getBoundingClientRect();
-            if (!rect) return;
-            const yaw = ((e.clientX - rect.left) / rect.width - 0.5) * 2 * Math.PI;
-            const pitch = ((e.clientY - rect.top) / rect.height - 0.5) * Math.PI;
-            const newHotspot: TourHotspot = {
-              id: `hs-${Date.now()}`,
-              yaw,
-              pitch,
-              type: 'info',
-              title: 'Info',
-              description: '',
-            };
-            updateScene(room.id, {
-              hotspots: [...(room.hotspots || []), newHotspot],
-            });
-            onSelectHotspot(newHotspot.id);
-          },
+          onClick: () => placeHotspot(e.clientX, e.clientY),
         },
+      ];
+      const items = [
+        ...addItems,
         { label: 'divider', divider: true },
         {
           label: 'Set as Start View',
@@ -191,62 +158,42 @@ export function PanoramaViewport({
           label: 'Reset View',
           icon: RotateCcw,
           onClick: () => {
-            if (!sceneRef.current) return;
-            const view = sceneRef.current.view();
-            view.setYaw(((room?.initialYaw || 0) * Math.PI) / 180);
-            view.setPitch(((room?.initialPitch || 0) * Math.PI) / 180);
-            view.setFov(((room?.initialFov || 75) * Math.PI) / 180);
+            const v = engine.getCurrentScene()?.view?.();
+            if (!v) return;
+            v.setYaw(((room?.initialYaw || 0) * Math.PI) / 180);
+            v.setPitch(((room?.initialPitch || 0) * Math.PI) / 180);
+            v.setFov(((room?.initialFov || 75) * Math.PI) / 180);
           },
         },
       ];
       showContextMenu(e.clientX, e.clientY, items, 'Viewport');
     },
-    [room, currentYaw, currentPitch, currentFov, updateScene, onSelectHotspot, showContextMenu]
+    [room, currentYaw, currentPitch, currentFov, engine, updateScene, placeHotspot, showContextMenu],
   );
 
   const handleClick = (e: React.MouseEvent) => {
-    if (activeTool === 'select' || activeTool === 'move') return;
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
-    const yaw = (x - 0.5) * 2 * Math.PI;
-    const pitch = (y - 0.5) * Math.PI;
-
+    if (activeTool !== 'connect' && !TOOL_TYPES[activeTool]) return;
     if (activeTool === 'connect') {
-      if (onViewportClick) {
-        onViewportClick(yaw, pitch);
-      }
+      const rect = containerRect();
+      if (!rect) return;
+      const coords = engine.screenToCoordinates(e.clientX - rect.left, e.clientY - rect.top);
+      if (!coords) return;
+      onViewportClick?.(coords.yaw, coords.pitch);
       return;
     }
-
-    if (room && activeTool.startsWith('hotspot')) {
-      const type = activeTool === 'hotspot-navigation' ? 'link' : 'info';
-      const newHotspot: TourHotspot = {
-        id: `hs-${Date.now()}`,
-        yaw,
-        pitch,
-        type: type as any,
-        title: type === 'link' ? 'Navigate' : 'Info',
-        description: '',
-      };
-      updateScene(room.id, {
-        hotspots: [...(room.hotspots || []), newHotspot],
-      });
-      onSelectHotspot(newHotspot.id);
-    }
+    placeHotspot(e.clientX, e.clientY);
   };
 
   const handleZoomIn = () => {
-    if (!sceneRef.current) return;
-    const view = sceneRef.current.view();
-    view.setFov(Math.max((room?.viewConstraints?.zoomMin || 30) * (Math.PI / 180), view.fov() - 0.1));
+    const v = engine.getCurrentScene()?.view?.();
+    if (!v) return;
+    v.setFov(Math.max((room?.viewConstraints?.zoomMin || 30) * (Math.PI / 180), v.fov() - 0.1));
   };
 
   const handleZoomOut = () => {
-    if (!sceneRef.current) return;
-    const view = sceneRef.current.view();
-    view.setFov(Math.min((room?.viewConstraints?.zoomMax || 120) * (Math.PI / 180), view.fov() + 0.1));
+    const v = engine.getCurrentScene()?.view?.();
+    if (!v) return;
+    v.setFov(Math.min((room?.viewConstraints?.zoomMax || 120) * (Math.PI / 180), v.fov() + 0.1));
   };
 
   const handleSetStartView = () => {
@@ -259,19 +206,30 @@ export function PanoramaViewport({
   };
 
   const handleResetView = () => {
-    if (!sceneRef.current || !room) return;
-    const view = sceneRef.current.view();
-    view.setYaw(((room.initialYaw || 0) * Math.PI) / 180);
-    view.setPitch(((room.initialPitch || 0) * Math.PI) / 180);
-    view.setFov(((room.initialFov || 75) * Math.PI) / 180);
+    const v = engine.getCurrentScene()?.view?.();
+    if (!v || !room) return;
+    v.setYaw(((room.initialYaw || 0) * Math.PI) / 180);
+    v.setPitch(((room.initialPitch || 0) * Math.PI) / 180);
+    v.setFov(((room.initialFov || 75) * Math.PI) / 180);
   };
 
-  if (error) {
+  if (engine.error) {
     return (
       <div className="w-full h-full flex items-center justify-center bg-[#09090B]">
         <div className="text-center">
           <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto mb-3" />
-          <p className="text-sm font-mono text-[#71717A]">{error}</p>
+          <p className="text-sm font-mono text-[#71717A]">{engine.error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!room?.url) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-[#09090B]">
+        <div className="text-center">
+          <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto mb-3" />
+          <p className="text-sm font-mono text-[#71717A]">No panorama image URL set</p>
         </div>
       </div>
     );
@@ -288,7 +246,15 @@ export function PanoramaViewport({
         onMouseUp={() => setIsDragging(false)}
       />
 
-      {room?.hotspots?.map((hs) => {
+      {engine.loading && (
+        <div className="absolute inset-0 bg-[#09090B] flex items-center justify-center">
+          <div className="text-xs font-mono text-[#3ECF8E] animate-pulse">Loading panorama…</div>
+        </div>
+      )}
+
+      {(room?.hotspots || []).map((hs) => {
+        const p = projected[hs.id];
+        if (!p) return null;
         const Icon = HOTSPOT_ICONS[hs.type] || MapPin;
         const isSelected = selectedHotspotId === hs.id;
 
@@ -298,10 +264,7 @@ export function PanoramaViewport({
             className={`absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all ${
               isSelected ? 'scale-125 z-10' : 'hover:scale-110'
             }`}
-            style={{
-              left: `${50 + ((hs.yaw || 0) / Math.PI) * 50}%`,
-              top: `${50 + ((hs.pitch || 0) / Math.PI) * 50}%`,
-            }}
+            style={{ left: p.x, top: p.y }}
             onClick={(e) => {
               e.stopPropagation();
               onSelectHotspot(hs.id);
@@ -331,7 +294,7 @@ export function PanoramaViewport({
               className={`w-8 h-8 rounded-full flex items-center justify-center shadow-lg ${
                 isSelected
                   ? 'bg-[#3ECF8E] text-black'
-                  : hs.type === 'link'
+                  : hs.type === 'link' || hs.type === 'navigation'
                   ? 'bg-amber-500 text-white'
                   : 'bg-white/90 text-[#09090B]'
               }`}
@@ -350,28 +313,28 @@ export function PanoramaViewport({
       <div className="absolute top-3 left-3 flex flex-col gap-1">
         <button
           onClick={handleZoomIn}
-          className="w-8 h-8 rounded bg-[#09090B]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#27272A] transition-colors"
+          className="w-8 h-8 rounded bg-[#09090B]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#27272A] transition-colors cursor-pointer"
           title="Zoom In"
         >
           <ZoomIn className="w-4 h-4 text-white" />
         </button>
         <button
           onClick={handleZoomOut}
-          className="w-8 h-8 rounded bg-[#09090B]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#27272A] transition-colors"
+          className="w-8 h-8 rounded bg-[#09090B]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#27272A] transition-colors cursor-pointer"
           title="Zoom Out"
         >
           <ZoomOut className="w-4 h-4 text-white" />
         </button>
         <button
           onClick={handleSetStartView}
-          className="w-8 h-8 rounded bg-[#09090B]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#27272A] transition-colors"
+          className="w-8 h-8 rounded bg-[#09090B]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#27272A] transition-colors cursor-pointer"
           title="Set Start View (S)"
         >
           <Eye className="w-4 h-4 text-white" />
         </button>
         <button
           onClick={handleResetView}
-          className="w-8 h-8 rounded bg-[#09090B]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#27272A] transition-colors"
+          className="w-8 h-8 rounded bg-[#09090B]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#27272A] transition-colors cursor-pointer"
           title="Reset View"
         >
           <RotateCcw className="w-4 h-4 text-white" />
@@ -384,9 +347,9 @@ export function PanoramaViewport({
         {((currentFov * 180) / Math.PI).toFixed(1)}°
       </div>
 
-      {activeTool.startsWith('hotspot') && (
+      {TOOL_TYPES[activeTool] && (
         <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-[#3ECF8E]/20 backdrop-blur-sm rounded px-3 py-1.5 text-xs font-mono text-[#3ECF8E]">
-          Click to place {activeTool === 'hotspot-navigation' ? 'navigation' : 'info'} hotspot
+          Click to place {TOOL_TYPES[activeTool]} hotspot
         </div>
       )}
 
