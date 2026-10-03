@@ -34,4 +34,14 @@ describe('InspectorPanel room-only (hotspot settings moved to viewport popover)'
     fireEvent.click(screen.getByText('Hotspots'));
     expect(screen.getByText('1 hotspots')).toBeInTheDocument();
   });
+
+  it('renders no hotspot-editing fields even when hotspotId is provided', () => {
+    render(<InspectorPanel {...({ roomId: 'r1', hotspotId: 'h1' } as any)} />);
+    expect(screen.getByText('ROOM')).toBeInTheDocument();
+    expect(screen.queryByText('HOTSPOT')).not.toBeInTheDocument();
+    expect(screen.queryByText('Reset Position')).not.toBeInTheDocument();
+    expect(screen.queryByText('Direction')).not.toBeInTheDocument();
+    expect(screen.queryAllByText('Animation')).toHaveLength(0);
+    expect(screen.queryByText('Tooltip')).not.toBeInTheDocument();
+  });
 });
