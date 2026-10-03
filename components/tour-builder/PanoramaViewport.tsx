@@ -49,6 +49,8 @@ const TOOL_TYPES: Record<string, HotspotType> = {
   'hotspot-model3d': 'model3d',
 };
 
+const normalizeDeg = (d: number) => ((d % 360) + 360) % 360;
+
 export function PanoramaViewport({
   roomId,
   activeTool,
@@ -67,6 +69,9 @@ export function PanoramaViewport({
   const [isDragging, setIsDragging] = useState(false);
   const [radialOpen, setRadialOpen] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const [rotateModeId, setRotateModeId] = useState<string | null>(null);
+  const [drag, setDrag] = useState<{ id: string; startX: number; startRotation: number; preview: number } | null>(null);
+  const dragMovedRef = useRef(false);
   const [projected, setProjected] = useState<Record<string, { x: number; y: number } | null>>({});
   const { showContextMenu } = useContextMenu();
 
@@ -79,7 +84,36 @@ export function PanoramaViewport({
   useEffect(() => {
     setRadialOpen(false);
     setPopoverOpen(false);
+    setRotateModeId(null);
+    setDrag(null);
   }, [roomId]);
+
+  useEffect(() => {
+    if (!drag) return;
+    const onMove = (e: MouseEvent) => {
+      const dx = e.clientX - drag.startX;
+      if (Math.abs(dx) > 2) dragMovedRef.current = true;
+      const preview = normalizeDeg(drag.startRotation + dx * 0.75);
+      setDrag({ ...drag, preview });
+      updateHotspot(roomId, drag.id, { rotation: preview });
+    };
+    const onUp = () => setDrag(null);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+  }, [drag, roomId, updateHotspot]);
+
+  useEffect(() => {
+    if (!rotateModeId) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setRotateModeId(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [rotateModeId]);
 
   // Current view readout (rad) derives from the engine's published view.
   const currentYaw = engine.view.yaw;
@@ -185,6 +219,10 @@ export function PanoramaViewport({
   );
 
   const handleClick = (e: React.MouseEvent) => {
+    if (rotateModeId && !drag) {
+      setRotateModeId(null);
+      return;
+    }
     if (activeTool !== 'connect' && !TOOL_TYPES[activeTool]) return;
     if (activeTool === 'connect') {
       const rect = containerRect();
@@ -276,10 +314,30 @@ export function PanoramaViewport({
             <div
               className={`absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all ${
                 isSelected ? 'scale-125 z-10' : 'hover:scale-110'
-              }`}
+              }${rotateModeId === hs.id ? ' cursor-ew-resize' : ''}`}
               style={{ left: p.x, top: p.y }}
+              onMouseDown={(e) => {
+                if (rotateModeId !== hs.id) return;
+                e.stopPropagation();
+                dragMovedRef.current = false;
+                setDrag({
+                  id: hs.id,
+                  startX: e.clientX,
+                  startRotation: hs.rotation ?? 0,
+                  preview: hs.rotation ?? 0,
+                });
+              }}
               onClick={(e) => {
                 e.stopPropagation();
+                if (dragMovedRef.current) {
+                  dragMovedRef.current = false;
+                  return;
+                }
+                if (rotateModeId === hs.id) {
+                  setRotateModeId(null);
+                  return;
+                }
+                setRotateModeId(null);
                 onSelectHotspot(hs.id);
                 setPopoverOpen(false);
                 setRadialOpen(true);
@@ -319,7 +377,7 @@ export function PanoramaViewport({
                     ? 'bg-amber-500 text-white'
                     : 'bg-white/90 text-[#09090B]'
                 }`}
-                style={{ transform: `rotate(${hs.rotation ?? 0}deg)` }}
+                style={{ transform: `rotate(${drag && drag.id === hs.id ? drag.preview : hs.rotation ?? 0}deg)` }}
               >
                 <Icon className="w-4 h-4" />
               </div>
@@ -329,6 +387,11 @@ export function PanoramaViewport({
               {isSelected && (
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 px-2 py-0.5 rounded bg-[#09090B] text-[9px] font-mono text-white whitespace-nowrap">
                   {hs.title || hs.type}
+                </div>
+              )}
+              {rotateModeId === hs.id && (
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-6 px-2 py-0.5 rounded bg-[#3ECF8E] text-[9px] font-mono text-black whitespace-nowrap">
+                  {Math.round(drag && drag.id === hs.id ? drag.preview : hs.rotation ?? 0)}°
                 </div>
               )}
             </div>
@@ -343,7 +406,10 @@ export function PanoramaViewport({
                   onSelectHotspot('');
                   onNavigateToRoom?.(hs.targetSceneId);
                 }}
-                onRotate={() => setRadialOpen(false)}
+                onRotate={() => {
+                  setRadialOpen(false);
+                  setRotateModeId(hs.id);
+                }}
                 onDelete={() => {
                   setRadialOpen(false);
                   deleteHotspot(roomId, hs.id);

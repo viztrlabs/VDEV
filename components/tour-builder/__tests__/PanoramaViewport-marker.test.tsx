@@ -233,3 +233,60 @@ describe('PanoramaViewport radial + popover integration', () => {
   });
 });
 
+describe('PanoramaViewport rotate mode', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockedMarzipano.__viewers.length = 0;
+    useTourStore.setState({ scenes: [JSON.parse(JSON.stringify(room))] } as any);
+  });
+
+  const ready = async () => {
+    await waitFor(() => expect(mockedMarzipano.__viewers.length).toBeGreaterThan(0));
+  };
+
+  const storeHotspot = (id: string) =>
+    useTourStore.getState().scenes[0].hotspots.find((h) => h.id === id)!;
+
+  it('arming Rotate shows the degree readout chip', async () => {
+    render(<ViewportHarness onSelectHotspot={jest.fn()} />);
+    await ready();
+    fireEvent.click(await screen.findByText('01'));
+    fireEvent.click(screen.getByLabelText('Rotate hotspot'));
+    expect(screen.getByText('30°')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Rotate hotspot')).not.toBeInTheDocument();
+  });
+
+  it('dragging the marker horizontally updates rotation (start + dx * 0.75)', async () => {
+    render(<ViewportHarness onSelectHotspot={jest.fn()} />);
+    await ready();
+    fireEvent.click(await screen.findByText('01'));
+    fireEvent.click(screen.getByLabelText('Rotate hotspot'));
+    fireEvent.mouseDown(screen.getByText('01'), { clientX: 100 });
+    fireEvent.mouseMove(window, { clientX: 180 });
+    expect(storeHotspot('h1').rotation).toBe(90);
+    fireEvent.mouseUp(window);
+  });
+
+  it('normalizes rotation into 0-360', async () => {
+    render(<ViewportHarness onSelectHotspot={jest.fn()} />);
+    await ready();
+    fireEvent.click(await screen.findByText('01'));
+    fireEvent.click(screen.getByLabelText('Rotate hotspot'));
+    fireEvent.mouseDown(screen.getByText('01'), { clientX: 100 });
+    fireEvent.mouseMove(window, { clientX: -400 });
+    expect(storeHotspot('h1').rotation).toBeGreaterThanOrEqual(0);
+    expect(storeHotspot('h1').rotation).toBeLessThan(360);
+    fireEvent.mouseUp(window);
+  });
+
+  it('Escape exits rotate mode', async () => {
+    render(<ViewportHarness onSelectHotspot={jest.fn()} />);
+    await ready();
+    fireEvent.click(await screen.findByText('01'));
+    fireEvent.click(screen.getByLabelText('Rotate hotspot'));
+    expect(screen.getByText('30°')).toBeInTheDocument();
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(screen.queryByText('30°')).not.toBeInTheDocument();
+  });
+});
+
