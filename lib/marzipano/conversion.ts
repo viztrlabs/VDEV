@@ -44,6 +44,7 @@ export interface EditorHotspot {
   targetPanoramaUrl?: string;
   targetYaw?: number;
   icon?: string;
+  rotation?: number;
   color?: string;
   mediaUrl?: string;
   article?: string;
@@ -232,7 +233,7 @@ export function editorRoomToMarzipanoScene(room: EditorRoom): MarzipanoScene {
         Number(h.xPercent) || 0,
         Number(h.yPercent) || 0,
       );
-      linkHotspots.push({ yaw, pitch, rotation: 0, target: h.targetRoomId });
+      linkHotspots.push({ yaw, pitch, rotation: h.rotation ?? 0, target: h.targetRoomId });
       continue;
     }
     if (h.type === 'info') {

@@ -23,6 +23,7 @@ const fixture: EditorRoom[] = [
         targetRoomId: 'roomB',
         icon: 'door',
         color: 'emerald',
+        rotation: 45,
       },
       {
         id: 'hp-a-info',
@@ -96,6 +97,15 @@ describe('marzipano exporter', () => {
     expect(sceneA.linkHotspots.length).toBe(1);
     expect(sceneA.infoHotspots.length).toBe(1);
     expect(sceneA.linkHotspots[0].target).toBe('roomB');
+  });
+
+  it('exports hotspot rotation to marzipano linkHotspots', async () => {
+    const blob = await exportTourToZip(fixture);
+    const zip = await JSZip.loadAsync(blob);
+    const text = await zip.file('app-data.json')!.async('string');
+    const parsed = JSON.parse(text);
+    const sceneA = parsed.scenes.find((s: any) => s.id === 'roomA');
+    expect(sceneA.linkHotspots[0].rotation).toBe(45);
   });
 
   it('preserves yaw/pitch within 1e-6', async () => {

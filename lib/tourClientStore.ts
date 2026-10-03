@@ -59,6 +59,7 @@ export interface TourHotspot {
   label?: string;         // visible label text
   tooltip?: string;       // hover tooltip
   animation?: 'none' | 'pulse' | 'glow' | 'bounce';
+  rotation?: number;
 
   // Direction
   directionMode?: 'auto' | 'manual' | 'look_at' | 'target';

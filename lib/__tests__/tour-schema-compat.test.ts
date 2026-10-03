@@ -121,4 +121,14 @@ describe('toManifestHotspot', () => {
     expect(out.icon).toBe('pin');
     expect(out.directionMode).toBe('manual');
   });
+
+  it('passes rotation through to the manifest', () => {
+    const out = toManifestHotspot(hs({ rotation: 45 })) as any;
+    expect(out.rotation).toBe(45);
+  });
+
+  it('leaves rotation undefined when the hotspot has none', () => {
+    const out = toManifestHotspot(hs({})) as any;
+    expect(out.rotation).toBeUndefined();
+  });
 });
