@@ -64,11 +64,13 @@ Add a reference-style radial action menu + marker-anchored settings popover to h
 Collapsible sections reusing extracted `Section`/`Field` primitives (shared `inspector-fields.tsx`):
 
 1. **Type** — 12-type grid (moved from Inspector: `HOTSPOT_TYPES`)
-2. **Content** — title, description, type-specific fields: destination room, target yaw/pitch, URLs, uploads (moved `TypeSpecificFields`, `ImageInput`, `ModelInput`)
-3. **Position** — yaw/pitch numbers + "center view here" (moved)
-4. **Appearance** — color, size, opacity, label, tooltip, animation + **Rotation°** (new number field, 0–360)
+2. **Type-specific** — rendered by the moved `TypeSpecificFields` (renders its own `Section`: destination room, target yaw/pitch, URLs, uploads via moved `TypeSpecificFields`, `ImageInput`, `ModelInput`)
+3. **Content** — title, description (moved, `defaultOpen={false}`)
+4. **Position** — yaw/pitch numbers + "Reset Position" (moved)
+5. **Appearance** — color, size, opacity, label, tooltip, animation, icon picker + **Rotation°** (new number field, 0–360)
+6. **Direction** — existing `directionMode`/`directionYaw`/`directionPitch` section (moved, `defaultOpen={false}`; retained so no current setting is lost)
 
-All edits go through the existing `updateScene(roomId, { hotspots })` store action — no new store logic or network paths.
+All field edits go through the existing `updateHotspot(sceneId, hotspotId, patch)` store action (what InspectorPanel already uses); delete goes through `deleteHotspot(sceneId, hotspotId)`. No new store logic or network paths.
 
 ### InspectorPanel after extraction
 
@@ -88,7 +90,7 @@ All edits go through the existing `updateScene(roomId, { hotspots })` store acti
 ### Rotate mode (state local to `PanoramaViewport`)
 
 1. Radial Rotate → radial closes; marker enters rotate mode: highlighted ring, `RotateCw` cursor, live degree readout chip.
-2. Horizontal drag: `rotation = normalize(start + dx * 0.75)`°, committed via `updateScene` during drag (store's existing update pattern keeps undo coherent).
+2. Horizontal drag: `rotation = normalize(start + dx * 0.75)`°, committed via `updateHotspot` during drag (the store mutates in place, so the live value during the drag is held in viewport-local state and written through to the store on each move).
 3. Exit: pointer-up ends drag but keeps mode; click elsewhere / Esc / another action exits. Marker stays selected.
 4. The popover's Appearance → Rotation field edits the same value as a number input.
 
@@ -100,7 +102,7 @@ All edits go through the existing `updateScene(roomId, { hotspots })` store acti
 
 ### Delete
 
-- Same as today's context-menu delete (`updateScene` filter + deselect); no confirm dialog; matches shortcut-`D` behavior.
+- Immediate delete via the store's `deleteHotspot` action + deselect — same as today's context-menu delete, no confirm dialog. (The keyboard-`D` shortcut keeps its own `confirm()` in `TourBuilderShell` — unchanged.)
 
 ## Section 4 — Testing, edge cases, error handling
 
