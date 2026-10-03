@@ -104,12 +104,12 @@ declare module 'marzipano' {
       params?: { yaw?: number; pitch?: number; fov?: number },
       limiter?: unknown
     );
-    yaw(value?: number): number;
-    pitch(value?: number): number;
-    fov(value?: number): number;
-    yawRange(): [number, number];
-    pitchRange(): [number, number];
-    fovRange(): [number, number];
+    yaw(): number;
+    pitch(): number;
+    fov(): number;
+    setYaw(value: number): void;
+    setPitch(value: number): void;
+    setFov(value: number): void;
     screenToCoordinates(
       point: { x: number; y: number },
       result?: { yaw: number; pitch: number }
@@ -134,10 +134,6 @@ declare module 'marzipano' {
   export class ImageUrlSource {
     constructor(opts?: Record<string, unknown>);
     static fromString(url: string, opts?: { crossOrigin?: string }): unknown;
-    static fromTileUrl(
-      url: string,
-      opts?: { crossOrigin?: string; tileSize?: number; maxZoom?: number }
-    ): unknown;
   }
 
   export function autorotate(opts?: {
@@ -156,7 +152,6 @@ declare module 'marzipano' {
   export const util: {
     degToRad(d: number): number;
     radToDeg(r: number): number;
-    clamp(v: number, min: number, max: number): number;
   };
 
   export const dependencies: {

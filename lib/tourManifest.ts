@@ -33,6 +33,7 @@ export interface ManifestScene {
   id: string;
   name: string;
   panoramaUrl: string;
+  url?: string;
   thumbnailUrl: string;
   initialYaw: number;
   initialPitch: number;
@@ -86,7 +87,12 @@ export function buildTourManifest(rooms: ManifestRoomLike[]): TourManifest {
           const { yaw, pitch } = xyPercentsToYawPitch(h.xPercent, h.yPercent);
           return toManifestHotspot({ ...h, yaw, pitch } as TourHotspot);
         }
-        return toManifestHotspot({ ...h, yaw: 0, pitch: 0 } as TourHotspot);
+        // Legacy hotspots without any position data: place at the scene's
+        // initial view (degrees -> radians) so the marker is in front of the
+        // camera instead of hidden behind it.
+        const yaw = ((typeof r.initialYaw === 'number' ? r.initialYaw : 0) * Math.PI) / 180;
+        const pitch = ((typeof r.initialPitch === 'number' ? r.initialPitch : 0) * Math.PI) / 180;
+        return toManifestHotspot({ ...h, yaw, pitch } as TourHotspot);
       })
       .map((h) => h as ManifestHotspot)
       .filter((h: ManifestHotspot) => h.kind !== 'nav' || (h.targetRoomId && idSet.has(h.targetRoomId!)));
@@ -96,6 +102,7 @@ export function buildTourManifest(rooms: ManifestRoomLike[]): TourManifest {
       id: r.id,
       name: r.name || 'Untitled Scene',
       panoramaUrl: r.panoramaUrl ?? r.url ?? '',
+      url: r.url ?? r.panoramaUrl ?? '',
       thumbnailUrl: r.thumbnailUrl ?? '',
       initialYaw: typeof r.initialYaw === 'number' ? r.initialYaw : 0,
       initialPitch: typeof r.initialPitch === 'number' ? r.initialPitch : 0,

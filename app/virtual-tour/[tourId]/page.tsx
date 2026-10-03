@@ -115,7 +115,8 @@ export default function VirtualTourPublicPage() {
       const sc = manifest.scenes.find((s) => s.id === sceneId);
       const hs = sc?.hotspots.find((h) => h.id === hotspotId);
       if (!hs) return;
-      if (hs.kind === 'nav' && hs.targetRoomId) {
+      // nav kinds + legacy 'point' markers (kind 'other') carry targetRoomId
+      if (hs.targetRoomId && (hs.kind === 'nav' || hs.kind === 'other')) {
         const target = rooms.find((r) => r.id === hs.targetRoomId);
         if (target) setCurrentRoom(target);
         setPopup(null);
@@ -214,6 +215,7 @@ export default function VirtualTourPublicPage() {
             scenes={manifest.scenes as any}
             activeSceneId={currentRoom?.id ?? undefined}
             onSelectScene={handleSelectScene}
+            tourId={tourId}
           />
 
           {/* Typed hotspot popups (info / metadata / media) */}

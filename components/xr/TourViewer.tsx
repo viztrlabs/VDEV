@@ -22,11 +22,12 @@ interface TourViewerProps {
   activeSceneId?: string;
   controls?: boolean;
   onSelectScene?: (sceneId: string) => void;
+  tourId?: string;
 }
 
 export default function TourViewer({
   scene, onHotspotClick, onSceneChange,
-  scenes, activeSceneId, controls = true, onSelectScene,
+  scenes, activeSceneId, controls = true, onSelectScene, tourId,
 }: TourViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const localUpdateRef = useRef(false);
@@ -75,10 +76,10 @@ export default function TourViewer({
       const v = engine.getCurrentScene()?.view?.();
       if (!v) return;
       switch (e.key) {
-        case 'ArrowLeft': e.preventDefault(); v.yaw(v.yaw() - step); break;
-        case 'ArrowRight': e.preventDefault(); v.yaw(v.yaw() + step); break;
-        case 'ArrowUp': e.preventDefault(); v.pitch(Math.min(v.pitch() + step, Math.PI / 2 - 0.01)); break;
-        case 'ArrowDown': e.preventDefault(); v.pitch(Math.max(v.pitch() - step, -Math.PI / 2 + 0.01)); break;
+        case 'ArrowLeft': e.preventDefault(); v.setYaw(v.yaw() - step); break;
+        case 'ArrowRight': e.preventDefault(); v.setYaw(v.yaw() + step); break;
+        case 'ArrowUp': e.preventDefault(); v.setPitch(Math.min(v.pitch() + step, Math.PI / 2 - 0.01)); break;
+        case 'ArrowDown': e.preventDefault(); v.setPitch(Math.max(v.pitch() - step, -Math.PI / 2 + 0.01)); break;
         case '+': case '=': e.preventDefault(); engine.zoomBy(0.9); break;
         case '-': e.preventDefault(); engine.zoomBy(1.1); break;
         case 'f': case 'F': e.preventDefault(); toggleFullscreen(); break;
@@ -103,8 +104,8 @@ export default function TourViewer({
     if (localUpdateRef.current) return;
     const v = engine.getCurrentScene()?.view?.();
     if (!v) return;
-    v.yaw(sharedYaw);
-    v.pitch(sharedPitch);
+    v.setYaw(sharedYaw);
+    v.setPitch(sharedPitch);
   }, [sharedYaw, sharedPitch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (engine.error) {
@@ -155,9 +156,11 @@ export default function TourViewer({
               getViewer={engine.getViewer}
             />
           </div>
-          <div className="absolute bottom-4 right-28 z-10">
-            <ShareControl tourId={scene.id} tourName={scene.name} />
-          </div>
+          {tourId && (
+            <div className="absolute bottom-4 right-28 z-10">
+              <ShareControl tourId={tourId} tourName={scene.name} />
+            </div>
+          )}
         </>
       )}
 

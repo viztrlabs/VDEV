@@ -29,7 +29,7 @@ jest.mock('marzipano', () => {
   const makeScene = () => {
     const container = makeContainer();
     return {
-      switchTo: jest.fn(),
+      switchTo: jest.fn((_opts?: unknown, done?: () => void) => { done?.(); }),
       lookTo: jest.fn(),
       stopMovement: jest.fn(),
       hotspotContainer: jest.fn(() => container),
@@ -78,7 +78,6 @@ jest.mock('marzipano', () => {
     EquirectGeometry: class {},
     ImageUrlSource: {
       fromString: jest.fn(() => ({})),
-      fromTileUrl: jest.fn(() => ({})),
     },
   };
 });
@@ -135,7 +134,7 @@ describe('TourViewer Marzipano baseline', () => {
     render(<TourViewer scene={scene} />);
     await waitForReady();
     const ms = mockedMarzipano.__viewers[0].createScene.mock.results[0].value;
-    expect(ms.__container.createHotspot).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(ms.__container.createHotspot).toHaveBeenCalledTimes(1));
     const [el, coords] = ms.__container.createHotspot.mock.calls[0];
     expect((el as HTMLElement).getAttribute('role')).toBe('button');
     expect((el as HTMLElement).getAttribute('aria-label')).toContain('Door');

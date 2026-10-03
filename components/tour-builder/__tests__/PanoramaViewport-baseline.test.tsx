@@ -10,6 +10,8 @@ import { useTourStore } from '@/lib/tourClientStore';
 jest.mock('marzipano', () => {
   const makeScene = () => ({
     switchTo: jest.fn(),
+    lookTo: jest.fn(),
+    stopMovement: jest.fn(),
     view: jest.fn(() => ({
       yaw: jest.fn((v?: number) => (v == null ? 0 : v)),
       pitch: jest.fn((v?: number) => (v == null ? 0 : v)),
@@ -18,22 +20,45 @@ jest.mock('marzipano', () => {
       setPitch: jest.fn(),
       setFov: jest.fn(),
       addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      screenToCoordinates: jest.fn(() => ({ yaw: 0.5, pitch: 0.1 })),
+      coordinatesToScreen: jest.fn(() => ({ x: 10, y: 10 })),
+    })),
+    hotspotContainer: jest.fn(() => ({
+      createHotspot: jest.fn(() => ({ destroy: jest.fn() })),
+      destroyHotspot: jest.fn(),
+      listHotspots: jest.fn(() => []),
+      domElement: jest.fn(() => document.createElement('div')),
     })),
   });
   const viewers: any[] = [];
   class Viewer {
+    __currentScene: any = null;
     constructor(el: HTMLElement) {
       el.appendChild(document.createElement('canvas'));
       viewers.push(this);
     }
-    createScene = jest.fn(() => makeScene());
+    createScene = jest.fn(() => {
+      const s = makeScene();
+      this.__currentScene = s;
+      return s;
+    });
+    scene = jest.fn(() => this.__currentScene);
     destroy = jest.fn();
+    stopMovement = jest.fn();
+    addEventListener = jest.fn();
+    removeEventListener = jest.fn();
+    setIdleMovement = jest.fn();
+    startMovement = jest.fn();
+    lookTo = jest.fn();
+    controls = jest.fn(() => ({ registerMethod: jest.fn(), enableMethod: jest.fn(), disableMethod: jest.fn() }));
   }
   return {
     __viewers: viewers,
     Viewer,
     RectilinearView: class {
-      static limit = { traditional: jest.fn(() => ({})) };
+      static limit: { traditional: (w: number, f?: number, g?: number) => unknown } =
+        { traditional: jest.fn(() => ({})) as any };
     },
     EquirectGeometry: class {},
     ImageUrlSource: { fromString: jest.fn(() => ({})) },

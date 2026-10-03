@@ -56,6 +56,7 @@ export function useTourEngine(
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<EngineView>({ yaw: 0, pitch: 0, fov: Math.PI / 2 });
   const [ready, setReady] = useState(false);
+  const [activatedSceneId, setActivatedSceneId] = useState<string | null>(null);
   const [autorotateState, setAutorotateState] = useState({ enabled: false, speed: 1 });
   const [autorotateTick, setAutorotateTick] = useState(0);
   const [reloadKey, setReloadKey] = useState(0);
@@ -64,6 +65,7 @@ export function useTourEngine(
   const MarzipanoRef = useRef<MarzipanoAny>(null);
   const scenesCacheRef = useRef<Map<string, { ms: MarzipanoAny; signature: string }>>(new Map());
   const hotspotElsRef = useRef<Map<string, { hotspot: MarzipanoAny; el: HTMLElement }[]>>(new Map());
+  const hotspotSyncRef = useRef<{ sceneId: string | null; sig: string }>({ sceneId: null, sig: '' });
   const viewChangeRef = useRef<(() => void) | null>(null);
   const canvasCleanupRef = useRef<(() => void) | null>(null);
   const optsRef = useRef(opts);
@@ -96,13 +98,15 @@ export function useTourEngine(
     if (cached) {
       try { viewer.destroyScene(cached.ms); } catch { /* already removed */ }
       scenesCacheRef.current.delete(scene.id);
+      // Recreated scene gets a fresh hotspot container — force a re-sync.
+      hotspotSyncRef.current = { sceneId: null, sig: '' };
     }
 
     let source: MarzipanoAny;
     if (scene.tileUrl) {
-      source = Marzipano.ImageUrlSource.fromTileUrl(
+      source = Marzipano.ImageUrlSource.fromString(
         `${scene.tileUrl}/{z}/{y}/{x}.jpg`,
-        { crossOrigin: 'anonymous', tileSize: 512, maxZoom: 5 }
+        { crossOrigin: 'anonymous' }
       );
     } else {
       source = Marzipano.ImageUrlSource.fromString(scene.url, { crossOrigin: 'anonymous' });
@@ -208,10 +212,12 @@ export function useTourEngine(
             for (const { el } of els) destroyHotspotElement(el);
           }
           hotspotElsRef.current.clear();
+          hotspotSyncRef.current = { sceneId: null, sig: '' };
           viewer.destroy?.();
         } catch { /* swallow destroy errors */ }
         viewerRef.current = null;
         setReady(false);
+        setActivatedSceneId(null);
       }
     };
   }, [reloadKey, containerRef, publishView]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -230,6 +236,7 @@ export function useTourEngine(
         if (cancelled) return;
         ms.switchTo({ transitionDuration }, () => {
           if (cancelled) return;
+          setActivatedSceneId(scene.id);
           publishView();
           onSceneChange?.(scene.id);
           setAutorotateState({
@@ -247,15 +254,25 @@ export function useTourEngine(
   }, [ready, opts.activeSceneId, ensureScene, publishView]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // --- Hotspot sync for the active scene (re-syncs on list change; never
-  // recreates the scene) ---
+  // recreates the scene). Gated on activation: the cross-fade switch is async,
+  // and viewer.scene() is null/stale until its done callback fires. ---
   useEffect(() => {
     if (!ready) return;
     const { scenes, activeSceneId, onHotspotClick } = optsRef.current;
+    if (activatedSceneId !== activeSceneId) return;
     const scene = scenes.find((s) => s.id === activeSceneId);
     const ms = viewerRef.current?.scene?.();
     if (!scene || !ms) return;
     const container = ms.hotspotContainer?.();
     if (!container) return;
+
+    // Idempotency: callers pass fresh array identities each render; skip when
+    // the hotspot/marker set for this scene is already in sync.
+    const sig =
+      JSON.stringify((scene.hotspots ?? []).map((h) => [h.id, h.yaw, h.pitch, h.type])) +
+      JSON.stringify((scene.alignmentMarkers ?? []).map((m) => [m.id, m.yaw, m.pitch]));
+    if (hotspotSyncRef.current.sceneId === scene.id && hotspotSyncRef.current.sig === sig) return;
+    hotspotSyncRef.current = { sceneId: scene.id, sig };
 
     for (const { hotspot, el } of hotspotElsRef.current.get(scene.id) || []) {
       try { container.destroyHotspot?.(hotspot); } catch { /* ignore */ }
@@ -273,7 +290,7 @@ export function useTourEngine(
       created.push({ hotspot, el });
     }
     hotspotElsRef.current.set(scene.id, created);
-  }, [ready, opts.activeSceneId, opts.scenes]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [ready, activatedSceneId, opts.activeSceneId, opts.scenes]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // --- API ---
   const getViewer = useCallback(() => viewerRef.current, []);
@@ -290,9 +307,13 @@ export function useTourEngine(
 
   const zoomBy = useCallback((factor: number) => {
     const v = viewerRef.current?.scene?.()?.view?.();
-    if (!v) return;
-    const [min, max] = v.fovRange();
-    v.fov(Math.min(max, Math.max(min, v.fov() * factor)));
+    if (!v || typeof v.fov !== 'function' || typeof v.setFov !== 'function') return;
+    const o = optsRef.current;
+    const sc = o.scenes.find((s) => s.id === o.activeSceneId);
+    const vc = sc?.viewConstraints;
+    const minF = ((vc?.zoomMin ?? 60) * Math.PI) / 180;
+    const maxF = ((vc?.zoomMax ?? 120) * Math.PI) / 180;
+    v.setFov(Math.min(maxF, Math.max(minF, v.fov() * factor)));
   }, []);
 
   const screenToCoordinates = useCallback((x: number, y: number) => {

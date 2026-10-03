@@ -15,9 +15,8 @@ function probe(container: HTMLElement) {
     controls: { mouseViewMode: 'drag', scrollZoom: true, scrollZoomSpeed: 0.3 },
   });
   const source = ImageUrlSource.fromString('https://x/p.jpg', { crossOrigin: 'anonymous' });
-  const tiles = ImageUrlSource.fromTileUrl('https://x/{z}/{y}/{x}.jpg', {
-    crossOrigin: 'anonymous', tileSize: 512, maxZoom: 5,
-  });
+  // fromTileUrl does not exist in 0.10.2 — tile templates go through fromString.
+  const tiles = ImageUrlSource.fromString('https://x/{z}/{y}/{x}.jpg', { crossOrigin: 'anonymous' });
   const geometry = new EquirectGeometry([{ width: 4096 }]);
   const limiter = RectilinearView.limit.traditional(
     1024, (120 * Math.PI) / 180, (120 * Math.PI) / 180
@@ -37,10 +36,11 @@ function probe(container: HTMLElement) {
 
   const v = scene.view();
   v.yaw();
-  v.yaw(0.5);
   v.pitch();
   v.fov();
-  v.fovRange();
+  v.setFov(Math.PI / 3);
+  v.setYaw(0.1);
+  v.setPitch(0.1);
   v.screenToCoordinates({ x: 1, y: 1 });
   v.coordinatesToScreen({ yaw: 0, pitch: 0 });
 

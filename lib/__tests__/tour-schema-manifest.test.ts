@@ -58,6 +58,14 @@ describe('buildTourManifest losslessness', () => {
     expect(m.links).toContainEqual({ from: 'r1', to: 'r2' });
   });
 
+  it('emits a loadable url even when the room only has panoramaUrl (public API shape)', () => {
+    const m = buildTourManifest([
+      { id: 'p1', name: 'Pano Room', panoramaUrl: '/room-a1.jpg', thumbnailUrl: '', initialYaw: 0, initialPitch: 0 },
+    ] as any);
+    expect(m.scenes[0].url).toBe('/room-a1.jpg');
+    expect(m.scenes[0].panoramaUrl).toBe('/room-a1.jpg');
+  });
+
   it('manifestSceneToTourScene preserves the ORIGINAL hotspot type (video stays video)', () => {
     const m = buildTourManifest([room] as any);
     const ts = manifestSceneToTourScene(room as any, m);

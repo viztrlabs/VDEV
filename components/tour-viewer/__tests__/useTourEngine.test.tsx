@@ -20,7 +20,6 @@ jest.mock('marzipano', () => {
       yaw: jest.fn((v?: number) => (v == null ? 0 : v)),
       pitch: jest.fn((v?: number) => (v == null ? 0 : v)),
       fov: jest.fn((v?: number) => (v == null ? Math.PI / 2 : v)),
-      fovRange: jest.fn(() => [Math.PI / 6, Math.PI]),
       setYaw: jest.fn(),
       setPitch: jest.fn(),
       setFov: jest.fn(),
@@ -29,7 +28,7 @@ jest.mock('marzipano', () => {
       screenToCoordinates: jest.fn(() => ({ yaw: 0.5, pitch: 0.1 })),
     };
     return {
-      switchTo: jest.fn(),
+      switchTo: jest.fn((_opts?: unknown, done?: () => void) => { done?.(); }),
       lookTo: jest.fn(),
       startMovement: jest.fn(),
       stopMovement: jest.fn(),
@@ -74,7 +73,6 @@ jest.mock('marzipano', () => {
     EquirectGeometry: class {},
     ImageUrlSource: {
       fromString: jest.fn(() => ({})),
-      fromTileUrl: jest.fn(() => ({})),
     },
     autorotate: jest.fn(() => jest.fn()),
   };
@@ -161,14 +159,14 @@ describe('useTourEngine lifecycle', () => {
     });
   });
 
-  it('zoomBy clamps fov to the view fov range', async () => {
+  it('zoomBy clamps fov to the scene view-constraint range via setFov', async () => {
     render(<Harness scenes={[makeScene('a')]} activeSceneId="a" />);
     await waitFor(() => expect(lastScene().switchTo).toHaveBeenCalled());
     const v = mockedMarzipano.__viewers[0].__currentScene.__view;
     act(() => engine!.zoomBy(10));
-    expect(v.fov).toHaveBeenCalledWith(Math.PI);
+    expect(v.setFov).toHaveBeenCalledWith((120 * Math.PI) / 180);
     act(() => engine!.zoomBy(0.01));
-    expect(v.fov).toHaveBeenCalledWith(Math.PI / 6);
+    expect(v.setFov).toHaveBeenCalledWith((60 * Math.PI) / 180);
   });
 
   it('exposes screenToCoordinates from the current scene view', async () => {

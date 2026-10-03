@@ -1,14 +1,25 @@
 'use client';
 
 import React, { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { X, Send, Bot } from 'lucide-react';
 
 export function MessagingAgent() {
+  const pathname = usePathname();
   const { isAgentClosed, setAgentClosed } = useAppStore();
   const [message, setMessage] = useState('');
 
-  if (isAgentClosed) {
+  const isHidden =
+    isAgentClosed ||
+    pathname.startsWith('/explore') ||
+    pathname.startsWith('/experience') ||
+    pathname.startsWith('/editor') ||
+    pathname.startsWith('/virtual-tour') ||
+    pathname.startsWith('/xr-world/virtual-tour/tour-builder') ||
+    pathname.startsWith('/xr-world/virtual-tour/editor');
+
+  if (isHidden) {
     return null;
   }
 

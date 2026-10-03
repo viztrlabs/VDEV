@@ -74,6 +74,15 @@ describe('buildTourManifest', () => {
     expect(hs.pitch).toBeCloseTo(0, 5);
   });
 
+  it('places positionless legacy hotspots at the scene initial view (deg->rad)', () => {
+    const m = buildTourManifest([
+      { ...baseRoom, defaultHotspots: [{ id: 'h', type: 'point', title: 'Marker' }] },
+    ] as any);
+    const hs = m.scenes[0].hotspots[0];
+    expect(hs.yaw).toBeCloseTo(Math.PI, 5); // initialYaw 180 deg -> in front of camera
+    expect(hs.pitch).toBeCloseTo((-10 * Math.PI) / 180, 5);
+  });
+
   it('excludes rooms without a panorama and keeps valid ones', () => {
     const m = buildTourManifest([
       { ...baseRoom, id: 'no-pano', name: 'Empty', panoramaUrl: undefined, defaultHotspots: [] },
