@@ -20,6 +20,8 @@ import type { TourHotspot, HotspotType } from '@/lib/tourClientStore';
 import { useContextMenu } from './ContextMenu';
 import { useTourEngine } from '@/components/tour-viewer/useTourEngine';
 import { setViewportView } from '@/lib/tour-builder/viewportView';
+import { HotspotRadialMenu } from './HotspotRadialMenu';
+import { HotspotSettingsPopover } from './HotspotSettingsPopover';
 
 interface PanoramaViewportProps {
   roomId: string;
@@ -27,6 +29,7 @@ interface PanoramaViewportProps {
   selectedHotspotId: string;
   onSelectHotspot: (id: string) => void;
   onViewportClick?: (yaw: number, pitch: number) => void;
+  onNavigateToRoom?: (roomId: string) => void;
 }
 
 const HOTSPOT_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -52,13 +55,18 @@ export function PanoramaViewport({
   selectedHotspotId,
   onSelectHotspot,
   onViewportClick,
+  onNavigateToRoom,
 }: PanoramaViewportProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const scenes = useTourStore((s) => s.scenes);
   const updateScene = useTourStore((s) => s.updateScene);
+  const updateHotspot = useTourStore((s) => s.updateHotspot);
+  const deleteHotspot = useTourStore((s) => s.deleteHotspot);
   const room = scenes.find((r) => r.id === roomId);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [radialOpen, setRadialOpen] = useState(false);
+  const [popoverOpen, setPopoverOpen] = useState(false);
   const [projected, setProjected] = useState<Record<string, { x: number; y: number } | null>>({});
   const { showContextMenu } = useContextMenu();
 
@@ -67,6 +75,11 @@ export function PanoramaViewport({
     activeSceneId: roomId,
     transitionDuration: 300,
   });
+
+  useEffect(() => {
+    setRadialOpen(false);
+    setPopoverOpen(false);
+  }, [roomId]);
 
   // Current view readout (rad) derives from the engine's published view.
   const currentYaw = engine.view.yaw;
@@ -259,58 +272,106 @@ export function PanoramaViewport({
         const isSelected = selectedHotspotId === hs.id;
 
         return (
-          <div
-            key={hs.id}
-            className={`absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all ${
-              isSelected ? 'scale-125 z-10' : 'hover:scale-110'
-            }`}
-            style={{ left: p.x, top: p.y }}
-            onClick={(e) => {
-              e.stopPropagation();
-              onSelectHotspot(hs.id);
-            }}
-            onContextMenu={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              showContextMenu(e.clientX, e.clientY, [
-                { label: 'Edit', icon: Eye, onClick: () => onSelectHotspot(hs.id) },
-                { label: 'divider', divider: true },
-                {
-                  label: 'Delete',
-                  icon: () => null,
-                  danger: true,
-                  onClick: () => {
-                    if (!room) return;
-                    updateScene(room.id, {
-                      hotspots: room.hotspots.filter((h) => h.id !== hs.id),
-                    });
-                    onSelectHotspot('');
-                  },
-                },
-              ]);
-            }}
-          >
+          <React.Fragment key={hs.id}>
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center shadow-lg ${
-                isSelected
-                  ? 'bg-[#3ECF8E] text-black'
-                  : hs.type === 'link' || hs.type === 'navigation'
-                  ? 'bg-amber-500 text-white'
-                  : 'bg-white/90 text-[#09090B]'
+              className={`absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all ${
+                isSelected ? 'scale-125 z-10' : 'hover:scale-110'
               }`}
-              style={{ transform: `rotate(${hs.rotation ?? 0}deg)` }}
+              style={{ left: p.x, top: p.y }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelectHotspot(hs.id);
+                setPopoverOpen(false);
+                setRadialOpen(true);
+              }}
+              onDoubleClick={(e) => {
+                e.stopPropagation();
+                onSelectHotspot(hs.id);
+                setRadialOpen(false);
+                setPopoverOpen(true);
+              }}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                showContextMenu(e.clientX, e.clientY, [
+                  { label: 'Edit', icon: Eye, onClick: () => onSelectHotspot(hs.id) },
+                  { label: 'divider', divider: true },
+                  {
+                    label: 'Delete',
+                    icon: () => null,
+                    danger: true,
+                    onClick: () => {
+                      if (!room) return;
+                      updateScene(room.id, {
+                        hotspots: room.hotspots.filter((h) => h.id !== hs.id),
+                      });
+                      onSelectHotspot('');
+                    },
+                  },
+                ]);
+              }}
             >
-              <Icon className="w-4 h-4" />
-            </div>
-            <span className="absolute left-full top-1/2 -translate-y-1/2 ml-1 px-1.5 py-0.5 rounded bg-[#18181B] border border-[#27272A] text-[9px] font-mono text-white whitespace-nowrap">
-              {String(idx + 1).padStart(2, '0')}
-            </span>
-            {isSelected && (
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 px-2 py-0.5 rounded bg-[#09090B] text-[9px] font-mono text-white whitespace-nowrap">
-                {hs.title || hs.type}
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center shadow-lg ${
+                  isSelected
+                    ? 'bg-[#3ECF8E] text-black'
+                    : hs.type === 'link' || hs.type === 'navigation'
+                    ? 'bg-amber-500 text-white'
+                    : 'bg-white/90 text-[#09090B]'
+                }`}
+                style={{ transform: `rotate(${hs.rotation ?? 0}deg)` }}
+              >
+                <Icon className="w-4 h-4" />
               </div>
+              <span className="absolute left-full top-1/2 -translate-y-1/2 ml-1 px-1.5 py-0.5 rounded bg-[#18181B] border border-[#27272A] text-[9px] font-mono text-white whitespace-nowrap">
+                {String(idx + 1).padStart(2, '0')}
+              </span>
+              {isSelected && (
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 px-2 py-0.5 rounded bg-[#09090B] text-[9px] font-mono text-white whitespace-nowrap">
+                  {hs.title || hs.type}
+                </div>
+              )}
+            </div>
+            {isSelected && radialOpen && (
+              <HotspotRadialMenu
+                x={p.x}
+                y={p.y}
+                hotspot={hs}
+                onEnter={() => {
+                  if (!hs.targetSceneId) return;
+                  setRadialOpen(false);
+                  onSelectHotspot('');
+                  onNavigateToRoom?.(hs.targetSceneId);
+                }}
+                onRotate={() => setRadialOpen(false)}
+                onDelete={() => {
+                  setRadialOpen(false);
+                  deleteHotspot(roomId, hs.id);
+                  onSelectHotspot('');
+                }}
+                onEdit={() => {
+                  setRadialOpen(false);
+                  setPopoverOpen(true);
+                }}
+                onClose={() => setRadialOpen(false)}
+              />
             )}
-          </div>
+            {isSelected && popoverOpen && (
+              <HotspotSettingsPopover
+                x={p.x}
+                y={p.y}
+                badge={String(idx + 1).padStart(2, '0')}
+                roomId={roomId}
+                hotspot={hs}
+                viewport={{
+                  width: containerRef.current?.getBoundingClientRect().width ?? 0,
+                  height: containerRef.current?.getBoundingClientRect().height ?? 0,
+                }}
+                onUpdate={(patch) => updateHotspot(roomId, hs.id, patch)}
+                onClose={() => setPopoverOpen(false)}
+              />
+            )}
+          </React.Fragment>
         );
       })}
 

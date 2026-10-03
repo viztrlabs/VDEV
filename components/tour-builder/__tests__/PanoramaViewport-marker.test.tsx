@@ -1,5 +1,5 @@
-import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import React, { useState, useEffect } from 'react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { PanoramaViewport } from '@/components/tour-builder/PanoramaViewport';
 import { useTourStore } from '@/lib/tourClientStore';
 
@@ -74,6 +74,35 @@ const room = {
   ],
 };
 
+function ViewportHarness({
+  roomId = 'r1',
+  selectedHotspotId = '',
+  onSelectHotspot,
+  onNavigateToRoom,
+}: {
+  roomId?: string;
+  selectedHotspotId?: string;
+  onSelectHotspot?: (id: string) => void;
+  onNavigateToRoom?: (roomId: string) => void;
+}) {
+  const [sel, setSel] = useState(selectedHotspotId);
+  useEffect(() => {
+    setSel(selectedHotspotId);
+  }, [selectedHotspotId]);
+  return (
+    <PanoramaViewport
+      roomId={roomId}
+      activeTool="select"
+      selectedHotspotId={sel}
+      onSelectHotspot={(id) => {
+        onSelectHotspot?.(id);
+        setSel(id);
+      }}
+      onNavigateToRoom={onNavigateToRoom}
+    />
+  );
+}
+
 describe('PanoramaViewport marker badge + rotation', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -102,6 +131,105 @@ describe('PanoramaViewport marker badge + rotation', () => {
     const badge = await screen.findByText('02');
     const circle = badge.previousElementSibling as HTMLElement;
     expect(circle.style.transform).toBe('rotate(0deg)');
+  });
+});
+
+describe('PanoramaViewport radial + popover integration', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockedMarzipano.__viewers.length = 0;
+    useTourStore.setState({ scenes: [JSON.parse(JSON.stringify(room))] } as any);
+  });
+
+  const ready = async () => {
+    await waitFor(() => expect(mockedMarzipano.__viewers.length).toBeGreaterThan(0));
+  };
+
+  it('opens the radial menu when a marker is clicked', async () => {
+    const onSelect = jest.fn();
+    render(<ViewportHarness onSelectHotspot={onSelect} />);
+    await ready();
+    fireEvent.click(await screen.findByText('01'));
+    expect(onSelect).toHaveBeenCalledWith('h1');
+    expect(screen.getByLabelText('Edit hotspot')).toBeInTheDocument();
+  });
+
+  it('Enter is disabled for h1 (no target) and navigates for h2', async () => {
+    const onNav = jest.fn();
+    render(
+      <ViewportHarness onSelectHotspot={jest.fn()} onNavigateToRoom={onNav} />
+    );
+    await ready();
+    fireEvent.click(await screen.findByText('01'));
+    expect(screen.getByLabelText('Enter target room')).toBeDisabled();
+    fireEvent.click(screen.getByTestId('hotspot-radial-backdrop'));
+    fireEvent.click(screen.getByText('02'));
+    const enter = screen.getByLabelText('Enter target room');
+    expect(enter).not.toBeDisabled();
+    fireEvent.click(enter);
+    expect(onNav).toHaveBeenCalledWith('r2');
+  });
+
+  it('Edit opens the settings popover with the form', async () => {
+    render(<ViewportHarness onSelectHotspot={jest.fn()} />);
+    await ready();
+    fireEvent.click(await screen.findByText('01'));
+    fireEvent.click(screen.getByLabelText('Edit hotspot'));
+    expect(await screen.findByText('Reset Position')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Edit hotspot')).not.toBeInTheDocument();
+  });
+
+  it('Delete removes the hotspot and clears selection', async () => {
+    const onSelect = jest.fn();
+    render(<ViewportHarness onSelectHotspot={onSelect} />);
+    await ready();
+    fireEvent.click(await screen.findByText('01'));
+    fireEvent.click(screen.getByLabelText('Delete hotspot'));
+    expect(useTourStore.getState().scenes[0].hotspots).toHaveLength(1);
+    expect(onSelect).toHaveBeenLastCalledWith('');
+  });
+
+  it('backdrop click closes the radial menu', async () => {
+    render(<ViewportHarness onSelectHotspot={jest.fn()} />);
+    await ready();
+    fireEvent.click(await screen.findByText('01'));
+    expect(screen.getByLabelText('Edit hotspot')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('hotspot-radial-backdrop'));
+    expect(screen.queryByLabelText('Edit hotspot')).not.toBeInTheDocument();
+  });
+
+  it('closes overlays when the room changes', async () => {
+    const view = render(<ViewportHarness onSelectHotspot={jest.fn()} />);
+    await ready();
+    fireEvent.click(await screen.findByText('01'));
+    expect(screen.getByLabelText('Edit hotspot')).toBeInTheDocument();
+    useTourStore.setState({
+      scenes: [
+        JSON.parse(JSON.stringify(room)),
+        { ...JSON.parse(JSON.stringify(room)), id: 'r2', name: 'Other', hotspots: [] },
+      ],
+    } as any);
+    view.rerender(<ViewportHarness roomId="r2" onSelectHotspot={jest.fn()} />);
+    expect(screen.queryByLabelText('Edit hotspot')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('hotspot-popover-backdrop')).not.toBeInTheDocument();
+  });
+
+  it('double-clicking a marker opens the popover directly', async () => {
+    render(<ViewportHarness onSelectHotspot={jest.fn()} />);
+    await ready();
+    fireEvent.doubleClick(await screen.findByText('01'));
+    expect(await screen.findByText('Reset Position')).toBeInTheDocument();
+  });
+
+  it('closes the popover when selection is cleared (keyboard-D delete path)', async () => {
+    const view = render(<ViewportHarness selectedHotspotId="h1" onSelectHotspot={jest.fn()} />);
+    await ready();
+    fireEvent.click(await screen.findByText('01'));
+    fireEvent.click(screen.getByLabelText('Edit hotspot'));
+    expect(await screen.findByText('Reset Position')).toBeInTheDocument();
+    view.rerender(<ViewportHarness selectedHotspotId="" onSelectHotspot={jest.fn()} />);
+    expect(screen.queryByText('Reset Position')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('hotspot-popover-backdrop')).not.toBeInTheDocument();
   });
 });
 

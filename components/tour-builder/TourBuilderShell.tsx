@@ -269,6 +269,7 @@ export function TourBuilderShell({ projectId, experienceId }: TourBuilderShellPr
                     selectedHotspotId={selectedHotspotId}
                     onSelectHotspot={setSelectedHotspotId}
                     onViewportClick={handleViewportClick}
+                    onNavigateToRoom={setSelectedRoomId}
                   />
                   {connectorOpen && selectedRoomId && (
                     <ConnectorSystem
