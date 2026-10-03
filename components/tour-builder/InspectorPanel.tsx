@@ -62,7 +62,7 @@ function ImageInput({ onUpdate }: { onUpdate: (patch: Partial<TourHotspot>) => v
           setBusy(true);
           setError(null);
           uploadAsset(f)
-            .then(({ url, tileUrl }) => onUpdate({ imageUrl: url, tileUrl: tileUrl || undefined }))
+            .then(({ url }) => onUpdate({ imageUrl: url }))
             .catch((err) => setError(err.message))
             .finally(() => setBusy(false));
         }}
