@@ -59,6 +59,15 @@ describe('hotspotRenderers', () => {
     expect(el.querySelector('div')!.className).toContain('bg-amber-500');
   });
 
+  it('applies rotation to the dot only when non-zero', () => {
+    const base = hs();
+    const rotated = renderViewerHotspot({ ...base, rotation: 45 });
+    const dot = rotated.firstElementChild as HTMLElement;
+    expect(dot.style.transform).toBe('rotate(45deg)');
+    const plain = renderViewerHotspot(base);
+    expect((plain.firstElementChild as HTMLElement).style.transform).toBe('');
+  });
+
   it('destroyHotspotElement removes listeners and the element', () => {
     const onActivate = jest.fn();
     const parent = document.createElement('div');

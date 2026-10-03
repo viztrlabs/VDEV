@@ -31,6 +31,7 @@ function applyAppearance(dot: HTMLElement, hs: TourHotspot) {
   if (hs.animation && ANIMATION_CLASS[hs.animation]) {
     dot.classList.add(ANIMATION_CLASS[hs.animation]);
   }
+  if (hs.rotation) dot.style.transform = `rotate(${hs.rotation}deg)`;
 }
 
 export function renderViewerHotspot(hs: TourHotspot, onActivate?: () => void): HTMLElement {
