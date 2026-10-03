@@ -16,6 +16,8 @@ describe('kindForType', () => {
   it('maps navigation and floor to nav', () => {
     expect(kindForType('navigation')).toBe('nav');
     expect(kindForType('floor')).toBe('nav');
+    expect(kindForType('room_link')).toBe('nav');
+    expect(kindForType('teleport')).toBe('nav');
   });
 
   it('maps info to info and metadata to metadata', () => {

@@ -39,16 +39,17 @@ export function normalizeLegacyHotspot(h: any): TourHotspot {
       type = h.externalUrl ? 'link' : 'navigation';
       break;
   }
-  return { ...h, type, title: h.title || 'Hotspot', description: h.description || '' } as TourHotspot;
+  return { ...h, type, legacyType: t, title: h.title || 'Hotspot', description: h.description || '' } as TourHotspot;
 }
 
 export function toManifestHotspot(hs: TourHotspot): Record<string, unknown> {
   const { x, y } = yawPitchToXYPercents(hs.yaw ?? 0, hs.pitch ?? 0);
+  const rawType = (hs as any).legacyType ?? hs.type;
   return {
     ...hs,
     xPercent: Math.round(x * 10) / 10,
     yPercent: Math.round(y * 10) / 10,
-    kind: kindForType(hs.type),
-    targetRoomId: hs.targetSceneId,
+    kind: kindForType(rawType),
+    targetRoomId: hs.targetSceneId ?? (hs as any).targetRoomId,
   };
 }

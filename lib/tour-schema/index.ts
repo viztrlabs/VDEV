@@ -8,12 +8,16 @@ export function kindForType(type: string): ManifestHotspotKind {
   switch (type) {
     case 'navigation':
     case 'floor':
+    case 'room_link':
+    case 'teleport':
       return 'nav';
     case 'metadata':
       return 'metadata';
     case 'info':
+    case 'info_popup':
       return 'info';
     case 'link':
+    case 'external':
       return 'link';
     case 'image':
     case 'gallery':
