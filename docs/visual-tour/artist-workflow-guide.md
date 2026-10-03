@@ -79,10 +79,11 @@ If a feature is marked 🚧, do not rely on it for a client delivery yet.
 Links only appear on the public tour when the hotspot actually **targets a real
 room** (`targetRoomId`). Any of these approaches creates a valid link:
 
-**Process A — Portal tool + pick target**
-1. Choose the **Portal** tool from the bottom bar.
-2. Click a target room name in the picker at the top of the workspace.
-3. Click on the panorama where the link button should live.
+**Process A — Connect Rooms tool + pick target**
+1. Choose the **Connect Rooms** tool (press **C**) from the toolbar.
+2. Click on the panorama where the door should live.
+3. In the dialog, pick the target room — tick **Create reverse link** if the
+   return door should be created too.
 4. Repeat for every outbound door.
 
 **Process B — Add hotspot, then set target in the inspector**
@@ -106,12 +107,13 @@ This is the standard "hub" pattern: the visitor stands in scene **00** and sees
 one door/arrow per neighbouring scene.
 
 1. Click scene **00** in the left panel (its panorama opens in the middle).
-2. Press **P** (or click the **Link** button in the bottom toolbar — it turns violet).
-3. A **Target:** dropdown appears above the toolbar. Choose **01**.
-4. Click on the panorama exactly where the arrow to 01 should sit — usually the
-   real doorway / corridor that leads there. The hotspot `→ 01` appears.
-5. **Stay in link mode.** Change the Target dropdown to **02**, click the right
-   spot on the image. Repeat for **03** and **04**.
+2. Press **L** (or click **Link Hotspot** in the toolbar).
+3. Click on the panorama exactly where the arrow to 01 should sit — usually the
+   real doorway / corridor that leads there. The hotspot appears.
+4. In the right-hand inspector, pick the target room from the **→ target**
+   dropdown — choose **01**.
+5. **Stay in link mode.** Click the right spot for the next hotspot, set its
+   target to **02**. Repeat for **03** and **04**.
 6. You now have 4 separate link hotspots in scene 00 — one per destination.
    There is no limit: one scene can link to every other scene in the tour.
 7. Drag any hotspot to fine-tune its position; rename it (e.g. "Kitchen") and
@@ -136,7 +138,7 @@ when they arrive through any door (and when the tour opens, for the featured roo
 
 That is all "set the view according to the images" means: link from 00 → each
 target (§4.1), and give each target its own landing angle (this section).
-Verify with **R** (preview): click your links and check where you land.
+Verify with **P** (preview): click your links and check where you land.
 
 ---
 
@@ -146,10 +148,19 @@ Verify with **R** (preview): click your links and check where you land.
 | --- | --- |
 | Info / metadata | Popup: title, description, photo grid (1 or 2 columns), optional external link |
 | Image | Popup with the image |
-| Video / audio | Inline player (with autoplay/mute/loop options) |
+| Gallery | Popup with the photo set |
+| Video / audio | Popup with title, description and photos (inline player is on the roadmap) |
 | Room link / navigation | Teleports to the target scene, honoring its default start view |
 | External link | Opens the URL (tap opens a new tab by default) |
-| Model3D / experience | Inline 3D viewer / embedded experience |
+| Floor | Teleports to the target floor/scene like a room link |
+| Model3D | Marker in the scene; click opens the info popup (inline 3D is on the roadmap) |
+| Splat | Marker in the scene; click opens the info popup |
+| Experience | Marker in the scene; click opens the info popup |
+| Custom | Marker with the icon you picked; click opens the info popup |
+
+Every type gets its own **marker colour** in the visitor view (e.g. navigation
+green, info sky-blue, link amber, video rose), so you can spot-check a scene at
+a glance.
 
 To give an info hotspot several photos:
 1. Select the hotspot, expand **Photos (n)** in the inspector.
@@ -174,14 +185,18 @@ To give an info hotspot several photos:
 
 ## 7. Preview & test your work
 
-- Press **R** (or the **Preview** tool) inside the editor to walk the current room
-  exactly as a visitor would: start view, link teleports, and popup content.
+- Press **P** (or the **Preview** tool) inside the editor to walk the current
+  room with the exact viewer visitors get: start view, link teleports, popup
+  content, scene menu, autorotate and the share dialog all behave the same as
+  the published tour.
 - Press **Esc** to exit preview.
 - After publishing, open the public URL and verify:
   - The featured room is the entry point.
   - Each room's default view is correct.
   - All door links jump to the right room.
   - Image/video/audio popups behave.
+  - The **scene menu** (top-left) jumps between rooms, **autorotate** pauses
+    when you drag, and **Share** shows a working QR code / link.
 
 ---
 
@@ -190,17 +205,24 @@ To give an info hotspot several photos:
 | Keys | Action |
 | --- | --- |
 | `V` | Select tool |
-| `M` | Add metadata hotspot |
-| `I` | Add info hotspot |
-| `P` | Portal mode (add room-link hotspots) |
-| `G` | Open the media gallery |
+| `M` | Move tool |
+| `H` | Add hotspot |
+| `N` | Add navigation hotspot |
+| `C` | Connect Rooms tool |
+| `F` | Add info hotspot |
+| `L` | Add link hotspot |
+| `G` | Add gallery hotspot |
+| `I` | Add icon hotspot |
+| `3` | Add 3D model hotspot |
+| `R` | Rotate view tool |
 | `S` | Set the selected scene's starting view (same as right-click → Set Starting View) |
-| `R` | Preview current room |
-| `T` | Jump to tour settings tab |
-| `A` | Jump to alignment tab |
-| `Esc` | Exit preview / cancel |
+| `A` | Alignment mode |
+| `P` | Preview current room |
+| `Esc` | Exit preview / deselect / cancel |
+| `Delete`, `Backspace` | Delete selected |
 | `Ctrl+Z`, `Ctrl+Shift+Z`, `Ctrl+Y` | Undo / redo |
 | `Ctrl+S` | Save |
+| `?` | Show all shortcuts |
 | `Map` button (panorama view) | Open tour map in the editor |
 
 ---
@@ -220,6 +242,8 @@ To give an info hotspot several photos:
 
 ## 10. Coming soon (do not rely on yet)
 
+- Inline video/audio playback and 3D/splat embedding inside hotspot popups
+  (today those hotspots show title/description/photos).
 - Per-room background audio and view constraints.
 - Real view/visit counters.
 - One-click export of the whole tour as a `.zip`.
