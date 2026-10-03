@@ -48,7 +48,7 @@ export function HotspotRadialMenu({ x, y, hotspot, onEnter, onRotate, onDelete, 
           aria-label="Rotate hotspot"
           onClick={onRotate}
           className={BTN}
-          style={{ left: -38, top: -38, transform: 'translate(-50%, -50%)' }}
+          style={{ left: -31, top: -31, transform: 'translate(-50%, -50%)' }}
         >
           <RotateCw className="w-3.5 h-3.5" />
         </button>
@@ -56,7 +56,7 @@ export function HotspotRadialMenu({ x, y, hotspot, onEnter, onRotate, onDelete, 
           aria-label="Delete hotspot"
           onClick={onDelete}
           className={`${BTN} hover:text-red-500`}
-          style={{ left: -38, top: 38, transform: 'translate(-50%, -50%)' }}
+          style={{ left: -31, top: 31, transform: 'translate(-50%, -50%)' }}
         >
           <Trash2 className="w-3.5 h-3.5" />
         </button>
