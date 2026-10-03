@@ -299,7 +299,6 @@ export function TourBuilderShell({ projectId, experienceId }: TourBuilderShellPr
                   <div className="w-72 border-l border-[#27272A] flex-shrink-0">
                     <InspectorPanel
                       roomId={selectedRoomId}
-                      hotspotId={selectedHotspotId}
                     />
                   </div>
                 )}
