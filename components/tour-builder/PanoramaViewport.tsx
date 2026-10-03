@@ -252,7 +252,7 @@ export function PanoramaViewport({
         </div>
       )}
 
-      {(room?.hotspots || []).map((hs) => {
+      {(room?.hotspots || []).map((hs, idx) => {
         const p = projected[hs.id];
         if (!p) return null;
         const Icon = HOTSPOT_ICONS[hs.type] || MapPin;
@@ -298,9 +298,13 @@ export function PanoramaViewport({
                   ? 'bg-amber-500 text-white'
                   : 'bg-white/90 text-[#09090B]'
               }`}
+              style={{ transform: `rotate(${hs.rotation ?? 0}deg)` }}
             >
               <Icon className="w-4 h-4" />
             </div>
+            <span className="absolute left-full top-1/2 -translate-y-1/2 ml-1 px-1.5 py-0.5 rounded bg-[#18181B] border border-[#27272A] text-[9px] font-mono text-white whitespace-nowrap">
+              {String(idx + 1).padStart(2, '0')}
+            </span>
             {isSelected && (
               <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 px-2 py-0.5 rounded bg-[#09090B] text-[9px] font-mono text-white whitespace-nowrap">
                 {hs.title || hs.type}
