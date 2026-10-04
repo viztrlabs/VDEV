@@ -108,7 +108,9 @@ export function PanoramaViewport({
     const onUp = () => {
       const session = dragRef.current;
       if (session) {
-        updateHotspot(roomId, session.id, { rotation: previewRef.current });
+        if (previewRef.current !== session.startRotation) {
+          updateHotspot(roomId, session.id, { rotation: previewRef.current });
+        }
         dragRef.current = null;
         previewRef.current = 0;
       }
