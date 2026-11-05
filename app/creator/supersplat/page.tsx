@@ -15,7 +15,7 @@ export default function CreatorSuperSplatPage() {
           Specialized Gaussian Splat editor. Opens in a new tab.
         </p>
         <a
-          href="http://localhost:3002"
+          href="/supersplat/index.html"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-sm transition-all"

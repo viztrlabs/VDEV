@@ -18,6 +18,7 @@ import { normalizeUserRole } from './rbac';
 import type { UserRole } from './rbac';
 import { listClientDirectory } from './client-directory';
 import type { ClientDirectoryRecord } from './client-directory';
+import { mintSupabaseJwt, isSupabaseJwtConfigured } from './supabase/jwt';
 
 export function getDemoAuthUser(email?: string, password?: string) {
   if (!email || !password) return null;
@@ -134,11 +135,14 @@ function toClientLookup(c: ClientDirectoryRecord): ClientAuthLookup {
 }
 
 const isProduction = (): boolean => {
-  // On Vercel, every preview deployment exposes NODE_ENV=production even though
-  // it is not the live site. Treat preview/development environments as
-  // non-production so demo accounts remain usable for testing there.
-  if (process.env.VERCEL_ENV && process.env.VERCEL_ENV !== 'production') {
+  // Local development (`next dev`) always allows demo accounts even if VERCEL_ENV was pulled into .env.local
+  if (process.env.NODE_ENV === 'development') {
     return false;
+  }
+  // SECURITY: Demo accounts are disabled on ANY Vercel deployment (preview or production).
+  // Only allow demo accounts in true local development (no VERCEL_ENV set).
+  if (process.env.VERCEL_ENV) {
+    return true; // Treat all Vercel environments as production for demo account purposes
   }
   return process.env.NODE_ENV === 'production';
 };
@@ -205,9 +209,16 @@ export async function authenticateUser(
     // Fall through to demo and client paths on error OR thrown exception.
   }
 
-  // 2. Demo accounts (unchanged behavior).
+  // 2. Demo accounts — only in local development (disabled on Vercel).
   const demoUser = getDemoAuthUser(email, password);
-  if (demoUser) return demoUser as AuthenticatedUser;
+  if (demoUser) {
+    if (isProduction()) {
+      console.warn('[auth] SECURITY: Demo account login attempted in production-like environment — blocked');
+      return null;
+    }
+    console.warn('[auth] Demo account login — local development only');
+    return demoUser as AuthenticatedUser;
+  }
 
   // 3. Client access-code / directory lookup (unchanged behavior).
   if (!email && !accessCode) return null;
@@ -276,6 +287,17 @@ export const authOptions: NextAuthOptions = {
         token.accessCode = u.accessCode;
         token.assignedDirector = u.assignedDirector;
         token.clientFirm = u.clientFirm;
+
+        // SECURITY: Mint a Supabase JWT for user-scoped RLS enforcement.
+        // The token is stored in the NextAuth JWT and passed to API routes
+        // so they can create user-scoped Supabase clients.
+        if (isSupabaseJwtConfigured() && u.id && !u.id.startsWith('usr_')) {
+          // Only mint for real Supabase UUIDs, not demo user IDs
+          const supabaseToken = await mintSupabaseJwt(u.id, u.email);
+          if (supabaseToken) {
+            token.supabaseAccessToken = supabaseToken;
+          }
+        }
       }
       return token;
     },
@@ -288,6 +310,8 @@ export const authOptions: NextAuthOptions = {
         (session.user as any).accessCode = t.accessCode;
         (session.user as any).assignedDirector = t.assignedDirector;
         (session.user as any).clientFirm = t.clientFirm;
+        // Supabase access token for user-scoped RLS (null for demo users)
+        (session.user as any).supabaseAccessToken = t.supabaseAccessToken || null;
       }
       return session;
     },

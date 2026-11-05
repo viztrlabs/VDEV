@@ -8,26 +8,34 @@ import { ViztrLogoMark } from '@/components/ui/Logo';
 export default function TrackProjectPage() {
   return (
     <main className="flex-1 w-full pb-24">
-      {/* HERO */}
-      <section className="relative py-24 px-6 bg-zinc-950 text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#f43f5e_1px,transparent_1px)] [background-size:16px_16px]" />
-        
-        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-4">
-          <div className="flex justify-center mb-2">
-            <div className="p-3 rounded-2xl bg-[#18181B] border border-[#27272A] shadow-xl">
+      {/* 1. HERO PRESENTATION AREA (Full Landing Page Presentation Aspect Ratio) */}
+      <section
+        id="hero-section"
+        className="relative w-full h-screen min-h-[680px] flex flex-col justify-between items-center overflow-hidden text-white select-none transition-colors duration-300 bg-[#09090B]"
+      >
+        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#f43f5e_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none z-0" />
+
+        {/* TOP AREA: Clears floating header & hosts Eyebrow Badge */}
+        <div className="relative z-20 w-full pt-16 sm:pt-20 shrink-0 flex justify-center px-2 sm:px-4">
+          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#0A0A0B] shadow-2xl transition-all border border-[#1E293B] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
+            <span className="font-bold text-emerald-400 tracking-wider uppercase shrink-0">Live Milestone Synchronization</span>
+          </div>
+        </div>
+
+        {/* BOTTOM HERO CONTENT */}
+        <div className="relative z-20 w-full container-ultrawide text-center flex flex-col items-center justify-end mt-auto px-4 sm:px-6 pb-6 sm:pb-8">
+          <div className="flex justify-center mb-4">
+            <div className="p-3 rounded-2xl bg-[#0A0A0B] border border-[#1E293B] shadow-xl">
               <ViztrLogoMark className="w-12 h-12" />
             </div>
           </div>
-
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            <span>Live Milestone Synchronization</span>
-          </div>
-
-          <h1 className="text-4xl sm:text-6xl font-bold tracking-tight font-display">
+          
+          <h1 className="hero-headline text-fluid-hero font-extrabold tracking-tight mb-2 sm:mb-3 font-sans">
             Client Production Portal
           </h1>
-          <p className="text-base sm:text-lg text-zinc-400 max-w-2xl mx-auto">
+
+          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]">
             Track your 7-stage architectural visualization pipeline in real time. Review whitecard clay previews, provide feedback, and download signed master deliverables.
           </p>
         </div>

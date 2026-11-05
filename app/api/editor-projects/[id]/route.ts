@@ -23,6 +23,10 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
         return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 
+    if (data.owner_id !== guard.userId && guard.role !== 'super_admin') {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     return NextResponse.json(data);
 }
 
@@ -37,9 +41,36 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const { id } = await params;
     const body = await request.json();
 
+    // SECURITY: Whitelist allowed fields to prevent mass assignment
+    const allowedFields = ['name', 'description', 'settings', 'thumbnail', 'fork_from'];
+    const updatePayload: Record<string, any> = {};
+    for (const field of allowedFields) {
+      if (body[field] !== undefined) {
+        updatePayload[field] = body[field];
+      }
+    }
+
+    if (Object.keys(updatePayload).length === 0) {
+      return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
+    }
+
+    const { data: existing } = await db
+        .from('editor_projects')
+        .select('owner_id')
+        .eq('id', id)
+        .single();
+
+    if (!existing) {
+        return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+
+    if (existing.owner_id !== guard.userId && guard.role !== 'super_admin') {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const { data, error } = await db
         .from('editor_projects')
-        .update(body)
+        .update(updatePayload)
         .eq('id', id)
         .select()
         .single();
@@ -60,6 +91,20 @@ export async function DELETE(_request: NextRequest, { params }: { params: Promis
     }
 
     const { id } = await params;
+
+    const { data: existing } = await db
+        .from('editor_projects')
+        .select('owner_id')
+        .eq('id', id)
+        .single();
+
+    if (!existing) {
+        return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+
+    if (existing.owner_id !== guard.userId && guard.role !== 'super_admin') {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
 
     const { error } = await db
         .from('editor_projects')

@@ -13,7 +13,8 @@ import {
   Sparkles,
   BookOpen,
   ChevronRight,
-  Share2
+  Share2,
+  ChevronDown
 } from 'lucide-react';
 
 export default function BlogPage() {
@@ -41,27 +42,102 @@ export default function BlogPage() {
   );
 
   return (
-    <main className="min-h-screen bg-[#09090B] text-[#FAFAFA] py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-12">
-        {/* HERO SECTION */}
-        <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#18181B] border border-[#27272A] text-xs font-mono text-[#3ECF8E]">
-            <BookOpen className="w-3.5 h-3.5" />
-            <span>VIZTR PERSPECTIVES & RESEARCH</span>
+    <main className="min-h-screen bg-[#09090B] text-[#FAFAFA] pb-24">
+      {/* 1. HERO PRESENTATION AREA (Full Landing Page Presentation Aspect Ratio) */}
+      <section
+        id="hero-section"
+        className="relative w-full h-screen min-h-[680px] flex flex-col justify-between items-center overflow-hidden text-white select-none transition-colors duration-300"
+      >
+        {/* MEDIA LAYER: Full Bleed High-Res Render */}
+        <div className="hero-media-layer absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
+          <div className="absolute inset-0 w-full h-full">
+            <Image
+              src={featuredPost?.image || '/assets/hero/hero-02.jpg'}
+              alt="Architectural CGI, XR & Cloud Innovation"
+              fill
+              priority
+              quality={90}
+              sizes="100vw"
+              className="hero-bg-image object-cover object-center render-lighting-enhanced"
+            />
           </div>
-          <h1 className="text-3xl sm:text-5xl font-bold font-display tracking-tight text-white">
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/40 to-[#0A0A0B]/65 pointer-events-none z-20" />
+          <div className="absolute inset-0 bg-radial from-transparent via-[#0A0A0B]/25 to-[#0A0A0B]/80 pointer-events-none z-20" />
+        </div>
+
+        {/* TOP AREA: Clears floating header & hosts Eyebrow Badge (No directory breadcrumbs) */}
+        <div className="relative z-20 w-full pt-16 sm:pt-20 shrink-0 flex justify-center px-2 sm:px-4">
+          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#0A0A0B] shadow-2xl transition-all border border-[#1E293B] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#42CF8B] animate-pulse shrink-0" />
+            <span className="font-bold text-[#42CF8B] tracking-wider uppercase shrink-0">RESEARCH & INSIGHTS</span>
+            <span className="opacity-40 shrink-0">|</span>
+            <span className="opacity-80 shrink-0">Architectural CGI & Real-Time WebXR</span>
+          </div>
+        </div>
+
+        {/* BOTTOM HERO CONTENT: Fluid typography, original content & pill CTAs */}
+        <div className="relative z-20 w-full container-ultrawide text-center flex flex-col items-center justify-end mt-auto px-4 sm:px-6 pb-6 sm:pb-8">
+          <h1 className="hero-headline text-fluid-hero font-extrabold tracking-tight mb-2 sm:mb-3 font-sans">
             Architectural CGI, XR & Cloud Innovation
           </h1>
-          <p className="text-sm sm:text-base text-[#A1A1AA] leading-relaxed">
+
+          <p className="hero-subheadline text-fluid-sub font-medium tracking-wide mb-3 max-w-3xl">
+            Photorealistic Rendering, WebXR & Real-Time Interactive Architecture
+          </p>
+
+          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]">
             Technical breakdowns, case studies, and insights on the convergence of photorealistic rendering, WebXR, and real-time interactive architecture.
           </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-md sm:max-w-none mb-6">
+            <a
+              href="#blog-posts"
+              id="hero-primary-cta"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#00F0FF] hover:bg-[#33f3ff] text-black font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer hover:scale-105 active:scale-95"
+            >
+              <span>Explore Research & Articles</span>
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </a>
+
+            <Link
+              href="/portfolio"
+              id="hero-secondary-cta"
+              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#1E293B] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#1E293B]"
+            >
+              <BookOpen className="w-4 h-4 text-[#42CF8B]" />
+              <span>View Portfolio Cases</span>
+            </Link>
+          </div>
+
+          {/* Bottom Bar: Scroll Indicator */}
+          <div className="relative w-full flex items-center justify-center pt-2">
+            <div className="sm:block">
+              <a
+                href="#blog-posts"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const target = document.getElementById('blog-posts');
+                  if (target) target.scrollIntoView({ behavior: 'smooth' });
+                  else window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+                }}
+                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0A0A0B] text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-sm hover:bg-[#131314] border border-[#1E293B]"
+                aria-label="Scroll down to explore"
+              >
+                <span>Scroll to explore</span>
+                <ChevronDown className="w-3.5 h-3.5 text-[#00F0FF] animate-bounce" />
+              </a>
+            </div>
+          </div>
         </div>
+      </section>
+
+      <div id="blog-posts" className="max-w-7xl mx-auto space-y-12 pt-16 px-4 sm:px-6 lg:px-8">
 
         {/* FEATURED HERO POST */}
         {featuredPost && selectedCategory === 'All' && !searchQuery && (
-          <div className="p-6 sm:p-8 rounded-2xl bg-[#18181B] border border-[#27272A] relative overflow-hidden group hover:border-[#3ECF8E]/40 transition-all shadow-2xl">
+          <div className="p-6 sm:p-8 rounded-[2rem] bg-[#131314] border border-[#1E293B] relative overflow-hidden group hover:border-[#3ECF8E]/40 transition-all shadow-sm">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              <div className="lg:col-span-7 relative h-64 sm:h-96 rounded-xl overflow-hidden bg-[#09090B]">
+              <div className="lg:col-span-7 relative h-64 sm:h-96 rounded-xl overflow-hidden bg-black">
                 <Image
                   src={featuredPost.image}
                   alt={featuredPost.title}
@@ -69,7 +145,7 @@ export default function BlogPage() {
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-white/10 text-[10px] font-mono text-[#3ECF8E] uppercase tracking-wider font-bold">
+                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-[#0A0A0B] border border-[#1E293B] text-[10px] font-mono text-[#3ECF8E] uppercase tracking-wider font-bold">
                   Featured Insight
                 </div>
               </div>
@@ -115,7 +191,7 @@ export default function BlogPage() {
         )}
 
         {/* SEARCH AND FILTER BAR */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-[#131314] border border-[#1E293B]">
           {/* Category Pills */}
           <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             {categories.map((cat) => (
@@ -158,9 +234,9 @@ export default function BlogPage() {
             {displayedPosts.map((post) => (
               <article
                 key={post.slug}
-                className="rounded-2xl bg-[#18181B] border border-[#27272A] overflow-hidden flex flex-col hover:border-[#3ECF8E]/50 transition-all group shadow-lg"
+                className="rounded-2xl bg-[#131314] border border-[#1E293B] overflow-hidden flex flex-col hover:border-[#3ECF8E]/50 transition-all group shadow-sm"
               >
-                <div className="relative h-48 w-full bg-[#09090B] overflow-hidden">
+                <div className="relative h-48 w-full bg-black overflow-hidden">
                   <Image
                     src={post.image}
                     alt={post.title}
@@ -168,7 +244,7 @@ export default function BlogPage() {
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-md bg-black/80 backdrop-blur-sm border border-white/10 text-[10px] font-mono text-[#3ECF8E] uppercase tracking-wider">
+                  <div className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-md bg-[#0A0A0B] border border-[#1E293B] text-[10px] font-mono text-[#3ECF8E] uppercase tracking-wider">
                     {post.category}
                   </div>
                 </div>
@@ -213,7 +289,7 @@ export default function BlogPage() {
             ))}
           </div>
         ) : (
-          <div className="py-16 text-center space-y-3 bg-[#18181B] rounded-2xl border border-[#27272A]">
+          <div className="py-16 text-center space-y-3 bg-[#131314] rounded-2xl border border-[#1E293B]">
             <Search className="w-8 h-8 text-[#71717A] mx-auto" />
             <h3 className="text-sm font-bold text-white">No articles matched your criteria</h3>
             <p className="text-xs text-[#A1A1AA]">
@@ -232,7 +308,7 @@ export default function BlogPage() {
                 className={`w-9 h-9 rounded-lg font-mono text-xs font-bold transition-colors cursor-pointer ${
                   currentPage === pg
                     ? 'bg-[#3ECF8E] text-black shadow-md'
-                    : 'bg-[#18181B] text-[#A1A1AA] hover:text-white border border-[#27272A]'
+                    : 'bg-[#131314] text-[#A1A1AA] hover:text-white border border-[#1E293B]'
                 }`}
               >
                 {pg}

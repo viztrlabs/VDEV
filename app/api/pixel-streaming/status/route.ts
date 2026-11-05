@@ -2,8 +2,7 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api-guard';
 
-const CONTROLLER_URL =
-  process.env.STREAM_CONTROLLER_URL || 'http://localhost:3001';
+const CONTROLLER_URL = process.env.STREAM_CONTROLLER_URL;
 
 export async function GET(req: NextRequest) {
   const guard = await requireAuth(req);
@@ -11,8 +10,20 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const streamId = searchParams.get('streamId') || 'apex-tower-ue5';
 
-  // Live status from the GPU-PC controller when available; otherwise report
-  // a simulated healthy cluster so the UI still renders.
+  if (!CONTROLLER_URL) {
+    return NextResponse.json({
+      streamId,
+      ue5Available: false,
+      activeNodes: 0,
+      clusterHealth: 'UNCONFIGURED',
+      gpuUtilization: null,
+      averageLatencyMs: null,
+      fps: null,
+      supportedCodecs: ['H.264', 'H.265 (HEVC)', 'AV1'],
+      note: 'STREAM_CONTROLLER_URL is not configured.',
+    });
+  }
+
   try {
     const upstream = await fetch(
       `${CONTROLLER_URL}/status?streamId=${encodeURIComponent(streamId)}`,
@@ -32,18 +43,18 @@ export async function GET(req: NextRequest) {
       });
     }
   } catch {
-    // controller unreachable — fall through to simulation
+    // controller unreachable
   }
 
   return NextResponse.json({
     streamId,
     ue5Available: false,
-    activeNodes: 32,
-    clusterHealth: 'SIMULATED',
-    gpuUtilization: '38%',
-    averageLatencyMs: 14.2,
-    fps: 60,
+    activeNodes: 0,
+    clusterHealth: 'UNAVAILABLE',
+    gpuUtilization: null,
+    averageLatencyMs: null,
+    fps: null,
     supportedCodecs: ['H.264', 'H.265 (HEVC)', 'AV1'],
-    note: 'Controller offline — simulated telemetry.',
+    note: 'Stream controller is unreachable.',
   });
 }

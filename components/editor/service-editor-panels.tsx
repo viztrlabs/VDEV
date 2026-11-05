@@ -6,6 +6,7 @@ import { usePermissions } from '@/components/editor/permissions';
 import { useAutoSave } from '@/components/editor/auto-save';
 import { useEditorHistory, useKeyboardShortcuts } from '@/components/editor/editor-history';
 import { Skeleton, TableSkeleton } from '@/components/editor/skeleton';
+import { ExternalLink } from 'lucide-react';
 
 export type Tab = {
   key: string;
@@ -23,6 +24,7 @@ type ServiceEditorPanelsProps = {
   error?: string;
   onDataChange?: (next: Record<string, any[]>) => void;
   storageKey?: string;
+  onOpenEditor?: (experienceId?: string) => void;
 };
 
 export function ServiceEditorPanels({ tabs, tabData, loading, error, onDataChange, storageKey }: ServiceEditorPanelsProps) {
@@ -223,31 +225,41 @@ export function ServiceEditorPanels({ tabs, tabData, loading, error, onDataChang
                       {col.render ? col.render(row[col.key], row) : String(row[col.key] ?? '-')}
                     </td>
                   ))}
-                  {(activeTab?.fields && activeTab.apiEndpoint) && (
-                    <td className="px-3 py-2">
-                      <div className="flex items-center gap-1.5">
-                        {canEdit && (
-                          <button
-                            type="button"
-                            onClick={() => openEdit(row)}
-                            className="px-2 py-1 rounded border border-[#27272A] bg-[#09090B] text-[10px] font-mono text-[#A1A1AA] hover:text-white"
-                          >
-                            Edit
-                          </button>
-                        )}
-                        {canDelete && (
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(row)}
-                            disabled={submitting}
-                            className="px-2 py-1 rounded border border-rose-500/40 bg-rose-500/10 text-[10px] font-mono text-rose-300 hover:bg-rose-500/20 disabled:opacity-60"
-                          >
-                            Delete
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  )}
+{(activeTab?.fields && activeTab.apiEndpoint) && (
+                      <td className="px-3 py-2">
+                        <div className="flex items-center gap-1.5">
+                          {canEdit && (
+                            <button
+                              type="button"
+                              onClick={() => openEdit(row)}
+                              className="px-2 py-1 rounded border border-[#27272A] bg-[#09090B] text-[10px] font-mono text-[#A1A1AA] hover:text-white"
+                            >
+                              Edit
+                            </button>
+                          )}
+                          {canDelete && (
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(row)}
+                              disabled={submitting}
+                              className="px-2 py-1 rounded border border-rose-500/40 bg-rose-500/10 text-[10px] font-mono text-rose-300 hover:bg-rose-500/20 disabled:opacity-60"
+                            >
+                              Delete
+                            </button>
+                          )}
+                          {activeTab.key === 'experiences' && onOpenEditor && (
+                            <button
+                              type="button"
+                              onClick={() => onOpenEditor(row.id)}
+                              className="px-2 py-1 rounded border border-[#3ECF8E]/40 bg-[#3ECF8E]/15 text-[10px] font-mono text-[#3ECF8E] hover:bg-[#3ECF8E]/25"
+                              title="Open in Editor"
+                            >
+                              <ExternalLink className="w-3 h-3" />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    )}
                 </tr>
               ))}
               {rows.length === 0 && (

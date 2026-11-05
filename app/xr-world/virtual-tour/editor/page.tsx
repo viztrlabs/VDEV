@@ -90,6 +90,9 @@ import {
   FolderUp,
   Compass,
   Link as LinkIcon,
+  Copy,
+  ExternalLink,
+  RefreshCw,
 } from 'lucide-react';
 import EditorContextMenu, { type ContextMenuItem } from '@/components/editor/EditorContextMenu';
 import { serializeTourForExperienceConfig } from '@/lib/marzipano/tour-config-serializer';
@@ -376,6 +379,7 @@ export default function TourEditorPage() {
   const [settings, setSettings] = useState<{
     live: boolean;
     publicUrl: string;
+    slug?: string;
     theme: { accentColor: string; logoUrl: string; title: string };
     accessLevel: 'public' | 'private';
     version: number;
@@ -634,6 +638,83 @@ export default function TourEditorPage() {
               These settings are embedded in the exported Marzipano tour ZIP and used by the public viewer.
             </p>
           </div>
+        </div>
+
+        {/* Public Link */}
+        <h2 className="text-sm font-mono font-bold text-[#3ECF8E] pt-4">Public Link</h2>
+        <div className="rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3 space-y-3">
+          {(() => {
+            const url = new URL(typeof window !== 'undefined' ? window.location.href : 'http://localhost/');
+            const tourSlug = settings?.publicUrl?.replace('/virtual-tour/', '') || settings?.slug || url.searchParams.get('tour') || '';
+            const publicUrl = tourSlug ? `/virtual-tour/${tourSlug}` : '';
+            const fullPublicUrl = publicUrl ? `${url.origin}${publicUrl}` : '';
+
+            if (!tourSlug) {
+              return (
+                <div className="text-center py-4 text-xs font-mono text-[#71717A]">
+                  <p>Tour not published yet.</p>
+                  <p className="pt-2">Publish the tour to get a public link.</p>
+                </div>
+              );
+            }
+
+            return (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <label className="text-xs font-mono text-[#A1A1AA] flex-1 truncate">Public URL</label>
+                  <span className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-[#A1A1AA] truncate" title={fullPublicUrl}>
+                    {fullPublicUrl}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(fullPublicUrl);
+                      showToast('Public URL copied to clipboard', 'success');
+                    }}
+                    className="px-2 py-1 rounded bg-[#18181B] border border-[#27272A] text-[#A1A1AA] hover:text-white hover:bg-[#27272A] transition-colors"
+                    title="Copy public URL"
+                  >
+                    <Copy className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => window.open(fullPublicUrl, '_blank')}
+                    className="px-2 py-1 rounded bg-[#18181B] border border-[#27272A] text-[#A1A1AA] hover:text-white hover:bg-[#27272A] transition-colors"
+                    title="Open in new tab"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const tourParam = url.searchParams.get('tour') || (typeof window !== 'undefined' ? localStorage.getItem('viztr_active_tour') : null) || '';
+                      try {
+                        const res = await fetch(`/api/tour/regenerate-slug${tourParam ? `?tour=${encodeURIComponent(tourParam)}` : ''}`, {
+                          method: 'POST',
+                        });
+                        if (!res.ok) throw new Error('Failed to regenerate slug');
+                        const data = await res.json();
+                        const newSlug = data.slug;
+                        const newPublicUrl = `/virtual-tour/${newSlug}`;
+                        await persistSettings({ ...settings, slug: newSlug, publicUrl: newPublicUrl });
+                        showToast('Slug regenerated', 'success');
+                      } catch (e: any) {
+                        showToast(e?.message || 'Failed to regenerate slug', 'error');
+                      }
+                    }}
+                    className="px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-xs font-mono text-white flex items-center gap-1.5 hover:bg-[#27272A]"
+                    title="Regenerate slug (changes the public URL)"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    Regenerate Slug
+                  </button>
+                  <span className="text-[10px] font-mono text-[#71717A]">Changes the public URL; old links will break.</span>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </div>
     );
@@ -1031,38 +1112,39 @@ export default function TourEditorPage() {
     }
   };
 
-  const handlePublish = async () => {
-    if (publishing) return;
-    await save();
-    if (settings) {
-      setPublishing(true);
-      try {
-        const url = new URL(typeof window !== 'undefined' ? window.location.href : 'http://localhost/');
-        const tourParam = url.searchParams.get('tour') || (typeof window !== 'undefined' ? localStorage.getItem('viztr_active_tour') : null) || '';
-        const res = await fetch(`/api/tour/settings${tourParam ? `?tour=${encodeURIComponent(tourParam)}` : ''}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ live: true, accessLevel: 'public' }),
-        });
-        if (!res.ok) throw new Error(`Publish failed (${res.status})`);
-        const data = await res.json();
-        const slug = data?.slug || tourParam;
-        const publicUrl = `/virtual-tour/${slug}`;
-        await persistSettings({ ...settings, live: true, publicUrl });
-        showToast('Tour published and set live!', 'success');
-        showToast(`Public URL: ${publicUrl}`, 'info');
-        if (typeof window !== 'undefined') {
-          const next = new URL(window.location.href);
-          next.searchParams.set('tour', slug);
-          window.history.replaceState({}, '', next.toString());
-        }
-      } catch (e: any) {
-        showToast(e?.message || 'Publish failed.', 'error');
-      } finally {
-        setPublishing(false);
-      }
-    }
-  };
+const handlePublish = async () => {
+     if (publishing) return;
+     await save();
+     if (settings) {
+       setPublishing(true);
+       try {
+         const url = new URL(typeof window !== 'undefined' ? window.location.href : 'http://localhost/');
+         const tourParam = url.searchParams.get('tour') || (typeof window !== 'undefined' ? localStorage.getItem('viztr_active_tour') : null) || '';
+         const res = await fetch(`/api/tour/settings${tourParam ? `?tour=${encodeURIComponent(tourParam)}` : ''}`, {
+           method: 'PUT',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify({ live: true, accessLevel: 'public' }),
+         });
+         if (!res.ok) throw new Error(`Publish failed (${res.status})`);
+         const data = await res.json();
+         const slug = data?.slug || tourParam;
+         const publicUrl = `/virtual-tour/${slug}`;
+         await persistSettings({ ...settings, live: true, publicUrl });
+         showToast('Tour published and set live!', 'success');
+         showToast(`Public URL: ${publicUrl}`, 'info');
+         if (typeof window !== 'undefined') {
+           const next = new URL(window.location.href);
+           next.searchParams.set('tour', slug);
+           window.history.replaceState({}, '', next.toString());
+           window.open(publicUrl, '_blank');
+         }
+       } catch (e: any) {
+         showToast(e?.message || 'Publish failed.', 'error');
+       } finally {
+         setPublishing(false);
+       }
+     }
+   };
 
   const handleGallerySelect = (url: string) => {
     if (!selected) return;
@@ -1260,6 +1342,15 @@ export default function TourEditorPage() {
         onExportTour={handleExport}
         onNewTour={handleNewTour}
         onPublish={handlePublish}
+        onPreviewLive={() => {
+          const url = new URL(typeof window !== 'undefined' ? window.location.href : 'http://localhost/');
+          const tourSlug = settings?.publicUrl?.replace('/virtual-tour/', '') || settings?.slug || url.searchParams.get('tour') || '';
+          if (tourSlug) {
+            window.open(`/virtual-tour/${tourSlug}`, '_blank');
+          } else {
+            showToast('Tour not published yet', 'error');
+          }
+        }}
         publishing={publishing}
         busy={importing || uploading || exporting}
         leftOpen={leftOpen}

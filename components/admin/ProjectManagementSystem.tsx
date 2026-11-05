@@ -502,8 +502,8 @@ export default function ProjectManagementSystem({
                     <span className="px-2 py-0.5 rounded bg-[#09090B] border border-[#27272A] text-[10px] text-white">
                       {selectedProject.projectType}
                     </span>
-                    <span className="px-2 py-0.5 rounded bg-[#09090B] border border-[#27272A] text-[10px] text-[#3ECF8E]">
-                      ${selectedProject.bookingAmount.toLocaleString()}
+                    <span className="px-2 py-0.5 rounded bg-[#09090B] border border-[#27272A] text-[10px] text-[#3ECF8E]" suppressHydrationWarning>
+                      ${selectedProject.bookingAmount.toLocaleString('en-US')}
                     </span>
                   </div>
                   <h3 className="text-xl font-bold font-display text-white">

@@ -128,10 +128,10 @@ function ClientAccessInner() {
   };
 
   return (
-    <main className="min-h-[85vh] flex items-center justify-center py-16 px-4 sm:px-6 bg-[#09090B] text-[#FAFAFA]">
+    <main className="min-h-[85vh] flex items-center justify-center py-16 px-4 sm:px-6 bg-[#0A0A0B] text-[#FAFAFA]">
       <div className="max-w-md w-full space-y-6">
         <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center justify-center p-3 rounded-2xl bg-[#18181B] border border-[#27272A] mx-auto shadow-xl hover:border-[#e2c073]/50 transition-colors group">
+          <Link href="/" className="inline-flex items-center justify-center p-3 rounded-2xl bg-[#131314] border border-[#1E293B] mx-auto shadow-xl hover:border-[#e2c073]/50 transition-colors group">
             <ViztrLogoMark className="w-10 h-10 group-hover:scale-105 transition-transform" />
           </Link>
           <h1 className="text-2xl font-bold font-display text-white tracking-tight">
@@ -143,9 +143,9 @@ function ClientAccessInner() {
         </div>
 
         {/* CARD CONTAINER */}
-        <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] shadow-2xl space-y-5">
+        <div className="p-6 rounded-2xl bg-[#131314] border border-[#1E293B] shadow-2xl space-y-5">
           {/* TABS */}
-          <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-[#09090B] border border-[#27272A]">
+          <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-[#0A0A0B] border border-[#1E293B]">
             <button
               onClick={() => setActiveTab('accessCode')}
               className={`py-2 text-xs font-mono font-bold rounded-lg transition-all cursor-pointer ${
@@ -183,7 +183,7 @@ function ClientAccessInner() {
                     value={accessCode}
                     onChange={(e) => setAccessCode(e.target.value)}
                     placeholder="e.g. FST-2025-VTR"
-                    className="w-full bg-[#09090B] text-xs text-[#FAFAFA] pl-9 pr-3 py-2.5 rounded-lg border border-[#27272A] focus:outline-none focus:border-[#3ECF8E] font-mono transition-colors"
+                    className="w-full bg-[#0A0A0B] text-xs text-[#FAFAFA] pl-9 pr-3 py-2.5 rounded-lg border border-[#1E293B] focus:outline-none focus:border-[#3ECF8E] font-mono transition-colors"
                   />
                 </div>
               </div>
@@ -200,7 +200,7 @@ function ClientAccessInner() {
                     value={accessCodePassword}
                     onChange={(e) => setAccessCodePassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full bg-[#09090B] text-xs text-[#FAFAFA] pl-9 pr-3 py-2.5 rounded-lg border border-[#27272A] focus:outline-none focus:border-[#3ECF8E] font-mono transition-colors"
+                    className="w-full bg-[#0A0A0B] text-xs text-[#FAFAFA] pl-9 pr-3 py-2.5 rounded-lg border border-[#1E293B] focus:outline-none focus:border-[#3ECF8E] font-mono transition-colors"
                   />
                 </div>
               </div>
@@ -237,7 +237,7 @@ function ClientAccessInner() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="architect@firm.com"
-                    className="w-full bg-[#09090B] text-xs text-[#FAFAFA] pl-9 pr-3 py-2.5 rounded-lg border border-[#27272A] focus:outline-none focus:border-[#3ECF8E] font-mono transition-colors"
+                    className="w-full bg-[#0A0A0B] text-xs text-[#FAFAFA] pl-9 pr-3 py-2.5 rounded-lg border border-[#1E293B] focus:outline-none focus:border-[#3ECF8E] font-mono transition-colors"
                   />
                 </div>
               </div>
@@ -254,7 +254,7 @@ function ClientAccessInner() {
                     value={emailPassword}
                     onChange={(e) => setEmailPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full bg-[#09090B] text-xs text-[#FAFAFA] pl-9 pr-3 py-2.5 rounded-lg border border-[#27272A] focus:outline-none focus:border-[#3ECF8E] font-mono transition-colors"
+                    className="w-full bg-[#0A0A0B] text-xs text-[#FAFAFA] pl-9 pr-3 py-2.5 rounded-lg border border-[#1E293B] focus:outline-none focus:border-[#3ECF8E] font-mono transition-colors"
                   />
                 </div>
               </div>
@@ -279,17 +279,17 @@ function ClientAccessInner() {
           {/* SOCIAL LOGIN & FORGOT PASSWORD */}
           <div className="space-y-3 pt-2">
             <div className="relative flex py-1 items-center">
-              <div className="flex-grow border-t border-[#27272A]"></div>
+              <div className="flex-grow border-t border-[#1E293B]"></div>
               <span className="flex-shrink mx-3 text-[10px] font-mono uppercase text-[#71717A]">
                 or connect with
               </span>
-              <div className="flex-grow border-t border-[#27272A]"></div>
+              <div className="flex-grow border-t border-[#1E293B]"></div>
             </div>
 
             <button
               onClick={handleGoogleLogin}
               disabled={loading}
-              className="w-full py-2.5 px-4 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-white font-mono text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50"
+              className="w-full py-2.5 px-4 rounded-lg bg-[#0A0A0B] hover:bg-[#1E293B] border border-[#1E293B] text-white font-mono text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path
@@ -312,7 +312,7 @@ function ClientAccessInner() {
               <span>Continue with Google Workspace</span>
             </button>
 
-            <div className="flex items-center justify-between text-[11px] font-mono text-[#71717A] pt-2 border-t border-[#27272A]">
+            <div className="flex items-center justify-between text-[11px] font-mono text-[#71717A] pt-2 border-t border-[#1E293B]">
               <button
                 onClick={() => setShowForgotModal(true)}
                 className="hover:text-[#3ECF8E] transition-colors cursor-pointer"
@@ -329,7 +329,7 @@ function ClientAccessInner() {
         {/* FORGOT ACCESS MODAL */}
         {showForgotModal && (
           <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] max-w-sm w-full space-y-4">
+            <div className="p-6 rounded-2xl bg-[#131314] border border-[#1E293B] max-w-sm w-full space-y-4">
               <h3 className="text-sm font-bold font-display text-white">Reset Access Token</h3>
               <p className="text-xs text-[#A1A1AA]">
                 Enter your firm email to request an automated security token or admin dispatch.
@@ -339,7 +339,7 @@ function ClientAccessInner() {
                 placeholder="architect@firm.com"
                 value={forgotEmail}
                 onChange={(e) => setForgotEmail(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+                className="w-full px-3 py-2 rounded-lg bg-[#0A0A0B] border border-[#1E293B] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
               />
               <div className="flex items-center justify-end gap-2">
                 <button
@@ -365,7 +365,7 @@ function ClientAccessInner() {
 
 export default function ClientAccessPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#09090B]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#0A0A0B]" />}>
       <ClientAccessInner />
     </Suspense>
   );

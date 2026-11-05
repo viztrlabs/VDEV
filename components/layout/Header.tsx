@@ -209,7 +209,7 @@ export default function Header() {
             id="header-mid-menu"
             className={`!hidden md:!flex absolute left-1/2 -translate-x-1/2 flex-row items-center p-1 rounded-full transition-all duration-300 ease-in-out ${
               isHomeActive
-                ? 'header-mid-menu-landing bg-transparent border-transparent shadow-none backdrop-blur-none'
+                ? 'header-mid-menu-landing bg-transparent border-transparent shadow-none '
                 : 'header-mid-menu-cluster'
             }`}
             aria-label="Main Navigation"
@@ -579,7 +579,7 @@ export default function Header() {
             <div
               className={`hidden sm:flex items-center gap-1.5 p-1 rounded-full transition-all ${
                 isHomeActive
-                  ? 'header-mid-menu-landing bg-transparent border-transparent shadow-none backdrop-blur-none'
+                  ? 'header-mid-menu-landing bg-transparent border-transparent shadow-none '
                   : 'header-mid-menu-cluster'
               }`}
             >
@@ -648,7 +648,7 @@ export default function Header() {
               className={`md:hidden p-2 sm:p-2.5 rounded-full transition-all cursor-pointer flex items-center justify-center active:scale-95 ${
                 isHomeActive
                   ? 'bg-transparent border-transparent text-white hover:text-[#00F0FF] shadow-none'
-                  : 'border border-white/10 dark:border-white/15 bg-black/40 dark:bg-black/50 backdrop-blur-md text-zinc-200 hover:text-[#00F0FF] hover:border-[#00F0FF]/40 shadow-[0_2px_10px_rgba(0,0,0,0.3)]'
+                  : 'border border-white/10 dark:border-white/15 bg-black/40 dark:bg-black/50  text-zinc-200 hover:text-[#00F0FF] hover:border-[#00F0FF]/40 shadow-[0_2px_10px_rgba(0,0,0,0.3)]'
               }`}
               aria-label="Toggle navigation menu"
             >
@@ -663,7 +663,7 @@ export default function Header() {
         <>
           {/* Backdrop - catches outside clicks */}
           <div
-            className="fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm md:hidden animate-in fade-in duration-200"
+            className="fixed inset-0 z-[110] bg-black/60  md:hidden animate-in fade-in duration-200"
             onClick={() => setMobileMenuOpen(false)}
             aria-hidden="true"
           />
@@ -671,7 +671,7 @@ export default function Header() {
           {/* Mobile Menu Panel - Slides from right */}
           <div
             id="mobile-nav-overlay"
-            className="fixed inset-y-0 right-0 z-[120] w-full sm:w-[380px] sm:max-w-sm md:hidden animate-in slide-in-from-right-full duration-300 ease-out shadow-2xl flex flex-col header-mobile-drawer-glass border-l border-white/10 dark:border-white/10"
+            className="fixed inset-y-0 right-0 z-[120] w-full sm:w-[380px] sm:max-w-sm md:hidden animate-in slide-in-from-right-full duration-300 ease-out shadow-2xl flex flex-col bg-[#131314] border-l border-white/10 dark:border-white/10"
             role="dialog"
             aria-modal="true"
             aria-label="Navigation menu"
@@ -1036,7 +1036,6 @@ export default function Header() {
           </div>
         </>
       )}
-      {!isHomeActive && <div className="h-[64px] w-full shrink-0 pointer-events-none" aria-hidden="true" />}
     </>
   );
 }

@@ -1,0 +1,21 @@
+[WARN] The "pnpm" field in package.json is no longer read by pnpm. The following keys were ignored: "pnpm.onlyBuiltDependencies". See https://pnpm.io/settings for the new home of each setting.
+$ next build
+   ▲ Next.js 15.5.24
+   - Environments: .env.production.local, .env.local
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 33.0s
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+   Generating static pages (0/104) ...
+Error occurred prerendering page "/xr-world/virtual-tour/editor". Read more: https://nextjs.org/docs/messages/prerender-error
+ReferenceError: onPreview is not defined
+    at ah (C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\server\app\xr-world\virtual-tour\editor\page.js:2:42562) {
+  digest: '381382672'
+}
+Export encountered an error on /xr-world/virtual-tour/editor/page: /xr-world/virtual-tour/editor, exiting the build.
+ ⨯ Next.js build worker exited with code: 1 and signal: null
+[ELIFECYCLE] Command failed with exit code 1.

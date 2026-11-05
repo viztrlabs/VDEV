@@ -39,38 +39,67 @@ export default function MarzipanoShowcasePage() {
 
   return (
     <main className="flex-1 w-full pb-20">
-      {/* HERO SECTION */}
-      <section className="relative py-28 px-6 bg-[#09090B] text-white overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-950/30 via-[#09090B] to-[#09090B]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))_from-purple-500/10_via-transparent_to-transparent]" />
+      {/* 1. HERO PRESENTATION AREA (Full Landing Page Presentation Aspect Ratio) */}
+      <section
+        id="hero-section"
+        className="relative w-full h-screen min-h-[680px] flex flex-col justify-between items-center overflow-hidden text-white select-none transition-colors duration-300 bg-[#09090B]"
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-950/30 via-[#09090B] to-[#09090B] pointer-events-none z-0" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))_from-purple-500/10_via-transparent_to-transparent] pointer-events-none z-0" />
 
-        <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
-          <span className="px-3.5 py-1 rounded-full bg-purple-600/30 border border-purple-500/40 text-purple-400 text-xs font-bold uppercase tracking-widest inline-block flex items-center gap-1.5">
-            <Box className="w-3 h-3" />
-            <span>Marzipano Virtual Tours</span>
-          </span>
+        {/* TOP AREA: Clears floating header & hosts Eyebrow Badge (No directory breadcrumbs) */}
+        <div className="relative z-20 w-full pt-16 sm:pt-20 shrink-0 flex justify-center px-2 sm:px-4">
+          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#0A0A0B] shadow-2xl transition-all border border-[#1E293B] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#42CF8B] animate-pulse shrink-0" />
+            <span className="font-bold text-[#42CF8B] tracking-wider uppercase shrink-0">Marzipano Virtual Tours</span>
+          </div>
+        </div>
 
-          <h1 className="text-4xl md:text-6xl font-bold font-display text-white">
+        {/* BOTTOM HERO CONTENT: Fluid typography, original content & CTAs */}
+        <div className="relative z-20 w-full container-ultrawide text-center flex flex-col items-center justify-end mt-auto px-4 sm:px-6 pb-6 sm:pb-8">
+          <h1 className="hero-headline text-fluid-hero font-extrabold tracking-tight mb-2 sm:mb-3 font-sans">
             Immersive  360o Tours with <span className="text-purple-400">Marzipano</span>
           </h1>
 
-          <p className="text-lg text-[#A1A1AA] max-w-2xl mx-auto">
+          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]">
             Explore real-world spaces with interactive 360o panoramas. Navigate through rooms, discover hotspots, and experience architecture in complete immersion.
           </p>
 
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-md sm:max-w-none mb-6">
             <button
               onClick={() => handleRoomSelect('room-grand-salon')}
-              className="px-6 py-3 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-sm flex items-center gap-2 transition-all cursor-pointer"
+              id="hero-primary-cta"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#00F0FF] hover:bg-[#33f3ff] text-black font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer hover:scale-105 active:scale-95"
             >
-              <Sparkles className="w-5 h-5" /> Start Tour
+              <Sparkles className="w-4 h-4" /> <span>Start Tour</span>
             </button>
             <Link
               href="#how-it-works"
-              className="px-6 py-3 rounded-xl bg-[#27272A] hover:bg-[#3ECF8E] hover:text-black border border-[#27272A] text-sm font-mono transition-all cursor-pointer"
+              id="hero-secondary-cta"
+              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#1E293B] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#1E293B]"
             >
-              <ExternalLink className="w-5 h-5" /> How It Works
+              <ExternalLink className="w-4 h-4 text-[#42CF8B]" /> <span>How It Works</span>
             </Link>
+          </div>
+
+          {/* Bottom Bar: Scroll Indicator */}
+          <div className="relative w-full flex items-center justify-center pt-2">
+            <div className="sm:block">
+              <a
+                href="#how-it-works"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const target = document.getElementById('how-it-works');
+                  if (target) target.scrollIntoView({ behavior: 'smooth' });
+                  else window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+                }}
+                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0A0A0B] text-[#FAFAFA] text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-sm hover:bg-[#131314] border border-[#1E293B]"
+                aria-label="Scroll down to explore"
+              >
+                <span>Scroll to explore</span>
+                <ChevronRight className="w-3.5 h-3.5 text-[#00F0FF] animate-bounce" />
+              </a>
+            </div>
           </div>
         </div>
       </section>

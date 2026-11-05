@@ -1,7 +1,7 @@
 'use client';
 
 import React, { memo } from 'react';
-import { Save, Loader2, CheckCircle2, Undo2, Redo2, FolderUp, FolderDown, FilePlus, User, PanelLeftOpen, PanelRightOpen, Globe, ShieldCheck } from 'lucide-react';
+import { Save, Loader2, CheckCircle2, Undo2, Redo2, FolderUp, FolderDown, FilePlus, User, PanelLeftOpen, PanelRightOpen, Globe, ShieldCheck, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import type { SectionTab } from '@/lib/editorStore';
 
@@ -19,6 +19,7 @@ interface EditorHeaderProps {
   onExportTour?: () => void;
   onNewTour?: () => void;
   onPublish?: () => void;
+  onPreviewLive?: () => void;
   publishing?: boolean;
   busy?: boolean;
   leftOpen?: boolean;
@@ -43,6 +44,7 @@ function EditorHeaderBase({
   onExportTour,
   onNewTour,
   onPublish,
+  onPreviewLive,
   publishing,
   busy,
   leftOpen = true,
@@ -183,6 +185,17 @@ function EditorHeaderBase({
                 {validationIssueCount}
               </span>
             )}
+          </button>
+        )}
+        {onPreviewLive && (
+          <button
+            type="button"
+            onClick={onPreviewLive}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#18181B] border border-[#27272A] hover:bg-[#27272A] text-xs font-mono text-white"
+            title="Preview live tour in new tab"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            Preview Live
           </button>
         )}
         <button

@@ -298,8 +298,8 @@ export default function SuperAdminProjectManager({
                         </span>
                       </div>
                       <div className="text-xs font-bold text-white truncate">{proj.name}</div>
-                      <div className="text-[10px] text-[#71717A] font-mono truncate">
-                        {proj.clientCompany} · ${proj.bookingAmount.toLocaleString()}
+                      <div className="text-[10px] text-[#71717A] font-mono truncate" suppressHydrationWarning>
+                        {proj.clientCompany} · ${proj.bookingAmount.toLocaleString('en-US')}
                       </div>
                     </div>
                   </div>
@@ -550,8 +550,8 @@ export default function SuperAdminProjectManager({
                     <span className="px-2 py-0.5 rounded bg-[#27272A] text-[10px] font-mono text-white">
                       {selectedProject.projectType}
                     </span>
-                    <span className="px-2 py-0.5 rounded bg-[#27272A] text-[10px] font-mono text-[#3ECF8E]">
-                      ${selectedProject.bookingAmount.toLocaleString()}
+                    <span className="px-2 py-0.5 rounded bg-[#27272A] text-[10px] font-mono text-[#3ECF8E]" suppressHydrationWarning>
+                      ${selectedProject.bookingAmount.toLocaleString('en-US')}
                     </span>
                   </div>
                   <h3 className="text-lg font-bold font-display text-white mt-1">

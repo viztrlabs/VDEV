@@ -41,7 +41,8 @@ $GeneratedDirectoryNames = @(
     'logs',
     'build',
     'dist',
-    '.docusaurus'
+    '.docusaurus',
+    '.kilo'
 )
 
 $SourceExtensions = @('.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs', '.mts', '.cts')
@@ -256,13 +257,16 @@ function Get-PathDepth {
 }
 
 function Get-MainAppRoots {
-    $roots = New-Object System.Collections.Generic.HashSet[string]
+    $roots = New-Object System.Collections.ArrayList
     $nextConfigFiles = @(Get-RepoFiles | Where-Object {
         $_.Name -match '^next\.config\.' -and (Get-PathDepth -Path $_.FullName) -le 3
     })
 
     foreach ($configFile in $nextConfigFiles) {
-        [void]$roots.Add((Get-NormalizedFullPath -Path $configFile.DirectoryName))
+        $appRoot = Get-NormalizedFullPath -Path $configFile.DirectoryName
+        if (-not $roots.Contains($appRoot)) {
+            [void]$roots.Add($appRoot)
+        }
     }
 
     $appDirectories = @(Get-RepoDirectories | Where-Object {
@@ -270,29 +274,28 @@ function Get-MainAppRoots {
     })
 
     foreach ($appDirectory in $appDirectories) {
-        [void]$roots.Add((Get-NormalizedFullPath -Path $appDirectory.FullName))
+        $appRoot = Get-NormalizedFullPath -Path $appDirectory.FullName
+        if (-not $roots.Contains($appRoot)) {
+            [void]$roots.Add($appRoot)
+        }
     }
 
     if ($roots.Count -eq 0) {
         return @($Root)
     }
 
-    return @($roots)
+    return $roots.ToArray()
 }
 
 function Test-SpecifierReferencesTarget {
     param(
         [string]$Specifier,
-        $Target
+        $Target,
+        [string]$SourceFile
     )
 
     $normalizedSpecifier = ($Specifier -replace '\\', '/').Trim()
     $normalizedSpecifier = ($normalizedSpecifier -split '[?#]', 2)[0]
-    $pathSegments = $normalizedSpecifier.Trim('/').Split([char]'/')
-
-    if ($pathSegments -contains $Target.Name) {
-        return $true
-    }
 
     foreach ($packageName in $Target.PackageNames) {
         if ($normalizedSpecifier -ieq $packageName) {
@@ -302,6 +305,26 @@ function Test-SpecifierReferencesTarget {
         if ($normalizedSpecifier.StartsWith($packageName + '/', [System.StringComparison]::OrdinalIgnoreCase)) {
             return $true
         }
+    }
+
+    if ($normalizedSpecifier.StartsWith('./') -or $normalizedSpecifier.StartsWith('../')) {
+        $sourceDirectory = [System.IO.Path]::GetDirectoryName($SourceFile)
+        $resolvedPath = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($sourceDirectory, $normalizedSpecifier))
+        return (Test-PathUnder -Path $resolvedPath -ParentPath $Target.FullPath)
+    }
+
+    if ($normalizedSpecifier.StartsWith('/')) {
+        $resolvedPath = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($Root, $normalizedSpecifier.TrimStart('/')))
+        return (Test-PathUnder -Path $resolvedPath -ParentPath $Target.FullPath)
+    }
+
+    if ($normalizedSpecifier -match '^[A-Za-z][A-Za-z0-9+.-]*:' -or [System.IO.Path]::IsPathRooted($normalizedSpecifier)) {
+        return $false
+    }
+
+    if ($normalizedSpecifier.IndexOf('/') -ge 0) {
+        $resolvedPath = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($Root, $normalizedSpecifier))
+        return (Test-PathUnder -Path $resolvedPath -ParentPath $Target.FullPath)
     }
 
     return $false
@@ -344,7 +367,7 @@ function Get-ImportEvidence {
             }
 
             $specifier = $match.Groups[1].Value
-            if (Test-SpecifierReferencesTarget -Specifier $specifier -Target $Target) {
+            if (Test-SpecifierReferencesTarget -Specifier $specifier -Target $Target -SourceFile $file.FullName) {
                 if (-not ($matchedLines -contains $lineNumber)) {
                     [void]$matchedLines.Add($lineNumber)
                 }
@@ -354,12 +377,12 @@ function Get-ImportEvidence {
         if ($matchedLines.Count -gt 0) {
             [void]$evidence.Add([pscustomobject]@{
                 Path  = Get-RelativePath -Path $file.FullName -BasePath $Root
-                Lines = @($matchedLines)
+                Lines = $matchedLines.ToArray()
             })
         }
     }
 
-    return @($evidence)
+    return $evidence.ToArray()
 }
 
 function Test-TextReferencesTarget {
@@ -387,14 +410,16 @@ function Test-TextReferencesTarget {
 
     foreach ($term in $terms) {
         if ($term.IndexOf('/') -ge 0) {
-            if ($normalizedText.IndexOf($term, [System.StringComparison]::OrdinalIgnoreCase) -ge 0) {
+            $escapedTerm = [regex]::Escape($term)
+            $pathPattern = "(?<![A-Za-z0-9_.@])$escapedTerm(?![A-Za-z0-9_.@-])"
+            if ([regex]::IsMatch($normalizedText, $pathPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)) {
                 return $true
             }
             continue
         }
 
         $escapedTerm = [regex]::Escape($term)
-        $boundaryPattern = "(?<![A-Za-z0-9_.-])$escapedTerm(?![A-Za-z0-9_.-])"
+        $boundaryPattern = "(?<![A-Za-z0-9_.@/-])$escapedTerm(?![A-Za-z0-9_.@/-])"
         if ([regex]::IsMatch($normalizedText, $boundaryPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)) {
             return $true
         }
@@ -494,7 +519,7 @@ function Get-BuildEvidence {
         })
     }
 
-    return @($evidence)
+    return $evidence.ToArray()
 }
 
 function Test-DependencyEntryReferencesTarget {
@@ -552,12 +577,12 @@ function Get-DependencyEvidence {
         if ($matchedEntries.Count -gt 0) {
             [void]$evidence.Add([pscustomobject]@{
                 Path    = Get-RelativePath -Path $file.FullName -BasePath $Root
-                Details = @($matchedEntries)
+                Details = $matchedEntries.ToArray()
             })
         }
     }
 
-    return @($evidence)
+    return $evidence.ToArray()
 }
 
 function Format-Code {
@@ -621,8 +646,8 @@ foreach ($target in $TargetSpecs) {
 $reportLines = New-Object System.Collections.Generic.List[string]
 [void]$reportLines.Add('# VizTR Repository Dependency Audit')
 [void]$reportLines.Add('')
-[void]$reportLines.Add("Generated: $(Get-Date -AsUTC -Format 'yyyy-MM-ddTHH:mm:ssZ')")
-[void]$reportLines.Add("Repo root: $(Get-RelativePath -Path $Root -BasePath $Root)")
+[void]$reportLines.Add("Generated: $((Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ'))")
+[void]$reportLines.Add("Repo root: $Root")
 [void]$reportLines.Add('')
 [void]$reportLines.Add('This report classifies each candidate directory using static evidence from imports, build configuration, and package dependency manifests. It does not delete or move anything.')
 [void]$reportLines.Add('')
@@ -687,7 +712,7 @@ foreach ($target in $TargetSpecs) {
 [void]$reportLines.Add('- **WORKSPACE DEP**: a package manifest outside the target directory lists the target package or folder as a dependency.')
 [void]$reportLines.Add('- **BUILD REFERENCE**: the target appears in Next.js, Vercel, Turbo, pnpm workspace, Docker Compose, nginx, or package script/workspace configuration.')
 [void]$reportLines.Add('- **UNREFERENCED**: no matching static evidence was found. The directory may still be a standalone deployment or an intentionally vendored fork.')
-[void]$reportLines.Add('- Evidence searches exclude `node_modules`, `.git`, generated build/output directories, and the target directories themselves.')
+[void]$reportLines.Add('- Evidence searches exclude `node_modules`, `.git`, `.kilo`, generated build/output directories, and the target directories themselves.')
 [void]$reportLines.Add('')
 [void]$reportLines.Add('## Suggested follow-up')
 [void]$reportLines.Add('')

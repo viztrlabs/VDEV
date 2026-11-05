@@ -13,215 +13,89 @@ import {
   Image,
   Link,
   Eye,
+  Wrench,
 } from 'lucide-react';
 import { useTourStore } from '@/lib/tourClientStore';
+import type { TourScene } from '@/lib/tourClientStore';
 
-interface ValidationIssue {
+export interface ValidationIssue {
   id: string;
-  type: 'error' | 'warning' | 'info';
-  category: string;
+  type: 'error' | 'warning';
   message: string;
   roomId?: string;
   hotspotId?: string;
   fix?: () => void;
 }
 
-export function ValidationPanel() {
-  const scenes = useTourStore((s) => s.scenes);
-  const updateScene = useTourStore((s) => s.updateScene);
-  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
+export function validateTour(scenes: TourScene[]): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
 
-  const validate = (): ValidationIssue[] => {
-    const issues: ValidationIssue[] = [];
-
-    // Tour-level checks
-    if (scenes.length === 0) {
-      issues.push({
-        id: 'tour-empty',
-        type: 'error',
-        category: 'Tour Structure',
-        message: 'Tour has no rooms',
-      });
+  scenes.forEach((scene) => {
+    if (!scene.url) {
+      issues.push({ id: `${scene.id}-no-url`, type: 'error', message: `Room "${scene.name}" has no panorama URL`, roomId: scene.id });
+    }
+    if (scene.name === 'New Room') {
+      issues.push({ id: `${scene.id}-default-name`, type: 'warning', message: `Room "${scene.name}" still has default name`, roomId: scene.id });
+    }
+    if (scene.initialYaw === 0 && scene.initialPitch === 0) {
+      issues.push({ id: `${scene.id}-default-view`, type: 'warning', message: `Room "${scene.name}" has default starting view`, roomId: scene.id });
     }
 
-    if (scenes.length === 1) {
-      issues.push({
-        id: 'tour-single',
-        type: 'info',
-        category: 'Tour Structure',
-        message: 'Tour has only one room - consider adding more rooms for a better experience',
-      });
-    }
-
-    // Room-level checks
-    scenes.forEach((room) => {
-      if (!room.url) {
-        issues.push({
-          id: `room-${room.id}-no-url`,
-          type: 'error',
-          category: 'Panorama Images',
-          message: `Room "${room.name}" has no panorama image URL`,
-          roomId: room.id,
-        });
+    scene.hotspots.forEach((hs) => {
+      if (!hs.title) {
+        issues.push({ id: `${hs.id}-no-title`, type: 'warning', message: `Hotspot in "${scene.name}" has no title`, roomId: scene.id, hotspotId: hs.id });
       }
-
-      if (!room.name || room.name === 'Untitled') {
-        issues.push({
-          id: `room-${room.id}-no-name`,
-          type: 'warning',
-          category: 'Room Names',
-          message: `Room has no name or is named "Untitled"`,
-          roomId: room.id,
-        });
+      if (hs.type === 'navigation' && !hs.targetSceneId) {
+        issues.push({ id: `${hs.id}-no-target`, type: 'error', message: `Navigation hotspot in "${scene.name}" has no target room`, roomId: scene.id, hotspotId: hs.id });
       }
-
-      if (!room.thumbnailUrl) {
-        issues.push({
-          id: `room-${room.id}-no-thumb`,
-          type: 'warning',
-          category: 'Thumbnails',
-          message: `Room "${room.name}" has no thumbnail image`,
-          roomId: room.id,
-        });
+      if (hs.type === 'video' && !hs.videoUrl) {
+        issues.push({ id: `${hs.id}-no-video`, type: 'error', message: `Video hotspot in "${scene.name}" has no video URL`, roomId: scene.id, hotspotId: hs.id });
       }
-
-      // Hotspot-level checks
-      room.hotspots?.forEach((hs) => {
-        if (!hs.title) {
-          issues.push({
-            id: `hs-${hs.id}-no-title`,
-            type: 'warning',
-            category: 'Hotspot Content',
-            message: `Hotspot in "${room.name}" has no title`,
-            roomId: room.id,
-            hotspotId: hs.id,
-          });
-        }
-
-        if (hs.type === 'link' && !hs.targetSceneId) {
-          issues.push({
-            id: `hs-${hs.id}-no-target`,
-            type: 'error',
-            category: 'Navigation',
-            message: `Navigation hotspot in "${room.name}" has no destination`,
-            roomId: room.id,
-            hotspotId: hs.id,
-          });
-        }
-
-        if (hs.type === 'link' && hs.targetSceneId) {
-          const targetExists = scenes.some((s) => s.id === hs.targetSceneId);
-          if (!targetExists) {
-            issues.push({
-              id: `hs-${hs.id}-broken-link`,
-              type: 'error',
-              category: 'Navigation',
-              message: `Hotspot links to non-existent room`,
-              roomId: room.id,
-              hotspotId: hs.id,
-            });
-          }
-        }
-
-        if (hs.type === 'image' && !(hs as any).mediaUrl) {
-          issues.push({
-            id: `hs-${hs.id}-no-media`,
-            type: 'error',
-            category: 'Media',
-            message: `Image hotspot in "${room.name}" has no media URL`,
-            roomId: room.id,
-            hotspotId: hs.id,
-          });
-        }
-
-        if (hs.type === 'video' && !(hs as any).mediaUrl) {
-          issues.push({
-            id: `hs-${hs.id}-no-video`,
-            type: 'error',
-            category: 'Media',
-            message: `Video hotspot in "${room.name}" has no video URL`,
-            roomId: room.id,
-            hotspotId: hs.id,
-          });
-        }
-      });
-
-      // Check for navigation completeness
-      const navHotspots = room.hotspots?.filter((h) => h.type === 'link') || [];
-      if (scenes.length > 1 && navHotspots.length === 0) {
-        issues.push({
-          id: `room-${room.id}-no-nav`,
-          type: 'warning',
-          category: 'Navigation',
-          message: `Room "${room.name}" has no navigation hotspots - visitors cannot leave this room`,
-          roomId: room.id,
-        });
+      if (hs.type === 'audio' && !hs.audioUrl) {
+        issues.push({ id: `${hs.id}-no-audio`, type: 'error', message: `Audio hotspot in "${scene.name}" has no audio URL`, roomId: scene.id, hotspotId: hs.id });
       }
-
-      // Check for orphaned rooms (no incoming links)
-      if (scenes.length > 1) {
-        const hasIncomingLinks = scenes.some((s) =>
-          s.hotspots?.some((h) => h.type === 'link' && h.targetSceneId === room.id)
-        );
-        if (!hasIncomingLinks && room.id !== scenes[0]?.id) {
-          issues.push({
-            id: `room-${room.id}-orphan`,
-            type: 'info',
-            category: 'Navigation',
-            message: `Room "${room.name}" has no incoming navigation links`,
-            roomId: room.id,
-          });
-        }
+      if (hs.type === 'link' && !hs.externalUrl) {
+        issues.push({ id: `${hs.id}-no-url`, type: 'error', message: `Link hotspot in "${scene.name}" has no URL`, roomId: scene.id, hotspotId: hs.id });
+      }
+      if (hs.type === 'gallery' && (!hs.images || hs.images.length === 0)) {
+        issues.push({ id: `${hs.id}-no-images`, type: 'error', message: `Gallery hotspot in "${scene.name}" has no images`, roomId: scene.id, hotspotId: hs.id });
+      }
+      if (hs.type === 'image' && !hs.imageUrl) {
+        issues.push({ id: `${hs.id}-no-image`, type: 'error', message: `Image hotspot in "${scene.name}" has no image URL`, roomId: scene.id, hotspotId: hs.id });
       }
     });
+  });
 
-    // Check for circular navigation
-    if (scenes.length > 1) {
-      const visited = new Set<string>();
-      const checkCircular = (roomId: string, path: string[]): boolean => {
-        if (path.includes(roomId)) return true;
-        if (visited.has(roomId)) return false;
-        visited.add(roomId);
-        const room = scenes.find((r) => r.id === roomId);
-        if (!room) return false;
-        for (const hs of room.hotspots || []) {
-          if (hs.type === 'link' && hs.targetSceneId) {
-            if (checkCircular(hs.targetSceneId, [...path, roomId])) return true;
-          }
-        }
-        return false;
-      };
+  if (scenes.length === 0) {
+    issues.push({ id: 'no-rooms', type: 'error', message: 'Tour has no rooms' });
+  }
+  if (scenes.length === 1) {
+    issues.push({ id: 'single-room', type: 'warning', message: 'Tour has only one room' });
+  }
 
-      scenes.forEach((room) => {
-        visited.clear();
-        if (checkCircular(room.id, [])) {
-          issues.push({
-            id: `circular-${room.id}`,
-            type: 'info',
-            category: 'Navigation',
-            message: `Circular navigation detected from "${room.name}"`,
-            roomId: room.id,
-          });
-        }
-      });
-    }
+  return issues;
+}
 
-    return issues;
-  };
+export function ValidationPanel() {
+  const scenes = useTourStore((s) => s.scenes);
+  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
 
-  const issues = validate();
+  const issues = validateTour(scenes);
   const errors = issues.filter((i) => i.type === 'error');
   const warnings = issues.filter((i) => i.type === 'warning');
-  const infos = issues.filter((i) => i.type === 'info');
 
-  const categories = issues.reduce<Record<string, ValidationIssue[]>>((acc, issue) => {
-    if (!acc[issue.category]) acc[issue.category] = [];
-    acc[issue.category].push(issue);
-    return acc;
-  }, {});
+  const totalChecks = scenes.length * 5 + scenes.reduce((acc, s) => acc + s.hotspots.length * 3, 0);
+  const passed = totalChecks - errors.length - warnings.length * 0.5;
+  const health = totalChecks > 0 ? Math.round((passed / totalChecks) * 100) : 100;
 
   const toggleCategory = (cat: string) => {
     setExpandedCategories((prev) => ({ ...prev, [cat]: !prev[cat] }));
+  };
+
+  const handleFix = (issue: ValidationIssue) => {
+    if (issue.roomId) {
+      useTourStore.getState().setCurrentScene(issue.roomId);
+    }
   };
 
   const getStatusIcon = (type: string) => {
@@ -235,6 +109,13 @@ export function ValidationPanel() {
     }
   };
 
+  const groupedIssues = issues.reduce<Record<string, ValidationIssue[]>>((acc, issue) => {
+    const cat = issue.type === 'error' ? 'Errors' : 'Warnings';
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(issue);
+    return acc;
+  }, {});
+
   return (
     <div className="h-full flex flex-col bg-[#09090B]">
       <div className="flex items-center justify-between px-3 py-2 border-b border-[#27272A]">
@@ -245,17 +126,27 @@ export function ValidationPanel() {
         </div>
       </div>
 
+      <div className="px-3 py-2 border-b border-[#27272A]">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[10px] font-mono text-[#71717A]">Tour Health</span>
+          <span className={`text-[10px] font-mono font-bold ${health > 80 ? 'text-[#3ECF8E]' : health > 50 ? 'text-amber-500' : 'text-red-500'}`}>
+            {health}%
+          </span>
+        </div>
+        <div className="w-full h-1.5 bg-[#18181B] rounded-full overflow-hidden">
+          <div className={`h-full rounded-full transition-all ${health > 80 ? 'bg-[#3ECF8E]' : health > 50 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${health}%` }} />
+        </div>
+      </div>
+
       <div className="flex-1 overflow-y-auto">
         {issues.length === 0 ? (
           <div className="p-4 text-center">
             <CheckCircle className="w-8 h-8 text-[#3ECF8E] mx-auto mb-2" />
             <p className="text-xs font-mono text-[#3ECF8E]">Tour is valid!</p>
-            <p className="text-[10px] font-mono text-[#71717A] mt-1">
-              No issues found
-            </p>
+            <p className="text-[10px] font-mono text-[#71717A] mt-1">No issues found</p>
           </div>
         ) : (
-          Object.entries(categories).map(([cat, catIssues]) => (
+          Object.entries(groupedIssues).map(([cat, catIssues]) => (
             <div key={cat}>
               <button
                 onClick={() => toggleCategory(cat)}
@@ -281,12 +172,11 @@ export function ValidationPanel() {
                       <p className="text-xs font-mono text-[#A1A1AA]">{issue.message}</p>
                       {issue.roomId && (
                         <button
-                          onClick={() => {
-                            // TODO: Select room in editor
-                          }}
-                          className="text-[10px] font-mono text-[#3ECF8E] hover:underline mt-1"
+                          onClick={() => handleFix(issue)}
+                          className="flex items-center gap-1 text-[10px] font-mono text-[#3ECF8E] hover:underline mt-1"
                         >
-                          Go to room
+                          <Wrench className="w-3 h-3" />
+                          Fix
                         </button>
                       )}
                     </div>

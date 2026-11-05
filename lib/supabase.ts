@@ -18,7 +18,8 @@ const supabaseUrl = stripBom(process.env.NEXT_PUBLIC_SUPABASE_URL || '');
 const supabaseAnonKey = stripBom(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '');
 
 export const isSupabaseConfigured =
-  Boolean(supabaseUrl && supabaseAnonKey) && isValidHttpUrl(supabaseUrl);
+  Boolean(supabaseUrl && supabaseAnonKey && supabaseAnonKey !== '[SENSITIVE]') &&
+  isValidHttpUrl(supabaseUrl);
 
 export const supabase = isSupabaseConfigured
   ? createClient(supabaseUrl, supabaseAnonKey)

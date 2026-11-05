@@ -16,6 +16,26 @@ import {
 import { useTourStore } from '@/lib/tourClientStore';
 import type { TourScene } from '@/lib/tourClientStore';
 
+function parseFilename(name: string): { floor?: string; room?: string } {
+  const base = name.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
+  const floorPatterns = [
+    { regex: /\b(GF|Ground\s*Floor?)\b/i, floor: 'Ground Floor' },
+    { regex: /\b(FF|First\s*Floor?)\b/i, floor: 'First Floor' },
+    { regex: /\b(SF|Second\s*Floor?)\b/i, floor: 'Second Floor' },
+    { regex: /\b(B1|Basement)\b/i, floor: 'Basement' },
+    { regex: /\b(T|Terrace|Roof)\b/i, floor: 'Terrace' },
+  ];
+  let floor: string | undefined;
+  for (const p of floorPatterns) {
+    if (p.regex.test(base)) { floor = p.floor; break; }
+  }
+  const room = base
+    .replace(/\b(GF|FF|SF|B1|Ground|First|Second|Basement|Terrace|Roof)\b/gi, '')
+    .replace(/^\d+[\s._-]*/, '')
+    .trim();
+  return { floor, room: room || undefined };
+}
+
 interface RoomManagerProps {
   selectedRoomId: string;
   onSelectRoom: (id: string) => void;
@@ -119,7 +139,8 @@ export function RoomManager({ selectedRoomId, onSelectRoom }: RoomManagerProps) 
       const reader = new FileReader();
       reader.onload = (event) => {
         const url = event.target?.result as string;
-        const name = file.name.replace(/\.[^/.]+$/, '');
+        const parsed = parseFilename(file.name);
+        const name = parsed.room || file.name.replace(/\.[^/.]+$/, '');
         const id = addRoom({
           name,
           type: '360',
@@ -129,7 +150,8 @@ export function RoomManager({ selectedRoomId, onSelectRoom }: RoomManagerProps) 
           initialPitch: 0,
           initialFov: 75,
           hotspots: [],
-        });
+          ...(parsed.floor ? { floor: parsed.floor } : {}),
+        } as any);
         onSelectRoom(id);
       };
       reader.readAsDataURL(file);

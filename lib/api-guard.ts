@@ -15,8 +15,8 @@ export async function requireAuth(
   _req: NextRequest,
   allowedRoles?: UserRole[]
 ): Promise<
-  | { session: any; role: UserRole; userId: string; error?: undefined }
-  | { error: NextResponse; session?: undefined; role?: undefined; userId?: undefined }
+  | { session: any; role: UserRole; userId: string; supabaseAccessToken?: string | null; error?: undefined }
+  | { error: NextResponse; session?: undefined; role?: undefined; userId?: undefined; supabaseAccessToken?: undefined }
 > {
   const session = await getServerSession(authOptions);
 
@@ -31,6 +31,7 @@ export async function requireAuth(
 
   const role = normalizeUserRole((session.user as any)?.role);
   const userId = (session.user as any)?.id || session.user?.email || '';
+  const supabaseAccessToken = (session.user as any)?.supabaseAccessToken || null;
 
   if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(role)) {
     return {
@@ -41,7 +42,7 @@ export async function requireAuth(
     };
   }
 
-  return { session, role, userId };
+  return { session, role, userId, supabaseAccessToken };
 }
 
 /**

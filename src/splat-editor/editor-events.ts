@@ -1,6 +1,7 @@
 import { EditHistory } from './edit-history';
 import { Events } from './events';
 import { Scene } from './scene';
+import { Vec3 } from 'playcanvas';
 
 // Stub - full implementation would include all camera, selection, editing, view, etc. event registrations
 export const registerEditorEvents = (events: Events, editHistory: EditHistory, scene: Scene) => {
@@ -44,7 +45,14 @@ export const registerEditorEvents = (events: Events, editHistory: EditHistory, s
     });
     events.on('camera.setPose', (pose: any) => {
         if (pose.position && pose.target) {
-            // Apply pose
+            scene.camera.setPose(
+                new Vec3(pose.position.x, pose.position.y, pose.position.z),
+                new Vec3(pose.target.x, pose.target.y, pose.target.z),
+                0,
+            );
+            if (typeof pose.fov === 'number' && Number.isFinite(pose.fov)) {
+                scene.camera.fov = pose.fov;
+            }
         }
     });
     events.on('camera.align', () => {});

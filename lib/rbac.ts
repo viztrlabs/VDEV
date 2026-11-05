@@ -102,7 +102,7 @@ export function hasRouteAccess(role: UserRole | string | null | undefined, route
   const normalized = normalizeUserRole(role);
   // Find the most specific matching route
   const matchingRoutes = Object.keys(routeAccess).filter(r => route.startsWith(r));
-  if (matchingRoutes.length === 0) return true; // Public route
+  if (matchingRoutes.length === 0) return false; // Fail-closed: unlisted routes require auth via middleware
 
   const mostSpecific = matchingRoutes.reduce((a, b) => a.length > b.length ? a : b);
   return routeAccess[mostSpecific].includes(normalized);

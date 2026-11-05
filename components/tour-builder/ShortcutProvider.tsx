@@ -31,6 +31,9 @@ const SHORTCUTS: Shortcut[] = [
   { key: 'z', modifiers: ['Ctrl'], label: 'Undo', category: 'Edit' },
   { key: 'z', modifiers: ['Ctrl', 'Shift'], label: 'Redo', category: 'Edit' },
   { key: 'y', modifiers: ['Ctrl'], label: 'Redo', category: 'Edit' },
+  { key: 'd', modifiers: ['Ctrl'], label: 'Duplicate', category: 'Edit' },
+  { key: 'c', modifiers: ['Ctrl'], label: 'Copy', category: 'Edit' },
+  { key: 'v', modifiers: ['Ctrl'], label: 'Paste', category: 'Edit' },
   { key: 's', modifiers: ['Ctrl'], label: 'Save', category: 'File' },
   { key: 'S', modifiers: ['Ctrl', 'Shift'], label: 'Save As', category: 'File' },
   { key: 'o', modifiers: ['Ctrl'], label: 'Open Tour', category: 'File' },
@@ -52,6 +55,9 @@ interface ShortcutProviderProps {
   onRedo?: () => void;
   onPreview?: () => void;
   onDelete?: () => void;
+  onDuplicate?: () => void;
+  onCopy?: () => void;
+  onPaste?: () => void;
   onSelectRoom?: (id: string) => void;
   onSelectViewport?: () => void;
   onSelectInspector?: () => void;
@@ -67,6 +73,9 @@ export function ShortcutProvider({
   onRedo,
   onPreview,
   onDelete,
+  onDuplicate,
+  onCopy,
+  onPaste,
   onSelectRoom,
   onSelectViewport,
   onSelectInspector,
@@ -125,6 +134,18 @@ export function ShortcutProvider({
           case 'n':
             e.preventDefault();
             // TODO: New tour
+            return;
+          case 'd':
+            e.preventDefault();
+            onDuplicate?.();
+            return;
+          case 'c':
+            e.preventDefault();
+            onCopy?.();
+            return;
+          case 'v':
+            e.preventDefault();
+            onPaste?.();
             return;
         }
       }
@@ -195,7 +216,7 @@ export function ShortcutProvider({
         }
       }
     },
-    [onToolChange, onSave, onSaveAs, onUndo, onRedo, onDelete, onSelectRoom, onSelectViewport, onSelectInspector, showHelp, onPreview]
+    [onToolChange, onSave, onSaveAs, onUndo, onRedo, onDelete, onDuplicate, onCopy, onPaste, onSelectRoom, onSelectViewport, onSelectInspector, showHelp, onPreview]
   );
 
   useEffect(() => {

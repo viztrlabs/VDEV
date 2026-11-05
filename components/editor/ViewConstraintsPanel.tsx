@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Eye, X, Save, Smartphone, Maximize2 } from 'lucide-react';
 import type { VtedViewConstraints } from '@/lib/vted-types';
+import { CollapsibleCardHeader } from '@/components/editor/shell/CollapsibleCardHeader';
 
 interface ViewConstraintsPanelProps {
   value: VtedViewConstraints;
@@ -48,6 +49,7 @@ function ConstraintRow({
 }
 
 export default function ViewConstraintsPanel({ value, onChange }: ViewConstraintsPanelProps) {
+  const [collapsed, setCollapsed] = useState(false);
   const [local, setLocal] = useState<VtedViewConstraints>(value);
 
   React.useEffect(() => {
@@ -62,11 +64,13 @@ export default function ViewConstraintsPanel({ value, onChange }: ViewConstraint
 
   return (
     <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-3 space-y-3">
-      <div className="text-[10px] font-mono uppercase tracking-wider text-[#3ECF8E] flex items-center gap-1.5">
+      <CollapsibleCardHeader collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)}>
         <Eye className="w-3 h-3" />
         View Constraints
-      </div>
+      </CollapsibleCardHeader>
 
+      {!collapsed && (
+        <>
       <div className="space-y-1.5">
         <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">
           Limit View
@@ -167,6 +171,8 @@ export default function ViewConstraintsPanel({ value, onChange }: ViewConstraint
         <Save className="w-3.5 h-3.5" />
         Save All
       </button>
+        </>
+      )}
     </div>
   );
 }

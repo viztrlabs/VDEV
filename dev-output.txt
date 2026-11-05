@@ -1,0 +1,754 @@
+[WARN] The "pnpm" field in package.json is no longer read by pnpm. The following keys were ignored: "pnpm.onlyBuiltDependencies". See https://pnpm.io/settings for the new home of each setting.
+$ next dev
+   ▲ Next.js 15.5.24
+   - Local:        http://localhost:3000
+   - Network:      http://10.192.129.32:3000
+   - Environments: .env.local
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+ ✓ Starting...
+ ✓ Ready in 3.9s
+ ○ Compiling /xr-world/virtual-tour/editor ...
+ ✓ Compiled /xr-world/virtual-tour/editor in 5.8s (2393 modules)
+ GET /xr-world/virtual-tour/editor 200 in 7187ms
+ ○ Compiling /middleware ...
+ ✓ Compiled /middleware in 571ms (272 modules)
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ○ Compiling /api/tour/settings ...
+ ✓ Compiled /api/tour/settings in 2s (2748 modules)
+ GET /api/tour/settings 401 in 2969ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/settings 401 in 101ms
+ GET /xr-world/virtual-tour/editor 200 in 825ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/settings 401 in 114ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/settings 401 in 116ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ○ Compiling /api/tour/media ...
+ ✓ Compiled /api/tour/media in 1961ms (2752 modules)
+ GET /api/tour/media 200 in 2806ms
+ GET /xr-world/virtual-tour/editor 200 in 968ms
+ GET /xr-world/virtual-tour/editor 200 in 181ms
+ ○ Compiling /xr-world/virtual-tour/tour-builder ...
+ ✓ Compiled /xr-world/virtual-tour/tour-builder in 2.2s (2819 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 3054ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/settings 401 in 312ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ○ Compiling /api/analytics ...
+ ✓ Compiled /xr-world/virtual-tour/tour-builder in 8s (2651 modules)
+ POST /api/analytics 401 in 8885ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 3190ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ○ Compiling /api/auth/[...nextauth] ...
+ ✓ Compiled /api/auth/[...nextauth] in 1848ms (2639 modules)
+ POST /api/analytics 401 in 1658ms
+ POST /api/analytics 401 in 1663ms
+ GET /api/auth/session 200 in 3301ms
+ GET /api/auth/session 200 in 102ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ POST /api/analytics 401 in 113ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ○ Compiling /api/tour/media ...
+ ✓ Compiled /api/tour/media in 868ms (1540 modules)
+ GET /api/tour/media 200 in 1624ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ○ Compiling /api/tour/upload ...
+ ✓ Compiled /api/tour/upload in 2.6s (2656 modules)
+ POST /api/tour/upload 401 in 4285ms
+ ✓ Compiled in 1937ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1865ms
+ ✓ Compiled in 1289ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1291ms
+ ✓ Compiled in 1340ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1349ms
+ ✓ Compiled in 1373ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1365ms
+ ✓ Compiled in 1302ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1337ms
+ ✓ Compiled in 1399ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1451ms
+ ✓ Compiled in 1313ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1306ms
+ ✓ Compiled in 1270ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1270ms
+ ✓ Compiled in 1241ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1278ms
+ ✓ Compiled in 1189ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1216ms
+ ✓ Compiled in 1271ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2474ms
+ ✓ Compiled in 1495ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2455ms
+ ✓ Compiled in 1240ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2169ms
+ ✓ Compiled in 1204ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1255ms
+ ✓ Compiled in 1218ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1203ms
+ ✓ Compiled in 1296ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1298ms
+ ✓ Compiled in 1160ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1161ms
+ ✓ Compiled in 1260ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1255ms
+ ✓ Compiled in 1208ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1204ms
+ ✓ Compiled in 1212ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1213ms
+ ✓ Compiled in 1256ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1253ms
+ ✓ Compiled in 1204ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1211ms
+ ✓ Compiled in 1481ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1467ms
+ ✓ Compiled in 1237ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1263ms
+ ✓ Compiled in 1195ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1192ms
+ ✓ Compiled in 1191ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1202ms
+ ✓ Compiled in 1194ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1189ms
+ ✓ Compiled in 1286ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1283ms
+ ✓ Compiled in 1190ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1205ms
+ ✓ Compiled in 1188ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1180ms
+ ✓ Compiled in 1235ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1232ms
+ ✓ Compiled in 1201ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1202ms
+ ✓ Compiled in 1187ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1189ms
+ ✓ Compiled in 1464ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1443ms
+ ✓ Compiled in 1205ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1256ms
+ ✓ Compiled in 1296ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1294ms
+ ✓ Compiled in 1195ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1189ms
+ ✓ Compiled in 1182ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1179ms
+ ✓ Compiled in 1239ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1244ms
+ ✓ Compiled in 1235ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1229ms
+ ✓ Compiled in 1179ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1236ms
+ ✓ Compiled in 1206ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1273ms
+ ✓ Compiled in 1228ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1221ms
+ ✓ Compiled in 1260ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1274ms
+ ✓ Compiled in 1500ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2509ms
+ ✓ Compiled in 1802ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2830ms
+ ✓ Compiled in 1329ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1388ms
+ ✓ Compiled in 1213ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1262ms
+ ✓ Compiled in 1218ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1214ms
+ ✓ Compiled in 1268ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1287ms
+ ✓ Compiled in 1247ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1243ms
+ ✓ Compiled in 1226ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1237ms
+ ✓ Compiled in 1306ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1356ms
+ ✓ Compiled in 1209ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1247ms
+ ✓ Compiled in 1167ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1170ms
+ ✓ Compiled in 1331ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1330ms
+ ✓ Compiled in 1243ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1252ms
+ ✓ Compiled in 1486ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1374ms
+ ✓ Compiled in 1193ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1254ms
+ ✓ Compiled in 1202ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1199ms
+ ✓ Compiled in 1261ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1262ms
+ ✓ Compiled in 1151ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1172ms
+ ✓ Compiled in 1180ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1177ms
+ ✓ Compiled in 1197ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1190ms
+ ✓ Compiled in 1207ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2248ms
+ ✓ Compiled in 1247ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1275ms
+ ✓ Compiled in 1201ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1200ms
+ ✓ Compiled in 1300ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2579ms
+ ✓ Compiled in 1523ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2445ms
+ ✓ Compiled in 1192ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1187ms
+ ✓ Compiled in 1220ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1224ms
+ ✓ Compiled in 1189ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1193ms
+ ✓ Compiled in 1224ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1238ms
+ ✓ Compiled in 1466ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1464ms
+ ✓ Compiled in 1374ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1374ms
+ ✓ Compiled in 1418ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1405ms
+ ✓ Compiled in 1236ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1314ms
+ ✓ Compiled in 1389ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1376ms
+ ✓ Compiled in 1314ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1690ms
+ ✓ Compiled in 1885ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1598ms
+ ✓ Compiled in 1462ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1446ms
+ ✓ Compiled in 1268ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1302ms
+ ✓ Compiled in 1267ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1266ms
+ ✓ Compiled in 1307ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1300ms
+ ✓ Compiled in 1284ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1283ms
+ ✓ Compiled in 1442ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1484ms
+ ✓ Compiled in 1450ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1443ms
+ ✓ Compiled in 1264ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2306ms
+ ✓ Compiled in 1275ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1268ms
+ ✓ Compiled in 1275ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1539ms
+ ✓ Compiled in 1618ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1571ms
+ ✓ Compiled in 1502ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2647ms
+ ✓ Compiled in 1391ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1389ms
+ ✓ Compiled in 1531ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1527ms
+ ✓ Compiled in 1271ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1272ms
+ ✓ Compiled in 1203ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1198ms
+ ✓ Compiled in 1291ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1289ms
+ ✓ Compiled in 1320ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2425ms
+ ✓ Compiled in 1390ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2384ms
+ ✓ Compiled in 1248ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1246ms
+ ✓ Compiled in 1426ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2921ms
+ ✓ Compiled in 1565ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1506ms
+ ✓ Compiled in 1344ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1340ms
+ ✓ Compiled in 1301ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1299ms
+ ✓ Compiled in 1331ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1333ms
+ ✓ Compiled in 1286ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1281ms
+ ✓ Compiled in 1318ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1309ms
+ ✓ Compiled in 1414ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1515ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1386ms
+ ○ Compiling /xr-world/virtual-tour/editor ...
+ ✓ Compiled /xr-world/virtual-tour/editor in 5.9s (2475 modules)
+ GET /xr-world/virtual-tour/editor 200 in 5717ms
+ ✓ Compiled in 2.4s (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2355ms
+ ✓ Compiled in 1423ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1418ms
+ ✓ Compiled in 1197ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2239ms
+ ✓ Compiled in 1293ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2339ms
+ ✓ Compiled in 1348ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1331ms
+ ✓ Compiled in 1204ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1199ms
+ ✓ Compiled in 1311ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1329ms
+ ✓ Compiled in 1274ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1327ms
+ ✓ Compiled in 1295ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1300ms
+ ✓ Compiled in 1285ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1279ms
+ ✓ Compiled in 1681ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1668ms
+ ✓ Compiled in 1329ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1328ms
+ ✓ Compiled in 1238ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1239ms
+ ✓ Compiled in 1433ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1437ms
+ ✓ Compiled in 1348ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2297ms
+ ✓ Compiled in 1177ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1170ms
+ ✓ Compiled in 1247ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1244ms
+ ✓ Compiled in 1327ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1329ms
+ ✓ Compiled in 1415ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1417ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /xr-world/virtual-tour/tour-builder 200 in 2400ms
+ ○ Compiling /api/analytics ...
+ ✓ Compiled / in 7.6s (2928 modules)
+ POST /api/analytics 401 in 5804ms
+Image with src "/images/renders/dusk-shoot.jpg" is using quality "90" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/images/renders/aerial-master.jpg" is using quality "90" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/images/renders/living-area.jpeg" is using quality "90" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/images/renders/downtown-frontview.jpg" is using quality "90" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/images/renders/clubhouse-pool.jpg" is using quality "90" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/images/renders/grand-entrance.jpg" is using quality "90" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/images/renders/dusk-shoot.jpg" is using quality "85" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/images/renders/living-area.jpeg" is using quality "85" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/images/renders/downtown-frontview.jpg" is using quality "85" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/images/renders/clubhouse-pool.jpg" is using quality "85" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/images/renders/aerial-master.jpg" is using quality "85" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+Image with src "/images/renders/superplex-cinema.jpg" is using quality "85" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+ GET / 200 in 6227ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1905ms
+ ○ Compiling /api/auth/[...nextauth] ...
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ✓ Compiled /api/auth/[...nextauth] in 1359ms (1771 modules)
+ POST /api/analytics 401 in 1673ms
+ POST /api/analytics 401 in 1677ms
+ GET /api/auth/session 200 in 2404ms
+ GET /api/auth/session 200 in 106ms
+ GET /api/auth/session 200 in 126ms
+ ○ Compiling /xr-world/virtual-tour ...
+ ✓ Compiled /xr-world/virtual-tour in 3s (2947 modules)
+ GET /xr-world/virtual-tour 200 in 4508ms
+ ⨯ SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>) {
+  page: '/xr-world/virtual-tour'
+}
+ GET /xr-world/virtual-tour/tour-builder 200 in 2303ms
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 6.1s (3381 modules)
+ GET /xr-world/virtual-tour 500 in 5293ms
+ ✓ Compiled in 2.2s (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2211ms
+ GET /xr-world/virtual-tour 200 in 1867ms
+ ✓ Compiled in 1589ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1637ms
+ GET /xr-world/virtual-tour 200 in 1638ms
+ ✓ Compiled in 1634ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1715ms
+ GET /xr-world/virtual-tour 200 in 1710ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1563ms
+ ✓ Compiled in 1508ms (1318 modules)
+ GET /xr-world/virtual-tour 200 in 1562ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1592ms
+ ✓ Compiled in 1548ms (1318 modules)
+ GET /xr-world/virtual-tour 200 in 1617ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1659ms
+ ✓ Compiled in 1637ms (1318 modules)
+ GET /xr-world/virtual-tour 200 in 1706ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1621ms
+ ✓ Compiled in 1537ms (1318 modules)
+ GET /xr-world/virtual-tour 200 in 1641ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1648ms
+ GET /xr-world/virtual-tour 200 in 1642ms
+ ✓ Compiled in 1610ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1750ms
+ GET /xr-world/virtual-tour 200 in 1659ms
+ ✓ Compiled in 1554ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1687ms
+ GET /xr-world/virtual-tour 200 in 1642ms
+ ✓ Compiled in 1906ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2292ms
+ GET /xr-world/virtual-tour 200 in 2206ms
+ ✓ Compiled in 1743ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1782ms
+ GET /xr-world/virtual-tour 200 in 1661ms
+ ✓ Compiled in 1591ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1762ms
+ GET /xr-world/virtual-tour 200 in 1663ms
+ ✓ Compiled in 1592ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1727ms
+ GET /xr-world/virtual-tour 200 in 1629ms
+ ✓ Compiled in 1576ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1737ms
+ GET /xr-world/virtual-tour 200 in 1753ms
+ ✓ Compiled in 1572ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1650ms
+ GET /xr-world/virtual-tour 200 in 1547ms
+ ✓ Compiled in 1506ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2004ms
+ GET /xr-world/virtual-tour 200 in 2113ms
+ ✓ Compiled in 1982ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1943ms
+ GET /xr-world/virtual-tour 200 in 1946ms
+ ✓ Compiled in 1743ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1578ms
+ GET /xr-world/virtual-tour 200 in 1691ms
+ ✓ Compiled in 1512ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1693ms
+ GET /xr-world/virtual-tour 200 in 1807ms
+ ✓ Compiled in 1657ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1666ms
+ GET /xr-world/virtual-tour 200 in 1677ms
+ ✓ Compiled in 2.1s (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2399ms
+ GET /xr-world/virtual-tour 200 in 2379ms
+ ⨯ [Error [InvariantError]: Invariant: Expected clientReferenceManifest to be defined. This is a bug in Next.js.]
+ ⨯ [Error [InvariantError]: Invariant: Expected clientReferenceManifest to be defined. This is a bug in Next.js.] {
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ✓ Compiled in 2.6s (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 500 in 2435ms
+ GET /xr-world/virtual-tour 200 in 2515ms
+ ✓ Compiled in 1785ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1756ms
+ GET /xr-world/virtual-tour 200 in 1841ms
+ ✓ Compiled in 1759ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1855ms
+ GET /xr-world/virtual-tour 200 in 1804ms
+ ✓ Compiled in 1639ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1670ms
+ GET /xr-world/virtual-tour 200 in 571ms
+ ✓ Compiled in 1487ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1529ms
+ GET /xr-world/virtual-tour 200 in 1544ms
+ ✓ Compiled in 1616ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1677ms
+ GET /xr-world/virtual-tour 200 in 1724ms
+ ✓ Compiled in 1677ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1718ms
+ GET /xr-world/virtual-tour 200 in 1730ms
+ ✓ Compiled in 1731ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1780ms
+ GET /xr-world/virtual-tour 200 in 1795ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 2117ms
+ ✓ Compiled in 2.1s (1318 modules)
+ GET /xr-world/virtual-tour 200 in 2171ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1969ms
+ ✓ Compiled in 1881ms (1318 modules)
+ GET /xr-world/virtual-tour 200 in 2045ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 2416ms
+ ✓ Compiled in 2.3s (1318 modules)
+ GET /xr-world/virtual-tour 200 in 2474ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 3545ms
+ ✓ Compiled in 3s (1318 modules)
+ GET /xr-world/virtual-tour 200 in 3171ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 2013ms
+ ✓ Compiled in 1870ms (1318 modules)
+ GET /xr-world/virtual-tour 200 in 2035ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1815ms
+ GET /xr-world/virtual-tour 200 in 1820ms
+ ✓ Compiled in 1746ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1541ms
+ GET /xr-world/virtual-tour 200 in 1579ms
+ ✓ Compiled in 1498ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1590ms
+ GET /xr-world/virtual-tour 200 in 1647ms
+ ✓ Compiled in 1542ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2052ms
+ GET /xr-world/virtual-tour 200 in 2098ms
+ ✓ Compiled in 2s (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1733ms
+ GET /xr-world/virtual-tour 200 in 1784ms
+ ✓ Compiled in 1663ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1643ms
+ GET /xr-world/virtual-tour 200 in 1690ms
+ ✓ Compiled in 1569ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1685ms
+ GET /xr-world/virtual-tour 200 in 1702ms
+ ✓ Compiled in 1708ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1670ms
+ GET /xr-world/virtual-tour 200 in 1717ms
+ ✓ Compiled in 1559ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1730ms
+ GET /xr-world/virtual-tour 200 in 2152ms
+ ✓ Compiled in 2.1s (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2248ms
+ GET /xr-world/virtual-tour 200 in 2291ms
+ ✓ Compiled in 1743ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1711ms
+ GET /xr-world/virtual-tour 200 in 1737ms
+ ✓ Compiled in 1653ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1627ms
+ GET /xr-world/virtual-tour 200 in 1685ms
+ ✓ Compiled in 1584ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1657ms
+ GET /xr-world/virtual-tour 200 in 1706ms
+ ✓ Compiled in 1601ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1693ms
+ GET /xr-world/virtual-tour 200 in 1591ms
+ ✓ Compiled in 1522ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1645ms
+ GET /xr-world/virtual-tour 200 in 1657ms
+ ✓ Compiled in 1587ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1639ms
+ GET /xr-world/virtual-tour 200 in 1716ms
+ ✓ Compiled in 1601ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1672ms
+ GET /xr-world/virtual-tour 200 in 1662ms
+ ✓ Compiled in 1606ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1604ms
+ GET /xr-world/virtual-tour 200 in 1631ms
+ ✓ Compiled in 1566ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1682ms
+ GET /xr-world/virtual-tour 200 in 1734ms
+ ✓ Compiled in 1643ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1756ms
+ GET /xr-world/virtual-tour 200 in 2129ms
+ ✓ Compiled in 2.1s (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2386ms
+ GET /xr-world/virtual-tour 200 in 2295ms
+ ✓ Compiled in 1700ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1843ms
+ GET /xr-world/virtual-tour 200 in 1704ms
+ ✓ Compiled in 1624ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1895ms
+ GET /xr-world/virtual-tour 200 in 1782ms
+ ✓ Compiled in 1733ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1628ms
+ GET /xr-world/virtual-tour 200 in 1739ms
+ ✓ Compiled in 1618ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1663ms
+ GET /xr-world/virtual-tour 200 in 1767ms
+ ✓ Compiled in 1607ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1565ms
+ GET /xr-world/virtual-tour 200 in 1652ms
+ ✓ Compiled in 1503ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1766ms
+ GET /xr-world/virtual-tour 200 in 1763ms
+ ✓ Compiled in 1729ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1646ms
+ GET /xr-world/virtual-tour 200 in 1655ms
+ ⨯ [Error [InvariantError]: Invariant: Expected clientReferenceManifest to be defined. This is a bug in Next.js.]
+ ⨯ [Error [InvariantError]: Invariant: Expected clientReferenceManifest to be defined. This is a bug in Next.js.] {
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ✓ Compiled in 2.1s (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 500 in 2083ms
+ GET /xr-world/virtual-tour 200 in 2164ms
+ ⨯ [Error [InvariantError]: Invariant: Expected clientReferenceManifest to be defined. This is a bug in Next.js.]
+ ⨯ [Error [InvariantError]: Invariant: Expected clientReferenceManifest to be defined. This is a bug in Next.js.] {
+  page: '/xr-world/virtual-tour'
+}
+ ✓ Compiled in 2.1s (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2125ms
+ GET /xr-world/virtual-tour 500 in 2126ms
+ ✓ Compiled in 1487ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1744ms
+ GET /xr-world/virtual-tour 200 in 1953ms
+ ✓ Compiled in 2.2s (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 3406ms
+ GET /xr-world/virtual-tour 200 in 2263ms
+ ✓ Compiled in 1738ms (1318 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1781ms
+ GET /xr-world/virtual-tour 200 in 1758ms
+ ⨯ SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>) {
+  page: '/xr-world/virtual-tour'
+}
+ GET /xr-world/virtual-tour/tour-builder 200 in 1934ms
+ ✓ Compiled in 8.6s (2852 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 936ms
+ GET /xr-world/virtual-tour 500 in 8591ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 8176ms
+ GET /xr-world/virtual-tour 200 in 261ms
+Image with src "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=85" is using quality "90" which is not configured in images.qualities. This config will be required starting in Next.js 16.
+Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /xr-world/virtual-tour 200 in 594ms
+ ○ Compiling /api/analytics ...
+ ✓ Compiled /api/analytics in 776ms (1886 modules)
+ POST /api/analytics 401 in 1209ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ○ Compiling /api/auth/[...nextauth] ...
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ✓ Compiled /api/auth/[...nextauth] in 854ms (1888 modules)
+ POST /api/analytics 401 in 1071ms
+ POST /api/analytics 401 in 1034ms
+ POST /api/analytics 401 in 1159ms
+ GET /api/auth/session 200 in 1741ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ POST /api/analytics 401 in 181ms
+ GET /api/auth/session 200 in 190ms
+ GET /api/auth/session 200 in 120ms
+ GET /api/auth/session 200 in 125ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ○ Compiling /api/tour/settings ...
+ ✓ Compiled /api/tour/settings in 6.8s (3215 modules)
+ GET /api/tour/settings 401 in 7148ms
+ GET /api/tour 401 in 7151ms
+ GET /xr-world/virtual-tour 200 in 566ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 567ms
+ ○ Compiling /xr-world/virtual-tour/editor ...
+ ✓ Compiled /xr-world/virtual-tour/editor in 3.2s (2072 modules)
+ GET /xr-world/virtual-tour/editor 200 in 3614ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour 401 in 273ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ○ Compiling /api/tour/media ...
+ ✓ Compiled /api/tour/media in 1062ms (2075 modules)
+ GET /api/tour 401 in 1794ms
+ GET /api/tour/media 200 in 2641ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/media 200 in 199ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ○ Compiling /api/tour/upload ...
+ ✓ Compiled /api/tour/upload in 1365ms (2082 modules)
+ POST /api/tour/upload 401 in 1633ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/settings 401 in 133ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/settings 401 in 105ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/media 200 in 461ms
+ ✓ Compiled in 2.4s (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 410ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 413ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /xr-world/virtual-tour/editor 200 in 873ms
+ POST /api/analytics 401 in 166ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/auth/session 200 in 230ms
+ GET /api/tour 401 in 268ms
+ GET /api/auth/session 200 in 136ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ POST /api/analytics 401 in 156ms
+ POST /api/analytics 401 in 275ms
+ GET /api/auth/session 200 in 204ms
+ GET /api/tour/media 200 in 954ms
+ ✓ Compiled in 5.5s (3251 modules)
+ GET /xr-world/virtual-tour/editor 200 in 497ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 501ms
+ ✓ Compiled in 1628ms (1317 modules)
+ ✓ Compiled in 2.1s (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 2214ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 2263ms
+ ✓ Compiled in 1645ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1714ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1726ms
+ ✓ Compiled in 1503ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1553ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1562ms
+ ✓ Compiled in 1603ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1647ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1698ms
+ ✓ Compiled in 1621ms (1317 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1689ms
+ GET /xr-world/virtual-tour/editor 200 in 1744ms
+ ✓ Compiled in 1697ms (1317 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2222ms
+ GET /xr-world/virtual-tour/editor 200 in 2261ms
+ ✓ Compiled in 1950ms (1317 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2104ms
+ GET /xr-world/virtual-tour/editor 200 in 2126ms
+ ✓ Compiled in 1759ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1781ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1801ms
+ ✓ Compiled in 1664ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1778ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1778ms
+ ✓ Compiled in 1571ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1635ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1636ms
+ ✓ Compiled in 1594ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1656ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1680ms
+ ✓ Compiled in 2.2s (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 2240ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 2251ms
+ ✓ Compiled in 1691ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1769ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1816ms
+ ✓ Compiled in 1604ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1650ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1656ms
+ ✓ Compiled in 1618ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1650ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1712ms
+ ✓ Compiled in 1587ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1648ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1689ms
+ ✓ Compiled in 1822ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1925ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1943ms
+ ✓ Compiled in 1632ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1702ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1703ms
+ ✓ Compiled in 1608ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1693ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1703ms
+ ✓ Compiled in 3.4s (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 3488ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 3502ms
+ ✓ Compiled in 1865ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1929ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1922ms
+ ✓ Compiled in 1609ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1736ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1921ms
+ ✓ Compiled in 2.1s (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 2160ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 3278ms
+ ✓ Compiled in 1668ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1729ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1718ms
+ ✓ Compiled in 1430ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1490ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1493ms
+ ✓ Compiled in 1518ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1584ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1604ms
+ ✓ Compiled in 1585ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1632ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1654ms
+ ✓ Compiled in 1646ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1705ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1738ms
+ ✓ Compiled in 1771ms (1317 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1843ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1914ms

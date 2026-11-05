@@ -10,9 +10,14 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const [isNavigating, setIsNavigating] = useState(false);
   const isEditor = pathname.startsWith('/editor/');
-  const isDashboard = pathname.startsWith('/app/') || pathname.startsWith('/dashboard/');
+  const isDashboard =
+    pathname.startsWith('/app/') ||
+    pathname.startsWith('/dashboard/') ||
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/client-dashboard');
   const isTourBuilder = pathname.startsWith('/xr-world/virtual-tour/tour-builder');
   const isTourEditor = pathname.startsWith('/xr-world/virtual-tour/editor');
+  const isExperience = pathname === '/explore' || pathname.startsWith('/explore/') || pathname === '/experience' || pathname.startsWith('/experience/');
 
   // Listen for client-side navigation between pages
   useEffect(() => {
@@ -59,8 +64,8 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
     setIsNavigating(false);
   }, [pathname]);
 
-  // Hide header and footer for editor, dashboard, and tour editor layouts
-  if (isEditor || isDashboard || isTourBuilder || isTourEditor) {
+  // Hide header and footer for editor, dashboard, tour editor, and experience layouts
+  if (isEditor || isDashboard || isTourBuilder || isTourEditor || isExperience) {
     return (
       <>
         {isNavigating && <ViztrIntroOverlay mode="loading" isLoading={isNavigating} />}

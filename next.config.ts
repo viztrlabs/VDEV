@@ -128,12 +128,58 @@ const nextConfig: NextConfig = {
     return config;
   },
   async headers() {
+    const isProd = process.env.NODE_ENV === 'production';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const editorUrl = process.env.NEXT_PUBLIC_EDITOR_URL || 'http://localhost:3487';
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+    const supabaseHost = supabaseUrl ? new URL(supabaseUrl).hostname : '';
+    const signalingUrl = process.env.NEXT_PUBLIC_PS_SIGNALING_URL || '';
+
+    // Build CSP dynamically based on environment
+    const cspDirectives = [
+      "default-src 'self'",
+      `script-src 'self' 'unsafe-eval' 'unsafe-inline' https://fonts.googleapis.com`,
+      `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
+      `img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co ${supabaseHost ? `https://${supabaseHost}` : ''}`,
+      `font-src 'self' https://fonts.gstatic.com`,
+      `connect-src 'self' https://*.supabase.co wss://*.supabase.co ${signalingUrl} ${editorUrl}`,
+      `frame-src 'self' ${editorUrl}`,
+      `worker-src 'self' blob:`,
+      `child-src 'self' blob:`,
+      `object-src 'none'`,
+      `base-uri 'self'`,
+      `form-action 'self'`,
+      `frame-ancestors 'self'`,
+    ];
+
+    // WebXR requires specific permissions
+    const cspWithXr = [
+      ...cspDirectives.slice(0, -1), // all except frame-ancestors
+      `frame-ancestors 'self' https://*.supabase.co`,
+    ];
+
+    const cspValue = cspWithXr.join('; ');
+
     return [
       {
         source: '/splat-editor/:path*',
         headers: [
           { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
           { key: 'Cross-Origin-Embedder-Policy', value: 'require-corp' },
+        ],
+      },
+      {
+        source: '/(.*)',
+        headers: [
+          // Report-only in development, enforced in production
+          {
+            key: isProd ? 'Content-Security-Policy' : 'Content-Security-Policy-Report-Only',
+            value: cspValue,
+          },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(self), geolocation=(), payment=()' },
         ],
       },
     ];

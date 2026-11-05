@@ -26,22 +26,29 @@ export default function PlayCanvasShowcasePage() {
 
   return (
     <main className="flex-1 w-full pb-20">
-      {/* HERO SECTION */}
-      <section className="relative py-28 px-6 bg-[#09090B] text-white overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-950/30 via-[#09090B] to-[#09090B]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))_from-purple-500/10_via-transparent_to-transparent]" />
+      {/* 1. HERO PRESENTATION AREA (Full Landing Page Presentation Aspect Ratio) */}
+      <section
+        id="hero-section"
+        className="relative w-full h-screen min-h-[680px] flex flex-col justify-between items-center overflow-hidden text-white select-none transition-colors duration-300 bg-[#09090B]"
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-950/30 via-[#09090B] to-[#09090B] pointer-events-none z-0" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))_from-purple-500/10_via-transparent_to-transparent] pointer-events-none z-0" />
 
-        <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
-          <span className="px-3.5 py-1 rounded-full bg-purple-600/30 border border-purple-500/40 text-purple-400 text-xs font-bold uppercase tracking-widest inline-block flex items-center gap-1.5">
-            <Sparkles className="w-3 h-3" />
-            <span>PlayCanvas WebXR Engine</span>
-          </span>
+        {/* TOP AREA: Clears floating header & hosts Eyebrow Badge */}
+        <div className="relative z-20 w-full pt-16 sm:pt-20 shrink-0 flex justify-center px-2 sm:px-4">
+          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#0A0A0B] shadow-2xl transition-all border border-[#1E293B] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-purple-500 animate-pulse shrink-0" />
+            <span className="font-bold text-purple-400 tracking-wider uppercase shrink-0">PlayCanvas WebXR Engine</span>
+          </div>
+        </div>
 
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight font-display text-white">
+        {/* BOTTOM HERO CONTENT */}
+        <div className="relative z-20 w-full container-ultrawide text-center flex flex-col items-center justify-end mt-auto px-4 sm:px-6 pb-6 sm:pb-8">
+          <h1 className="hero-headline text-fluid-hero font-extrabold tracking-tight mb-2 sm:mb-3 font-sans">
             Real-Time <span className="text-purple-400">PlayCanvas</span> WebXR Runtime
           </h1>
 
-          <p className="text-base sm:text-lg text-[#A1A1AA] max-w-2xl mx-auto leading-relaxed">
+          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]">
             Native WebXR engine with{' '}
             <code className="font-mono text-[#3ECF8E] px-1.5 py-0.5 rounded bg-[#18181B] border border-[#27272A]">
               @playcanvas/pc
@@ -49,23 +56,35 @@ export default function PlayCanvasShowcasePage() {
             . Real-time GLTF loading, material editing, GPU-accelerated rendering. Access immersive 3D experiences directly in browser — zero install, runs any device.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 w-full max-w-2xl mx-auto mb-6">
             <Link
               href="/admin/dashboard"
-              className="px-8 py-3.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm shadow-xl shadow-purple-900/40 transition-all hover:scale-105 flex items-center gap-2"
+              id="hero-primary-cta"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer hover:scale-105 active:scale-95"
             >
               <Cpu className="w-4 h-4" />
               <span>Open Admin Dashboard</span>
-              <ChevronRight className="w-4 h-4" />
             </Link>
 
             <Link
               href="/xr-world"
-              className="px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/20 backdrop-blur-md transition-all flex items-center gap-2"
+              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#1E293B] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#1E293B]"
             >
               <Globe className="w-4 h-4 text-purple-400" />
               <span>Back World Hub</span>
             </Link>
+          </div>
+          
+          <div className="relative w-full flex items-center justify-center pt-2">
+            <div className="sm:block">
+              <Link
+                href="/xr-world"
+                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0A0A0B] text-[#FAFAFA] text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-sm hover:bg-[#131314] border border-[#1E293B]"
+              >
+                <span>Scroll to explore</span>
+                <ChevronRight className="w-3.5 h-3.5 text-purple-400 animate-bounce" />
+              </Link>
+            </div>
           </div>
         </div>
       </section>

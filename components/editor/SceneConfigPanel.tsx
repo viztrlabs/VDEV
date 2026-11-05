@@ -26,6 +26,7 @@ import type {
   VtedStagingMode,
   VtedSunLight,
 } from '@/lib/vted-types';
+import { CollapsibleCardHeader } from '@/components/editor/shell/CollapsibleCardHeader';
 
 interface SceneConfigPanelProps {
   room: TourRoom;
@@ -455,6 +456,7 @@ function FilterTab({
 }
 
 export default function SceneConfigPanel(props: SceneConfigPanelProps) {
+  const [collapsed, setCollapsed] = useState(false);
   const [tab, setTab] = useState<'identity' | 'nadir' | 'staging' | 'filter'>('identity');
 
   const vtedAny = props.room as any;
@@ -475,11 +477,13 @@ export default function SceneConfigPanel(props: SceneConfigPanelProps) {
 
   return (
     <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-3 space-y-3">
-      <div className="text-[10px] font-mono uppercase tracking-wider text-[#3ECF8E] flex items-center gap-1.5">
+      <CollapsibleCardHeader collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)}>
         <Aperture className="w-3 h-3" />
         Scene Configuration
-      </div>
+      </CollapsibleCardHeader>
 
+      {!collapsed && (
+        <>
       <div role="tablist" className="flex items-center gap-1 p-1 rounded-lg bg-[#09090B] border border-[#27272A]">
         <TabBtn id="identity" active={tab} setActive={setTab} icon={<SettingsIcon className="w-3 h-3" />}>
           Scene
@@ -525,6 +529,8 @@ export default function SceneConfigPanel(props: SceneConfigPanelProps) {
           contrast={props.room.contrast ?? 100}
           onUpdate={props.onUpdate}
         />
+      )}
+        </>
       )}
     </div>
   );

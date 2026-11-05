@@ -84,6 +84,9 @@ export default function PanoramaPreview({
   // Local drag override (id → screen pixels) for instant visual feedback.
   const [dragPos, setDragPos] = useState<{ id: string; x: number; y: number } | null>(null);
 
+  // Track hotspot count to detect additions and force immediate reproject.
+  const hotspotCountRef = useRef(hotspots.length);
+
   // Keep hotspots fresh for the view-change listener registered once at init.
   const hotspotsRef = useRef<PreviewHotspot[]>(hotspots);
   hotspotsRef.current = hotspots;
@@ -233,6 +236,19 @@ export default function PanoramaPreview({
   useEffect(() => {
     reproject();
   }, [hotspots, ready, reproject]);
+
+  // Force a re-project when hotspot count changes (catches the render-cycle
+  // gap where a new hotspot exists in `hotspots` but not yet in `projected`).
+  useEffect(() => {
+    if (!ready) return;
+    const prevCount = hotspotCountRef.current;
+    const currCount = hotspots.length;
+    hotspotCountRef.current = currCount;
+    if (currCount > prevCount) {
+      // New hotspot(s) added — ensure they get projected immediately.
+      reproject();
+    }
+  }, [hotspots.length, ready, reproject]);
 
   // -------------------------------------------------------------------------
   // Hotspot drag handlers (overlay 2D)
@@ -396,7 +412,8 @@ export default function PanoramaPreview({
       {ready &&
         hotspots.map((hotspot) => {
           const p = dragPos?.id === hotspot.id ? dragPos : projected[hotspot.id];
-          if (!p) return null;
+          if (p === null) return null; // behind camera
+          if (p === undefined) return null; // not yet projected
           return (
             <button
               key={hotspot.id}

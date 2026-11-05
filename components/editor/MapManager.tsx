@@ -33,10 +33,11 @@ export default function MapManager({
 
   // Build tile URL for OpenStreetMap (or satellite proxy)
   const tileUrl = (x: number, y: number) => {
-    if (display.mapType === 'satellite') {
+    const mapType = display?.mapType ?? 'roadmap';
+    if (mapType === 'satellite') {
       return `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${zoom}/${y}/${x}`;
     }
-    if (display.mapType === 'terrain') {
+    if (mapType === 'terrain') {
       return `https://tile.opentopomap.org/${zoom}/${x}/${y}.png`;
     }
     return `https://tile.openstreetmap.org/${zoom}/${x}/${y}.png`;

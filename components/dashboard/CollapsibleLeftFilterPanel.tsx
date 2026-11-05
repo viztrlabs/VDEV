@@ -521,8 +521,8 @@ export default function CollapsibleLeftFilterPanel({
                             </h4>
                             <div className="flex items-center justify-between text-[9px] text-[#A1A1AA]">
                               <span className="truncate">{project.clientCompany}</span>
-                              <span className="text-[#3ECF8E] font-medium font-mono">
-                                ${project.bookingAmount.toLocaleString()}
+                              <span className="text-[#3ECF8E] font-medium font-mono" suppressHydrationWarning>
+                                ${project.bookingAmount.toLocaleString('en-US')}
                               </span>
                             </div>
                           </div>

@@ -1,0 +1,1351 @@
+[WARN] The "pnpm" field in package.json is no longer read by pnpm. The following keys were ignored: "pnpm.onlyBuiltDependencies". See https://pnpm.io/settings for the new home of each setting.
+$ next dev
+   ▲ Next.js 15.5.24
+   - Local:        http://localhost:3000
+   - Network:      http://10.192.129.32:3000
+   - Environments: .env.local
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+ ✓ Starting...
+ ✓ Ready in 3.8s
+ ○ Compiling /xr-world/virtual-tour/editor ...
+ ✓ Compiled /xr-world/virtual-tour/editor in 11.4s (2407 modules)
+ GET /xr-world/virtual-tour/editor 200 in 14293ms
+ ✓ Compiled in 3s (1076 modules)
+ ✓ Compiled in 349ms (1062 modules)
+ ○ Compiling /middleware ...
+ ✓ Compiled /middleware in 571ms (272 modules)
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ○ Compiling /api/tour ...
+ ✓ Compiled /api/tour in 7.1s (2763 modules)
+ ✓ Compiled in 2.2s (1077 modules)
+ ✓ Compiled in 1561ms (1077 modules)
+ ✓ Compiled in 1475ms (1077 modules)
+ GET /api/tour 200 in 13348ms
+ ✓ Compiled in 1560ms (1077 modules)
+ ✓ Compiled in 1544ms (1077 modules)
+ ✓ Compiled in 1608ms (1077 modules)
+ ✓ Compiled in 1443ms (1077 modules)
+ ✓ Compiled in 1412ms (1077 modules)
+ ✓ Compiled in 1353ms (1077 modules)
+ ✓ Compiled in 1386ms (1077 modules)
+ ✓ Compiled in 1317ms (1077 modules)
+ ✓ Compiled in 1592ms (1077 modules)
+ ✓ Compiled in 1749ms (1077 modules)
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ○ Compiling /api/tour/settings ...
+ ✓ Compiled /api/tour/settings in 3.9s (2765 modules)
+ ✓ Compiled in 1673ms (1077 modules)
+ GET /api/tour/settings 200 in 5599ms
+ ✓ Compiled in 1456ms (1077 modules)
+ ✓ Compiled in 1823ms (1077 modules)
+ ✓ Compiled in 1518ms (1077 modules)
+ ✓ Compiled in 1436ms (1077 modules)
+ ✓ Compiled in 1354ms (1077 modules)
+ ✓ Compiled in 1367ms (1077 modules)
+ ✓ Compiled in 1584ms (1077 modules)
+ ✓ Compiled in 1607ms (1077 modules)
+ ✓ Compiled in 1424ms (1077 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1164ms
+ ✓ Compiled in 2.5s (1077 modules)
+ ○ Compiling /xr-world/virtual-tour/tour-builder ...
+ ✓ Compiled /xr-world/virtual-tour/tour-builder in 6.1s (2832 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 5721ms
+ ✓ Compiled in 2.7s (1109 modules)
+ ✓ Compiled in 1575ms (1109 modules)
+ ✓ Compiled in 1336ms (1109 modules)
+ ✓ Compiled in 1462ms (1109 modules)
+ ✓ Compiled in 1419ms (1109 modules)
+ ✓ Compiled in 1387ms (1109 modules)
+ ✓ Compiled in 1426ms (1109 modules)
+ ✓ Compiled in 1391ms (1109 modules)
+ ✓ Compiled in 1396ms (1109 modules)
+ ✓ Compiled in 1862ms (1109 modules)
+ ✓ Compiled in 1803ms (1109 modules)
+ ✓ Compiled in 2s (1109 modules)
+ GET /xr-world/virtual-tour/editor 200 in 2025ms
+ ✓ Compiled in 1436ms (1109 modules)
+ ✓ Compiled in 1323ms (1109 modules)
+ ✓ Compiled in 1201ms (1109 modules)
+ ✓ Compiled in 1313ms (1109 modules)
+ ✓ Compiled in 2s (1109 modules)
+ ✓ Compiled in 2.6s (1109 modules)
+ ✓ Compiled in 2.2s (1109 modules)
+ ✓ Compiled in 2.4s (1109 modules)
+ ✓ Compiled in 1779ms (1109 modules)
+ ✓ Compiled in 1563ms (1109 modules)
+ ✓ Compiled in 1394ms (1109 modules)
+ ✓ Compiled in 1549ms (1109 modules)
+ ✓ Compiled in 1702ms (1109 modules)
+ ✓ Compiled in 1793ms (1109 modules)
+ ✓ Compiled in 1576ms (1109 modules)
+ ✓ Compiled in 1364ms (1109 modules)
+ ✓ Compiled in 1499ms (1109 modules)
+ ✓ Compiled in 1545ms (1109 modules)
+ ✓ Compiled in 1565ms (1109 modules)
+ ✓ Compiled in 2.1s (1109 modules)
+ ✓ Compiled in 1700ms (1109 modules)
+ ✓ Compiled in 2.4s (1109 modules)
+ ✓ Compiled in 1912ms (1109 modules)
+ ✓ Compiled in 1312ms (1109 modules)
+ ✓ Compiled in 1394ms (1109 modules)
+ ✓ Compiled in 1349ms (1109 modules)
+ ✓ Compiled in 1290ms (1109 modules)
+ ✓ Compiled in 1278ms (1109 modules)
+ ✓ Compiled in 1381ms (1109 modules)
+ ✓ Compiled in 1277ms (1109 modules)
+ ✓ Compiled in 1250ms (1109 modules)
+ ✓ Compiled in 1304ms (1109 modules)
+ ✓ Compiled in 1295ms (1109 modules)
+ ✓ Compiled in 1599ms (1109 modules)
+ ✓ Compiled in 1591ms (1109 modules)
+ ✓ Compiled in 1957ms (1109 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1853ms
+ ✓ Compiled in 1477ms (1109 modules)
+ ✓ Compiled in 1281ms (1109 modules)
+ ✓ Compiled in 1351ms (1109 modules)
+ ✓ Compiled in 1312ms (1109 modules)
+ ✓ Compiled in 1298ms (1109 modules)
+ ✓ Compiled in 1575ms (1109 modules)
+ ✓ Compiled in 1543ms (1109 modules)
+ ✓ Compiled in 1410ms (1109 modules)
+ ✓ Compiled in 1776ms (1109 modules)
+ ✓ Compiled in 1681ms (1109 modules)
+ ✓ Compiled in 1528ms (1109 modules)
+ ✓ Compiled in 1528ms (1109 modules)
+ ✓ Compiled in 1574ms (1109 modules)
+ ✓ Compiled in 1442ms (1109 modules)
+ ✓ Compiled in 1490ms (1109 modules)
+ ✓ Compiled in 1533ms (1109 modules)
+ ✓ Compiled in 1446ms (1109 modules)
+ ✓ Compiled in 1589ms (1109 modules)
+ ✓ Compiled in 1503ms (1109 modules)
+ ✓ Compiled in 1420ms (1109 modules)
+ ✓ Compiled in 1845ms (1109 modules)
+ ✓ Compiled in 1649ms (1109 modules)
+ ✓ Compiled in 1410ms (1109 modules)
+ ✓ Compiled in 1502ms (1109 modules)
+ ✓ Compiled in 1554ms (1109 modules)
+ ✓ Compiled in 1438ms (1109 modules)
+ ✓ Compiled in 1582ms (1109 modules)
+ ✓ Compiled in 1509ms (1109 modules)
+ ✓ Compiled in 1451ms (1109 modules)
+ ✓ Compiled in 1566ms (1109 modules)
+ ✓ Compiled in 1752ms (1109 modules)
+ ✓ Compiled in 1904ms (1109 modules)
+ ✓ Compiled in 1504ms (1109 modules)
+ ✓ Compiled in 1566ms (1109 modules)
+ ✓ Compiled in 1640ms (1109 modules)
+ ✓ Compiled in 1596ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1801ms
+ ✓ Compiled in 1573ms (1109 modules)
+ ✓ Compiled in 1542ms (1109 modules)
+ ✓ Compiled in 1306ms (1109 modules)
+ ✓ Compiled in 1443ms (1109 modules)
+ ✓ Compiled in 1466ms (1109 modules)
+ ✓ Compiled in 1709ms (1109 modules)
+ ✓ Compiled in 2s (1109 modules)
+ ✓ Compiled in 1833ms (1109 modules)
+ ✓ Compiled in 1661ms (1109 modules)
+ ✓ Compiled in 1679ms (1109 modules)
+ ✓ Compiled in 1780ms (1109 modules)
+ ✓ Compiled in 2.1s (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1948ms
+ ✓ Compiled in 1550ms (1109 modules)
+ ✓ Compiled in 1573ms (1109 modules)
+ ✓ Compiled in 1455ms (1109 modules)
+ ✓ Compiled in 1403ms (1109 modules)
+ ✓ Compiled in 1506ms (1109 modules)
+ ✓ Compiled in 2.4s (1109 modules)
+ ✓ Compiled in 1623ms (1109 modules)
+ ✓ Compiled in 1500ms (1109 modules)
+ ✓ Compiled in 1564ms (1109 modules)
+ ✓ Compiled in 1588ms (1109 modules)
+ ✓ Compiled in 1697ms (1109 modules)
+ ✓ Compiled in 1726ms (1109 modules)
+ ✓ Compiled in 1653ms (1109 modules)
+ ✓ Compiled in 1782ms (1109 modules)
+ ✓ Compiled in 1812ms (1109 modules)
+ ✓ Compiled in 2.2s (1109 modules)
+ ✓ Compiled in 2.1s (1109 modules)
+ ✓ Compiled in 1802ms (1109 modules)
+ ✓ Compiled in 1845ms (1109 modules)
+ ✓ Compiled in 2s (1109 modules)
+ ✓ Compiled in 1691ms (1109 modules)
+ ✓ Compiled in 1746ms (1109 modules)
+ ✓ Compiled in 2.1s (1109 modules)
+ ✓ Compiled in 1815ms (1109 modules)
+ ✓ Compiled in 1995ms (1109 modules)
+ ✓ Compiled in 2.2s (1109 modules)
+ ✓ Compiled in 1797ms (1109 modules)
+ ✓ Compiled in 2.1s (1109 modules)
+ ✓ Compiled in 1739ms (1109 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 1931ms (1109 modules)
+ GET /xr-world/virtual-tour/editor 200 in 1948ms
+ ✓ Compiled in 1512ms (1109 modules)
+ ✓ Compiled in 1309ms (1109 modules)
+ ✓ Compiled in 1329ms (1109 modules)
+ ✓ Compiled in 1273ms (1109 modules)
+ ✓ Compiled in 1530ms (1109 modules)
+ ✓ Compiled in 1724ms (1109 modules)
+ ✓ Compiled in 1427ms (1109 modules)
+ ✓ Compiled in 1542ms (1109 modules)
+ ✓ Compiled in 1821ms (1109 modules)
+ ✓ Compiled in 1612ms (1109 modules)
+ ✓ Compiled in 1527ms (1109 modules)
+ ✓ Compiled in 1510ms (1109 modules)
+ ✓ Compiled in 1383ms (1109 modules)
+ ✓ Compiled in 1513ms (1109 modules)
+ ✓ Compiled in 1529ms (1109 modules)
+ ✓ Compiled in 1576ms (1109 modules)
+ ✓ Compiled in 1984ms (1109 modules)
+ ✓ Compiled in 1602ms (1109 modules)
+ ✓ Compiled in 1562ms (1109 modules)
+ ✓ Compiled in 1850ms (1109 modules)
+ ✓ Compiled in 1937ms (1109 modules)
+ ✓ Compiled in 1475ms (1109 modules)
+ ✓ Compiled in 1583ms (1109 modules)
+ ✓ Compiled in 1500ms (1109 modules)
+ ✓ Compiled in 1420ms (1109 modules)
+ ✓ Compiled in 1650ms (1109 modules)
+ ✓ Compiled in 1576ms (1109 modules)
+ ✓ Compiled in 1415ms (1109 modules)
+ ✓ Compiled in 1541ms (1109 modules)
+ ✓ Compiled in 1499ms (1109 modules)
+ ✓ Compiled in 1489ms (1109 modules)
+ ✓ Compiled in 1851ms (1109 modules)
+ ✓ Compiled in 1725ms (1109 modules)
+ ✓ Compiled in 1458ms (1109 modules)
+ ✓ Compiled in 1530ms (1109 modules)
+ ✓ Compiled in 1573ms (1109 modules)
+ ✓ Compiled in 1531ms (1109 modules)
+ ✓ Compiled in 1485ms (1109 modules)
+ ✓ Compiled in 1519ms (1109 modules)
+ ✓ Compiled in 1435ms (1109 modules)
+ ✓ Compiled in 1621ms (1109 modules)
+ ✓ Compiled in 1476ms (1109 modules)
+ ✓ Compiled in 1773ms (1109 modules)
+ ✓ Compiled in 1602ms (1109 modules)
+ ✓ Compiled in 1535ms (1109 modules)
+ ✓ Compiled in 1496ms (1109 modules)
+ ✓ Compiled in 1649ms (1109 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 1826ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1938ms
+ ✓ Compiled in 1542ms (1109 modules)
+ ✓ Compiled in 1414ms (1109 modules)
+ ✓ Compiled in 1377ms (1109 modules)
+ ✓ Compiled in 1359ms (1109 modules)
+ ✓ Compiled in 1386ms (1109 modules)
+ ✓ Compiled in 1920ms (1109 modules)
+ ✓ Compiled in 1493ms (1109 modules)
+ ✓ Compiled in 1620ms (1109 modules)
+ ✓ Compiled in 1432ms (1109 modules)
+ ✓ Compiled in 1514ms (1109 modules)
+ ✓ Compiled in 1636ms (1109 modules)
+ ✓ Compiled in 1512ms (1109 modules)
+ ✓ Compiled in 1585ms (1109 modules)
+ ✓ Compiled in 1572ms (1109 modules)
+ ✓ Compiled in 1454ms (1109 modules)
+ ✓ Compiled in 1572ms (1109 modules)
+ ✓ Compiled in 1756ms (1109 modules)
+ ✓ Compiled in 1704ms (1109 modules)
+ ✓ Compiled in 1577ms (1109 modules)
+ ✓ Compiled in 1551ms (1109 modules)
+ ✓ Compiled in 1431ms (1109 modules)
+ ✓ Compiled in 1656ms (1109 modules)
+ ✓ Compiled in 1645ms (1109 modules)
+ ✓ Compiled in 1393ms (1109 modules)
+ ✓ Compiled in 1574ms (1109 modules)
+ ✓ Compiled in 1583ms (1109 modules)
+ ✓ Compiled in 1441ms (1109 modules)
+ ✓ Compiled in 1733ms (1109 modules)
+ ✓ Compiled in 1860ms (1109 modules)
+ ✓ Compiled in 1484ms (1109 modules)
+ ✓ Compiled in 1681ms (1109 modules)
+ ✓ Compiled in 1872ms (1109 modules)
+ ✓ Compiled in 1483ms (1109 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 1903ms (1109 modules)
+ GET /xr-world/virtual-tour/editor 200 in 3153ms
+ ✓ Compiled in 1491ms (1109 modules)
+ ✓ Compiled in 1301ms (1109 modules)
+ ✓ Compiled in 1346ms (1109 modules)
+ ✓ Compiled in 1408ms (1109 modules)
+ ✓ Compiled in 1434ms (1109 modules)
+ ✓ Compiled in 1662ms (1109 modules)
+ ✓ Compiled in 1556ms (1109 modules)
+ ✓ Compiled in 1423ms (1109 modules)
+ ✓ Compiled in 1579ms (1109 modules)
+ ✓ Compiled in 1665ms (1109 modules)
+ ✓ Compiled in 1683ms (1109 modules)
+ ✓ Compiled in 1661ms (1109 modules)
+ ✓ Compiled in 1549ms (1109 modules)
+ ✓ Compiled in 1472ms (1109 modules)
+ ✓ Compiled in 1623ms (1109 modules)
+ ✓ Compiled in 1639ms (1109 modules)
+ ✓ Compiled in 1709ms (1109 modules)
+ ✓ Compiled in 1931ms (1109 modules)
+ ✓ Compiled in 1854ms (1109 modules)
+ ✓ Compiled in 1711ms (1109 modules)
+ ✓ Compiled in 1718ms (1109 modules)
+ ✓ Compiled in 1775ms (1109 modules)
+ ✓ Compiled in 1521ms (1109 modules)
+ ✓ Compiled in 1709ms (1109 modules)
+ ✓ Compiled in 2.2s (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2365ms
+ ✓ Compiled in 1439ms (1109 modules)
+ ✓ Compiled in 1548ms (1109 modules)
+ ✓ Compiled in 1655ms (1109 modules)
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ✓ Compiled in 1701ms (1109 modules)
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ○ Compiling /api/tour/media ...
+ GET /api/tour/settings 200 in 2525ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ✓ Compiled /api/tour/media in 7.9s (2833 modules)
+ GET /api/tour/settings 200 in 3935ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/media 200 in 7346ms
+ GET /api/tour/settings 200 in 220ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/media 200 in 251ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ○ Compiling /api/tour/floorplans ...
+ ✓ Compiled /api/tour/floorplans in 1230ms (2822 modules)
+ GET /api/tour/floorplans 200 in 1589ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/floorplans 200 in 96ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/settings 200 in 572ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/media 200 in 208ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ○ Compiling /api/analytics ...
+ ✓ Compiled /api/analytics in 1493ms (2824 modules)
+ POST /api/analytics 401 in 1705ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/settings 200 in 304ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/floorplans 200 in 76ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/floorplans 200 in 69ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/settings 200 in 295ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/media 200 in 204ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/settings 200 in 621ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ GET /api/tour/media 200 in 164ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ○ Compiling /api/tour/upload ...
+ ✓ Compiled /api/tour/upload in 1646ms (2826 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /xr-world/virtual-tour/tour-builder 200 in 856ms
+ ○ Compiling /api/auth/[...nextauth] ...
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ✓ Compiled /api/analytics in 1770ms (2830 modules)
+ POST /api/analytics 401 in 1507ms
+ POST /api/analytics 401 in 1509ms
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 7027ms
+ GET /api/auth/session 200 in 3338ms
+ GET /api/auth/session 200 in 91ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 4360ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 4695ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 3702ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 3837ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 3286ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 3760ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 3426ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 3684ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 3804ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 3632ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 4469ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 5494ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 6475ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 5398ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 4321ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 5072ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+[tour/upload] tile generation failed, serving full-res only: Error: extract_area: bad extract area
+    at generateTilePyramid (lib\marzipano\tiling.ts:79:12)
+    at async POST (app\api\tour\upload\route.ts:106:24)
+  77 |           })
+  78 |           .jpeg({ quality })
+> 79 |           .toFile(tilePath);
+     |            ^
+  80 |
+  81 |         totalTiles++;
+  82 |       }
+ POST /api/tour/upload 200 in 5504ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ POST /api/analytics 401 in 166ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ POST /api/analytics 401 in 160ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ POST /api/analytics 401 in 127ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ POST /api/analytics 401 in 140ms
+ ✓ Compiled in 2.4s (1109 modules)
+ ✓ Compiled in 1713ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1704ms
+ ✓ Compiled in 1347ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1341ms
+ ✓ Compiled in 1572ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2772ms
+ ✓ Compiled in 1495ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1536ms
+ ✓ Compiled in 1525ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1541ms
+ ✓ Compiled in 2.2s (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2246ms
+ ✓ Compiled in 1765ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1858ms
+ ✓ Compiled in 1514ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1485ms
+ ✓ Compiled in 1503ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1495ms
+ ✓ Compiled in 1475ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1468ms
+ ✓ Compiled in 1399ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1431ms
+ ✓ Compiled in 1489ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1479ms
+ ✓ Compiled in 1535ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1686ms
+ ✓ Compiled in 1690ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1786ms
+ ✓ Compiled in 1501ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1492ms
+ ✓ Compiled in 1437ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1434ms
+ ✓ Compiled in 1637ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1640ms
+ ✓ Compiled in 1583ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1590ms
+ ✓ Compiled in 1354ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1421ms
+ ✓ Compiled in 1441ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1435ms
+ ✓ Compiled in 1412ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1413ms
+ ✓ Compiled in 1387ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1387ms
+ ✓ Compiled in 1509ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2722ms
+ ✓ Compiled in 1500ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2891ms
+ ✓ Compiled in 1688ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1449ms
+ ✓ Compiled in 1432ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1499ms
+ ✓ Compiled in 1442ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1451ms
+ ✓ Compiled in 1398ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1390ms
+ ✓ Compiled in 1415ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1417ms
+ ✓ Compiled in 1524ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1517ms
+ ✓ Compiled in 1398ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1395ms
+ ✓ Compiled in 1455ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1454ms
+ ✓ Compiled in 1458ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1457ms
+ ✓ Compiled in 1420ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1479ms
+ ✓ Compiled in 1494ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1831ms
+ ✓ Compiled in 1798ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1782ms
+ ✓ Compiled in 1467ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1468ms
+ ✓ Compiled in 1446ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1439ms
+ ✓ Compiled in 1369ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1367ms
+ ✓ Compiled in 1529ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1533ms
+ ✓ Compiled in 1424ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1425ms
+ ✓ Compiled in 1364ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1365ms
+ ✓ Compiled in 1390ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1389ms
+ ✓ Compiled in 1421ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1504ms
+ ✓ Compiled in 1399ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1397ms
+ ✓ Compiled in 1545ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 3022ms
+ ✓ Compiled in 1680ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1650ms
+ ✓ Compiled in 1493ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1487ms
+ ✓ Compiled in 1363ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1352ms
+ ✓ Compiled in 1449ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1448ms
+ ✓ Compiled in 1398ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2594ms
+ ✓ Compiled in 1472ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1539ms
+ ✓ Compiled in 1435ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1416ms
+ ✓ Compiled in 1433ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1431ms
+ ✓ Compiled in 1351ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1434ms
+ ✓ Compiled in 1564ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1555ms
+ ✓ Compiled in 1510ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2950ms
+ ✓ Compiled in 1783ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1593ms
+ ✓ Compiled in 1533ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1530ms
+ ✓ Compiled in 1374ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1491ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1590ms
+ ✓ Compiled in 6.5s (2475 modules)
+ ✓ Compiled in 1712ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1721ms
+ ✓ Compiled in 1533ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1610ms
+ ✓ Compiled in 1388ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1466ms
+ ✓ Compiled in 1294ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2539ms
+ ✓ Compiled in 1613ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1611ms
+ ✓ Compiled in 1657ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1684ms
+ ✓ Compiled in 1341ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1326ms
+ ✓ Compiled in 1368ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1366ms
+ ✓ Compiled in 1563ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1788ms
+ ✓ Compiled in 1727ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1736ms
+ ✓ Compiled in 1490ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1486ms
+ ✓ Compiled in 1662ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1655ms
+ ✓ Compiled in 1469ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1537ms
+ ✓ Compiled in 1433ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1486ms
+ ✓ Compiled in 1423ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1507ms
+ ✓ Compiled in 1450ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1437ms
+ ✓ Compiled in 1541ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1541ms
+ ✓ Compiled in 1445ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1487ms
+ ✓ Compiled in 1399ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1400ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1906ms
+ ✓ Compiled in 6s (2475 modules)
+ ✓ Compiled in 1636ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1614ms
+ ✓ Compiled in 1419ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 375ms
+ ✓ Compiled in 1635ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1629ms
+ ✓ Compiled in 1686ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1727ms
+ ✓ Compiled in 1345ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1345ms
+ ✓ Compiled in 1428ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1440ms
+ ✓ Compiled in 1398ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1396ms
+ ✓ Compiled in 1357ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1434ms
+ ✓ Compiled in 1531ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1546ms
+ ✓ Compiled in 1499ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1794ms
+ ✓ Compiled in 1739ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1729ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1655ms
+ ✓ Compiled in 3.8s (2475 modules)
+ ✓ Compiled in 1602ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1611ms
+ ✓ Compiled in 1535ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 379ms
+ ✓ Compiled in 1480ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1479ms
+ ✓ Compiled in 1707ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1705ms
+ ✓ Compiled in 1514ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1513ms
+ ✓ Compiled in 1323ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1326ms
+ ✓ Compiled in 1466ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2998ms
+ ✓ Compiled in 1580ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1517ms
+ ✓ Compiled in 1454ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1446ms
+ ✓ Compiled in 1507ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1509ms
+ ✓ Compiled in 1572ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1575ms
+ ✓ Compiled in 1451ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1450ms
+ ✓ Compiled in 1508ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2669ms
+ ✓ Compiled in 1464ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1455ms
+ ✓ Compiled in 2.2s (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2266ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1921ms
+ ✓ Compiled in 4.8s (2475 modules)
+ ✓ Compiled in 2.1s (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1974ms
+ ✓ Compiled in 1845ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1817ms
+ ✓ Compiled in 1607ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1603ms
+ ✓ Compiled in 1744ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1820ms
+ ✓ Compiled in 2.1s (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2157ms
+ ✓ Compiled in 1611ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1599ms
+ ✓ Compiled in 1541ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1541ms
+ ✓ Compiled in 1504ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1569ms
+ ✓ Compiled in 1361ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1369ms
+ ✓ Compiled in 1629ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1626ms
+ ✓ Compiled in 1533ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 3471ms
+ ✓ Compiled in 2.3s (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2204ms
+ ✓ Compiled in 1788ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1781ms
+ ✓ Compiled in 1428ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1475ms
+ ✓ Compiled in 1495ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2794ms
+ ✓ Compiled in 1579ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1564ms
+ ✓ Compiled in 1476ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1477ms
+ ✓ Compiled in 1485ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1537ms
+ ✓ Compiled in 1606ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1619ms
+ ✓ Compiled in 1603ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1698ms
+ ✓ Compiled in 1630ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1629ms
+ ✓ Compiled in 1506ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2981ms
+ ✓ Compiled in 1743ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2884ms
+ ✓ Compiled in 1676ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1666ms
+ ✓ Compiled in 1737ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1732ms
+ ✓ Compiled in 1658ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1791ms
+ ✓ Compiled in 1913ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1898ms
+ ✓ Compiled in 1471ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1469ms
+ ✓ Compiled in 1384ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1376ms
+ ✓ Compiled in 1554ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1568ms
+ ✓ Compiled in 1440ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1479ms
+ ✓ Compiled in 1493ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1533ms
+ ✓ Compiled in 1520ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 3076ms
+ ✓ Compiled in 1757ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1631ms
+ ✓ Compiled in 1431ms (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 3841ms
+ ✓ Compiled in 2.8s (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 3756ms
+ ✓ Compiled in 2.3s (1109 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2347ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 1846ms
+ ✓ Compiled in 8s (2479 modules)
+ ✓ Compiled in 1899ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1896ms
+ ✓ Compiled in 1769ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1890ms
+ ✓ Compiled in 1700ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1680ms
+ ✓ Compiled in 1653ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1665ms
+ ✓ Compiled in 1498ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1490ms
+ ✓ Compiled in 1448ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1448ms
+ ✓ Compiled in 1720ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1717ms
+ ✓ Compiled in 1844ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1836ms
+ ✓ Compiled in 1406ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1407ms
+ ✓ Compiled in 1528ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2691ms
+ ✓ Compiled in 1559ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2985ms
+ ✓ Compiled in 1506ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 348ms
+ ✓ Compiled in 1501ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1503ms
+ ✓ Compiled in 1522ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1523ms
+ ✓ Compiled in 1495ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1501ms
+ ✓ Compiled in 1797ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1794ms
+ ✓ Compiled in 1577ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1573ms
+ ✓ Compiled in 1338ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1341ms
+ ✓ Compiled in 1550ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1549ms
+ ✓ Compiled in 1538ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1620ms
+ ✓ Compiled in 1716ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1804ms
+ ✓ Compiled in 1790ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 3162ms
+ ✓ Compiled in 1544ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1579ms
+ ✓ Compiled in 1458ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1506ms
+ ✓ Compiled in 1340ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1333ms
+ ✓ Compiled in 1602ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1605ms
+ ✓ Compiled in 1512ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1509ms
+ ✓ Compiled in 1374ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1433ms
+ ✓ Compiled in 1460ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2590ms
+ ✓ Compiled in 1383ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1443ms
+ ✓ Compiled in 1506ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1541ms
+ ✓ Compiled in 1393ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2655ms
+ ✓ Compiled in 1645ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 3214ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 505ms
+ ✓ Compiled in 6.4s (2479 modules)
+ ✓ Compiled in 1668ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 454ms
+ ✓ Compiled in 1553ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1549ms
+ ✓ Compiled in 1388ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 2896ms
+ ✓ Compiled in 1792ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1774ms
+ ✓ Compiled in 1654ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1665ms
+ ✓ Compiled in 1424ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1418ms
+ ✓ Compiled in 1688ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1683ms
+ ✓ Compiled in 1816ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1896ms
+ ✓ Compiled in 1477ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1486ms
+ ✓ Compiled in 1549ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 3503ms
+ GET /xr-world/virtual-tour/tour-builder 200 in 2102ms
+ ✓ Compiled in 4.4s (2479 modules)
+ ✓ Compiled in 1544ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1527ms
+ ✓ Compiled in 1417ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 325ms
+ ✓ Compiled in 1631ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1630ms
+ ✓ Compiled in 1346ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1349ms
+ ✓ Compiled in 1485ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1510ms
+ ✓ Compiled in 1594ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1591ms
+ ✓ Compiled in 1793ms (1111 modules)
+ GET /xr-world/virtual-tour/tour-builder 200 in 1897ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\server\next-font-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\server\\next-font-manifest.json',
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 8.9s (2913 modules)
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+ ✓ Compiled in 2.4s (1263 modules)
+ ✓ Compiled in 2.5s (1263 modules)
+ ✓ Compiled in 3.9s (2913 modules)
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\server\next-font-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\server\\next-font-manifest.json',
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+ GET /xr-world/virtual-tour/tour-builder 500 in 18665ms
+ GET /xr-world/virtual-tour/tour-builder 500 in 421ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json',
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json',
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+ GET /xr-world/virtual-tour/tour-builder 500 in 2834ms
+ GET /xr-world/virtual-tour/tour-builder 500 in 305ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json',
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json',
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+ GET /xr-world/virtual-tour/tour-builder 500 in 1369ms
+ GET /xr-world/virtual-tour/tour-builder 500 in 321ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json',
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json',
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+ GET /xr-world/virtual-tour/tour-builder 500 in 1423ms
+ GET /xr-world/virtual-tour/tour-builder 500 in 330ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json',
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json',
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+ GET /xr-world/virtual-tour/tour-builder 500 in 1363ms
+ GET /xr-world/virtual-tour/tour-builder 500 in 324ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json',
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json',
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+ GET /xr-world/virtual-tour/tour-builder 500 in 1365ms
+ GET /xr-world/virtual-tour/tour-builder 500 in 330ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json',
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json',
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+ GET /xr-world/virtual-tour/tour-builder 500 in 1534ms
+ GET /xr-world/virtual-tour/tour-builder 500 in 368ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json',
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json',
+  page: '/xr-world/virtual-tour/tour-builder'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+ GET /xr-world/virtual-tour/tour-builder 500 in 1380ms
+ GET /xr-world/virtual-tour/tour-builder 500 in 335ms
+[RateLimit] UPSTASH_REDIS_REST_URL/TOKEN not set. Using in-memory fallback (NOT for production).
+ ○ Compiling /api/analytics ...
+ ✓ Compiled /api/analytics in 5s (2000 modules)
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json',
+  page: '/api/analytics'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json',
+  page: '/api/analytics'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\Users\Arch_Viz\Desktop\VizTR\Dev\vdev\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Users\\Arch_Viz\\Desktop\\VizTR\\Dev\\vdev\\.next\\routes-manifest.json'
+}
+ POST /api/analytics 500 in 8271ms
+ POST /api/analytics 500 in 304ms
+ ✓ Compiled in 2.1s (1263 modules)
+ ✓ Compiled in 1703ms (1263 modules)
+ ✓ Compiled in 1542ms (1263 modules)
+ ✓ Compiled in 1668ms (1263 modules)
+ ✓ Compiled in 1766ms (1263 modules)
+ ✓ Compiled in 4.4s (1263 modules)
+ ✓ Compiled in 1891ms (1263 modules)
+ ✓ Compiled in 1361ms (1263 modules)
+ ✓ Compiled in 1326ms (1263 modules)
+ ✓ Compiled in 1291ms (1263 modules)
+ ✓ Compiled in 1299ms (1263 modules)
+ ✓ Compiled in 1660ms (1263 modules)
+ ✓ Compiled in 1467ms (1263 modules)
+ ✓ Compiled in 1233ms (1263 modules)
+ ✓ Compiled in 1273ms (1263 modules)
+ ✓ Compiled in 1285ms (1263 modules)
+ ✓ Compiled in 1316ms (1263 modules)
+ ✓ Compiled in 1306ms (1263 modules)
+ ✓ Compiled in 1295ms (1263 modules)
+ ✓ Compiled in 1271ms (1263 modules)
+ ✓ Compiled in 1308ms (1263 modules)
+ ✓ Compiled in 1258ms (1263 modules)
+ ✓ Compiled in 1698ms (1263 modules)
+ ✓ Compiled in 1446ms (1263 modules)
+ ✓ Compiled in 1234ms (1263 modules)
+ ✓ Compiled in 1298ms (1263 modules)
+ ✓ Compiled in 1289ms (1263 modules)
+ ✓ Compiled in 1237ms (1263 modules)
+ ✓ Compiled in 1239ms (1263 modules)
+ ✓ Compiled in 1258ms (1263 modules)
+ ✓ Compiled in 1295ms (1263 modules)
+ ✓ Compiled in 1329ms (1263 modules)
+ ✓ Compiled in 1252ms (1263 modules)
+ ✓ Compiled in 1706ms (1263 modules)
+ ✓ Compiled in 2.1s (1263 modules)
+ ✓ Compiled in 1546ms (1263 modules)
+ ✓ Compiled in 1330ms (1263 modules)
+ ✓ Compiled in 1298ms (1263 modules)
+ ✓ Compiled in 1293ms (1263 modules)
+ ✓ Compiled in 1268ms (1263 modules)
+ ✓ Compiled in 1301ms (1263 modules)
+ ✓ Compiled in 1320ms (1263 modules)
+ ✓ Compiled in 1296ms (1263 modules)
+ ✓ Compiled in 1237ms (1263 modules)
+ ✓ Compiled in 1271ms (1263 modules)
+ ✓ Compiled in 1343ms (1263 modules)
+ ✓ Compiled in 1567ms (1263 modules)
+ ✓ Compiled in 1333ms (1263 modules)
+ ✓ Compiled in 1293ms (1263 modules)
+ ✓ Compiled in 1256ms (1263 modules)
+ ✓ Compiled in 1343ms (1263 modules)
+ ✓ Compiled in 1432ms (1263 modules)
+ ✓ Compiled in 1339ms (1263 modules)
+ ✓ Compiled in 1289ms (1263 modules)
+ ✓ Compiled in 1379ms (1263 modules)
+ ✓ Compiled in 2.2s (1263 modules)
+ ✓ Compiled in 1545ms (1263 modules)
+ ✓ Compiled in 1556ms (1263 modules)
+ ✓ Compiled in 1643ms (1263 modules)
+ ✓ Compiled in 1486ms (1263 modules)

@@ -15,8 +15,8 @@ export default function Footer() {
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !email.includes('@')) {
-      showToast('Please enter a valid email address.', 'error');
+    if (!email || !email.trim()) {
+      showToast('Please enter your message or email.', 'error');
       return;
     }
     setSubscribed(true);
@@ -68,23 +68,26 @@ export default function Footer() {
                   <span>Subscribed to engineering briefs.</span>
                 </div>
               ) : (
-                <form onSubmit={handleSubscribe} className="flex gap-2">
+                <form
+                  onSubmit={handleSubscribe}
+                  className="flex items-center bg-[#121316] border border-[#27272A] focus-within:border-[#0c8793]/70 focus-within:ring-1 focus-within:ring-[#0c8793]/30 rounded-full p-1 pl-4 pr-1.5 transition-all shadow-inner w-full max-w-sm"
+                >
                   <input
-                    type="email"
+                    type="text"
                     id="newsletter-email"
-                    placeholder="architect@firm.com"
+                    placeholder="Type your message..."
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="glass-input text-xs text-[#FAFAFA] placeholder-[#a1abc4] px-4 py-2.5 rounded-full focus:outline-none flex-1 font-mono border border-[#1E293B]"
+                    className="bg-transparent text-xs sm:text-sm text-[#FAFAFA] placeholder-[#71717A] focus:outline-none flex-1 font-sans pr-2"
                   />
                   <button
                     type="submit"
                     id="newsletter-submit-btn"
-                    className="bg-[#00F0FF] hover:bg-[#33f3ff] text-black px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center justify-center cursor-pointer shadow-[0_0_16px_rgba(0,240,255,0.3)] hover:scale-105"
-                    aria-label="Subscribe"
+                    className="w-9 h-9 rounded-full bg-[#0c8793] hover:bg-[#0ea5b3] text-black flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-[0_0_12px_rgba(12,135,147,0.35)] hover:scale-105 active:scale-95"
+                    aria-label="Send"
                   >
-                    <Send className="w-3.5 h-3.5" />
+                    <Send className="w-4 h-4 text-black stroke-[2.2] translate-x-px -translate-y-px" />
                   </button>
                 </form>
               )}

@@ -2,8 +2,7 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api-guard';
 
-const CONTROLLER_URL =
-  process.env.STREAM_CONTROLLER_URL || 'http://localhost:3001';
+const CONTROLLER_URL = process.env.STREAM_CONTROLLER_URL;
 
 export async function POST(req: NextRequest) {
   const guard = await requireAuth(req);
@@ -12,8 +11,17 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => ({}));
     const streamId = body.streamId || 'apex-tower-ue5';
 
-    // Forward to the GPU-PC stream controller sidecar. Fall back to a
-    // simulated response if the controller is unreachable.
+    if (!CONTROLLER_URL) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: 'STREAM_CONTROLLER_UNAVAILABLE',
+          error: 'Pixel streaming is not configured: STREAM_CONTROLLER_URL is not set.',
+        },
+        { status: 503 }
+      );
+    }
+
     try {
       const upstream = await fetch(`${CONTROLLER_URL}/stop`, {
         method: 'POST',
@@ -29,18 +37,25 @@ export async function POST(req: NextRequest) {
           streamId,
         });
       }
+      const upstreamBody = await upstream.text().catch(() => '');
+      return NextResponse.json(
+        {
+          success: false,
+          code: 'STREAM_CONTROLLER_ERROR',
+          error: `Stream controller responded with status ${upstream.status}${upstreamBody ? `: ${upstreamBody.slice(0, 200)}` : ''}`,
+        },
+        { status: 502 }
+      );
     } catch {
-      // controller unreachable — fall through to simulation
+      return NextResponse.json(
+        {
+          success: false,
+          code: 'STREAM_CONTROLLER_UNREACHABLE',
+          error: `Stream controller at ${CONTROLLER_URL} is unreachable.`,
+        },
+        { status: 503 }
+      );
     }
-
-    return NextResponse.json({
-      success: true,
-      simulated: true,
-      streamId,
-      status: 'ENDED',
-      message: 'GPU container gracefully spun down (simulation — controller offline).',
-      endedAt: new Date().toISOString(),
-    });
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to stop pixel streaming instance' },

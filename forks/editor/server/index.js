@@ -5,8 +5,23 @@ import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Load .env.local from project root
-dotenv.config({ path: join(__dirname, '..', '..', '..', '.env.local') });
+// Load .env.local from editor-specific directory (NOT root)
+// Root secrets must not be loaded by the editor server
+const editorEnvPath = join(__dirname, '..', '.env.local');
+dotenv.config({ path: editorEnvPath });
+
+// Also load root env for NEXTAUTH_SECRET (needed for JWT validation)
+// but do NOT load the full root .env.local which contains all secrets
+if (process.env.NEXTAUTH_SECRET) {
+    // Already loaded from editor env
+} else {
+    // Fallback: only load specific needed vars from root
+    const rootEnvPath = join(__dirname, '..', '..', '..', '.env.local');
+    const rootConfig = dotenv.parse(rootEnvPath);
+    if (rootConfig.NEXTAUTH_SECRET && !process.env.NEXTAUTH_SECRET) {
+        process.env.NEXTAUTH_SECRET = rootConfig.NEXTAUTH_SECRET;
+    }
+}
 
 import express from 'express';
 import { createServer } from 'http';
@@ -17,11 +32,13 @@ import { setupShareDB } from './websocket/sharedb.js';
 import { handleMessengerConnection } from './websocket/messenger.js';
 import { handleRelayConnection } from './websocket/relay.js';
 import { getSupabase } from './supabase-client.js';
+import { requireEditorAuth, validateWsOrigin, extractToken, validateToken, validateLaunchToken } from './auth-middleware.js';
 import projectsRouter from './routes/real-api/projects.js';
 import scenesRouter from './routes/real-api/scenes.js';
 import assetsRouter from './routes/real-api/assets.js';
 import branchesRouter from './routes/real-api/branches.js';
 import mockRouter from './routes/mock/index.js';
+import configSaveRoutes from './routes/config-save.js';
 
 const app = express();
 const PORT = 3487;
@@ -29,9 +46,16 @@ const PORT = 3487;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
+    const origin = req.headers.origin;
+    const allowedOrigins = [
+        process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+        'http://localhost:3487',
+    ];
+    const allowed = origin && allowedOrigins.some(o => origin.startsWith(o)) ? origin : allowedOrigins[0];
+    res.header('Access-Control-Allow-Origin', allowed);
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
     if (req.method === 'OPTIONS') return res.sendStatus(200);
     next();
 });
@@ -115,7 +139,8 @@ app.get('/', (req, res) => {
 });
 
 // Editor HTML served directly from editor server with config injection
-app.get('/editor/project/:id', async (req, res) => {
+// SECURITY: Requires authentication to access editor
+app.get('/editor/project/:id', requireEditorAuth, async (req, res) => {
     try {
         const config = await generateConfig(req.params.id);
         if (!config.project?.id) return res.status(404).send('Project not found');
@@ -189,13 +214,16 @@ app.get('/launch/:id', handleLaunchRoute);
 app.get('/launch', handleLaunchRoute);
 
 // Mock catch-all FIRST — real API routes below override specific endpoints
-app.use('/api', mockRouter);
+// SECURITY: All API routes require authentication
+app.use('/api', requireEditorAuth, mockRouter);
 
 // Real API routes (Supabase-backed) — override mock for CRUD endpoints
-app.use('/api/projects', projectsRouter);
-app.use('/api/scenes', scenesRouter);
-app.use('/api/assets', assetsRouter);
-app.use('/api/branches', branchesRouter);
+// SECURITY: All API routes require authentication
+app.use('/api/projects', requireEditorAuth, projectsRouter);
+app.use('/api/scenes', requireEditorAuth, scenesRouter);
+app.use('/api/assets', requireEditorAuth, assetsRouter);
+app.use('/api/branches', requireEditorAuth, branchesRouter);
+app.use('/api/config', configSaveRoutes);
 
 app.use((err, req, res, next) => {
     console.error('[Error]', err.message);
@@ -223,16 +251,35 @@ const wsRoutes = {
 };
 
 // Single upgrade handler — routes to correct WS server
+// SECURITY: Validate origin before allowing WebSocket upgrade
 server.on('upgrade', (request, socket, head) => {
     socket.on('error', (err) => {
         console.warn('[Upgrade Socket Error]', err?.message);
     });
 
     try {
+        if (!validateWsOrigin(request)) {
+            console.warn('[WS Upgrade] Rejected untrusted origin:', request.headers.origin);
+            socket.destroy();
+            return;
+        }
+
         const url = new URL(request.url, 'http://localhost');
         const wss = wsRoutes[url.pathname];
         if (wss) {
+            const launchToken = url.searchParams.get('token');
+            let tokenPayload = null;
+            if (launchToken) {
+                tokenPayload = validateToken(launchToken) || validateLaunchToken(launchToken);
+            }
             wss.handleUpgrade(request, socket, head, (ws) => {
+                if (tokenPayload) {
+                    ws.viztrUser = {
+                        id: tokenPayload.sub || tokenPayload.id || tokenPayload.email,
+                        email: tokenPayload.user?.email || tokenPayload.email,
+                        role: tokenPayload.user?.role || tokenPayload.role || 'user',
+                    };
+                }
                 wss.emit('connection', ws, request);
             });
         } else {
@@ -254,11 +301,35 @@ realtimeWss.on('connection', (ws, req) => {
     });
 
     // Handle auth before ShareDB takes over the socket
+    // SECURITY: Validate JWT on first message before allowing ShareDB access
     const onFirstMessage = (rawData) => {
         const msg = rawData.toString();
         console.log('[Realtime] First message:', msg);
         if (msg.startsWith('auth')) {
             ws.removeListener('message', onFirstMessage);
+
+            // SECURITY: Validate JWT from the upgrade request
+            const token = extractToken(req);
+            const decoded = token ? validateToken(token) : null;
+
+            if (!decoded && process.env.NODE_ENV === 'production') {
+                console.warn('[Realtime] Rejected: invalid or missing JWT');
+                ws.close(4001, 'Authentication required');
+                return;
+            }
+
+            if (decoded) {
+                console.log('[Realtime] Authenticated user:', decoded.email || decoded.id);
+                ws.viztrUser = {
+                    id: decoded.id || decoded.sub || decoded.email,
+                    email: decoded.email,
+                    role: decoded.role || 'user',
+                };
+            } else {
+                console.warn('[Realtime] No JWT — allowing in development mode');
+                ws.viztrUser = { id: 'dev-user', role: 'admin' };
+            }
+
             if (ws.readyState === 1) {
                 try { ws.send('auth'); } catch (e) {}
             }
@@ -274,9 +345,52 @@ realtimeWss.on('connection', (ws, req) => {
 messengerWss.on('connection', handleMessengerConnection);
 relayWss.on('connection', handleRelayConnection);
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
     console.log(`VizTR Editor running at http://localhost:${PORT}`);
+    console.log(`Server address:`, server.address());
+    console.log(`Server listening:`, server.listening);
+    
+    // Test connection from within the same process using dynamic import
+    import('net').then((net) => {
+        const testSocket = net.createConnection(PORT, '127.0.0.1', () => {
+            console.log('[Self-Test] Connection successful!');
+            testSocket.end();
+        });
+        testSocket.on('error', (e) => {
+            console.error('[Self-Test] Connection failed:', e.message);
+        });
+    }).catch((e) => {
+        console.error('[Self-Test] Import failed:', e.message);
+    });
+    
+    // Additional test: try to connect from a separate process after a delay
+    setTimeout(() => {
+        import('net').then((net) => {
+            const delayedSocket = net.createConnection(PORT, '127.0.0.1', () => {
+                console.log('[Delayed Self-Test] Connection successful!');
+                delayedSocket.end();
+            });
+            delayedSocket.on('error', (e) => {
+                console.error('[Delayed Self-Test] Connection failed:', e.message);
+            });
+        });
+    }, 1000);
+    
+    // Keep-alive to prevent process exit
+    setInterval(() => {
+        console.log(`[Heartbeat] Server listening:`, server.listening, 'connections:', server.connections);
+    }, 30000);
 });
+server.on('error', (err) => {
+    console.error('[Server Error]', err);
+});
+server.on('close', () => {
+    console.log('[Server Closed]');
+});
+// Additional debugging: check server state periodically
+setInterval(() => {
+    console.log(`[Debug] Server listening:`, server?.listening, 'address:', server?.address());
+}, 10000);
 
 process.on('uncaughtException', (err) => {
     console.error('[Editor Server UncaughtException]', err);

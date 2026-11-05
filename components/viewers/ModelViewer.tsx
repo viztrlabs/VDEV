@@ -44,7 +44,14 @@ export function ModelCanvas({
   showGrid: boolean;
 }) {
   const mountRef = useRef<HTMLDivElement>(null);
-  const stateRef = useRef<{ model?: any; key?: any; fill?: any; amb?: any }>({});
+  const gridRef = useRef<any>(null);
+  const stateRef = useRef<{
+    model?: any;
+    key?: any;
+    fill?: any;
+    amb?: any;
+    clayMaterial?: any;
+  }>({});
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(
     url ? 'loading' : 'ready'
   );
@@ -72,33 +79,38 @@ export function ModelCanvas({
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(
-          50,
+          45,
           mount.clientWidth / Math.max(mount.clientHeight, 1),
           0.01,
           1000
         );
         camera.position.set(0, 0, 4);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
         renderer.setSize(mount.clientWidth, mount.clientHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.outputColorSpace = THREE.SRGBColorSpace;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.0;
         mount.appendChild(renderer.domElement);
 
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
         controls.autoRotate = false;
+        controls.enableZoom = true;
+        controls.enablePan = true;
 
         // Lighting presets
-        const key = new THREE.DirectionalLight(0xffffff, 2.2);
-        key.position.set(4, 8, 6);
-        const fill = new THREE.DirectionalLight(0x88aaff, 0.8);
-        fill.position.set(-6, 3, -4);
-        const amb = new THREE.AmbientLight(0xffffff, 0.6);
+        const key = new THREE.DirectionalLight(0xffffff, 2.4);
+        key.position.set(5, 10, 7);
+        const fill = new THREE.DirectionalLight(0x90b0ff, 0.9);
+        fill.position.set(-6, 4, -5);
+        const amb = new THREE.AmbientLight(0xffffff, 0.7);
         scene.add(key, fill, amb);
 
-        const grid = new THREE.GridHelper(10, 20, 0x3ecf8e, 0x3ecf8e);
-        (grid.material as THREE.Material).opacity = 0.25;
+        const grid = new THREE.GridHelper(10, 20, 0x3ecf8e, 0x27272a);
+        (grid.material as THREE.Material).opacity = 0.35;
         (grid.material as THREE.Material).transparent = true;
         grid.visible = showGrid;
         scene.add(grid);
@@ -107,11 +119,12 @@ export function ModelCanvas({
         const loader = new GLTFLoader();
 
         const dracoLoader = new DRACOLoader();
-        dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
+        dracoLoader.setDecoderPath('/draco/');
         loader.setDRACOLoader(dracoLoader);
 
         const ktx2Loader = new KTX2Loader();
-        ktx2Loader.setTranscoderPath('https://unpkg.com/basis-universal@1.4.0/dist/');
+        ktx2Loader.setTranscoderPath('/basis/');
+        ktx2Loader.detectSupport(renderer);
         loader.setKTX2Loader(ktx2Loader);
 
         loader.setMeshoptDecoder(MeshoptDecoder);
@@ -120,54 +133,87 @@ export function ModelCanvas({
         if (disposed) return;
         const model = gltf.scene;
 
-        // Frame the model
+        // Preserve original materials for clean mode toggling
+        model.traverse((o: any) => {
+          if (o.isMesh && o.material) {
+            o.userData.originalMaterial = o.material;
+          }
+        });
+
+        // Frame the model centered
         const box = new THREE.Box3().setFromObject(model);
         const size = box.getSize(new THREE.Vector3());
         const center = box.getCenter(new THREE.Vector3());
         model.position.sub(center);
         const maxDim = Math.max(size.x, size.y, size.z) || 1;
-        camera.position.set(0, 0, maxDim * 2.2);
+        camera.position.set(maxDim * 0.8, maxDim * 0.6, maxDim * 1.6);
         controls.target.set(0, 0, 0);
+        controls.maxDistance = maxDim * 6;
+        controls.minDistance = maxDim * 0.2;
+        controls.update();
         scene.add(model);
 
-        // Apply render mode + lighting to all materials
+        // Clay material preset
+        const clayMaterial = new THREE.MeshStandardMaterial({
+          color: 0xd4d4d8,
+          roughness: 0.65,
+          metalness: 0.05,
+        });
+
         const applyMaterialMode = () => {
           model.traverse((o: any) => {
             if (!o.isMesh) return;
-            const mats = Array.isArray(o.material) ? o.material : [o.material];
-            for (const m of mats) {
-              if (!m) continue;
-              m.wireframe = renderMode === 'wireframe';
-              if (renderMode === 'clay') {
-                m.color?.set?.(0xcccccc);
-                if ('emissive' in m) m.emissive?.set?.(0x000000);
+            if (renderMode === 'clay') {
+              o.material = clayMaterial;
+            } else if (o.userData.originalMaterial) {
+              o.material = o.userData.originalMaterial;
+              const mats = Array.isArray(o.material) ? o.material : [o.material];
+              for (const m of mats) {
+                if (m) {
+                  m.wireframe = renderMode === 'wireframe';
+                  m.needsUpdate = true;
+                }
               }
             }
           });
         };
+
         const applyLighting = () => {
           if (lighting === 'noon') {
-            key.intensity = 3;
+            key.intensity = 3.0;
             key.color.set(0xffffff);
             fill.intensity = 1.1;
-            amb.intensity = 1.0;
+            amb.intensity = 0.8;
           } else if (lighting === 'sunset') {
-            key.intensity = 2.0;
+            key.intensity = 2.2;
             key.color.set(0xffb27a);
             fill.intensity = 0.7;
-            amb.intensity = 0.55;
+            amb.intensity = 0.5;
           } else {
-            key.intensity = 0.8;
+            key.intensity = 0.9;
             key.color.set(0x9bb8ff);
             fill.intensity = 0.4;
             amb.intensity = 0.3;
           }
         };
-        stateRef.current = { model, key, fill, amb };
+
+        stateRef.current = { model, key, fill, amb, clayMaterial };
         applyMaterialMode();
         applyLighting();
 
         setStatus('ready');
+
+        // Responsive resize observer
+        const resizeObserver = new ResizeObserver(() => {
+          if (!mount || disposed) return;
+          const width = mount.clientWidth;
+          const height = mount.clientHeight;
+          if (width === 0 || height === 0) return;
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          renderer.setSize(width, height);
+        });
+        resizeObserver.observe(mount);
 
         const animate = () => {
           if (disposed) return;
@@ -179,6 +225,7 @@ export function ModelCanvas({
 
         cleanupFns.push(() => {
           cancelAnimationFrame(raf);
+          resizeObserver.disconnect();
           controls.dispose();
           renderer.dispose();
           dracoLoader.dispose();
@@ -190,12 +237,14 @@ export function ModelCanvas({
               mats.forEach((m: any) => m?.dispose?.());
             }
           });
+          clayMaterial.dispose();
           if (renderer.domElement.parentElement === mount) {
             mount.removeChild(renderer.domElement);
           }
         });
       } catch (err: any) {
         if (disposed) return;
+        console.error('ModelViewer WebGL error:', err);
         setStatus('error');
         setErrorMsg(err?.message || 'Failed to load model');
       }
@@ -214,34 +263,33 @@ export function ModelCanvas({
     if (!st.model) return;
     st.model.traverse((o: any) => {
       if (!o.isMesh) return;
-      const mats = Array.isArray(o.material) ? o.material : [o.material];
-      for (const m of mats) {
-        if (!m) continue;
-        m.wireframe = renderMode === 'wireframe';
-        if (renderMode === 'clay') {
-          m.color?.set?.(0xcccccc);
-          if ('emissive' in m) m.emissive?.set?.(0x000000);
-        } else if (renderMode === 'pbr') {
-          m.needsUpdate = true;
+      if (renderMode === 'clay' && st.clayMaterial) {
+        o.material = st.clayMaterial;
+      } else if (o.userData.originalMaterial) {
+        o.material = o.userData.originalMaterial;
+        const mats = Array.isArray(o.material) ? o.material : [o.material];
+        for (const m of mats) {
+          if (m) {
+            m.wireframe = renderMode === 'wireframe';
+            m.needsUpdate = true;
+          }
         }
       }
     });
     if (st.key) {
       if (lighting === 'noon') {
-        st.key.intensity = 3; st.key.color.set(0xffffff);
-        st.fill.intensity = 1.1; st.amb.intensity = 1.0;
+        st.key.intensity = 3.0; st.key.color.set(0xffffff);
+        st.fill.intensity = 1.1; st.amb.intensity = 0.8;
       } else if (lighting === 'sunset') {
-        st.key.intensity = 2.0; st.key.color.set(0xffb27a);
-        st.fill.intensity = 0.7; st.amb.intensity = 0.55;
+        st.key.intensity = 2.2; st.key.color.set(0xffb27a);
+        st.fill.intensity = 0.7; st.amb.intensity = 0.5;
       } else {
-        st.key.intensity = 0.8; st.key.color.set(0x9bb8ff);
+        st.key.intensity = 0.9; st.key.color.set(0x9bb8ff);
         st.fill.intensity = 0.4; st.amb.intensity = 0.3;
       }
     }
     if (gridRef.current) gridRef.current.visible = showGrid;
   }, [renderMode, lighting, showGrid]);
-
-  const gridRef = useRef<any>(null);
 
   // Always mount the WebGL host so the loader effect has a target; show
   // status as an overlay on top of it.
@@ -259,8 +307,10 @@ export function ModelCanvas({
         </div>
       )}
       {url && status === 'error' && (
-        <div className="absolute inset-0 flex items-center justify-center text-xs text-rose-300 font-mono px-4 text-center">
-          {errorMsg}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-xs text-rose-300 font-mono px-4 text-center gap-1.5 z-10 bg-black/40 backdrop-blur-sm">
+          <div className="text-rose-400 font-semibold text-sm">Failed to load 3D model</div>
+          <div className="text-zinc-400 text-[11px] max-w-md">{errorMsg}</div>
+          <div className="text-zinc-500 text-[10px] mt-1 break-all">Asset: {url}</div>
         </div>
       )}
     </div>

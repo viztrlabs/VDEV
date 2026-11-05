@@ -47,13 +47,18 @@ export async function generateTilePyramid(
 
   for (let z = 0; z <= maxZoom; z++) {
     const scale = Math.pow(2, z - maxZoom);
-    const levelW = Math.round(srcW * scale);
-    const levelH = Math.round(srcH * scale);
+    const levelW = Math.max(1, Math.round(srcW * scale));
+    const levelH = Math.max(1, Math.round(srcH * scale));
     const cols = Math.ceil(levelW / TILE_SIZE);
     const rows = Math.ceil(levelH / TILE_SIZE);
 
     const zDir = path.join(tilesDir, String(z));
     await fs.mkdir(zDir, { recursive: true });
+
+    // Resize once per level so tile-extract coordinates are exact (resized space).
+    const levelBuf = await sharp(sourcePath)
+      .resize(levelW, levelH, { fit: 'fill' })
+      .toBuffer();
 
     for (let y = 0; y < rows; y++) {
       const yDir = path.join(zDir, String(y));
@@ -67,14 +72,8 @@ export async function generateTilePyramid(
 
         const tilePath = path.join(yDir, `${x}.jpg`);
 
-        await sharp(sourcePath)
-          .resize(levelW, levelH, { fit: 'fill' })
-          .extract({
-            left: Math.round(left * (srcW / levelW)),
-            top: Math.round(top * (srcH / levelH)),
-            width: Math.round(tileW * (srcW / levelW)),
-            height: Math.round(tileH * (srcH / levelH)),
-          })
+        await sharp(levelBuf)
+          .extract({ left, top, width: tileW, height: tileH })
           .jpeg({ quality })
           .toFile(tilePath);
 

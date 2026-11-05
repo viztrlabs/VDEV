@@ -1,0 +1,237 @@
+[WARN] The "pnpm" field in package.json is no longer read by pnpm. The following keys were ignored: "pnpm.onlyBuiltDependencies". See https://pnpm.io/settings for the new home of each setting.
+$ next build
+   ▲ Next.js 15.5.24
+   - Environments: .env.production.local, .env.local
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 60s
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+   Generating static pages (0/104) ...
+   Generating static pages (26/104) 
+   Generating static pages (52/104) 
+   Generating static pages (78/104) 
+ ✓ Generating static pages (104/104)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                                    Size  First Load JS
+┌ ○ /                                                       23.8 kB         186 kB
+├ ○ /_not-found                                               319 B         104 kB
+├ ○ /about                                                  4.79 kB         117 kB
+├ ○ /admin/dashboard                                          275 B         226 kB
+├ ƒ /admin/projects/[projectId]/editor-dashboard            3.48 kB         111 kB
+├ ƒ /admin/projects/[projectId]/editor-dashboard/[service]  8.31 kB         112 kB
+├ ○ /admin/security                                         7.76 kB         111 kB
+├ ○ /admin/tours                                            3.97 kB         111 kB
+├ ƒ /api/activity                                             319 B         104 kB
+├ ƒ /api/admin/bookings                                       319 B         104 kB
+├ ƒ /api/admin/bookings/id                                    319 B         104 kB
+├ ƒ /api/admin/bookings/id/approve                            319 B         104 kB
+├ ƒ /api/admin/bookings/id/reject                             319 B         104 kB
+├ ƒ /api/admin/features                                       319 B         104 kB
+├ ƒ /api/admin/features/key                                   319 B         104 kB
+├ ƒ /api/admin/gpu                                            319 B         104 kB
+├ ƒ /api/admin/gpu/id                                         319 B         104 kB
+├ ƒ /api/admin/logs                                           319 B         104 kB
+├ ƒ /api/admin/projects                                       319 B         104 kB
+├ ƒ /api/admin/projects/id                                    319 B         104 kB
+├ ƒ /api/admin/revenue                                        319 B         104 kB
+├ ƒ /api/admin/stats                                          319 B         104 kB
+├ ƒ /api/admin/tours                                          319 B         104 kB
+├ ƒ /api/admin/tours/id                                       319 B         104 kB
+├ ƒ /api/admin/users                                          319 B         104 kB
+├ ƒ /api/admin/users/id                                       319 B         104 kB
+├ ƒ /api/admin/xr-links                                       319 B         104 kB
+├ ƒ /api/ai                                                   319 B         104 kB
+├ ƒ /api/analytics                                            319 B         104 kB
+├ ƒ /api/analytics/performance                                319 B         104 kB
+├ ƒ /api/assets                                               319 B         104 kB
+├ ƒ /api/auth/[...nextauth]                                   319 B         104 kB
+├ ƒ /api/blog                                                 319 B         104 kB
+├ ƒ /api/client-auth/verify                                   319 B         104 kB
+├ ƒ /api/clients                                              319 B         104 kB
+├ ƒ /api/collab                                               319 B         104 kB
+├ ƒ /api/contact                                              319 B         104 kB
+├ ƒ /api/contact/[id]                                         319 B         104 kB
+├ ƒ /api/deliverables                                         319 B         104 kB
+├ ƒ /api/deliverables/public/[id]                             319 B         104 kB
+├ ƒ /api/discovery                                            319 B         104 kB
+├ ƒ /api/editor-projects                                      319 B         104 kB
+├ ƒ /api/editor-projects/[id]                                 319 B         104 kB
+├ ƒ /api/editor-projects/[id]/scenes                          319 B         104 kB
+├ ƒ /api/editor-setup                                         319 B         104 kB
+├ ƒ /api/editor/launch-token                                  319 B         104 kB
+├ ƒ /api/editor/sync                                          319 B         104 kB
+├ ƒ /api/enterprise                                           319 B         104 kB
+├ ƒ /api/experience-configs                                   319 B         104 kB
+├ ƒ /api/experiences                                          319 B         104 kB
+├ ƒ /api/experiences/public/[slug]                            319 B         104 kB
+├ ƒ /api/feedback                                             319 B         104 kB
+├ ƒ /api/forms/[type]                                         319 B         104 kB
+├ ƒ /api/hermes                                               319 B         104 kB
+├ ƒ /api/media                                                319 B         104 kB
+├ ƒ /api/pages                                                319 B         104 kB
+├ ƒ /api/pixel-streaming/start                                319 B         104 kB
+├ ƒ /api/pixel-streaming/status                               319 B         104 kB
+├ ƒ /api/pixel-streaming/stop                                 319 B         104 kB
+├ ƒ /api/playcanvas/project                                   319 B         104 kB
+├ ƒ /api/project-members                                      319 B         104 kB
+├ ƒ /api/project-services                                     319 B         104 kB
+├ ƒ /api/projects                                             319 B         104 kB
+├ ƒ /api/projects/[id]/comments                               319 B         104 kB
+├ ƒ /api/projects/client                                      319 B         104 kB
+├ ƒ /api/services                                             319 B         104 kB
+├ ƒ /api/storage                                              319 B         104 kB
+├ ƒ /api/storage/[id]/signed-url                              319 B         104 kB
+├ ƒ /api/storage/signed-url                                   319 B         104 kB
+├ ƒ /api/testimonials                                         319 B         104 kB
+├ ƒ /api/tour                                                 319 B         104 kB
+├ ƒ /api/tour/ai                                              319 B         104 kB
+├ ƒ /api/tour/analytics                                       319 B         104 kB
+├ ƒ /api/tour/collab                                          319 B         104 kB
+├ ƒ /api/tour/export                                          319 B         104 kB
+├ ƒ /api/tour/floorplans                                      319 B         104 kB
+├ ƒ /api/tour/media                                           319 B         104 kB
+├ ƒ /api/tour/settings                                        319 B         104 kB
+├ ƒ /api/tour/upload                                          319 B         104 kB
+├ ƒ /api/tour/views                                           319 B         104 kB
+├ ƒ /api/tours                                                319 B         104 kB
+├ ƒ /api/users                                                319 B         104 kB
+├ ƒ /api/xr-links                                             319 B         104 kB
+├ ƒ /api/xr-links/public/[slug]                               319 B         104 kB
+├ ƒ /api/xr-links/public/[slug]/verify                        319 B         104 kB
+├ ○ /app/admin                                              1.85 kB         126 kB
+├ ○ /app/admin/analytics                                      597 B         124 kB
+├ ○ /app/admin/approvals                                      597 B         124 kB
+├ ○ /app/admin/clients                                        597 B         124 kB
+├ ○ /app/admin/files                                          597 B         124 kB
+├ ○ /app/admin/invoices                                       600 B         124 kB
+├ ○ /app/admin/leads                                          597 B         124 kB
+├ ○ /app/admin/meetings                                       599 B         124 kB
+├ ○ /app/admin/payments                                       599 B         124 kB
+├ ○ /app/admin/projects                                       599 B         124 kB
+├ ○ /app/admin/quotes                                         596 B         124 kB
+├ ○ /app/admin/settings                                       598 B         124 kB
+├ ○ /app/admin/support                                        598 B         124 kB
+├ ○ /app/admin/team                                           594 B         124 kB
+├ ○ /app/client                                             1.73 kB         125 kB
+├ ○ /app/client/invoices                                      600 B         124 kB
+├ ○ /app/client/meetings                                      599 B         124 kB
+├ ○ /app/client/messages                                      598 B         124 kB
+├ ○ /app/client/payments                                      600 B         124 kB
+├ ○ /app/client/profile                                       598 B         124 kB
+├ ○ /app/client/projects                                      600 B         124 kB
+├ ƒ /app/client/projects/[id]                                 607 B         124 kB
+├ ƒ /app/client/projects/[id]/3d-view                         600 B         124 kB
+├ ƒ /app/client/projects/[id]/approvals                       601 B         124 kB
+├ ƒ /app/client/projects/[id]/downloads                       602 B         124 kB
+├ ƒ /app/client/projects/[id]/feedback                        600 B         124 kB
+├ ƒ /app/client/projects/[id]/files                           597 B         124 kB
+├ ƒ /app/client/projects/[id]/milestones                      598 B         124 kB
+├ ƒ /app/client/projects/[id]/renders                         597 B         124 kB
+├ ƒ /app/client/projects/[id]/timeline                        598 B         124 kB
+├ ƒ /app/client/projects/[id]/virtual-tour                    602 B         124 kB
+├ ƒ /app/client/projects/[id]/vizsplat                        600 B         124 kB
+├ ƒ /app/client/projects/[id]/webar                           598 B         124 kB
+├ ƒ /app/client/projects/[id]/webxr                           598 B         124 kB
+├ ○ /app/client/support                                       598 B         124 kB
+├ ○ /app/dashboard                                           2.6 kB         110 kB
+├ ○ /app/forgot-password                                    1.97 kB         109 kB
+├ ○ /app/invite                                             1.97 kB         109 kB
+├ ○ /app/login                                              2.13 kB         109 kB
+├ ○ /app/register                                           1.86 kB         109 kB
+├ ○ /app/user                                               2.04 kB         126 kB
+├ ○ /app/user/assets                                          597 B         124 kB
+├ ○ /app/user/billing                                         596 B         124 kB
+├ ○ /app/user/editor                                          598 B         124 kB
+├ ○ /app/user/files                                           597 B         124 kB
+├ ○ /app/user/projects                                        600 B         124 kB
+├ ○ /app/user/projects/new                                    598 B         124 kB
+├ ○ /app/user/renders                                         598 B         124 kB
+├ ○ /app/user/settings                                        599 B         124 kB
+├ ○ /app/user/shared                                          598 B         124 kB
+├ ○ /app/user/team                                            595 B         124 kB
+├ ○ /app/user/usage                                           598 B         124 kB
+├ ○ /app/user/vizsplat                                        599 B         124 kB
+├ ○ /app/user/xr-experiences                                  603 B         124 kB
+├ ○ /blog                                                   4.44 kB         126 kB
+├ ƒ /blog/[slug]                                            5.51 kB         127 kB
+├ ƒ /blog/rss.xml                                             319 B         104 kB
+├ ○ /book-consultation                                      8.38 kB         121 kB
+├ ○ /client-access                                          4.62 kB         124 kB
+├ ○ /client-dashboard                                       32.6 kB         216 kB
+├ ƒ /client-view/[accessCode]                                153 kB         324 kB
+├ ○ /contact                                                3.09 kB         121 kB
+├ ○ /creator                                                1.64 kB         109 kB
+├ ƒ /creator/[projectId]                                    2.68 kB         110 kB
+├ ○ /creator/3d-editor                                      1.37 kB         105 kB
+├ ○ /creator/assets                                           459 B         104 kB
+├ ○ /creator/publish                                          467 B         104 kB
+├ ○ /creator/supersplat                                     1.47 kB         105 kB
+├ ƒ /deliverable/[id]                                       3.75 kB         107 kB
+├ ○ /discovery                                              1.98 kB         109 kB
+├ ○ /editor-projects                                        5.72 kB         109 kB
+├ ƒ /editor/[projectId]                                       444 B         104 kB
+├ ƒ /experience-live/[projectId]                            9.82 kB         178 kB
+├ ƒ /experience/[slug]                                      10.8 kB         302 kB
+├ ○ /login                                                  3.02 kB         189 kB
+├ ○ /portfolio                                              10.4 kB         123 kB
+├ ƒ /portfolio/[id]                                          6.8 kB         125 kB
+├ ○ /pricing                                                3.62 kB         116 kB
+├ ○ /privacy                                                2.26 kB         109 kB
+├ ○ /privacy-policy                                         2.26 kB         109 kB
+├ ○ /robots.txt                                               319 B         104 kB
+├ ○ /signup                                                 2.64 kB         189 kB
+├ ○ /sitemap.xml                                              319 B         104 kB
+├ ○ /solutions                                              3.52 kB         116 kB
+├ ○ /solutions/agencies                                       503 B         104 kB
+├ ○ /solutions/architects                                     509 B         104 kB
+├ ○ /solutions/developers                                     509 B         104 kB
+├ ○ /solutions/interior-designers                             515 B         104 kB
+├ ○ /solutions/real-estate                                    511 B         104 kB
+├ ○ /studio                                                 3.45 kB         130 kB
+├ ○ /studio/exterior                                        3.84 kB         131 kB
+├ ○ /studio/interior                                         3.5 kB         130 kB
+├ ○ /studio/walkthrough                                      3.4 kB         130 kB
+├ ○ /terms                                                  2.11 kB         109 kB
+├ ○ /terms-conditions                                       2.11 kB         109 kB
+├ ○ /track-project                                          1.79 kB         158 kB
+├ ○ /v2                                                       397 B         104 kB
+├ ƒ /virtual-tour/[tourId]                                  3.98 kB         108 kB
+├ ○ /vizsplat                                               3.95 kB         116 kB
+├ ○ /xr-world                                               7.48 kB         129 kB
+├ ○ /xr-world/link-generator                                6.75 kB         123 kB
+├ ○ /xr-world/pixel-streaming                               9.02 kB         127 kB
+├ ○ /xr-world/pixel-streaming/config                        6.43 kB         110 kB
+├ ○ /xr-world/showcase                                      55.8 kB         360 kB
+├ ○ /xr-world/splat-showcase                                8.82 kB         304 kB
+├ ○ /xr-world/super-splat                                     523 B         104 kB
+├ ○ /xr-world/supersplat                                      521 B         104 kB
+├ ƒ /xr-world/view/[slug]                                   5.84 kB         135 kB
+├ ○ /xr-world/virtual-reality                               3.25 kB         130 kB
+├ ○ /xr-world/virtual-tour                                  3.25 kB         130 kB
+├ ƒ /xr-world/virtual-tour/client/[tourId]                    572 B         104 kB
+├ ○ /xr-world/virtual-tour/dashboard                        7.52 kB         115 kB
+├ ○ /xr-world/virtual-tour/editor                           7.25 kB         117 kB
+├ ○ /xr-world/virtual-tour/hosting                          3.75 kB         107 kB
+├ ○ /xr-world/virtual-tour/showcase                         32.7 kB         183 kB
+├ ○ /xr-world/vizsplat                                      7.46 kB         123 kB
+├ ○ /xr-world/vizsplat/editor                               2.98 kB         107 kB
+├ ○ /xr-world/webar                                         3.79 kB         127 kB
+├ ○ /xr-world/webxr                                          3.3 kB         130 kB
+└ ○ /xr/view                                                4.57 kB         133 kB
++ First Load JS shared by all                                104 kB
+  ├ chunks/78b5726c-886e7640f6d6f125.js                     54.2 kB
+  ├ chunks/8427-26e0eff87ac12cb6.js                         45.9 kB
+  └ other shared chunks (total)                             3.44 kB
+
+
+ƒ Middleware                                                82.7 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

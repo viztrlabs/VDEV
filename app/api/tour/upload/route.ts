@@ -80,6 +80,7 @@ export async function POST(req: NextRequest) {
       });
 
     if (uploadError) {
+      console.error('[tour/upload] storage upload failed:', uploadError);
       return NextResponse.json({ error: uploadError.message }, { status: 500 });
     }
 
@@ -112,7 +113,7 @@ export async function POST(req: NextRequest) {
         // Upload generated tiles to Supabase Storage
         const { readdir: tmpReaddir } = await import('node:fs/promises');
         const tileDir = path.join(tmpDir, tileBaseName);
-        const tileFiles = await tmpReaddir(tileDir, { recursive: true }) as string[];
+        const tileFiles = (await tmpReaddir(tileDir, { recursive: true }) as string[]).filter((p) => /\.jpe?g$/i.test(p));
         for (const relPath of tileFiles) {
           const absPath = path.join(tileDir, relPath);
           const tileBuf = await (await import('node:fs/promises')).readFile(absPath);
@@ -142,6 +143,7 @@ export async function POST(req: NextRequest) {
       tiles: tileInfo,
     });
   } catch (err: any) {
+    console.error('[tour/upload] unhandled error:', err);
     return NextResponse.json({ error: err?.message || 'upload failed' }, { status: 500 });
   }
 }

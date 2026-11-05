@@ -235,8 +235,8 @@ export default function CollapsibleRightInspectorPanel({
                     />
                   </div>
                   <div className="flex items-center justify-between text-[9px] text-[#71717A]">
-                    <span>Cost Value: ${totalCostConsumed.toLocaleString()}</span>
-                    <span>Commission Cap: ${project.bookingAmount.toLocaleString()}</span>
+                    <span suppressHydrationWarning>Cost Value: ${totalCostConsumed.toLocaleString('en-US')}</span>
+                    <span suppressHydrationWarning>Commission Cap: ${project.bookingAmount.toLocaleString('en-US')}</span>
                   </div>
                 </div>
 

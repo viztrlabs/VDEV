@@ -32,6 +32,8 @@ const ROUTE_LABELS: Record<string, string> = {
 
 export default function Breadcrumbs() {
   const pathname = usePathname();
+  if (pathname === '/') return null;
+
   const segments = pathname.split('/').filter(Boolean);
 
   const breadcrumbs: BreadcrumbItem[] = [

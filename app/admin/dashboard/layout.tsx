@@ -63,7 +63,8 @@ import {
   ProjectType,
   ProjectStatus,
   PaymentStatus,
-  TimesheetEntry
+  TimesheetEntry,
+  INITIAL_MANAGED_PROJECTS,
 } from '@/lib/projects-data';
 import { FolderKanban, QrCode, FileCheck } from 'lucide-react';
 
@@ -601,7 +602,10 @@ export default function AdminDashboardLayout() {
   // slices are consumed via sectionProps below (activityFeed also feeds the
   // top-bar live counter).
   const rawProjects = useAppStore((s) => s.projects);
-  const projectsList: ManagedProject[] = rawProjects.map(mapApiProjectToManagedProject);
+  const projectsList: ManagedProject[] =
+    rawProjects.length > 0
+      ? rawProjects.map(mapApiProjectToManagedProject)
+      : INITIAL_MANAGED_PROJECTS;
   // NOTE: experiences/assets/deliverables have no unscoped (admin-global)
   // hydration endpoint — /api/experiences, /api/assets and /api/deliverables
   // all require a projectId — so these slices are realtime-only until an
@@ -613,7 +617,10 @@ export default function AdminDashboardLayout() {
   const feedbackItems = useAppStore((s) => s.feedbackItems);
   const [selectedProjectId, setSelectedProjectId] = useState<string>('');
 
-  const selectedProject = projectsList.find((p) => p.id === selectedProjectId) || projectsList[0];
+  const selectedProject =
+    projectsList.find((p) => p.id === selectedProjectId) ||
+    projectsList[0] ||
+    INITIAL_MANAGED_PROJECTS[0];
 
   // Sync activeSection from ?section=... query param (deep-link support)
   useEffect(() => {
@@ -635,9 +642,14 @@ export default function AdminDashboardLayout() {
       try {
         const res = await fetch('/api/admin/projects?pageSize=100');
         const data = await res.json();
-        if (data.success && data.data && data.data.length > 0) {
-          useAppStore.getState().setProjects(data.data.map(mapApiProjectToManagedProject));
-          setSelectedProjectId((prev) => prev || data.data[0].id);
+        const items = Array.isArray(data?.data)
+          ? data.data
+          : Array.isArray(data?.data?.data)
+            ? data.data.data
+            : [];
+        if (items.length > 0) {
+          useAppStore.getState().setProjects(items.map(mapApiProjectToManagedProject));
+          setSelectedProjectId((prev) => prev || items[0].id);
         }
       } catch {
         // Store stays as-is; realtime updates still flow when connected.

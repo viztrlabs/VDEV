@@ -378,8 +378,9 @@ async function handleSingleFileUpload(userId: string, file: File, folder?: strin
   }
 
   // Upload with retry
-  const uploadFolder = folder || userId;
-  const safeFileName = `${uploadFolder}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+  // SECURITY: Always use the authenticated user's ID as the upload folder
+  // to prevent path traversal and cross-user file writes
+  const safeFileName = `${userId}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
 
   const buffer = Buffer.from(await file.arrayBuffer());
 
@@ -448,7 +449,12 @@ export async function GET(req: NextRequest) {
   // Existing storage status endpoint
   if (isSupabaseConfigured && supabase) {
     try {
-      const folder = searchParams.get('folder') || '';
+      let folder = searchParams.get('folder') || '';
+      // SECURITY: Constrain folder listing to the user's own folder or admin-accessible folders
+      const isAdmin = guard.role === 'super_admin' || guard.role === 'admin';
+      if (!isAdmin && folder && !folder.startsWith(guard.userId)) {
+        folder = guard.userId; // Force to user's own folder
+      }
       const { data, error } = await supabase.storage.from(BUCKET_NAME).list(folder, {
         limit: 100,
         sortBy: { column: 'created_at', order: 'desc' },
@@ -484,6 +490,15 @@ export async function DELETE(req: NextRequest) {
 
   if (!path) {
     return NextResponse.json({ success: false, error: 'path query parameter required' }, { status: 400 });
+  }
+
+  // SECURITY: Validate that the path starts with the authenticated user's ID
+  // or the user is an admin. Prevents users from deleting other users' files.
+  const pathParts = path.split('/');
+  const folderOwner = pathParts[0];
+  const isAdmin = guard.role === 'super_admin' || guard.role === 'admin';
+  if (!isAdmin && folderOwner !== guard.userId) {
+    return NextResponse.json({ success: false, error: 'Forbidden: you can only delete your own files' }, { status: 403 });
   }
 
   if (isSupabaseConfigured && supabase) {

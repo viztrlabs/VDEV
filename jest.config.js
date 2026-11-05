@@ -24,7 +24,7 @@ const config = {
     '^.+\\.(js|jsx)$': 'babel-jest',
   },
   transformIgnorePatterns: [
-    'node_modules/(?!(playcanvas|marzipano|three)/)',
+    'node_modules/(?!(playcanvas|marzipano|three|jose)/)',
   ],
 };
 

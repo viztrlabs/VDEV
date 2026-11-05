@@ -5,7 +5,10 @@
 
 import type { SpatialAlignment, AlignmentMarker } from '@/lib/3d/bridge/types';
 
-export type HotspotType = 'metadata' | 'room_link' | 'image_overlay' | 'info_popup';
+export type HotspotType =
+  | 'metadata' | 'room_link' | 'image_overlay' | 'info_popup'
+  | 'navigation' | 'info' | 'image' | 'gallery' | 'video' | 'audio'
+  | 'link' | 'floor' | 'model3d' | 'splat' | 'experience' | 'custom';
 export type HotspotCategory =
   | 'material'
   | 'furniture'
@@ -36,6 +39,7 @@ export interface Hotspot {
   targetRoomName?: string;
   targetPanoramaUrl?: string;
   targetYaw?: number;
+  targetPitch?: number;
   icon?: string;
   color?: HotspotColor;
   pulseStyle?: 'radar' | 'glowing' | 'subtle';
@@ -44,6 +48,28 @@ export interface Hotspot {
   // Image overlay / linking without hotspot
   linkedImageUrl?: string;
   linkedMediaType?: 'image' | 'video' | 'model';
+  // Extended fields for new hotspot types
+  size?: number;
+  opacity?: number;
+  label?: string;
+  tooltip?: string;
+  animation?: 'none' | 'pulse' | 'glow' | 'bounce';
+  directionMode?: 'auto' | 'manual' | 'look_at' | 'target';
+  directionYaw?: number;
+  directionPitch?: number;
+  // Media fields
+  images?: string[];
+  captions?: string[];
+  videoUrl?: string;
+  audioUrl?: string;
+  externalUrl?: string;
+  modelUrl?: string;
+  openMode?: 'new_tab' | 'same_tab';
+  posterUrl?: string;
+  autoplay?: boolean;
+  loop?: boolean;
+  muted?: boolean;
+  volume?: number;
 }
 
 export interface TourRoom {

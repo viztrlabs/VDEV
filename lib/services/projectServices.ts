@@ -1,4 +1,4 @@
-import { getServiceClient } from './client';
+import { getUserClient } from './client';
 import type { ServiceRow } from './catalog';
 
 export interface ProjectServiceRow {
@@ -15,7 +15,7 @@ export interface ProjectServiceRow {
 }
 
 export async function listProjectServices(projectId: string) {
-  const svc = getServiceClient();
+  const svc = getUserClient();
   if (!svc || !projectId) return [];
   try {
     const { data, error } = await svc
@@ -41,7 +41,7 @@ export async function listProjectServices(projectId: string) {
 }
 
 export async function getProjectService(projectId: string, serviceId: string) {
-  const svc = getServiceClient();
+  const svc = getUserClient();
   if (!svc) return null;
   try {
     const { data, error } = await svc
@@ -58,7 +58,7 @@ export async function getProjectService(projectId: string, serviceId: string) {
 }
 
 export async function ensureProjectService(projectId: string, serviceId: string) {
-  const svc = getServiceClient();
+  const svc = getUserClient();
   if (!svc) return null;
   try {
     const { data, error } = await svc

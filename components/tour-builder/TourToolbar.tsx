@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Eye,
   PanelLeftOpen,
@@ -11,8 +11,11 @@ import {
   Download,
   FolderOpen,
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { useTourStore } from '@/lib/tourClientStore';
 import { TourGraphView } from './TourGraphView';
+import { validateTour } from './ValidationPanel';
+import { resolveExperienceId } from '@/lib/experienceResolver';
 
 interface TourToolbarProps {
   projectId: string;
@@ -41,31 +44,161 @@ export function TourToolbar({
 }: TourToolbarProps) {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [dirty, setDirty] = useState(false);
   const [showGraph, setShowGraph] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+  const [published, setPublished] = useState(false);
+  const [publishUrl, setPublishUrl] = useState('');
   const scenes = useTourStore((s) => s.scenes);
   const setScenes = useTourStore((s) => s.setScenes);
   const addRoom = useTourStore((s) => s.addRoom);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const prevScenesRef = useRef<string>('');
+
+  useEffect(() => {
+    const scenesStr = JSON.stringify(scenes);
+    if (prevScenesRef.current && scenesStr !== prevScenesRef.current) {
+      setDirty(true);
+    }
+    prevScenesRef.current = scenesStr;
+  }, [scenes]);
 
   const handleSave = async () => {
     setSaving(true);
-    const data = useTourStore.getState().scenes;
-    localStorage.setItem('viztr-tour-builder', JSON.stringify(data));
-    await new Promise((r) => setTimeout(r, 500));
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setError(null);
+    try {
+      const scenes = useTourStore.getState().scenes;
+      const url = new URL(window.location.href);
+      const tourId = url.searchParams.get('tour') || localStorage.getItem('viztr_active_tour') || '';
+      const res = await fetch(`/api/tour${tourId ? `?tour=${encodeURIComponent(tourId)}` : ''}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          version: 1,
+          rooms: scenes,
+          title: scenes[0]?.name || 'Tour',
+          projectId,
+          experienceId: experienceId || undefined,
+        }),
+      });
+      if (!res.ok) throw new Error('Save failed');
+      const saved = await res.json();
+      const slug = saved?.slug || tourId;
+      localStorage.setItem('viztr_active_tour', slug);
+      const next = new URL(window.location.href);
+      next.searchParams.set('tour', slug);
+      if (projectId) next.searchParams.set('project', projectId);
+      if (experienceId) next.searchParams.set('experience', experienceId);
+      window.history.replaceState({}, '', next.toString());
+      setSaved(true);
+      setDirty(false);
+      toast.success('Tour saved');
+      setTimeout(() => setSaved(false), 2000);
+    } catch (e: any) {
+      setError(e?.message || 'Save failed');
+      toast.error('Save failed');
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleLoad = () => {
-    const saved = localStorage.getItem('viztr-tour-builder');
-    if (saved) {
-      try {
-        const data = JSON.parse(saved);
-        setScenes(data);
-      } catch (e) {
-        console.error('Failed to load tour:', e);
+  const handlePublish = async () => {
+    const scenes = useTourStore.getState().scenes;
+    const errors = validateTour(scenes).filter((i) => i.type === 'error');
+    if (errors.length > 0) {
+      onToggleValidation();
+      alert(`Fix ${errors.length} issue(s) before publishing:\n${errors.map((e) => e.message).join('\n')}`);
+      return;
+    }
+
+    if (!confirm('Publish this tour? This will make it live.')) return;
+    setPublishing(true);
+    try {
+      await handleSave();
+
+      // Experience Config sync — surfaced, non-blocking.
+      const expId = experienceId || (await resolveExperienceId({ projectId })).experienceId || undefined;
+      if (expId) {
+        try {
+          const { serializeTourForExperienceConfig } = await import('@/lib/marzipano/tour-config-serializer');
+          const config = serializeTourForExperienceConfig(scenes as any, null, projectId, expId);
+          const res = await fetch('/api/experience-configs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              experience_id: expId,
+              config: { tour: config.tour },
+              assets: config.assets,
+              settings: {
+                tour: config.settings,
+                assets: config.assets,
+                metadata: config.metadata,
+              },
+            }),
+          });
+          if (!res.ok && res.status !== 401) {
+            toast.error('Tour saved, but Experience Config sync failed.');
+          }
+        } catch {
+          toast.error('Tour saved, but Experience Config sync failed.');
+        }
       }
+
+      const url = new URL(window.location.href);
+      const tourParam = url.searchParams.get('tour') || localStorage.getItem('viztr_active_tour') || '';
+      const setRes = await fetch(`/api/tour/settings${tourParam ? `?tour=${encodeURIComponent(tourParam)}` : ''}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ live: true, accessLevel: 'public' }),
+      });
+      if (!setRes.ok) {
+        const body = await setRes.json().catch(() => null);
+        throw new Error(body?.error || `Publish failed (${setRes.status})`);
+      }
+      const setData = await setRes.json();
+      const slug = setData?.slug || tourParam;
+      if (slug) localStorage.setItem('viztr_active_tour', slug);
+      const publicUrl = `/virtual-tour/${slug}`;
+      setPublished(true);
+      setPublishUrl(publicUrl);
+      toast.success('Tour published!');
+    } catch (e: any) {
+      toast.error(e?.message || 'Publish failed');
+      alert(e?.message || 'Publish failed');
+    } finally {
+      setPublishing(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleSaveEvent = () => {
+      handleSave();
+    };
+    window.addEventListener('tour-builder-save', handleSaveEvent);
+    return () => window.removeEventListener('tour-builder-save', handleSaveEvent);
+  }, []);
+
+  const handleLoad = async () => {
+    try {
+      const url = new URL(window.location.href);
+      const tourId = url.searchParams.get('tour') || localStorage.getItem('viztr_active_tour') || '';
+      const res = await fetch(`/api/tour${tourId ? `?tour=${encodeURIComponent(tourId)}` : ''}`);
+      if (!res.ok) throw new Error('Load failed');
+      const data = await res.json();
+      if (data.rooms) {
+        setScenes(data.rooms);
+      }
+      if (data.slug) {
+        localStorage.setItem('viztr_active_tour', data.slug);
+        const next = new URL(window.location.href);
+        next.searchParams.set('tour', data.slug);
+        if (projectId) next.searchParams.set('project', projectId);
+        window.history.replaceState({}, '', next.toString());
+      }
+    } catch (e) {
+      console.error('Failed to load tour:', e);
     }
   };
 
@@ -170,6 +303,8 @@ export function TourToolbar({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#27272A] hover:bg-[#3F3F46] text-xs font-mono"
           >
             {saving ? 'Saving...' : saved ? 'Saved' : 'Save'}
+            {dirty && !saved && <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />}
+            {error && <span className="text-red-500 text-[10px]">{error}</span>}
           </button>
           <button
             onClick={handleImportFromDirectory}
@@ -193,9 +328,23 @@ export function TourToolbar({
           >
             <Upload className="w-3.5 h-3.5" /> Upload
           </button>
-          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#3ECF8E] hover:bg-[#34BF7D] text-black text-xs font-mono font-bold">
-            Publish
+          <button
+            onClick={handlePublish}
+            disabled={publishing}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-black text-xs font-mono font-bold ${publishing ? 'bg-[#34BF7D] cursor-wait' : published ? 'bg-[#22C55E]' : 'bg-[#3ECF8E] hover:bg-[#34BF7D]'}`}
+          >
+            {publishing ? 'Publishing...' : published ? 'Published ✓' : 'Publish'}
           </button>
+          {published && publishUrl && (
+            <a
+              href={publishUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[10px] font-mono text-[#3ECF8E] underline hover:text-[#34BF7D]"
+            >
+              View Live
+            </a>
+          )}
           <button onClick={onToggleRight} className="p-1.5 rounded hover:bg-white/5">
             <PanelRightOpen className="w-4 h-4" />
           </button>

@@ -735,8 +735,8 @@ export default function SuperAdminPanel({
                 <Users className="w-4 h-4 text-purple-400" />
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl sm:text-3xl font-bold font-display text-white">
-                  {platformStats ? platformStats.clients.toLocaleString() : '—'}
+                <span className="text-2xl sm:text-3xl font-bold font-display text-white" suppressHydrationWarning>
+                  {platformStats ? platformStats.clients.toLocaleString('en-US') : '—'}
                 </span>
                 {platformStats && (
                   <span className="text-xs font-mono font-bold text-emerald-400 flex items-center">
@@ -755,8 +755,8 @@ export default function SuperAdminPanel({
                 <Layers className="w-4 h-4 text-[#3ECF8E]" />
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl sm:text-3xl font-bold font-display text-white">
-                  {platformStats ? platformStats.projects.toLocaleString() : '—'}
+                <span className="text-2xl sm:text-3xl font-bold font-display text-white" suppressHydrationWarning>
+                  {platformStats ? platformStats.projects.toLocaleString('en-US') : '—'}
                 </span>
                 {platformStats && (
                   <span className="text-xs font-mono font-bold text-emerald-400 flex items-center">
@@ -775,8 +775,8 @@ export default function SuperAdminPanel({
                 <Cpu className="w-4 h-4 text-sky-400" />
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl sm:text-3xl font-bold font-display text-white">
-                  {platformStats ? platformStats.experiences.toLocaleString() : '—'}
+                <span className="text-2xl sm:text-3xl font-bold font-display text-white" suppressHydrationWarning>
+                  {platformStats ? platformStats.experiences.toLocaleString('en-US') : '—'}
                 </span>
                 {platformStats && (
                   <span className="text-xs font-mono font-bold text-emerald-400 flex items-center">
@@ -795,8 +795,8 @@ export default function SuperAdminPanel({
                 <HardDrive className="w-4 h-4 text-amber-400" />
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl sm:text-3xl font-bold font-display text-white">
-                  {platformStats ? platformStats.assets.toLocaleString() : '—'}
+                <span className="text-2xl sm:text-3xl font-bold font-display text-white" suppressHydrationWarning>
+                  {platformStats ? platformStats.assets.toLocaleString('en-US') : '—'}
                 </span>
                 {platformStats && (
                   <span className="text-xs font-mono font-bold text-emerald-400 flex items-center">
@@ -900,8 +900,8 @@ export default function SuperAdminPanel({
                 <DollarSign className="w-4 h-4 text-emerald-400" />
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl sm:text-3xl font-bold font-display text-white">
-                  ${superAdmin.currentMRR.toLocaleString()}
+                <span className="text-2xl sm:text-3xl font-bold font-display text-white" suppressHydrationWarning>
+                  ${superAdmin.currentMRR.toLocaleString('en-US')}
                 </span>
                 <span className="text-xs font-mono font-bold text-emerald-400 flex items-center">
                   <ArrowUpRight className="w-3.5 h-3.5" /> +{superAdmin.growthRateMom}%
@@ -1000,7 +1000,7 @@ export default function SuperAdminPanel({
                         <div
                           className="w-full bg-emerald-500 rounded-t group-hover:bg-emerald-400 transition-all"
                           style={{ height: `${totalHeightPct}%` }}
-                          title={`Total: $${metric.total.toLocaleString()}`}
+                          title={`Total: $${metric.total.toLocaleString('en-US')}`}
                         />
                       </div>
 
@@ -1009,7 +1009,7 @@ export default function SuperAdminPanel({
                         <div
                           className="w-full bg-purple-500 rounded-t group-hover:bg-purple-400 transition-all"
                           style={{ height: `${mrrHeightPct}%` }}
-                          title={`MRR: $${metric.mrr.toLocaleString()}`}
+                          title={`MRR: $${metric.mrr.toLocaleString('en-US')}`}
                         />
                       </div>
 
@@ -1018,7 +1018,7 @@ export default function SuperAdminPanel({
                         <div
                           className="w-full bg-rose-500/80 rounded-t group-hover:bg-rose-400 transition-all"
                           style={{ height: `${expenseHeightPct}%` }}
-                          title={`Expenses: $${metric.expenses.toLocaleString()}`}
+                          title={`Expenses: $${metric.expenses.toLocaleString('en-US')}`}
                         />
                       </div>
                     </div>

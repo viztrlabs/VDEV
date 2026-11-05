@@ -1,5 +1,6 @@
 export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { requireAuth } from '@/lib/api-guard';
 import {
   XR_LINKS_DB,
@@ -8,6 +9,24 @@ import {
   deleteXRLinkFromDB,
   buildXRLinkRecord,
 } from '@/lib/xr-links-store';
+
+const CreateXRLinkSchema = z.object({
+  name: z.string().min(1).max(255),
+  projectId: z.string().min(1),
+  sceneId: z.string().max(255).optional(),
+  modelUrl: z.string().url().optional(),
+  thumbnailUrl: z.string().url().optional(),
+  slug: z.string().max(255).optional(),
+  environment: z.string().optional(),
+  arPlacement: z.string().optional(),
+  passwordProtected: z.boolean().optional(),
+  accessPassword: z.string().max(255).optional(),
+  expiresAt: z.string().optional(),
+  engineType: z.string().optional(),
+  entitiesCount: z.number().int().optional(),
+  fileSizeMB: z.number().optional(),
+  formats: z.array(z.string()).optional(),
+});
 
 export async function GET(req: NextRequest) {
   const guard = await requireAuth(req);
@@ -23,6 +42,11 @@ export async function GET(req: NextRequest) {
   const offset = parseInt(searchParams.get('offset') || '0');
 
   let links = await getXRLinksFromDB();
+
+  // SECURITY: Non-admin users must scope by projectId to prevent IDOR
+  if (!projectId && guard.role !== 'super_admin') {
+    return NextResponse.json({ success: true, count: 0, total: 0, xrLinks: [] });
+  }
 
   // Filter by project
   if (projectId) {
@@ -71,15 +95,16 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const {
-      name, projectId, sceneId, modelUrl, thumbnailUrl, slug,
-      environment, arPlacement, passwordProtected, accessPassword,
-      expiresAt, engineType, entitiesCount, fileSizeMB, formats,
-    } = body;
-
-    if (!name || !projectId) {
-      return NextResponse.json({ success: false, error: 'name and projectId are required' }, { status: 400 });
+    const parsed = CreateXRLinkSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid input', details: parsed.error.flatten().fieldErrors },
+        { status: 400 }
+      );
     }
+    const { name, projectId, sceneId, modelUrl, thumbnailUrl, slug,
+      environment, arPlacement, passwordProtected, accessPassword,
+      expiresAt, engineType, entitiesCount, fileSizeMB, formats } = parsed.data;
 
     const origin = process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin;
     const newXRLink = buildXRLinkRecord({
@@ -110,6 +135,15 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'XR Link ID is required' }, { status: 400 });
     }
 
+    // SECURITY: Whitelist allowed fields to prevent mass assignment
+    const allowedFields = ['title', 'description', 'slug', 'type', 'url', 'status', 'metadata', 'projectId', 'expiresAt'];
+    const safeUpdates: Record<string, any> = {};
+    for (const field of allowedFields) {
+      if (updates[field] !== undefined) {
+        safeUpdates[field] = updates[field];
+      }
+    }
+
     let links = await getXRLinksFromDB();
     const index = links.findIndex((x) => x.id === id);
 
@@ -117,15 +151,14 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'XR Link not found' }, { status: 404 });
     }
 
-    // Update fields
     const updatedLink = {
       ...links[index],
-      ...updates,
+      ...safeUpdates,
       id, // Ensure ID doesn't change
       updatedAt: new Date().toISOString(),
       metadata: {
         ...links[index].metadata,
-        ...(updates.metadata || {}),
+        ...(safeUpdates.metadata || {}),
       },
     };
 

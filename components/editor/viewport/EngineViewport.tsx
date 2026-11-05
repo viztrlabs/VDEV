@@ -15,6 +15,7 @@ import { useEngineTelemetry } from '@/lib/3d/bridge/useEngineBridge';
 import { ThreeEngineAdapter } from '@/lib/3d/bridge/adapters/ThreeEngineAdapter';
 import { MarzipanoEngineAdapter } from '@/lib/3d/bridge/adapters/MarzipanoEngineAdapter';
 import { SplatEngineAdapter } from '@/lib/3d/bridge/adapters/SplatEngineAdapter';
+import { PlayCanvasEngineAdapter } from '@/lib/3d/bridge/adapters/PlayCanvasEngineAdapter';
 import { EngineType, ToolType } from '@/lib/3d/bridge/types';
 import {
   MousePointer,
@@ -81,6 +82,8 @@ export function EngineViewport({
           adapter = new ThreeEngineAdapter();
         } else if (engineType === 'marzipano') {
           adapter = new MarzipanoEngineAdapter();
+        } else if (engineType === 'playcanvas') {
+          adapter = new PlayCanvasEngineAdapter();
         } else {
           adapter = new SplatEngineAdapter();
         }
@@ -150,7 +153,7 @@ const tools: { id: ToolType; label: string; icon: React.ReactNode }[] = [
       {!isReady && !error && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#09090b]/80 backdrop-blur-sm z-30">
           <Loader2 className="w-6 h-6 text-[#3ecf8e] animate-spin mb-2" />
-          <p className="text-xs font-mono text-[#a1a1aa]">Initializing {engineType.toUpperCase()} engine…</p>
+          <p className="text-xs font-mono text-[#a1a1aa]">Initializing {engineType === 'playcanvas' ? 'VizTR Engine' : engineType.toUpperCase()}…</p>
         </div>
       )}
 

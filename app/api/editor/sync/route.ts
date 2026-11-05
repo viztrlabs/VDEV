@@ -19,6 +19,8 @@ function ensureDataDir() {
  * Hydrates the latest scene snapshot
  */
 export async function GET(req: NextRequest) {
+  const guard = await requireAuth(req);
+  if (guard.error) return guard.error;
   try {
     ensureDataDir();
 

@@ -238,11 +238,17 @@ export function addRequestIdHeaders(res: NextResponse, requestId: string): NextR
 /**
  * CORS headers for API routes
  */
-export function corsHeaders(): HeadersInit {
+export function corsHeaders(origin?: string | null): HeadersInit {
+  const allowedOrigins = [
+    process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+    process.env.NEXT_PUBLIC_EDITOR_URL || 'http://localhost:3487',
+  ];
+  const allowed = origin && allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
   return {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': allowed,
     'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Request-ID',
+    'Access-Control-Allow-Credentials': 'true',
   };
 }
 

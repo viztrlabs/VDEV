@@ -1,7 +1,8 @@
 export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
-import { getServiceClient } from '@/lib/services/client';
-import { requireAuth } from '@/lib/api-guard';
+import { getServiceClient, getRouteClient } from '@/lib/services/client';
+import { requireAuth, sanitizeString } from '@/lib/api-guard';
+import { verifyProjectAccess, verifyResourceAccess } from '@/lib/auth/project-access';
 import type { AssetCategory } from '@/lib/asset-types';
 
 export async function GET(req: NextRequest) {
@@ -15,16 +16,25 @@ export async function GET(req: NextRequest) {
     const service = searchParams.get('service');
     const experienceId = searchParams.get('experienceId');
 
-    const svc = getServiceClient();
+    const svc = getRouteClient(guard.supabaseAccessToken);
     if (!svc) return NextResponse.json({ success: false, error: 'supabase not configured' }, { status: 500 });
 
+    // Single asset by ID — verify access via project chain
     if (id) {
-      const { data, error } = await svc.from('assets').select('*').eq('id', id).maybeSingle();
-      if (error || !data) return NextResponse.json({ success: false, error: 'not found' }, { status: 404 });
-      return NextResponse.json({ success: true, asset: data });
+      const access = await verifyResourceAccess(guard.userId, 'assets', id, 'project_id', guard.role);
+      if (!access.allowed) {
+        return NextResponse.json({ success: false, error: 'Forbidden' }, { status: 403 });
+      }
+      return NextResponse.json({ success: true, asset: access.resource });
     }
 
     if (!projectId) return NextResponse.json({ success: false, error: 'projectId or id required' }, { status: 400 });
+
+    // Verify user has access to this project
+    const access = await verifyProjectAccess(guard.userId, projectId, guard.role);
+    if (!access.allowed) {
+      return NextResponse.json({ success: false, error: 'Forbidden' }, { status: 403 });
+    }
 
     let query = svc.from('assets').select('*').eq('project_id', projectId);
     if (service) {
@@ -57,11 +67,22 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const svc = getServiceClient();
+    const svc = getRouteClient(guard.supabaseAccessToken);
     if (!svc) return NextResponse.json({ success: false, error: 'supabase not configured' }, { status: 500 });
 
+    const projectId = sanitizeString(body.project_id);
+    if (!projectId) {
+      return NextResponse.json({ success: false, error: 'project_id required' }, { status: 400 });
+    }
+
+    // Verify user has access to this project
+    const access = await verifyProjectAccess(guard.userId, projectId, guard.role);
+    if (!access.allowed) {
+      return NextResponse.json({ success: false, error: 'Forbidden' }, { status: 403 });
+    }
+
     const payload: Record<string, any> = {
-      project_id: body.project_id,
+      project_id: projectId,
       service_id: body.service_id || null,
       experience_id: body.experience_id || null,
       deliverable_id: body.deliverable_id || null,
@@ -90,11 +111,30 @@ export async function PUT(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const svc = getServiceClient();
+    const svc = getRouteClient(guard.supabaseAccessToken);
     if (!svc) return NextResponse.json({ success: false, error: 'supabase not configured' }, { status: 500 });
     if (!body.id) return NextResponse.json({ success: false, error: 'id required' }, { status: 400 });
 
-    const { data, error } = await svc.from('assets').update(body).eq('id', body.id).select('*').single();
+    // Verify access via project chain
+    const access = await verifyResourceAccess(guard.userId, 'assets', body.id, 'project_id', guard.role);
+    if (!access.allowed) {
+      return NextResponse.json({ success: false, error: 'Forbidden' }, { status: 403 });
+    }
+
+    // Whitelist allowed fields
+    const allowedFields = ['type', 'url', 'storage_path', 'mime_type', 'size', 'width', 'height', 'duration_seconds', 'metadata', 'service_id', 'experience_id', 'deliverable_id'];
+    const updatePayload: Record<string, any> = {};
+    for (const field of allowedFields) {
+      if (body[field] !== undefined) {
+        updatePayload[field] = body[field];
+      }
+    }
+
+    if (Object.keys(updatePayload).length === 0) {
+      return NextResponse.json({ success: false, error: 'No valid fields to update' }, { status: 400 });
+    }
+
+    const { data, error } = await svc.from('assets').update(updatePayload).eq('id', body.id).select('*').single();
     if (error) return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     return NextResponse.json({ success: true, asset: data });
   } catch (err: any) {
@@ -109,9 +149,15 @@ export async function DELETE(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
-    const svc = getServiceClient();
+    const svc = getRouteClient(guard.supabaseAccessToken);
     if (!svc) return NextResponse.json({ success: false, error: 'supabase not configured' }, { status: 500 });
     if (!id) return NextResponse.json({ success: false, error: 'id required' }, { status: 400 });
+
+    // Verify access via project chain
+    const access = await verifyResourceAccess(guard.userId, 'assets', id, 'project_id', guard.role);
+    if (!access.allowed) {
+      return NextResponse.json({ success: false, error: 'Forbidden' }, { status: 403 });
+    }
 
     const { error } = await svc.from('assets').delete().eq('id', id);
     if (error) return NextResponse.json({ success: false, error: error.message }, { status: 500 });
