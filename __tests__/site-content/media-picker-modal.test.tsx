@@ -39,4 +39,40 @@ describe('MediaPickerModal', () => {
     fireEvent.click(screen.getByRole('button', { name: /use url/i }));
     expect(onPick).toHaveBeenCalledWith('https://cdn.x/v.mp4');
   });
+
+  it('closes on Escape key', () => {
+    mockedStore.mockReturnValue({ mediaLibrary: [] });
+    const onClose = jest.fn();
+    render(<MediaPickerModal open onClose={onClose} filter="image" onPick={() => {}} />);
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('closes when the backdrop is clicked', () => {
+    mockedStore.mockReturnValue({ mediaLibrary: [] });
+    const onClose = jest.fn();
+    render(<MediaPickerModal open onClose={onClose} filter="image" onPick={() => {}} />);
+    fireEvent.click(screen.getByTestId('media-picker-modal'));
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('closes when the close button is clicked', () => {
+    mockedStore.mockReturnValue({ mediaLibrary: [] });
+    const onClose = jest.fn();
+    render(<MediaPickerModal open onClose={onClose} filter="image" onPick={() => {}} />);
+    fireEvent.click(screen.getByRole('button', { name: /close/i }));
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects an empty or whitespace-only pasted URL', () => {
+    mockedStore.mockReturnValue({ mediaLibrary: [] });
+    const onPick = jest.fn();
+    render(<MediaPickerModal open onClose={() => {}} filter="image" onPick={onPick} />);
+    const input = screen.getByPlaceholderText(/paste.*url/i);
+    fireEvent.click(screen.getByRole('button', { name: /use url/i }));
+    expect(onPick).not.toHaveBeenCalled();
+    fireEvent.change(input, { target: { value: '   ' } });
+    fireEvent.click(screen.getByRole('button', { name: /use url/i }));
+    expect(onPick).not.toHaveBeenCalled();
+  });
 });
