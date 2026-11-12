@@ -76,6 +76,32 @@ describe('LiveSiteEditor', () => {
     expect(field.value).toBe('VIZTR');
   });
 
+  it('reset draft refreshes the preview iframe', () => {
+    render(<LiveSiteEditor />);
+    const before = screen.getByTitle('live-site-preview');
+    fireEvent.click(screen.getByRole('button', { name: /reset draft/i }));
+    const after = screen.getByTitle('live-site-preview');
+    expect(after).not.toBe(before);
+  });
+
+  it('commits media URL to draft only on blur', () => {
+    render(<LiveSiteEditor />);
+    fireEvent.click(screen.getByText('Hero'));
+    const input = screen.getByPlaceholderText('Paste media URL') as HTMLInputElement;
+    const heroImages = () =>
+      draft()
+        .content.pages[0].sections.find((s) => s.id === 'hero')!
+        .fields.find((f) => f.id === 'heroImages') as { urls: string[] };
+    const original = heroImages().urls[0];
+
+    fireEvent.change(input, { target: { value: '/images/typed.jpg' } });
+    expect(heroImages().urls[0]).toBe(original);
+    expect(input.value).toBe('/images/typed.jpg');
+
+    fireEvent.blur(input);
+    expect(heroImages().urls[0]).toBe('/images/typed.jpg');
+  });
+
   it('move section up reorders draft', () => {
     render(<LiveSiteEditor />);
     const row = screen.getByText('Showreel').closest('[data-testid="section-row"]')!;

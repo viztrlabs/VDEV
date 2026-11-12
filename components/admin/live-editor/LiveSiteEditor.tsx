@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Eye,
   EyeOff,
@@ -138,6 +138,7 @@ export default function LiveSiteEditor() {
           <button
             onClick={() => {
               resetSiteContentDraft();
+              setPreviewNonce((n) => n + 1);
               showToast('Draft reset to site defaults.', 'info');
             }}
             className="px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-zinc-300 hover:text-white text-xs font-mono flex items-center gap-1.5 cursor-pointer"
@@ -331,17 +332,14 @@ function SectionFieldEditor({
                 Choose media
               </button>
             </div>
-            <input
-              type="text"
+            <MediaUrlInput
               value={field.urls[0] ?? ''}
-              placeholder="Paste media URL"
-              onChange={(e) =>
+              onCommit={(url) =>
                 draftStore.getState().updateMediaField(pageId, section.id, field.id, {
-                  urls: [e.target.value],
+                  urls: [url],
                   isPlaceholder: false,
                 })
               }
-              className="w-full px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-xs text-white placeholder:text-zinc-500"
             />
             <label className="flex items-center gap-2 text-[11px] text-zinc-400 cursor-pointer">
               <input
@@ -376,5 +374,34 @@ function SectionFieldEditor({
         ),
       )}
     </div>
+  );
+}
+
+function MediaUrlInput({ value, onCommit }: { value: string; onCommit: (url: string) => void }) {
+  const [local, setLocal] = useState(value);
+
+  useEffect(() => {
+    setLocal(value);
+  }, [value]);
+
+  const commit = () => {
+    if (local !== value) onCommit(local);
+  };
+
+  return (
+    <input
+      type="text"
+      value={local}
+      placeholder="Paste media URL"
+      onChange={(e) => setLocal(e.target.value)}
+      onBlur={commit}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          commit();
+        }
+      }}
+      className="w-full px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-xs text-white placeholder:text-zinc-500"
+    />
   );
 }
