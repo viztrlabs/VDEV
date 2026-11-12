@@ -56,3 +56,22 @@ it('adds a list item', () => {
   const list = faq.fields.find((f) => f.kind === 'list') as any;
   expect(list.items).toHaveLength(8);
 });
+
+it('sets and clears alignment on rich fields only', () => {
+  openOn('hero');
+  expect(screen.queryByLabelText('Headline alignment')).toBeNull();
+
+  fireEvent.change(screen.getByLabelText('Description alignment'), {
+    target: { value: 'center' },
+  });
+  const aligned = useSiteContentDraftStore
+    .getState()
+    .content.pages[0].sections[0].fields.find((f) => f.id === 'description') as { align?: string };
+  expect(aligned.align).toBe('center');
+
+  fireEvent.change(screen.getByLabelText('Description alignment'), { target: { value: '' } });
+  const cleared = useSiteContentDraftStore
+    .getState()
+    .content.pages[0].sections[0].fields.find((f) => f.id === 'description')!;
+  expect('align' in cleared).toBe(false);
+});

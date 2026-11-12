@@ -22,6 +22,12 @@ interface SiteContentState {
   hydrated: boolean;
   setHydrated: () => void;
   updateTextField: (pageId: string, sectionId: string, fieldId: string, value: string) => void;
+  updateTextFieldAlign: (
+    pageId: string,
+    sectionId: string,
+    fieldId: string,
+    align: 'left' | 'center' | 'right' | undefined,
+  ) => void;
   updateMediaField: (
     pageId: string,
     sectionId: string,
@@ -297,6 +303,21 @@ function createSiteContentStore(storageKey: string) {
               fields: section.fields.map((field) =>
                 field.kind === 'text' && field.id === fieldId ? { ...field, value } : field,
               ),
+            })),
+          }),
+        updateTextFieldAlign: (pageId, sectionId, fieldId, align) =>
+          set({
+            content: mapSection(get().content, pageId, sectionId, (section) => ({
+              ...section,
+              fields: section.fields.map((field) => {
+                if (field.kind !== 'text' || field.id !== fieldId) return field;
+                if (align === undefined) {
+                  const next = { ...field };
+                  delete next.align;
+                  return next;
+                }
+                return { ...field, align };
+              }),
             })),
           }),
         updateMediaField: (pageId, sectionId, fieldId, patch: MediaPatch) =>

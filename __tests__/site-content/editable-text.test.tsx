@@ -213,6 +213,36 @@ it('writes list item fields by merging the changed key', () => {
   expect(updated.values.description).toBe(originalDescription);
 });
 
+it('applies stored alignment to a rich field', () => {
+  const section = getDefaultSection('hero');
+  (section.fields.find((f) => f.id === 'description') as any).align = 'center';
+  useSiteContentDraftStore.setState({ content: { version: 2, pages: [{ id: 'home', label: 'Homepage', route: '/', sections: [section] }] } });
+  render(
+    <EditModeProvider initial={{ editMode: false }}>
+      <SectionInstanceProvider pageId="home" section={section}>
+        <EditableText fieldId="description" as="p" />
+      </SectionInstanceProvider>
+    </EditModeProvider>,
+  );
+  const el = document.querySelector('[data-cms-field="description"]') as HTMLElement;
+  expect(el.style.textAlign).toBe('center');
+});
+
+it('adds no inline alignment when the field has none', () => {
+  const section = getDefaultSection('hero');
+  useSiteContentDraftStore.setState({ content: { version: 2, pages: [{ id: 'home', label: 'Homepage', route: '/', sections: [section] }] } });
+  render(
+    <EditModeProvider initial={{ editMode: false }}>
+      <SectionInstanceProvider pageId="home" section={section}>
+        <EditableText fieldId="description" as="p" />
+      </SectionInstanceProvider>
+    </EditModeProvider>,
+  );
+  const el = document.querySelector('[data-cms-field="description"]') as HTMLElement;
+  expect(el.style.textAlign).toBe('');
+  expect(el.hasAttribute('style')).toBe(false);
+});
+
 it('renders rich preview html without exposing it as plain markup', () => {
   const section = getDefaultSection('hero');
   (section.fields.find((f) => f.id === 'description') as any).value = '<b>Rich</b> copy';

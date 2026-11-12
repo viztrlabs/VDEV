@@ -65,6 +65,29 @@ function TextFieldEditor({ pageId, sectionId, field, label }: TextFieldEditorPro
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(field.value) }}
           className="min-h-[64px] w-full rounded-lg border border-[#27272A] bg-[#18181B] px-2.5 py-1.5 text-xs leading-relaxed text-white focus:border-[#3ECF8E] focus:outline-none"
         />
+        <select
+          id={`${controlId}-align`}
+          aria-label={`${label} alignment`}
+          value={field.align ?? ''}
+          onChange={(event) =>
+            useSiteContentDraftStore
+              .getState()
+              .updateTextFieldAlign(
+                pageId,
+                sectionId,
+                field.id,
+                event.target.value === ''
+                  ? undefined
+                  : (event.target.value as 'left' | 'center' | 'right'),
+              )
+          }
+          className={inputClass}
+        >
+          <option value="">Default</option>
+          <option value="left">Left</option>
+          <option value="center">Center</option>
+          <option value="right">Right</option>
+        </select>
       </div>
     );
   }

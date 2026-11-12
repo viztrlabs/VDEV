@@ -137,6 +137,22 @@ describe('site content store v2', () => {
     expect(s.duplicateSection('nope', 'hero')).toBeNull();
   });
 
+  it('updates and clears text field alignment', () => {
+    draft().updateTextFieldAlign('home', 'hero', 'description', 'center');
+    expect(draftSection('hero').fields.find((f) => f.id === 'description')).toMatchObject({
+      align: 'center',
+    });
+
+    draft().updateTextFieldAlign('home', 'hero', 'description', undefined);
+    const cleared = draftSection('hero').fields.find((f) => f.id === 'description')!;
+    expect('align' in cleared).toBe(false);
+    expect(JSON.stringify(cleared)).not.toContain('align');
+
+    const before = JSON.stringify(draft().content);
+    draft().updateTextFieldAlign('home', 'nope', 'description', 'center');
+    expect(JSON.stringify(draft().content)).toBe(before);
+  });
+
   it('publishes the draft and clears dirty', () => {
     const { result } = renderHook(() => useIsDraftDirty());
     expect(result.current).toBe(false);

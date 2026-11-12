@@ -30,6 +30,7 @@ interface ResolvedField {
   multiline: boolean;
   rich: boolean;
   value: string;
+  align?: 'left' | 'center' | 'right';
 }
 
 function findSection(
@@ -65,6 +66,7 @@ function resolveListField(
     multiline: itemDef.multiline ?? false,
     rich: itemDef.rich ?? false,
     value: values[fieldId] ?? '',
+    align: undefined,
   };
 }
 
@@ -83,6 +85,7 @@ function resolveTextField(section: SiteSection, fieldId: string): ResolvedField 
     multiline: (def?.kind === 'text' ? def.multiline : undefined) ?? stored?.multiline ?? false,
     rich: (def?.kind === 'text' ? def.rich : undefined) ?? stored?.rich ?? false,
     value: getTextField(section, fieldId, ''),
+    align: stored?.align ?? (def?.kind === 'text' ? def.align : undefined),
   };
 }
 
@@ -274,6 +277,9 @@ export default function EditableText({
   const isEmpty = rich ? isRichTextEmpty(displayValue) : displayValue.trim() === '';
   const showPlaceholder = editMode && !editing && isEmpty;
   const placeholderText = placeholder ?? resolved.label;
+  const alignStyle: React.CSSProperties | undefined = resolved.align
+    ? { textAlign: resolved.align }
+    : undefined;
 
   const shared = {
     ref: elementRef,
@@ -282,6 +288,7 @@ export default function EditableText({
     'data-cms-list-field': listFieldId,
     'data-cms-item-id': itemId,
     'data-cms-rich': rich ? 'true' : undefined,
+    ...(alignStyle ? { style: alignStyle } : {}),
     suppressContentEditableWarning: true,
     onBlur: handleBlur,
     onKeyDown: handleKeyDown,
