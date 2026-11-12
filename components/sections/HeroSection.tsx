@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { homepageData } from '@/data/homepage';
+import { useSiteSection } from '@/lib/use-site-section';
+import { getTextField, getMediaUrls } from '@/lib/site-content';
 import {
  ArrowRight,
  Compass,
@@ -11,7 +13,24 @@ import {
 } from 'lucide-react';
 
 export default function HeroSection() {
- const { hero } = homepageData;
+ const { hero: fallback } = homepageData;
+ const section = useSiteSection('home', 'hero');
+ const hero = section
+  ? {
+      headline: getTextField(section, 'headline', fallback.headline),
+      subheadline: getTextField(section, 'subheadline', fallback.subheadline),
+      description: getTextField(section, 'description', fallback.description),
+      primaryCTA: {
+        label: getTextField(section, 'primaryCtaLabel', fallback.primaryCTA.label),
+        href: getTextField(section, 'primaryCtaHref', fallback.primaryCTA.href),
+      },
+      secondaryCTA: {
+        label: getTextField(section, 'secondaryCtaLabel', fallback.secondaryCTA.label),
+        href: getTextField(section, 'secondaryCtaHref', fallback.secondaryCTA.href),
+      },
+      images: getMediaUrls(section, 'heroImages', fallback.images),
+    }
+  : fallback;
  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
  // Auto-advance sliding hero images every 4 seconds (4000ms duration)
