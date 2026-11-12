@@ -87,6 +87,7 @@ import {
 const SuperAdminPanel = lazy(() => import('@/components/admin/SuperAdminPanel').then(m => ({ default: m.default })));
 const DocStudioCRMFull = lazy(() => import('@/components/admin/DocStudioCRM').then(m => ({ default: m.default })));
 const SuperAdminCMSManager = lazy(() => import('@/components/admin/SuperAdminCMSManager').then(m => ({ default: m.default })));
+const MasterCMSEngine = lazy(() => import('@/components/admin/MasterCMSEngine').then(m => ({ default: m.default })));
 const SuperAdminProjectManager = lazy(() => import('@/components/admin/SuperAdminProjectManager').then(m => ({ default: m.default })));
 const ProjectManagementSystem = lazy(() => import('@/components/admin/ProjectManagementSystem').then(m => ({ default: m.default })));
 const XRLinkGenerator = lazy(() => import('@/components/admin/XRLinkGenerator').then(m => ({ default: m.default })));
@@ -931,6 +932,11 @@ function renderSection(section: ActiveSection, props: {
         </Suspense>
       );
     case 'cms-manager':
+      return (
+        <Suspense fallback={<SectionFallback />}>
+          <MasterCMSEngine />
+        </Suspense>
+      );
     case 'pages':
     case 'blog':
     case 'cms-services':
