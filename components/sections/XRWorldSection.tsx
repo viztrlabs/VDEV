@@ -9,7 +9,7 @@ import { getTextField } from '@/lib/site-content';
 
 export default function XRWorldSection() {
   const { xrWorld: fallback } = homepageData;
-  const section = useSiteSection('home', 'xr-world');
+  const section = useSiteSection('xr-world');
   const xrWorld = section
     ? { ...fallback, title: getTextField(section, 'title', fallback.title), tagline: getTextField(section, 'tagline', fallback.tagline) }
     : fallback;

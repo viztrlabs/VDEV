@@ -5,8 +5,14 @@ import {
   useSiteContentStore,
   useSiteContentDraftStore,
 } from '@/lib/site-content-store';
-import { buildDefaultSiteContent, SiteSection } from '@/lib/site-content';
+import {
+  buildDefaultSiteContent,
+  SectionType,
+  SiteSection,
+  SiteSectionStyle,
+} from '@/lib/site-content';
 import { SiteContentModeContext } from '@/components/site/SiteContentProvider';
+import { SectionInstanceProvider } from '@/components/site/SectionInstanceContext';
 import HeroSection from '@/components/sections/HeroSection';
 import MarqueeSection from '@/components/sections/MarqueeSection';
 import FourPillarsSection from '@/components/sections/FourPillarsSection';
@@ -25,7 +31,7 @@ import TestimonialsSection from '@/components/sections/TestimonialsSection';
 import FAQSection from '@/components/sections/FAQSection';
 import FinalCTASection from '@/components/sections/FinalCTASection';
 
-const SECTION_COMPONENTS: Record<string, React.ComponentType> = {
+const SECTION_COMPONENTS: Record<SectionType, React.ComponentType> = {
   hero: HeroSection,
   marquee: MarqueeSection,
   'four-pillars': FourPillarsSection,
@@ -43,6 +49,13 @@ const SECTION_COMPONENTS: Record<string, React.ComponentType> = {
   testimonials: TestimonialsSection,
   faq: FAQSection,
   'final-cta': FinalCTASection,
+};
+
+const PADDING_CLASSES: Record<NonNullable<SiteSectionStyle['padding']>, string> = {
+  none: 'py-0',
+  sm: 'py-8',
+  md: 'py-16',
+  lg: 'py-24',
 };
 
 export default function HomeSectionRenderer() {
@@ -63,12 +76,22 @@ export default function HomeSectionRenderer() {
   return (
     <>
       {sections.map((section) => {
-        const Component = SECTION_COMPONENTS[section.id];
+        const Component = SECTION_COMPONENTS[section.type];
         if (!Component) return null;
+        const paddingClass = section.style?.padding
+          ? PADDING_CLASSES[section.style.padding]
+          : undefined;
         return (
-          <div key={section.id} data-section-id={section.id}>
-            <Component />
-          </div>
+          <SectionInstanceProvider key={section.id} pageId="home" section={section}>
+            <div
+              data-section-id={section.id}
+              data-cms-section-id={section.id}
+              data-cms-section-type={section.type}
+              className={paddingClass}
+            >
+              <Component />
+            </div>
+          </SectionInstanceProvider>
         );
       })}
     </>

@@ -128,6 +128,45 @@ describe('HomeSectionRenderer', () => {
     expect(ids[1]).toBe('section-hero');
   });
 
+  it('renders duplicated instances by type with cms attributes', () => {
+    const content = buildDefaultSiteContent();
+    const hero = content.pages[0].sections.find((s) => s.type === 'hero')!;
+    const copy = { ...hero, id: 'hero-2', name: 'Hero copy' };
+    content.pages[0].sections = [hero, copy];
+    useSiteContentStore.setState({ content });
+    const { container } = render(<HomeSectionRenderer />);
+    expect(screen.getAllByTestId('section-hero')).toHaveLength(2);
+    const first = container.querySelector('[data-cms-section-id="hero"]')!;
+    const second = container.querySelector('[data-cms-section-id="hero-2"]')!;
+    expect(first).toHaveAttribute('data-section-id', 'hero');
+    expect(first).toHaveAttribute('data-cms-section-type', 'hero');
+    expect(second).toHaveAttribute('data-section-id', 'hero-2');
+    expect(second).toHaveAttribute('data-cms-section-type', 'hero');
+  });
+
+  it('applies padding classes from section style', () => {
+    const content = buildDefaultSiteContent();
+    const home = content.pages[0];
+    const paddingBySectionId: Record<string, 'none' | 'sm' | 'md' | 'lg'> = {
+      hero: 'sm',
+      marquee: 'md',
+      studio: 'lg',
+      'xr-world': 'none',
+    };
+    home.sections = home.sections.map((section) =>
+      paddingBySectionId[section.id]
+        ? { ...section, style: { ...section.style, padding: paddingBySectionId[section.id] } }
+        : section,
+    );
+    useSiteContentStore.setState({ content });
+    const { container } = render(<HomeSectionRenderer />);
+    expect(container.querySelector('[data-cms-section-id="hero"]')).toHaveClass('py-8');
+    expect(container.querySelector('[data-cms-section-id="marquee"]')).toHaveClass('py-16');
+    expect(container.querySelector('[data-cms-section-id="studio"]')).toHaveClass('py-24');
+    expect(container.querySelector('[data-cms-section-id="xr-world"]')).toHaveClass('py-0');
+    expect(container.querySelector('[data-cms-section-id="faq"]')!.className).toBe('');
+  });
+
   it('renders the draft in draft mode so preview reflects unpublished toggles', () => {
     // Draft mode: toggling hero off in the draft store hides it.
     useSiteContentDraftStore.setState({ content: buildDefaultSiteContent() });

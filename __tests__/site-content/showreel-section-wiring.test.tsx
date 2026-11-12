@@ -1,8 +1,9 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import ShowreelSection from '@/components/sections/ShowreelSection';
+import { SectionInstanceProvider } from '@/components/site/SectionInstanceContext';
 import { useSiteContentStore } from '@/lib/site-content-store';
-import { buildDefaultSiteContent } from '@/lib/site-content';
+import { buildDefaultSiteContent, getDefaultSection } from '@/lib/site-content';
 
 jest.mock('next/navigation', () => ({
   useSearchParams: () => new URLSearchParams(),
@@ -22,5 +23,18 @@ describe('ShowreelSection CMS wiring', () => {
     expect(screen.getByText('CUSTOM SHOWREEL')).toBeInTheDocument();
     const video = container.querySelector('video');
     expect(video).toHaveAttribute('src', 'https://cdn.example.com/reel.mp4');
+  });
+
+  it('renders the instance supplied by the provider', () => {
+    const showreel = getDefaultSection('showreel');
+    showreel.fields = showreel.fields.map((f) =>
+      f.kind === 'text' && f.id === 'title' ? { ...f, value: 'INSTANCE SHOWREEL' } : f,
+    );
+    render(
+      <SectionInstanceProvider pageId="home" section={showreel}>
+        <ShowreelSection />
+      </SectionInstanceProvider>,
+    );
+    expect(screen.getByText('INSTANCE SHOWREEL')).toBeInTheDocument();
   });
 });

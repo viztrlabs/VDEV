@@ -14,7 +14,7 @@ import {
 
 export default function HeroSection() {
  const { hero: fallback } = homepageData;
- const section = useSiteSection('home', 'hero');
+ const section = useSiteSection('hero');
  const hero = section
   ? {
       headline: getTextField(section, 'headline', fallback.headline),

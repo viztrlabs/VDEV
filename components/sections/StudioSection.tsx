@@ -9,7 +9,7 @@ import { getTextField } from '@/lib/site-content';
 
 export default function StudioSection() {
   const { studio: fallback } = homepageData;
-  const section = useSiteSection('home', 'studio');
+  const section = useSiteSection('studio');
   const studio = section
     ? { ...fallback, title: getTextField(section, 'title', fallback.title), tagline: getTextField(section, 'tagline', fallback.tagline) }
     : fallback;

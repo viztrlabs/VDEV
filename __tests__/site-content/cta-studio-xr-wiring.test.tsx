@@ -3,8 +3,9 @@ import { render, screen } from '@testing-library/react';
 import FinalCTASection from '@/components/sections/FinalCTASection';
 import StudioSection from '@/components/sections/StudioSection';
 import XRWorldSection from '@/components/sections/XRWorldSection';
+import { SectionInstanceProvider } from '@/components/site/SectionInstanceContext';
 import { useSiteContentStore } from '@/lib/site-content-store';
-import { buildDefaultSiteContent } from '@/lib/site-content';
+import { buildDefaultSiteContent, getDefaultSection } from '@/lib/site-content';
 
 jest.mock('next/navigation', () => ({
   useSearchParams: () => new URLSearchParams(),
@@ -43,5 +44,36 @@ describe('Final CTA / Studio / XR World CMS wiring', () => {
     editField(buildDefaultSiteContent(), 'xr-world', 'tagline', 'STEP INSIDE THE BUILDING');
     render(<XRWorldSection />);
     expect(screen.getByText('STEP INSIDE THE BUILDING')).toBeInTheDocument();
+  });
+
+  it('renders instances supplied by the provider', () => {
+    const cta = getDefaultSection('final-cta');
+    cta.fields = cta.fields.map((f) =>
+      f.kind === 'text' && f.id === 'heading' ? { ...f, value: 'INSTANCE CTA' } : f,
+    );
+    const studio = getDefaultSection('studio');
+    studio.fields = studio.fields.map((f) =>
+      f.kind === 'text' && f.id === 'title' ? { ...f, value: 'INSTANCE STUDIO' } : f,
+    );
+    const xrWorld = getDefaultSection('xr-world');
+    xrWorld.fields = xrWorld.fields.map((f) =>
+      f.kind === 'text' && f.id === 'tagline' ? { ...f, value: 'INSTANCE XR' } : f,
+    );
+    render(
+      <>
+        <SectionInstanceProvider pageId="home" section={cta}>
+          <FinalCTASection />
+        </SectionInstanceProvider>
+        <SectionInstanceProvider pageId="home" section={studio}>
+          <StudioSection />
+        </SectionInstanceProvider>
+        <SectionInstanceProvider pageId="home" section={xrWorld}>
+          <XRWorldSection />
+        </SectionInstanceProvider>
+      </>,
+    );
+    expect(screen.getByText('INSTANCE CTA')).toBeInTheDocument();
+    expect(screen.getByText('INSTANCE STUDIO')).toBeInTheDocument();
+    expect(screen.getByText('INSTANCE XR')).toBeInTheDocument();
   });
 });

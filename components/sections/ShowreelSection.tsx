@@ -9,7 +9,7 @@ import { Play, Pause, Volume2, VolumeX, ArrowRight, Maximize2 } from 'lucide-rea
 
 export default function ShowreelSection() {
  const { showreel: fallback } = homepageData;
- const section = useSiteSection('home', 'showreel');
+ const section = useSiteSection('showreel');
  const showreel = section
    ? {
        ...fallback,
