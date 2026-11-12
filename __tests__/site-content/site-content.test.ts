@@ -31,15 +31,17 @@ describe('site-content schema', () => {
   });
 
   it('getTextField falls back when field is missing', () => {
-    const section = { id: 'x', name: 'X', isVisible: true, fields: [] };
+    const section = { id: 'x', type: 'hero' as const, name: 'X', isVisible: true, style: {}, fields: [] };
     expect(getTextField(section, 'headline', 'FALLBACK')).toBe('FALLBACK');
   });
 
   it('getMediaUrls falls back and isMediaPlaceholder reads the flag', () => {
     const section: SiteSection = {
       id: 'x',
+      type: 'showreel',
       name: 'X',
       isVisible: true,
+      style: {},
       fields: [
         {
           kind: 'media',
