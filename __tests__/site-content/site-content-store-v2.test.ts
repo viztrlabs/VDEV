@@ -22,6 +22,9 @@ const published = () => useSiteContentStore.getState();
 const draftSection = (id: string): SiteSection =>
   draft().content.pages[0].sections.find((s) => s.id === id)!;
 
+const publishedSection = (id: string): SiteSection =>
+  published().content.pages[0].sections.find((s) => s.id === id)!;
+
 describe('site content store v2', () => {
   beforeEach(() => {
     useSiteContentDraftStore.setState({ content: buildDefaultSiteContent() });
@@ -149,6 +152,38 @@ describe('site content store v2', () => {
     expect(getTextField(draftSection('hero'), 'headline', '')).toBe('NEW');
   });
 
+  it('resets a store to defaults through resetToDefaults', () => {
+    draft().updateTextField('home', 'hero', 'headline', 'EDITED');
+    draft().deleteSection('home', 'marquee');
+    expect(typeof published().resetToDefaults).toBe('function');
+    draft().resetToDefaults();
+    expect(draft().content).toEqual(buildDefaultSiteContent());
+    expect(getTextField(draftSection('hero'), 'headline', '')).toBe('VIZTR');
+    published().resetToDefaults();
+    expect(published().content).toEqual(buildDefaultSiteContent());
+  });
+
+  it('keeps published content independent of later draft edits after publish', () => {
+    draft().updateTextField('home', 'hero', 'headline', 'LIVE');
+    publishSiteContent();
+    const publishedSnapshot = JSON.stringify(published().content);
+    expect(published().content).not.toBe(draft().content);
+    expect(publishedSection('hero')).not.toBe(draftSection('hero'));
+    expect(publishedSection('hero').fields[0]).not.toBe(draftSection('hero').fields[0]);
+    expect(publishedSection('faq').fields.find((f) => f.kind === 'list')).not.toBe(
+      draftSection('faq').fields.find((f) => f.kind === 'list'),
+    );
+
+    draft().updateTextField('home', 'hero', 'headline', 'DRAFT ONLY');
+    draft().updateListItem('home', 'faq', 'faq', 'faq-1', { q: 'CHANGED IN DRAFT' });
+    draft().deleteSection('home', 'marquee');
+
+    expect(JSON.stringify(published().content)).toBe(publishedSnapshot);
+    expect(getTextField(publishedSection('hero'), 'headline', '')).toBe('LIVE');
+    expect(getListItems(publishedSection('faq'), 'faq')[0].values.q).not.toBe('CHANGED IN DRAFT');
+    expect(published().content.pages[0].sections.some((s) => s.id === 'marquee')).toBe(true);
+  });
+
   it('sanitizes rich text on publish only', () => {
     draft().updateTextField('home', 'hero', 'description', '<b>Bold</b><script>alert(1)</script>');
     draft().updateListItem('home', 'faq', 'faq', 'faq-1', {
@@ -160,6 +195,8 @@ describe('site content store v2', () => {
     expect(getTextField(hero, 'description', '')).toBe('<b>Bold</b>');
     const faq = published().content.pages[0].sections.find((s) => s.id === 'faq')!;
     expect(getListItems(faq, 'faq')[0].values.a).toBe('<em>Safe</em>');
+    expect(getTextField(draftSection('hero'), 'description', '')).toBe('<b>Bold</b>');
+    expect(getListItems(draftSection('faq'), 'faq')[0].values.a).toBe('<em>Safe</em>');
   });
 
   it('migrates v1 content by keeping stored copy and rebuilding v2 structure', () => {

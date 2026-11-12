@@ -53,6 +53,7 @@ interface SiteContentState {
     itemId: string,
     direction: 'up' | 'down',
   ) => void;
+  resetToDefaults: () => void;
   replaceContent: (content: SiteContent) => void;
 }
 
@@ -254,6 +255,20 @@ function sanitizeField(field: SiteField): SiteField {
   };
 }
 
+function cloneContent(content: SiteContent): SiteContent {
+  return {
+    version: 2,
+    pages: content.pages.map((page) => ({
+      ...page,
+      sections: page.sections.map((section) => ({
+        ...section,
+        style: cloneStyle(section.style),
+        fields: section.fields.map(cloneField),
+      })),
+    })),
+  };
+}
+
 function sanitizeContent(content: SiteContent): SiteContent {
   return {
     version: 2,
@@ -443,6 +458,7 @@ function createSiteContentStore(storageKey: string) {
               return { ...field, items };
             }),
           }),
+        resetToDefaults: () => set({ content: buildDefaultSiteContent() }),
         replaceContent: (content) => set({ content }),
       }),
       {
@@ -480,7 +496,7 @@ export function useIsDraftDirty(): boolean {
 
 export function publishSiteContent(): void {
   const sanitized = sanitizeContent(useSiteContentDraftStore.getState().content);
-  useSiteContentStore.getState().replaceContent(sanitized);
+  useSiteContentStore.getState().replaceContent(cloneContent(sanitized));
   useSiteContentDraftStore.getState().replaceContent(sanitized);
 }
 
