@@ -33,6 +33,12 @@ describe('Final CTA / Studio / XR World CMS wiring', () => {
     expect(screen.getByText('THE STUDIO DESK')).toBeInTheDocument();
   });
 
+  it('renders edited studio tagline', () => {
+    editField(buildDefaultSiteContent(), 'studio', 'tagline', 'NEW TAGLINE TEXT');
+    render(<StudioSection />);
+    expect(screen.getByText('NEW TAGLINE TEXT')).toBeInTheDocument();
+  });
+
   it('renders edited XR World tagline', () => {
     editField(buildDefaultSiteContent(), 'xr-world', 'tagline', 'STEP INSIDE THE BUILDING');
     render(<XRWorldSection />);

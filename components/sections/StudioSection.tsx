@@ -25,7 +25,7 @@ export default function StudioSection() {
  <h2 className="text-4xl md:text-5xl font-black font-display tracking-tight text-white mb-4">
  {studio.title}
  </h2>
- <p className="text-lg text-[#E5E2E3]">{studio.subtitle}</p>
+ <p className="text-lg text-[#E5E2E3]">{studio.tagline}</p>
  </div>
 
  {/* Studio Cards */}
