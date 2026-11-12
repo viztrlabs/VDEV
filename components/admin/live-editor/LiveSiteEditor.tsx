@@ -283,7 +283,15 @@ function SectionFieldEditor({
         </p>
       )}
       {section.fields.map((field) =>
-        field.kind === 'text' ? (
+        field.kind === 'list' ? (
+          <div
+            key={field.id}
+            className="flex items-center justify-between gap-2 rounded-lg border border-[#27272A] bg-[#18181B] px-3 py-2"
+          >
+            <span className="text-[11px] text-zinc-400 font-mono">{field.label}</span>
+            <span className="text-[10px] text-zinc-500 font-mono">Edit in Live Editor</span>
+          </div>
+        ) : field.kind === 'text' ? (
           <label key={field.id} className="block space-y-1">
             <span className="text-[11px] text-zinc-400 font-mono">{field.label}</span>
             {field.multiline ? (
