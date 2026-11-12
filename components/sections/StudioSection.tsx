@@ -4,9 +4,15 @@ import React from 'react';
 import Link from 'next/link';
 import { homepageData } from '@/data/homepage';
 import { ArrowRight, ImageIcon, Play, ArrowRight as ArrowRightIcon } from 'lucide-react';
+import { useSiteSection } from '@/lib/use-site-section';
+import { getTextField } from '@/lib/site-content';
 
 export default function StudioSection() {
- const { studio } = homepageData;
+  const { studio: fallback } = homepageData;
+  const section = useSiteSection('home', 'studio');
+  const studio = section
+    ? { ...fallback, title: getTextField(section, 'title', fallback.title), tagline: getTextField(section, 'tagline', fallback.tagline) }
+    : fallback;
 
  return (
  <section id="studio-section"className="py-28 px-6 bg-transparent text-white relative">

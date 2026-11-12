@@ -4,9 +4,15 @@ import React from 'react';
 import Link from 'next/link';
 import { homepageData } from '@/data/homepage';
 import { ArrowRight, Box, ScanLine, Headset, Compass, Sparkles, Cpu } from 'lucide-react';
+import { useSiteSection } from '@/lib/use-site-section';
+import { getTextField } from '@/lib/site-content';
 
 export default function XRWorldSection() {
- const { xrWorld } = homepageData;
+  const { xrWorld: fallback } = homepageData;
+  const section = useSiteSection('home', 'xr-world');
+  const xrWorld = section
+    ? { ...fallback, title: getTextField(section, 'title', fallback.title), tagline: getTextField(section, 'tagline', fallback.tagline) }
+    : fallback;
 
  const getIcon = (name: string) => {
  const icons: Record<string, React.ReactNode> = {

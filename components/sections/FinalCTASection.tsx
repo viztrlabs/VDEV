@@ -4,9 +4,21 @@ import React from 'react';
 import Link from 'next/link';
 import { useAppStore } from '@/lib/store';
 import { ArrowRight, Calendar, Sparkles } from 'lucide-react';
+import { useSiteSection } from '@/lib/use-site-section';
+import { getTextField } from '@/lib/site-content';
 
 export default function FinalCTASection() {
  const { openPixelStream } = useAppStore();
+  const section = useSiteSection('home', 'final-cta');
+  const content = {
+    badge: section ? getTextField(section, 'badge', 'INITIALIZE ARCHITECTURAL PIPELINE') : 'INITIALIZE ARCHITECTURAL PIPELINE',
+    heading: section ? getTextField(section, 'heading', 'Ready to Transform Your Vision into Reality?') : 'Ready to Transform Your Vision into Reality?',
+    description: section ? getTextField(section, 'description', 'From unbuilt CAD masterplans to photorealistic 8K imagery, cinematic films, and interactive browser-based experiences.') : 'From unbuilt CAD masterplans to photorealistic 8K imagery, cinematic films, and interactive browser-based experiences.',
+    primaryLabel: section ? getTextField(section, 'primaryLabel', 'Start Your Project') : 'Start Your Project',
+    primaryHref: section ? getTextField(section, 'primaryHref', '/contact') : '/contact',
+    secondaryLabel: section ? getTextField(section, 'secondaryLabel', 'Book Consultation') : 'Book Consultation',
+    secondaryHref: section ? getTextField(section, 'secondaryHref', '/book-consultation') : '/book-consultation',
+  };
 
  return (
  <section
@@ -18,34 +30,34 @@ export default function FinalCTASection() {
  <div className="max-w-4xl mx-auto text-center relative z-10 space-y-6">
  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#131314] border border-[#1E293B] text-xs text-[#00F0FF] font-bold uppercase tracking-widest shadow-sm">
  <span className="w-2 h-2 rounded-full bg-[#42CF8B] animate-pulse"/>
- <span>INITIALIZE ARCHITECTURAL PIPELINE</span>
+ <span>{content.badge}</span>
  </div>
 
  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold tracking-tight text-[#FAFAFA]">
- Ready to Transform Your Vision into Reality?
+ {content.heading}
  </h2>
 
  <p className="text-xs sm:text-sm text-[#B9CACB] max-w-xl mx-auto leading-relaxed">
- From unbuilt CAD masterplans to photorealistic 8K imagery, cinematic films, and cloud Pixel Streaming experiences.
+ {content.description}
  </p>
 
  <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
  <Link
- href="/contact"
+ href={content.primaryHref}
  id="final-cta-start-btn"
  className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#00F0FF] hover:bg-[#33f3ff] text-black font-display font-extrabold text-xs uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 active:scale-95"
  >
- <span>Start Your Project</span>
+ <span>{content.primaryLabel}</span>
  <ArrowRight className="w-4 h-4 text-black"/>
  </Link>
 
  <Link
- href="/book-consultation"
+ href={content.secondaryHref}
  id="final-cta-consult-btn"
  className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#131314] hover:bg-[#1E293B] text-[#FAFAFA] font-bold text-xs uppercase tracking-wider border border-[#1E293B] hover:border-[#00F0FF]/50 transition-all duration-300 flex items-center justify-center gap-2 shadow-sm active:scale-95"
  >
  <Calendar className="w-4 h-4 text-[#00F0FF]"/>
- <span>Book Consultation</span>
+ <span>{content.secondaryLabel}</span>
  </Link>
 
  <button
