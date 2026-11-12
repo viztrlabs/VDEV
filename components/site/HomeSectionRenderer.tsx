@@ -1,8 +1,12 @@
 'use client';
 
-import React, { useMemo } from 'react';
-import { useSiteContentStore } from '@/lib/site-content-store';
+import React, { useContext, useMemo } from 'react';
+import {
+  useSiteContentStore,
+  useSiteContentDraftStore,
+} from '@/lib/site-content-store';
 import { buildDefaultSiteContent, SiteSection } from '@/lib/site-content';
+import { SiteContentModeContext } from '@/components/site/SiteContentProvider';
 import HeroSection from '@/components/sections/HeroSection';
 import MarqueeSection from '@/components/sections/MarqueeSection';
 import FourPillarsSection from '@/components/sections/FourPillarsSection';
@@ -42,16 +46,19 @@ const SECTION_COMPONENTS: Record<string, React.ComponentType> = {
 };
 
 export default function HomeSectionRenderer() {
+  const mode = useContext(SiteContentModeContext);
   const publishedContent = useSiteContentStore((s) => s.content);
+  const draftContent = useSiteContentDraftStore((s) => s.content);
+  const content = mode === 'draft' ? draftContent : publishedContent;
   const defaults = buildDefaultSiteContent();
 
   const sections: SiteSection[] = useMemo(() => {
-    const storedPage = publishedContent.pages.find((p) => p.id === 'home');
+    const storedPage = content.pages.find((p) => p.id === 'home');
     const sections = storedPage
       ? storedPage.sections
       : defaults.pages.find((p) => p.id === 'home')!.sections;
     return sections.filter((s) => s.isVisible);
-  }, [publishedContent]);
+  }, [content]);
 
   return (
     <>
