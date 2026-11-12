@@ -3,10 +3,22 @@
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { homepageData } from '@/data/homepage';
+import { useSiteSection } from '@/lib/use-site-section';
+import { getTextField, getMediaUrls } from '@/lib/site-content';
 import { Play, Pause, Volume2, VolumeX, ArrowRight, Maximize2 } from 'lucide-react';
 
 export default function ShowreelSection() {
- const { showreel } = homepageData;
+ const { showreel: fallback } = homepageData;
+ const section = useSiteSection('home', 'showreel');
+ const showreel = section
+   ? {
+       ...fallback,
+       title: getTextField(section, 'title', fallback.title),
+       subtitle: getTextField(section, 'subtitle', fallback.subtitle),
+       videoUrl: getMediaUrls(section, 'videoUrl', [fallback.videoUrl])[0],
+       poster: getMediaUrls(section, 'poster', [fallback.poster])[0],
+     }
+   : fallback;
  const [isPlaying, setIsPlaying] = useState(false);
  const [isMuted, setIsMuted] = useState(true);
  const videoRef = useRef<HTMLVideoElement>(null);
