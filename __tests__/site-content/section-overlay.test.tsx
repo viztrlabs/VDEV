@@ -20,6 +20,21 @@ function Harness() {
   );
 }
 
+function OutsideOnlyHarness() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { selectSection } = useEditMode();
+  return (
+    <div>
+      <button onClick={() => selectSection('ghost')}>select-ghost</button>
+      <div data-cms-section-id="ghost" data-cms-section-type="hero" style={{ height: 100 }} />
+      <div ref={ref}>
+        <div data-cms-section-id="hero" data-cms-section-type="hero" style={{ height: 100 }} />
+      </div>
+      <SectionOverlayLayer containerRef={ref} />
+    </div>
+  );
+}
+
 beforeEach(() => {
   useSiteContentDraftStore.setState({ content: buildDefaultSiteContent() });
 });
@@ -89,6 +104,13 @@ it('cancels the delete confirm after three seconds', () => {
   } finally {
     jest.useRealTimers();
   }
+});
+
+it('ignores sections rendered outside the container', () => {
+  render(<EditModeProvider><OutsideOnlyHarness /></EditModeProvider>);
+  fireEvent.click(screen.getByText('select-ghost'));
+  expect(screen.queryByTestId('section-action-bar')).toBeNull();
+  expect(screen.queryByTestId('section-outline')).toBeNull();
 });
 
 it('cancels the delete confirm on escape', () => {

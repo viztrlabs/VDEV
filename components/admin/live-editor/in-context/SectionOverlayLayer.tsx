@@ -18,13 +18,11 @@ interface OverlayTarget {
 }
 
 function sectionElement(container: HTMLElement | null, sectionId: string | null): HTMLElement | null {
-  if (!sectionId) return null;
+  if (!container || !sectionId) return null;
   const escaped = sectionId.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-  const selector = `[data-cms-section-id="${escaped}"]`;
-  const scoped = container?.querySelector<HTMLElement>(selector) ?? null;
-  if (scoped) return scoped;
-  if (typeof document === 'undefined') return null;
-  return document.querySelector<HTMLElement>(selector);
+  const found = container.querySelector<HTMLElement>(`[data-cms-section-id="${escaped}"]`);
+  if (!found || !container.contains(found)) return null;
+  return found;
 }
 
 function ActionButton({
