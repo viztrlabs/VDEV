@@ -7,7 +7,7 @@ jest.mock('@/lib/cms-store', () => ({
   useCMSStore: jest.fn(),
 }));
 
-const mockedStore = useCMSStore as jest.Mock;
+const mockedStore = useCMSStore as unknown as jest.Mock;
 
 describe('MediaPickerModal', () => {
   it('renders nothing when closed', () => {

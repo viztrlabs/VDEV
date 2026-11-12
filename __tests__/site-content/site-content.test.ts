@@ -3,6 +3,7 @@ import {
   getTextField,
   getMediaUrls,
   isMediaPlaceholder,
+  type SiteSection,
 } from '@/lib/site-content';
 import { homepageData } from '@/data/homepage';
 
@@ -35,7 +36,7 @@ describe('site-content schema', () => {
   });
 
   it('getMediaUrls falls back and isMediaPlaceholder reads the flag', () => {
-    const section = {
+    const section: SiteSection = {
       id: 'x',
       name: 'X',
       isVisible: true,
