@@ -1,36 +1,60 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { homepageData } from '@/data/homepage';
 import { useSiteSection } from '@/lib/use-site-section';
-import { getTextField, getMediaUrls } from '@/lib/site-content';
+import { getTextField, getMediaUrls, getDefaultSection } from '@/lib/site-content';
+import { sanitizeRichText } from '@/lib/sanitize-rich-text';
+import EditableText from '@/components/admin/live-editor/in-context/EditableText';
+import EditableMedia from '@/components/admin/live-editor/in-context/EditableMedia';
+import { useEditMode } from '@/components/admin/live-editor/in-context/EditModeContext';
 import {
  ArrowRight,
  Compass,
  ChevronDown
 } from 'lucide-react';
 
+function CmsText({
+ fieldId,
+ value,
+ as: Tag = 'span',
+ className,
+ rich,
+}: {
+ fieldId: string;
+ value: string;
+ as?: React.ElementType;
+ className?: string;
+ rich?: boolean;
+}) {
+ const { editMode } = useEditMode();
+ if (editMode) return <EditableText fieldId={fieldId} as={Tag} className={className} />;
+ if (rich) return <Tag className={className} dangerouslySetInnerHTML={{ __html: sanitizeRichText(value) }} />;
+ return <Tag className={className}>{value}</Tag>;
+}
+
 export default function HeroSection() {
  const { hero: fallback } = homepageData;
- const section = useSiteSection('hero');
- const hero = section
-  ? {
-      headline: getTextField(section, 'headline', fallback.headline),
-      subheadline: getTextField(section, 'subheadline', fallback.subheadline),
-      description: getTextField(section, 'description', fallback.description),
-      primaryCTA: {
-        label: getTextField(section, 'primaryCtaLabel', fallback.primaryCTA.label),
-        href: getTextField(section, 'primaryCtaHref', fallback.primaryCTA.href),
-      },
-      secondaryCTA: {
-        label: getTextField(section, 'secondaryCtaLabel', fallback.secondaryCTA.label),
-        href: getTextField(section, 'secondaryCtaHref', fallback.secondaryCTA.href),
-      },
-      images: getMediaUrls(section, 'heroImages', fallback.images),
-    }
-  : fallback;
+ const section = useSiteSection('hero') ?? getDefaultSection('hero');
+ const hero = {
+  headline: getTextField(section, 'headline', fallback.headline),
+  subheadline: getTextField(section, 'subheadline', fallback.subheadline),
+  description: getTextField(section, 'description', fallback.description),
+  primaryCTA: {
+   label: getTextField(section, 'primaryCtaLabel', fallback.primaryCTA.label),
+   href: getTextField(section, 'primaryCtaHref', fallback.primaryCTA.href),
+  },
+  secondaryCTA: {
+   label: getTextField(section, 'secondaryCtaLabel', fallback.secondaryCTA.label),
+   href: getTextField(section, 'secondaryCtaHref', fallback.secondaryCTA.href),
+  },
+  eyebrowPrimary: getTextField(section, 'eyebrowPrimary', ''),
+  eyebrowSecondary: getTextField(section, 'eyebrowSecondary', ''),
+  scrollLabel: getTextField(section, 'scrollLabel', ''),
+  images: getMediaUrls(section, 'heroImages', fallback.images),
+ };
  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
  // Auto-advance sliding hero images every 4 seconds (4000ms duration)
@@ -53,13 +77,14 @@ export default function HeroSection() {
  const isActive = currentImageIndex === idx;
  return (
  <div
- key={img}
+ key={`${img}-${idx}`}
  className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out ${
  isActive
  ? 'opacity-100 scale-100 z-10'
  : 'opacity-0 scale-105 z-0'
  }`}
  >
+ <EditableMedia fieldId="heroImages" index={idx} mediaType="image" className="h-full w-full">
  <Image
  src={img}
  alt={`VizTR Architectural Render ${idx + 1}`}
@@ -69,6 +94,7 @@ export default function HeroSection() {
  sizes="100vw"
  className="hero-bg-image object-cover object-center render-lighting-enhanced"
  />
+ </EditableMedia>
  </div>
  );
  })}
@@ -83,28 +109,22 @@ export default function HeroSection() {
  {/* Eyebrow Badge Pill - Cleanly positioned below header */}
  <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full shadow-2xl transition-all border border-[#1E293B] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#42CF8B] animate-pulse shrink-0"/>
- <span className="font-bold text-[#42CF8B] tracking-wider uppercase shrink-0">NEXT-GEN SPATIAL ARCHITECTURE</span>
+ <CmsText fieldId="eyebrowPrimary" value={hero.eyebrowPrimary} className="font-bold text-[#42CF8B] tracking-wider uppercase shrink-0"/>
  <span className="opacity-40 shrink-0">|</span>
- <span className="opacity-80 shrink-0">CGI Studio & Real-time WebXR</span>
+ <CmsText fieldId="eyebrowSecondary" value={hero.eyebrowSecondary} className="opacity-80 shrink-0"/>
  </div>
  </div>
 
  {/* 3. BOTTOM HERO CONTENT: Fluid typography, cohesive hierarchy, 2 pill CTAs & Slide Controls */}
  <div className="relative z-20 w-full container-ultrawide text-center flex flex-col items-center justify-end mt-auto px-4 sm:px-6 pb-6 sm:pb-8">
  {/* Master Fluid Headline: VIZTR */}
- <h1 className="hero-headline text-fluid-hero font-extrabold tracking-tight mb-2 sm:mb-3 font-sans">
- {hero.headline}
- </h1>
+ <CmsText fieldId="headline" value={hero.headline} as="h1" className="hero-headline text-fluid-hero font-extrabold tracking-tight mb-2 sm:mb-3 font-sans"/>
 
  {/* Sub-headline / Tagline: Visualize. Experience. Transform. */}
- <p className="hero-subheadline text-fluid-sub font-medium tracking-wide mb-3 max-w-3xl">
- {hero.subheadline}
- </p>
+ <CmsText fieldId="subheadline" value={hero.subheadline} as="p" className="hero-subheadline text-fluid-sub font-medium tracking-wide mb-3 max-w-3xl"/>
 
  {/* Architectural Visualization Sub Heading */}
- <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]">
- {hero.description}
- </p>
+ <CmsText fieldId="description" value={hero.description} as="p" rich className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]"/>
 
  {/* Pill-shaped Call-To-Action Buttons */}
  <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-md sm:max-w-none mb-6">
@@ -114,7 +134,7 @@ export default function HeroSection() {
  id="hero-primary-cta"
  className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#00F0FF] hover:bg-[#33f3ff] text-black font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer hover:scale-105 active:scale-95"
  >
- <span>{hero.primaryCTA.label}</span>
+ <CmsText fieldId="primaryCtaLabel" value={hero.primaryCTA.label}/>
  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1"/>
  </Link>
 
@@ -125,7 +145,7 @@ export default function HeroSection() {
  className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#1E293B]"
  >
  <Compass className="w-4 h-4 text-[#42CF8B]"/>
- <span>{hero.secondaryCTA.label}</span>
+ <CmsText fieldId="secondaryCtaLabel" value={hero.secondaryCTA.label}/>
  </Link>
  </div>
 
@@ -160,7 +180,7 @@ export default function HeroSection() {
  className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-lg border border-[#1E293B]"
  aria-label="Scroll down to explore page content"
  >
- <span>Scroll to explore</span>
+ <CmsText fieldId="scrollLabel" value={hero.scrollLabel}/>
  <ChevronDown className="w-3.5 h-3.5 text-[#00F0FF] animate-bounce"/>
  </a>
  </div>

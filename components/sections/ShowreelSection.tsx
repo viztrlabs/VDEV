@@ -4,23 +4,47 @@ import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { homepageData } from '@/data/homepage';
 import { useSiteSection } from '@/lib/use-site-section';
-import { getTextField, getMediaUrls } from '@/lib/site-content';
+import { getTextField, getMediaUrls, getDefaultSection } from '@/lib/site-content';
+import { sanitizeRichText } from '@/lib/sanitize-rich-text';
+import EditableText from '@/components/admin/live-editor/in-context/EditableText';
+import EditableMedia from '@/components/admin/live-editor/in-context/EditableMedia';
+import { useEditMode } from '@/components/admin/live-editor/in-context/EditModeContext';
 import { Play, Pause, Volume2, VolumeX, ArrowRight, Maximize2 } from 'lucide-react';
+
+function CmsText({
+ fieldId,
+ value,
+ as: Tag = 'span',
+ className,
+ rich,
+}: {
+ fieldId: string;
+ value: string;
+ as?: React.ElementType;
+ className?: string;
+ rich?: boolean;
+}) {
+ const { editMode } = useEditMode();
+ if (editMode) return <EditableText fieldId={fieldId} as={Tag} className={className} />;
+ if (rich) return <Tag className={className} dangerouslySetInnerHTML={{ __html: sanitizeRichText(value) }} />;
+ return <Tag className={className}>{value}</Tag>;
+}
 
 export default function ShowreelSection() {
  const { showreel: fallback } = homepageData;
- const section = useSiteSection('showreel');
- const showreel = section
-   ? {
-       ...fallback,
-       title: getTextField(section, 'title', fallback.title),
-       subtitle: getTextField(section, 'subtitle', fallback.subtitle),
-       videoUrl: getMediaUrls(section, 'videoUrl', [fallback.videoUrl])[0],
-       poster: getMediaUrls(section, 'poster', [fallback.poster])[0],
-     }
-   : fallback;
+ const section = useSiteSection('showreel') ?? getDefaultSection('showreel');
+ const mediaStyle = section.style.media ?? {};
+ const showreel = {
+  badge: getTextField(section, 'badge', ''),
+  title: getTextField(section, 'title', fallback.title),
+  subtitle: getTextField(section, 'subtitle', fallback.subtitle),
+  ctaText: getTextField(section, 'ctaText', fallback.ctaText),
+  ctaHref: getTextField(section, 'ctaHref', fallback.ctaHref),
+  videoUrl: getMediaUrls(section, 'videoUrl', [fallback.videoUrl])[0],
+  poster: getMediaUrls(section, 'poster', [fallback.poster])[0],
+ };
  const [isPlaying, setIsPlaying] = useState(false);
- const [isMuted, setIsMuted] = useState(true);
+ const [isMuted, setIsMuted] = useState(mediaStyle.muted ?? true);
  const videoRef = useRef<HTMLVideoElement>(null);
 
  const togglePlay = () => {
@@ -48,17 +72,20 @@ export default function ShowreelSection() {
  className="relative w-full min-h-[65vh] flex items-center justify-center overflow-hidden bg-[#0A0A0B] text-[#FAFAFA] border-y border-[#1E293B]"
  >
  {/* BACKGROUND VIDEO / POSTER */}
+ <EditableMedia fieldId="videoUrl" mediaType="video">
  <video
  ref={videoRef}
  src={showreel.videoUrl}
  poster={showreel.poster}
  playsInline
- loop
+ loop={mediaStyle.loop ?? true}
+ autoPlay={mediaStyle.autoplay ?? false}
  muted={isMuted}
  className="absolute inset-0 w-full h-full object-cover opacity-40 transition-opacity duration-700"
  onPlay={() => setIsPlaying(true)}
  onPause={() => setIsPlaying(false)}
  />
+ </EditableMedia>
 
  {/* Dark Overlay */}
  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/60 to-[#0A0A0B]/80 pointer-events-none"/>
@@ -67,15 +94,12 @@ export default function ShowreelSection() {
  <div className="relative z-10 text-center max-w-2xl mx-auto px-4 sm:px-6 py-14 flex flex-col items-center">
  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#131314] border border-[#1E293B] text-[10px] font-mono text-[#42CF8B] font-bold uppercase tracking-widest mb-4">
  <span className="w-1.5 h-1.5 rounded-full bg-[#42CF8B] animate-pulse"/>
- <span>CINEMATIC REEL 2026 // 4K 60FPS</span>
+ <CmsText fieldId="badge" value={showreel.badge}/>
  </div>
 
- <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#FAFAFA] mb-2 font-display">
- {showreel.title}
- </h2>
- <p className="text-xs sm:text-sm text-[#B9CACB] mb-6 max-w-lg">
- {showreel.subtitle}
- </p>
+ <CmsText fieldId="title" value={showreel.title} as="h2" className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#FAFAFA] mb-2 font-display"/>
+
+ <CmsText fieldId="subtitle" value={showreel.subtitle} as="p" rich className="text-xs sm:text-sm text-[#B9CACB] mb-6 max-w-lg"/>
 
  {/* Play/Pause Button - Maximum pill roundedness */}
  <div className="flex items-center gap-3 mb-6">
@@ -106,7 +130,8 @@ export default function ShowreelSection() {
  href={showreel.ctaHref}
  className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#00F0FF] hover:underline uppercase tracking-wider"
  >
- <span>{showreel.ctaText} →</span>
+ <CmsText fieldId="ctaText" value={showreel.ctaText}/>
+ <span aria-hidden="true">→</span>
  </Link>
  </div>
  </section>
