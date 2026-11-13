@@ -23,7 +23,7 @@ jest.mock('@/components/admin/SuperAdminCMSManager', () => {
 });
 
 describe('MasterCMSEngine', () => {
-  it('shows the live site editor by default', () => {
+  it('shows the structured editor by default', () => {
     render(<MasterCMSEngine />);
     expect(screen.getByTestId('live-site-editor')).toBeInTheDocument();
     expect(screen.queryByTestId('legacy-cms-manager')).toBeNull();
@@ -33,7 +33,20 @@ describe('MasterCMSEngine', () => {
     render(<MasterCMSEngine />);
     fireEvent.click(screen.getByRole('button', { name: /content manager/i }));
     expect(screen.getByTestId('legacy-cms-manager')).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /live site editor/i }));
+    fireEvent.click(screen.getByRole('button', { name: /structured/i }));
+    expect(screen.getByTestId('live-site-editor')).toBeInTheDocument();
+  });
+
+  it('opens the live editor', () => {
+    const onOpenLiveEditor = jest.fn();
+    render(<MasterCMSEngine onOpenLiveEditor={onOpenLiveEditor} />);
+    fireEvent.click(screen.getByRole('button', { name: /open live editor/i }));
+    expect(onOpenLiveEditor).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders without an open-live-editor handler', () => {
+    render(<MasterCMSEngine />);
+    fireEvent.click(screen.getByRole('button', { name: /open live editor/i }));
     expect(screen.getByTestId('live-site-editor')).toBeInTheDocument();
   });
 });
