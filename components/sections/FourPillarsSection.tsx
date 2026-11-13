@@ -3,67 +3,87 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, Palette, Box, BarChart3, Wrench } from 'lucide-react';
+import { useSiteSection } from '@/lib/use-site-section';
+import { getDefaultSection, getListItems, getTextField } from '@/lib/site-content';
+import { sanitizeRichText } from '@/lib/sanitize-rich-text';
+import EditableText from '@/components/admin/live-editor/in-context/EditableText';
+import { useEditMode } from '@/components/admin/live-editor/in-context/EditModeContext';
 
-interface Pillar {
-  id: string;
-  number: string;
-  title: string;
-  verb: string;
-  description: string;
-  icon: React.ComponentType<{ className?: string }>;
-  href: string;
-  color: string;
-  bgColor: string;
+const PILLAR_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  Palette,
+  Box,
+  BarChart3,
+  Wrench,
+};
+
+const STAGE_STATUS_COLORS: Record<string, string> = {
+  modeling: 'text-[#42CF8B]',
+  visualization: 'text-[#F59E0B]',
+  'xr-experience': 'text-[#00F0FF]',
+};
+
+function CmsText({
+  fieldId,
+  listFieldId,
+  itemId,
+  value,
+  as: Tag = 'span',
+  className,
+  rich,
+}: {
+  fieldId: string;
+  listFieldId?: string;
+  itemId?: string;
+  value: string;
+  as?: React.ElementType;
+  className?: string;
+  rich?: boolean;
+}) {
+  const { editMode } = useEditMode();
+  if (editMode) {
+    return <EditableText fieldId={fieldId} listFieldId={listFieldId} itemId={itemId} as={Tag} className={className}/>;
+  }
+  if (rich) return <Tag className={className} dangerouslySetInnerHTML={{ __html: sanitizeRichText(value) }}/>;
+  return <Tag className={className}>{value}</Tag>;
 }
 
-const pillars: Pillar[] = [
-  {
-    id: 'studio',
-    number: '01',
-    title: 'Studio',
-    verb: 'Create.',
-    description: 'Professional architectural visualization with photorealistic renders and cinematic walkthroughs.',
-    icon: Palette,
-    href: '/studio',
-    color: 'text-[#00F0FF]',
-    bgColor: 'bg-[#00F0FF]/10',
-  },
-  {
-    id: 'xr-world',
-    number: '02',
-    title: 'XR World',
-    verb: 'Experience.',
-    description: 'Interactive, immersive property experiences with WebXR, WebAR, VR, and virtual tours.',
-    icon: Box,
-    href: '/xr-world',
-    color: 'text-[#42CF8B]',
-    bgColor: 'bg-[#42CF8B]/10',
-  },
-  {
-    id: 'project-hub',
-    number: '03',
-    title: 'Project Hub',
-    verb: 'Track.',
-    description: 'Real-time project progress, feedback, and delivery — all in one place.',
-    icon: BarChart3,
-    href: '/track-project',
-    color: 'text-[#F59E0B]',
-    bgColor: 'bg-[#F59E0B]/10',
-  },
-  {
-    id: 'creator',
-    number: '04',
-    title: 'Creator',
-    verb: 'Build.',
-    description: 'Tools to create and configure experiences with 3D editing, Gaussian Splat, and publishing.',
-    icon: Wrench,
-    href: '/creator',
-    color: 'text-[#EC4899]',
-    bgColor: 'bg-[#EC4899]/10',
-  },
-];
-
 export default function FourPillarsSection() {
+  const section = useSiteSection('four-pillars') ?? getDefaultSection('four-pillars');
+  const eyebrow = getTextField(section, 'eyebrow', 'THE VIZTR PLATFORM');
+  const heading = getTextField(section, 'heading', 'Four Pillars. One Vision.');
+  const subheading = getTextField(section, 'subheading', 'From visualization to experience — from creation to delivery.');
+  const pillarCtaLabel = getTextField(section, 'pillarCtaLabel', 'Explore');
+  const previewProjectName = getTextField(section, 'previewProjectName', 'LUXURY SMART VILLA');
+  const previewProjectId = getTextField(section, 'previewProjectId', 'Project #VTR-2048');
+  const previewProgressValue = getTextField(section, 'previewProgressValue', '78%');
+  const previewStatusLabel = getTextField(section, 'previewStatusLabel', 'In Progress');
+  const previewLastUpdate = getTextField(section, 'previewLastUpdate', 'Last update · 12 min ago');
+  const previewCtaLabel = getTextField(section, 'previewCtaLabel', 'Review Project');
+
+  const pillars = getListItems(section, 'pillars').map((pillar) => ({
+    id: pillar.id,
+    number: pillar.values.number ?? '',
+    title: pillar.values.title ?? '',
+    verb: pillar.values.verb ?? '',
+    description: pillar.values.description ?? '',
+    icon: pillar.meta?.icon ?? '',
+    href: pillar.meta?.href ?? '#',
+    color: pillar.meta?.color ?? 'text-[#00F0FF]',
+    bgColor: pillar.meta?.bgColor ?? 'bg-[#00F0FF]/10',
+  }));
+
+  const previewStages = getListItems(section, 'previewStages').map((stage) => ({
+    id: stage.id,
+    label: stage.values.label ?? '',
+    status: stage.meta?.status ?? '',
+  }));
+
+  const stageStatus = (stageId: string, fallback: string) => {
+    if (stageId === 'visualization') return previewProgressValue;
+    if (stageId === 'xr-experience') return previewStatusLabel;
+    return fallback;
+  };
+
   return (
     <section
       id="four-pillars-section"
@@ -74,22 +94,16 @@ export default function FourPillarsSection() {
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-2 mb-3">
             <span className="w-2 h-2 rounded-full bg-[#42CF8B] animate-pulse" />
-            <span className="text-[11px] font-bold uppercase tracking-widest text-[#42CF8B]">
-              THE VIZTR PLATFORM
-            </span>
+            <CmsText fieldId="eyebrow" value={eyebrow} className="text-[11px] font-bold uppercase tracking-widest text-[#42CF8B]"/>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-display font-extrabold tracking-tight text-[#FAFAFA] mb-4">
-            Four Pillars. One Vision.
-          </h2>
-          <p className="text-sm sm:text-base text-[#B9CACB] max-w-2xl mx-auto">
-            From visualization to experience — from creation to delivery.
-          </p>
+          <CmsText fieldId="heading" value={heading} as="h2" className="text-3xl sm:text-4xl font-display font-extrabold tracking-tight text-[#FAFAFA] mb-4"/>
+          <CmsText fieldId="subheading" value={subheading} as="p" rich className="text-sm sm:text-base text-[#B9CACB] max-w-2xl mx-auto"/>
         </div>
 
         {/* Pillars Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {pillars.map((pillar) => {
-            const Icon = pillar.icon;
+            const Icon = PILLAR_ICONS[pillar.icon] ?? Box;
             return (
               <Link
                 key={pillar.id}
@@ -97,9 +111,7 @@ export default function FourPillarsSection() {
                 className="group relative p-6 rounded-[1.5rem] bg-[#131314] border border-[#1E293B] hover:border-[#42CF8B]/40 transition-all duration-300 flex flex-col items-center text-center shadow-sm hover:shadow-lg hover:shadow-[#42CF8B]/5"
               >
                 {/* Number */}
-                <span className="text-[10px] font-mono font-bold text-[#71717A] tracking-widest mb-4">
-                  {pillar.number}
-                </span>
+                <CmsText fieldId="number" listFieldId="pillars" itemId={pillar.id} value={pillar.number} className="text-[10px] font-mono font-bold text-[#71717A] tracking-widest mb-4"/>
 
                 {/* Icon */}
                 <div className={`w-14 h-14 rounded-2xl ${pillar.bgColor} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
@@ -107,23 +119,17 @@ export default function FourPillarsSection() {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-lg font-display font-bold text-[#FAFAFA] mb-1">
-                  {pillar.title}
-                </h3>
+                <CmsText fieldId="title" listFieldId="pillars" itemId={pillar.id} value={pillar.title} as="h3" className="text-lg font-display font-bold text-[#FAFAFA] mb-1"/>
 
                 {/* Verb */}
-                <p className={`text-sm font-semibold ${pillar.color} mb-3`}>
-                  {pillar.verb}
-                </p>
+                <CmsText fieldId="verb" listFieldId="pillars" itemId={pillar.id} value={pillar.verb} as="p" className={`text-sm font-semibold ${pillar.color} mb-3`}/>
 
                 {/* Description */}
-                <p className="text-xs text-[#B9CACB] leading-relaxed mb-5">
-                  {pillar.description}
-                </p>
+                <CmsText fieldId="description" listFieldId="pillars" itemId={pillar.id} value={pillar.description} as="p" rich className="text-xs text-[#B9CACB] leading-relaxed mb-5"/>
 
                 {/* CTA */}
                 <div className="mt-auto flex items-center gap-1.5 text-xs font-bold text-[#FAFAFA] group-hover:text-[#42CF8B] transition-colors">
-                  <span>Explore</span>
+                  <CmsText fieldId="pillarCtaLabel" value={pillarCtaLabel}/>
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                 </div>
               </Link>
@@ -139,40 +145,34 @@ export default function FourPillarsSection() {
                 <BarChart3 className="w-5 h-5 text-[#F59E0B]" />
               </div>
               <div>
-                <p className="text-sm font-bold text-[#FAFAFA]">LUXURY SMART VILLA</p>
-                <p className="text-[10px] font-mono text-[#71717A]">Project #VTR-2048</p>
+                <CmsText fieldId="previewProjectName" value={previewProjectName} as="p" className="text-sm font-bold text-[#FAFAFA]"/>
+                <CmsText fieldId="previewProjectId" value={previewProjectId} as="p" className="text-[10px] font-mono text-[#71717A]"/>
               </div>
             </div>
             <div className="space-y-2.5 mb-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-[#B9CACB]">Modeling</span>
-                <span className="text-xs font-mono text-[#42CF8B]">✓</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-[#B9CACB]">Visualization</span>
-                <div className="flex items-center gap-2">
-                  <div className="w-16 h-1.5 bg-[#27272A] rounded-full overflow-hidden">
-                    <div className="w-[78%] h-full bg-[#F59E0B] rounded-full" />
-                  </div>
-                  <span className="text-xs font-mono text-[#F59E0B]">78%</span>
+              {previewStages.map((stage) => (
+                <div key={stage.id} className="flex items-center justify-between">
+                  <CmsText fieldId="label" listFieldId="previewStages" itemId={stage.id} value={stage.label} className="text-xs text-[#B9CACB]"/>
+                  {stage.id === 'visualization' ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-16 h-1.5 bg-[#27272A] rounded-full overflow-hidden">
+                        <div className="h-full bg-[#F59E0B] rounded-full" style={{ width: previewProgressValue }} />
+                      </div>
+                      <span className="text-xs font-mono text-[#F59E0B]">{stageStatus(stage.id, stage.status)}</span>
+                    </div>
+                  ) : (
+                    <span className={`text-xs font-mono ${STAGE_STATUS_COLORS[stage.id] ?? 'text-[#71717A]'}`}>{stageStatus(stage.id, stage.status)}</span>
+                  )}
                 </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-[#B9CACB]">XR Experience</span>
-                <span className="text-xs font-mono text-[#00F0FF]">In Progress</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-[#B9CACB]">Final Delivery</span>
-                <span className="text-xs font-mono text-[#71717A]">—</span>
-              </div>
+              ))}
             </div>
             <div className="pt-3 border-t border-[#1E293B] flex items-center justify-between">
-              <span className="text-[10px] font-mono text-[#71717A]">Last update · 12 min ago</span>
+              <CmsText fieldId="previewLastUpdate" value={previewLastUpdate} className="text-[10px] font-mono text-[#71717A]"/>
               <Link
                 href="/track-project"
                 className="text-xs font-bold text-[#F59E0B] hover:underline flex items-center gap-1"
               >
-                Review Project <ArrowRight className="w-3 h-3" />
+                <CmsText fieldId="previewCtaLabel" value={previewCtaLabel} /> <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
           </div>
