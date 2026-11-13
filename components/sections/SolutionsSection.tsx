@@ -4,9 +4,60 @@ import React from 'react';
 import Link from 'next/link';
 import { homepageData } from '@/data/homepage';
 import { Building2, Home, Building, Palette, Briefcase, ArrowRight } from 'lucide-react';
+import { useSiteSection } from '@/lib/use-site-section';
+import { getDefaultSection, getListItems, getTextField } from '@/lib/site-content';
+import { sanitizeRichText } from '@/lib/sanitize-rich-text';
+import EditableText from '@/components/admin/live-editor/in-context/EditableText';
+import { useEditMode } from '@/components/admin/live-editor/in-context/EditModeContext';
+
+function CmsText({
+ fieldId,
+ listFieldId,
+ itemId,
+ value,
+ as: Tag = 'span',
+ className,
+ rich,
+}: {
+ fieldId: string;
+ listFieldId?: string;
+ itemId?: string;
+ value: string;
+ as?: React.ElementType;
+ className?: string;
+ rich?: boolean;
+}) {
+ const { editMode } = useEditMode();
+ if (editMode) {
+ return <EditableText fieldId={fieldId} listFieldId={listFieldId} itemId={itemId} as={Tag} className={className}/>;
+ }
+ if (rich) return <Tag className={className} dangerouslySetInnerHTML={{ __html: sanitizeRichText(value) }}/>;
+ return <Tag className={className}>{value}</Tag>;
+}
 
 export default function SolutionsSection() {
- const { solutions } = homepageData;
+ const { solutions: fallback } = homepageData;
+ const section = useSiteSection('solutions') ?? getDefaultSection('solutions');
+ const eyebrow = getTextField(section, 'eyebrow', 'Solutions');
+ const title = getTextField(section, 'title', fallback.title);
+ const subtitle = getTextField(section, 'subtitle', fallback.subtitle);
+ const cardCtaLabel = getTextField(section, 'cardCtaLabel', 'Learn More');
+ const listItems = getListItems(section, 'audiences');
+ const audiences = listItems.length
+ ? listItems.map((audience) => ({
+ id: audience.id,
+ title: audience.values.title ?? '',
+ description: audience.values.description ?? '',
+ icon: audience.meta?.icon ?? '',
+ href: audience.meta?.href ?? '#',
+ }))
+ : fallback.audiences.map((audience) => ({
+ id: audience.id,
+ title: audience.title,
+ description: audience.description,
+ icon: audience.icon,
+ href: audience.href,
+ }));
 
  const getIcon = (name: string) => {
  const icons: Record<string, React.ReactNode> = {
@@ -25,17 +76,15 @@ export default function SolutionsSection() {
  {/* Section Header */}
  <div className="text-center max-w-2xl mx-auto mb-16">
  <span className="px-4 py-1.5 rounded-full glass-pill text-[#42CF8B] text-xs font-bold uppercase tracking-widest inline-block mb-4 border border-[#1E293B]">
- Solutions
+ <CmsText fieldId="eyebrow" value={eyebrow}/>
  </span>
- <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-white font-display mb-4">
- {solutions.title}
- </h2>
- <p className="text-lg text-[#B9CACB] font-medium">{solutions.subtitle}</p>
+ <CmsText fieldId="title" value={title} as="h2" className="text-4xl sm:text-5xl font-bold tracking-tight text-white font-display mb-4"/>
+ <CmsText fieldId="subtitle" value={subtitle} as="p" rich className="text-lg text-[#B9CACB] font-medium"/>
  </div>
 
  {/* Solution Cards */}
  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
- {solutions.audiences.map((audience) => (
+ {audiences.map((audience) => (
  <Link
  key={audience.id}
  href={audience.href}
@@ -45,12 +94,12 @@ export default function SolutionsSection() {
  <div className="w-10 h-10 rounded-full bg-[#0A0A0B] border border-[#1E293B] flex items-center justify-center mb-4 text-[#42CF8B] group-hover:border-[#42CF8B]/50 transition-colors">
  {getIcon(audience.icon)}
  </div>
- <h3 className="text-base font-display font-bold text-[#FAFAFA] mb-2">{audience.title}</h3>
- <p className="text-xs text-[#B9CACB] leading-relaxed">{audience.description}</p>
+ <CmsText fieldId="title" listFieldId="audiences" itemId={audience.id} value={audience.title} as="h3" className="text-base font-display font-bold text-[#FAFAFA] mb-2"/>
+ <CmsText fieldId="description" listFieldId="audiences" itemId={audience.id} value={audience.description} as="p" rich className="text-xs text-[#B9CACB] leading-relaxed"/>
  </div>
  <div className="pt-5 mt-4 border-t border-[#1E293B]">
  <div className="w-full py-2.5 rounded-full bg-[#0A0A0B] group-hover:bg-[#42CF8B] group-hover:text-black text-[#FAFAFA] border border-[#1E293B] group-hover:border-[#42CF8B] text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-sm">
- <span>Learn More</span>
+ <CmsText fieldId="cardCtaLabel" value={cardCtaLabel}/>
  <ArrowRight className="w-3.5 h-3.5"/>
  </div>
  </div>
