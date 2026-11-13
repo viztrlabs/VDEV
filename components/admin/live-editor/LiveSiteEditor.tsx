@@ -17,13 +17,15 @@ import {
   Film,
   Image as ImageIcon,
   ExternalLink,
+  Plus,
+  X,
 } from 'lucide-react';
 import {
   useSiteContentDraftStore,
   publishSiteContent,
   resetSiteContentDraft,
 } from '@/lib/site-content-store';
-import { SiteSection, SiteField } from '@/lib/site-content';
+import { SiteSection, SiteField, SiteListField } from '@/lib/site-content';
 import { useAppStore } from '@/lib/store';
 import MediaPickerModal from '@/components/admin/live-editor/MediaPickerModal';
 
@@ -179,45 +181,65 @@ export default function LiveSiteEditor() {
           </div>
 
           <div className="rounded-2xl bg-[#131314] border border-[#27272A] divide-y divide-[#1E293B] max-h-[420px] overflow-y-auto">
-            {page.sections.map((s, idx) => (
-              <div
-                key={s.id}
-                data-testid="section-row"
-                className={`flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-[#18181B] ${
-                  selectedSectionId === s.id ? 'bg-[#18181B] border-l-2 border-[#3ECF8E]' : ''
-                }`}
-                onClick={() => setSelectedSectionId(s.id)}
-              >
-                <span className={`text-xs ${s.isVisible ? 'text-white' : 'text-zinc-500 line-through'}`}>
-                  {s.name}
-                </span>
-                <span className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-                  <button
-                    onClick={() => draftStore.getState().toggleSection(page.id, s.id)}
-                    aria-label={s.isVisible ? 'Hide section' : 'Show section'}
-                    className="p-1 text-zinc-400 hover:text-white cursor-pointer"
+            {page.sections.map((s, idx) => {
+              const listFields = s.fields.filter(
+                (field): field is SiteListField => field.kind === 'list',
+              );
+              return (
+                <div key={s.id}>
+                  <div
+                    data-testid="section-row"
+                    className={`flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-[#18181B] ${
+                      selectedSectionId === s.id ? 'bg-[#18181B] border-l-2 border-[#3ECF8E]' : ''
+                    }`}
+                    onClick={() => setSelectedSectionId(s.id)}
                   >
-                    {s.isVisible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                  </button>
-                  <button
-                    onClick={() => draftStore.getState().moveSection(page.id, s.id, 'up')}
-                    disabled={idx === 0}
-                    aria-label="Move up"
-                    className="p-1 text-zinc-400 hover:text-white disabled:opacity-30 cursor-pointer"
-                  >
-                    <ArrowUp className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    onClick={() => draftStore.getState().moveSection(page.id, s.id, 'down')}
-                    disabled={idx === page.sections.length - 1}
-                    aria-label="Move down"
-                    className="p-1 text-zinc-400 hover:text-white disabled:opacity-30 cursor-pointer"
-                  >
-                    <ArrowDown className="w-3.5 h-3.5" />
-                  </button>
-                </span>
-              </div>
-            ))}
+                    <span className={`text-xs ${s.isVisible ? 'text-white' : 'text-zinc-500 line-through'}`}>
+                      {s.name}
+                    </span>
+                    <span className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        onClick={() => draftStore.getState().toggleSection(page.id, s.id)}
+                        aria-label={s.isVisible ? 'Hide section' : 'Show section'}
+                        className="p-1 text-zinc-400 hover:text-white cursor-pointer"
+                      >
+                        {s.isVisible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                      </button>
+                      <button
+                        onClick={() => draftStore.getState().moveSection(page.id, s.id, 'up')}
+                        disabled={idx === 0}
+                        aria-label="Move up"
+                        className="p-1 text-zinc-400 hover:text-white disabled:opacity-30 cursor-pointer"
+                      >
+                        <ArrowUp className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => draftStore.getState().moveSection(page.id, s.id, 'down')}
+                        disabled={idx === page.sections.length - 1}
+                        aria-label="Move down"
+                        className="p-1 text-zinc-400 hover:text-white disabled:opacity-30 cursor-pointer"
+                      >
+                        <ArrowDown className="w-3.5 h-3.5" />
+                      </button>
+                    </span>
+                  </div>
+                  {listFields.map((field) => (
+                    <div
+                      key={field.id}
+                      className="flex items-center justify-between gap-2 px-3 py-1.5 bg-[#131314] border-t border-[#1E293B]/60"
+                    >
+                      <span className="text-[10px] text-zinc-500 font-mono truncate">
+                        {s.name} · {field.label}
+                      </span>
+                      <span className="flex items-center gap-2 shrink-0">
+                        <span className="text-[10px] text-zinc-500 font-mono">{field.items.length} items</span>
+                        <span className="text-[10px] text-zinc-400 font-mono">Edit in Live Editor</span>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
           </div>
 
           {selectedSection && (
@@ -286,27 +308,40 @@ function SectionFieldEditor({
         field.kind === 'list' ? (
           <div
             key={field.id}
+            data-testid="list-field-summary"
             className="flex items-center justify-between gap-2 rounded-lg border border-[#27272A] bg-[#18181B] px-3 py-2"
           >
             <span className="text-[11px] text-zinc-400 font-mono">{field.label}</span>
-            <span className="text-[10px] text-zinc-500 font-mono">Edit in Live Editor</span>
+            <span className="flex items-center gap-2">
+              <span className="text-[10px] text-zinc-500 font-mono">{field.items.length} items</span>
+              <span className="text-[10px] text-zinc-500 font-mono">Edit in Live Editor</span>
+            </span>
           </div>
         ) : field.kind === 'text' ? (
           <label key={field.id} className="block space-y-1">
-            <span className="text-[11px] text-zinc-400 font-mono">{field.label}</span>
-            {field.multiline ? (
+            <span className="text-[11px] text-zinc-400 font-mono flex items-center gap-1.5">
+              {field.label}
+              {field.rich && (
+                <span className="text-[9px] uppercase tracking-wider text-[#3ECF8E]/70 border border-[#3ECF8E]/30 rounded px-1">
+                  HTML
+                </span>
+              )}
+            </span>
+            {field.multiline || field.rich ? (
               <textarea
                 value={field.value}
-                rows={3}
+                rows={field.rich ? 5 : 3}
+                aria-label={field.label}
                 onChange={(e) =>
                   draftStore.getState().updateTextField(pageId, section.id, field.id, e.target.value)
                 }
-                className="w-full px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-xs text-white"
+                className="w-full px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-xs text-white font-mono"
               />
             ) : (
               <input
                 type="text"
                 value={field.value}
+                aria-label={field.label}
                 onChange={(e) =>
                   draftStore.getState().updateTextField(pageId, section.id, field.id, e.target.value)
                 }
@@ -319,6 +354,7 @@ function SectionFieldEditor({
             <span className="text-[11px] text-zinc-400 font-mono flex items-center gap-1">
               {field.mediaType === 'video' ? <Film className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
               {field.label}
+              <span className="text-[9px] text-zinc-500 font-mono">{field.urls.length} media</span>
             </span>
             <div className="flex items-center gap-2">
               {field.urls[0] ? (
@@ -340,15 +376,33 @@ function SectionFieldEditor({
                 Choose media
               </button>
             </div>
-            <MediaUrlInput
-              value={field.urls[0] ?? ''}
-              onCommit={(url) =>
-                draftStore.getState().updateMediaField(pageId, section.id, field.id, {
-                  urls: [url],
-                  isPlaceholder: false,
-                })
-              }
-            />
+            <div className="space-y-1.5">
+              {field.urls.map((url, index) => (
+                <div key={`${field.id}-${index}`} className="flex items-center gap-1.5">
+                  <MediaUrlInput
+                    value={url}
+                    label={`Media URL ${index + 1}`}
+                    onCommit={(next) =>
+                      draftStore.getState().updateMediaUrl(pageId, section.id, field.id, index, next)
+                    }
+                  />
+                  <button
+                    onClick={() => draftStore.getState().removeMediaUrl(pageId, section.id, field.id, index)}
+                    aria-label={`Remove media URL ${index + 1}`}
+                    className="p-1.5 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-[#27272A] cursor-pointer"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+              <button
+                onClick={() => draftStore.getState().addMediaUrl(pageId, section.id, field.id, '')}
+                className="px-2.5 py-1.5 rounded-lg bg-[#18181B] border border-dashed border-[#3F3F46] hover:border-[#3ECF8E]/50 text-zinc-300 text-[11px] font-mono flex items-center gap-1 cursor-pointer"
+              >
+                <Plus className="w-3 h-3" />
+                <span>Add URL</span>
+              </button>
+            </div>
             <label className="flex items-center gap-2 text-[11px] text-zinc-400 cursor-pointer">
               <input
                 type="checkbox"
@@ -385,7 +439,15 @@ function SectionFieldEditor({
   );
 }
 
-function MediaUrlInput({ value, onCommit }: { value: string; onCommit: (url: string) => void }) {
+function MediaUrlInput({
+  value,
+  label,
+  onCommit,
+}: {
+  value: string;
+  label: string;
+  onCommit: (url: string) => void;
+}) {
   const [local, setLocal] = useState(value);
 
   useEffect(() => {
@@ -400,6 +462,7 @@ function MediaUrlInput({ value, onCommit }: { value: string; onCommit: (url: str
     <input
       type="text"
       value={local}
+      aria-label={label}
       placeholder="Paste media URL"
       onChange={(e) => setLocal(e.target.value)}
       onBlur={commit}

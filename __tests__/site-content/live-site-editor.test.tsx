@@ -87,7 +87,7 @@ describe('LiveSiteEditor', () => {
   it('commits media URL to draft only on blur', () => {
     render(<LiveSiteEditor />);
     fireEvent.click(screen.getByText('Hero'));
-    const input = screen.getByPlaceholderText('Paste media URL') as HTMLInputElement;
+    const input = screen.getAllByPlaceholderText('Paste media URL')[0] as HTMLInputElement;
     const heroImages = () =>
       draft()
         .content.pages[0].sections.find((s) => s.id === 'hero')!
@@ -108,5 +108,20 @@ describe('LiveSiteEditor', () => {
     fireEvent.click(within(row as HTMLElement).getByRole('button', { name: /move up/i }));
     const ids = draft().content.pages[0].sections.map((s) => s.id);
     expect(ids.indexOf('showreel')).toBeLessThan(ids.indexOf('solutions'));
+  });
+
+  it('renders list fields as read-only summaries', () => {
+    render(<LiveSiteEditor />);
+    expect(screen.getAllByText('Edit in Live Editor').length).toBeGreaterThan(0);
+  });
+
+  it('renders duplicated section instances', () => {
+    draft().duplicateSection('home', 'hero');
+    render(<LiveSiteEditor />);
+    const rows = screen.getAllByTestId('section-row');
+    expect(rows).toHaveLength(draft().content.pages[0].sections.length);
+    const heroRows = rows.filter((row) => /^Hero/.test(row.textContent ?? ''));
+    expect(heroRows).toHaveLength(2);
+    expect(screen.getByText('Hero copy')).toBeInTheDocument();
   });
 });
