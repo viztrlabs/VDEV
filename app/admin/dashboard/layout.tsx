@@ -67,6 +67,7 @@ import {
   INITIAL_MANAGED_PROJECTS,
 } from '@/lib/projects-data';
 import { FolderKanban, QrCode, FileCheck } from 'lucide-react';
+import InContextEditor from '@/components/admin/live-editor/in-context/InContextEditor';
 
 import {
   DashboardOverview,
@@ -124,6 +125,7 @@ type ActiveSection =
   | 'pixel-streaming-control'
   | 'file-storage'
   | 'cms-manager'
+  | 'live-editor'
   | 'pages'
   | 'blog'
   | 'cms-services'
@@ -187,6 +189,7 @@ const SIDEBAR_SECTIONS = [
     title: 'Super Admin CMS Suite',
     items: [
       { id: 'cms-manager', label: 'Master CMS Engine', icon: Shield },
+      { id: 'live-editor', label: 'Live Editor', icon: Eye },
       { id: 'pages', label: 'Pages & Templates', icon: FileText },
       { id: 'blog', label: 'Blog Posts', icon: FileText },
       { id: 'cms-services', label: 'Services CMS', icon: Layers },
@@ -749,6 +752,7 @@ export default function AdminDashboardLayout() {
     projectsList,
     selectedProjectId,
     setSelectedProjectId,
+    setActiveSection,
     onAddProject: handleAddProject,
     onUpdateProject: handleUpdateProject,
     onDeleteProject: handleDeleteProject,
@@ -769,6 +773,10 @@ export default function AdminDashboardLayout() {
     activityFeed,
     feedbackItems,
   };
+
+  if (activeSection === 'live-editor') {
+    return <InContextEditor onExit={() => setActiveSection('cms-manager')} />;
+  }
 
   return (
     <div className="min-h-screen bg-[#09090B] text-[#FAFAFA] flex flex-col w-full">
@@ -833,6 +841,7 @@ function renderSection(section: ActiveSection, props: {
   projectsList: ManagedProject[];
   selectedProjectId: string;
   setSelectedProjectId: (id: string) => void;
+  setActiveSection: (s: ActiveSection) => void;
   onAddProject: (p: ManagedProject) => void;
   onUpdateProject: (p: ManagedProject) => void;
   onDeleteProject: (id: string) => void;
@@ -934,7 +943,7 @@ function renderSection(section: ActiveSection, props: {
     case 'cms-manager':
       return (
         <Suspense fallback={<SectionFallback />}>
-          <MasterCMSEngine />
+          <MasterCMSEngine onOpenLiveEditor={() => props.setActiveSection('live-editor')} />
         </Suspense>
       );
     case 'pages':
