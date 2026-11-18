@@ -135,16 +135,31 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     const isProd = process.env.NODE_ENV === 'production';
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const editorUrl = process.env.NEXT_PUBLIC_EDITOR_URL || 'http://localhost:3487';
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+    
+    // Safely parse URLs with fallbacks
+    const parseUrl = (url: string, fallback: string) => {
+      try {
+        if (!url) return fallback;
+        new URL(url); // validate
+        return url;
+      } catch {
+        return fallback;
+      }
+    };
+
+    const appUrl = parseUrl(process.env.NEXT_PUBLIC_APP_URL || '', 'http://localhost:3000');
+    const editorUrl = parseUrl(process.env.NEXT_PUBLIC_EDITOR_URL || '', 'http://localhost:3487');
+    const supabaseUrl = parseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL || '', '');
+    const signalingUrl = parseUrl(process.env.NEXT_PUBLIC_PS_SIGNALING_URL || '', '');
+
     let supabaseHost = '';
-    try {
-      supabaseHost = supabaseUrl ? new URL(supabaseUrl).hostname : '';
-    } catch {
-      supabaseHost = '';
+    if (supabaseUrl) {
+      try {
+        supabaseHost = new URL(supabaseUrl).hostname;
+      } catch {
+        supabaseHost = '';
+      }
     }
-    const signalingUrl = process.env.NEXT_PUBLIC_PS_SIGNALING_URL || '';
 
     // Build CSP dynamically based on environment
     const cspDirectives = [
