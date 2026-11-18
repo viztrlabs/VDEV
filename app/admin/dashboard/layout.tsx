@@ -93,7 +93,6 @@ const SuperAdminProjectManager = lazy(() => import('@/components/admin/SuperAdmi
 const ProjectManagementSystem = lazy(() => import('@/components/admin/ProjectManagementSystem').then(m => ({ default: m.default })));
 const XRLinkGenerator = lazy(() => import('@/components/admin/XRLinkGenerator').then(m => ({ default: m.default })));
 const VirtualTourAdminPanel = lazy(() => import('@/components/admin/VirtualTourAdminPanel').then(m => ({ default: m.default })));
-const PixelStreamingSessionControl = lazy(() => import('@/components/admin/PixelStreamingSessionControl').then(m => ({ default: m.default })));
 const FileStorageManager = lazy(() => import('@/components/admin/FileStorageManager').then(m => ({ default: m.default })));
 const GoogleDriveAdminManager = lazy(() => import('@/components/admin/GoogleDriveAdminManager').then(m => ({ default: m.default })));
 const GoogleMeetAdminManager = lazy(() => import('@/components/admin/GoogleMeetAdminManager').then(m => ({ default: m.default })));
@@ -104,6 +103,8 @@ const AIDashboardPanel = lazy(() => import('@/components/admin/AIDashboardPanel'
 const ClientDiscoveryManager = lazy(() => import('@/components/admin/ClientDiscoveryManager').then(m => ({ default: m.default })));
 const BookingManager = lazy(() => import('@/components/admin/BookingManager').then(m => ({ default: m.default })));
 const ContactManager = lazy(() => import('@/components/admin/ContactManager').then(m => ({ default: m.default })));
+const MessagingSettings = lazy(() => import('@/components/admin/MessagingSettings').then(m => ({ default: m.default })));
+const KnowledgeManager = lazy(() => import('@/components/admin/KnowledgeManager').then(m => ({ default: m.default })));
 
 // =====================================================================
 // SECTION TYPE DEFINITIONS
@@ -117,12 +118,10 @@ type ActiveSection =
   | 'super-admin-users'
   | 'super-admin-analytics'
   | 'super-admin-revenue'
-  | 'super-admin-gpu'
   | 'super-admin-toggles'
   | 'super-admin-health'
   | 'project-management'
   | 'xr-links'
-  | 'pixel-streaming-control'
   | 'file-storage'
   | 'cms-manager'
   | 'live-editor'
@@ -158,6 +157,8 @@ type ActiveSection =
   | 'virtual-tour-config'
   | 'playcanvas-engine'
   | 'ai-platform'
+  | 'messaging-settings'
+  | 'knowledge-manager'
   | string;
 
 const SIDEBAR_SECTIONS = [
@@ -169,7 +170,6 @@ const SIDEBAR_SECTIONS = [
       { id: 'super-admin-users', label: 'Manage Admins & Users', icon: Users },
       { id: 'super-admin-analytics', label: 'System Analytics', icon: TrendingUp },
       { id: 'super-admin-revenue', label: 'Revenue & MRR Tracking', icon: DollarSign },
-      { id: 'super-admin-gpu', label: 'GPU Usage Monitoring', icon: Cpu },
       { id: 'super-admin-toggles', label: 'Feature Toggles Switchboard', icon: SlidersHorizontal },
       { id: 'super-admin-health', label: 'Global Health & Error Logs', icon: Activity },
       { id: 'inquiries', label: 'Contact Submissions', icon: Mail },
@@ -180,7 +180,6 @@ const SIDEBAR_SECTIONS = [
     items: [
       { id: 'project-management', label: 'Project Management', icon: FolderKanban },
       { id: 'xr-links', label: 'XR Link Generator', icon: Box },
-      { id: 'pixel-streaming-control', label: 'Pixel Streaming Control', icon: Server },
       { id: 'file-storage', label: 'Multi-Cloud File Storage', icon: HardDrive },
       { id: 'asset-pipeline', label: 'Asset Pipeline', icon: Box },
     ],
@@ -215,7 +214,6 @@ const SIDEBAR_SECTIONS = [
     items: [
       { id: 'vr-configurator', label: 'VR Tour Builder', icon: Headset },
       { id: 'ar', label: 'AR QuickLook Assets', icon: Box },
-      { id: 'streaming', label: 'GPU Pixel Streaming', icon: Server },
       { id: 'splat-engine', label: 'Gaussian Splat Engine', icon: Cube },
       { id: 'virtual-tour-config', label: '360° Virtual Tour', icon: Globe },
     ],
@@ -233,6 +231,8 @@ const SIDEBAR_SECTIONS = [
     items: [
       { id: 'google-drive', label: 'Google Drive Fleet', icon: HardDrive },
       { id: 'ai-credentials', label: 'AI & API Credentials', icon: KeyRound },
+      { id: 'messaging-settings', label: 'Messaging Settings', icon: MessageSquare },
+      { id: 'knowledge-manager', label: 'Knowledge Manager', icon: Database },
       { id: 'playcanvas-engine', label: 'PlayCanvas XR Engine', icon: Cube },
       { id: 'settings', label: 'Platform Settings', icon: Settings },
       { id: 'ai-platform', label: 'AI Platform', icon: Brain },
@@ -454,7 +454,6 @@ const KNOWN_PROJECT_TYPES: ProjectType[] = [
   'WebAR',
   'Virtual Reality',
   'Virtual Tour 360',
-  'Pixel Streaming',
   'Animation',
   'Still Renders',
 ];
@@ -477,7 +476,7 @@ const KNOWN_PAYMENT_STATUSES: PaymentStatus[] = [
 
 function toProjectType(value: unknown): ProjectType {
   const match = KNOWN_PROJECT_TYPES.find((t) => t === value);
-  return match ?? 'Virtual Tour 360';
+  return match ?? 'WebXR';
 }
 
 function toProjectStatus(value: unknown): ProjectStatus {
@@ -525,9 +524,6 @@ function mapApiProjectToManagedProject(row: Record<string, any>): ManagedProject
     image: toSafeString(row.image),
     lastUpdate: toSafeString(row.lastUpdate ?? row.last_update ?? row.updated_at ?? row.created_at),
     xrAvailable: Boolean(row.xrAvailable ?? row.xr_available ?? false),
-    pixelStreamingAvailable: Boolean(
-      row.pixelStreamingAvailable ?? row.pixel_streaming_available ?? false
-    ),
     hoursMonitoring: {
       estimatedHours: toFiniteNumber(
         hours.estimatedHours ?? hours.estimated_hours ?? row.estimated_hours
@@ -870,7 +866,6 @@ function renderSection(section: ActiveSection, props: {
     case 'super-admin-users':
     case 'super-admin-analytics':
     case 'super-admin-revenue':
-    case 'super-admin-gpu':
     case 'super-admin-toggles':
     case 'super-admin-health':
     case 'users':
@@ -914,13 +909,6 @@ function renderSection(section: ActiveSection, props: {
       return (
         <Suspense fallback={<SectionFallback />}>
           <VirtualTourAdminPanel />
-        </Suspense>
-      );
-    case 'pixel-streaming-control':
-    case 'streaming':
-      return (
-        <Suspense fallback={<SectionFallback />}>
-          <PixelStreamingSessionControl />
         </Suspense>
       );
     case 'file-storage':
@@ -994,6 +982,18 @@ function renderSection(section: ActiveSection, props: {
       return (
         <Suspense fallback={<SectionFallback />}>
           <AIDashboardPanel />
+        </Suspense>
+      );
+    case 'messaging-settings':
+      return (
+        <Suspense fallback={<SectionFallback />}>
+          <MessagingSettings />
+        </Suspense>
+      );
+    case 'knowledge-manager':
+      return (
+        <Suspense fallback={<SectionFallback />}>
+          <KnowledgeManager />
         </Suspense>
       );
     case 'client-discovery':
