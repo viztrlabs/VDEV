@@ -138,7 +138,12 @@ const nextConfig: NextConfig = {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     const editorUrl = process.env.NEXT_PUBLIC_EDITOR_URL || 'http://localhost:3487';
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-    const supabaseHost = supabaseUrl ? new URL(supabaseUrl).hostname : '';
+    let supabaseHost = '';
+    try {
+      supabaseHost = supabaseUrl ? new URL(supabaseUrl).hostname : '';
+    } catch {
+      supabaseHost = '';
+    }
     const signalingUrl = process.env.NEXT_PUBLIC_PS_SIGNALING_URL || '';
 
     // Build CSP dynamically based on environment
