@@ -379,23 +379,39 @@ function AdminSidebar({
   setActiveSection,
   mobileSidebarOpen,
   setMobileSidebarOpen,
+  collapsed,
+  setCollapsed,
 }: {
   activeSection: ActiveSection;
   setActiveSection: (s: ActiveSection) => void;
   mobileSidebarOpen: boolean;
   setMobileSidebarOpen: (v: boolean) => void;
+  collapsed: boolean;
+  setCollapsed: (v: boolean) => void;
 }) {
   return (
     <>
       <aside
-        className={`w-[240px] bg-[#18181B] border-r border-[#27272A] flex flex-col justify-between overflow-y-auto shrink-0 transition-all z-30 ${
-          mobileSidebarOpen ? 'fixed inset-y-16 left-0 shadow-2xl z-50' : 'hidden md:flex'
+        className={`flex flex-col justify-between overflow-y-auto shrink-0 transition-all z-30 duration-300 ${
+          mobileSidebarOpen
+            ? 'fixed inset-y-16 left-0 shadow-2xl z-50 w-[240px]'
+            : collapsed
+            ? 'w-[64px] hidden md:flex'
+            : 'w-[240px] hidden md:flex'
         }`}
       >
         <div className="p-3.5 space-y-5">
+          {/* Collapse toggle button */}
+          <div className="flex items-center justify-between p-2 rounded-lg bg-[#09090B] border border-[#27272A] cursor-pointer hover:bg-[#27272A] transition-colors" onClick={() => setCollapsed(!collapsed)}>
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#71717A]">
+              {collapsed ? 'Expend' : 'Collapse'}
+            </span>
+            <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${collapsed ? 'rotate-180' : ''}`} />
+          </div>
+
           {SIDEBAR_SECTIONS.map((section) => (
             <div key={section.title} className="space-y-1">
-              <h4 className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#71717A] px-2">
+              <h4 className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#71717A] px-2 whitespace-nowrap">
                 {section.title}
               </h4>
               <div className="space-y-0.5">
@@ -409,14 +425,18 @@ function AdminSidebar({
                         setActiveSection(item.id);
                         setMobileSidebarOpen(false);
                       }}
-                      className={`w-full px-2.5 py-1.5 rounded-lg text-xs font-mono flex items-center gap-2 transition-all text-left cursor-pointer ${
+                      className={`flex items-center gap-2.5 rounded-lg text-xs font-mono transition-all text-left cursor-pointer ${
                         isActive
                           ? 'bg-[#09090B] text-[#3ECF8E] font-bold border-l-2 border-[#3ECF8E] pl-2'
                           : 'text-[#A1A1AA] hover:text-white hover:bg-[#09090B]/50'
-                      }`}
+                        } w-full px-2.5 py-1.5`}
                     >
-                      <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-[#3ECF8E]' : 'text-[#71717A]'}`} />
-                      <span className="truncate">{item.label}</span>
+                      <div className="w-8 flex items-center justify-center shrink-0">
+                        <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-[#3ECF8E]' : 'text-[#71717A]'}`} />
+                      </div>
+                      <span className={collapsed ? 'hidden' : 'truncate'}>
+                        {item.label}
+                      </span>
                     </button>
                   );
                 })}
@@ -424,8 +444,8 @@ function AdminSidebar({
             </div>
           ))}
         </div>
-        <div className="p-3 border-t border-[#27272A] text-[10px] font-mono text-[#71717A] flex items-center justify-between">
-          <span>Prisma 5.x DB Sync</span>
+        <div className="p-3 border-t border-[#27272A] text-[10px] font-mono text-[#71717A] flex items-center justify-between whitespace-nowrap">
+          <span className="truncate">Prisma 5.x DB Sync</span>
           <span className="text-[#3ECF8E] flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-[#3ECF8E] animate-pulse" />
             Live Connected
@@ -565,6 +585,7 @@ export default function AdminDashboardLayout() {
   const [activeRoleView, setActiveRoleView] = useState<'super_admin' | 'admin' | 'user' | 'client'>('super_admin');
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [leftPanelOpen, setLeftPanelOpen] = useState<boolean>(true);
   const [rightPanelOpen, setRightPanelOpen] = useState<boolean>(true);
   const [filterCriteria, setFilterCriteria] = useState<{
@@ -799,6 +820,8 @@ export default function AdminDashboardLayout() {
           setActiveSection={setActiveSection}
           mobileSidebarOpen={mobileSidebarOpen}
           setMobileSidebarOpen={setMobileSidebarOpen}
+          collapsed={sidebarCollapsed}
+          setCollapsed={setSidebarCollapsed}
         />
         <CollapsibleLeftFilterPanel
           isOpen={leftPanelOpen}
