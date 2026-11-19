@@ -268,6 +268,79 @@ Click any button below to visit our social pages.`;
   await sendWithKeyboard(client, chatId, text, await socialLinksKeyboard());
 }
 
+/** /register - Register as VizTR User */
+export async function handleRegister(ctx: CommandContext): Promise<void> {
+  const { client, chatId } = ctx;
+
+  const text = `VizTR User Registration
+
+Welcome to VizTR! To join our community, please select your role category:
+
+\u2022 Architect - Architectural visualization professional
+\u2022 3D Artist - 3D modeling and rendering artist
+\u2022 Freelancer - Independent creative professional
+\u2022 Client - Client looking for visualization services
+\u2022 Learner - Student or learning enthusiast
+\u2022 Technology Enthusiast - Technology and XR enthusiast
+
+Please reply with your category name to register.`;
+
+  await client.sendMessage(chatId, text);
+}
+
+/** /enquiry - Submit Project Enquiry */
+export async function handleEnquiry(ctx: CommandContext): Promise<void> {
+  const { client, chatId } = ctx;
+
+  const text = `VizTR Project Enquiry
+
+Please provide your project details:
+
+1. Service Type (architectural, virtual_reality, webxr, webar, virtual_tour_360, animation, still_renders, other)
+2. Project Description
+3. Budget Range
+4. Timeline
+
+Reply with your project details to submit an enquiry.`;
+
+  await client.sendMessage(chatId, text);
+}
+
+/** /profile - View User Profile */
+export async function handleProfile(ctx: CommandContext): Promise<void> {
+  const { client, chatId } = ctx;
+
+  const text = `VizTR User Profile
+
+Use /register to create your profile if you haven't already.
+
+Once registered, your profile will show:
+- Category and experience level
+- Company and location
+- Portfolio link (if provided)
+- Registration status`;
+
+  await client.sendMessage(chatId, text);
+}
+
+/** /status - Check Registration Status */
+export async function handleStatus(ctx: CommandContext): Promise<void> {
+  const { client, chatId } = ctx;
+
+  const text = `VizTR Registration Status
+
+Use /register to create your profile if you haven't already.
+
+Your registration status will be displayed here once registered.
+
+Status options:
+\u2022 Pending - Awaiting admin approval
+\u2022 Approved - Active community member
+\u2022 Rejected - Application not approved`;
+
+  await client.sendMessage(chatId, text);
+}
+
 import { registerCommandHandler } from './registry';
 
 /** Register all handlers */
@@ -284,4 +357,8 @@ export function registerAllHandlers(): void {
   registerCommandHandler('support', handleSupport);
   registerCommandHandler('privacy', handlePrivacy);
   registerCommandHandler('socials', handleSocials);
+  registerCommandHandler('register', handleRegister);
+  registerCommandHandler('enquiry', handleEnquiry);
+  registerCommandHandler('profile', handleProfile);
+  registerCommandHandler('status', handleStatus);
 }
