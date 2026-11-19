@@ -209,11 +209,17 @@ export interface RepositoryFactory {
   contacts: ContactRepository;
 }
 
-export type RepositoryMode = 'mock' | 'supabase';
+export type RepositoryMode = 'mock' | 'supabase' | 'auto';
 
-export async function createRepositoryFactory(mode: RepositoryMode = 'mock'): Promise<RepositoryFactory> {
-  if (mode === 'supabase') {
-    // Dynamic import to avoid bundling Supabase client in mock mode
+export async function createRepositoryFactory(mode: RepositoryMode = 'auto'): Promise<RepositoryFactory> {
+  if (mode === 'supabase' || (mode === 'auto' && (() => {
+    try {
+      const { getSupabaseAdmin, isSupabaseAdminConfigured } = require('@/lib/supabase-admin');
+      return isSupabaseAdminConfigured() && !!getSupabaseAdmin();
+    } catch {
+      return false;
+    }
+  })())) {
     const { createSupabaseRepositoryFactory } = await import('./supabase-repositories');
     return createSupabaseRepositoryFactory();
   }

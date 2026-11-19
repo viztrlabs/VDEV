@@ -29,7 +29,6 @@ function getDefaultContent(type: DocumentType): DocumentContent {
           { name: 'WebAR Configurator (per project)', price: 'From ₹30,000' },
           { name: 'Virtual Reality Build (per project)', price: 'From ₹40,000' },
           { name: 'Virtual Tour — 360° (per property)', price: '₹10,000 – ₹20,000' },
-          { name: 'Pixel Streaming Demo (per project)', price: 'From ₹50,000' },
         ]
       };
     case 'proposal':

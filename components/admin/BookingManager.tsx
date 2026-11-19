@@ -26,7 +26,6 @@ import type { Booking, BookingStatus, BookingServiceType } from '@/lib/super-adm
 const BOOKING_SERVICE_TYPES: BookingServiceType[] = [
   'Architectural',
   'Virtual Reality',
-  'Pixel Streaming',
   'WebXR',
   'WebAR',
   'Virtual Tour 360',

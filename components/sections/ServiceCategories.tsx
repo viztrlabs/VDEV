@@ -36,15 +36,19 @@ export default function ServiceCategories() {
  >
  <div>
  {/* Image Header */}
- <div className="relative h-60 sm:h-72 w-full overflow-hidden border-b border-[#1E293B]">
- <Image
- src={serviceCategories.studio.image}
- alt="Studio Architectural Visualization"
- fill
- sizes="(max-width: 1024px) 100vw, 50vw"
- quality={85}
- className="object-cover render-lighting-enhanced group-hover:scale-105 transition-transform duration-700"
- />
+<div className="relative h-60 sm:h-72 w-full overflow-hidden border-b border-[#1E293B]">
+                    {serviceCategories.studio.image ? (
+                      <Image
+                        src={serviceCategories.studio.image}
+                        alt="Studio Architectural Visualization"
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        quality={85}
+                        className="object-cover render-lighting-enhanced group-hover:scale-105 transition-transform duration-700"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-[#09090B]" />
+                    )}
  <div className="absolute inset-0 bg-gradient-to-t from-[#131314] via-[#131314]/30 to-black/40"/>
  <div className="absolute top-4 left-4">
  <span className="px-3 py-1 rounded-full bg-[#0A0A0B]/90 text-[#00F0FF] border border-[#1E293B] text-[10px] font-bold uppercase tracking-wider shadow-md">
@@ -99,15 +103,19 @@ export default function ServiceCategories() {
  >
  <div>
  {/* Image Header */}
- <div className="relative h-60 sm:h-72 w-full overflow-hidden border-b border-[#1E293B]">
- <Image
- src={serviceCategories.xrWorld.image}
- alt="XR World Spatial Technology"
- fill
- sizes="(max-width: 1024px) 100vw, 50vw"
- quality={85}
- className="object-cover render-lighting-enhanced group-hover:scale-105 transition-transform duration-700"
- />
+<div className="relative h-60 sm:h-72 w-full overflow-hidden border-b border-[#1E293B]">
+                    {serviceCategories.xrWorld.image ? (
+                      <Image
+                        src={serviceCategories.xrWorld.image}
+                        alt="XR World Spatial Technology"
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        quality={85}
+                        className="object-cover render-lighting-enhanced group-hover:scale-105 transition-transform duration-700"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-[#09090B]" />
+                    )}
  <div className="absolute inset-0 bg-gradient-to-t from-[#131314] via-[#131314]/30 to-black/40"/>
  <div className="absolute top-4 right-4">
  <span className="px-3.5 py-1 rounded-full bg-[#42CF8B] text-black text-[10px] font-extrabold uppercase tracking-wider shadow-md">

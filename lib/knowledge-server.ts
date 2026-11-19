@@ -5,7 +5,7 @@
 
 export interface KnowledgeChunk {
   id: string;
-  source: 'page' | 'blog' | 'service' | 'project' | 'manual';
+  source: 'page' | 'blog' | 'service' | 'project' | 'manual' | 'contact';
   sourceId: string;
   title: string;
   url: string;
@@ -30,7 +30,58 @@ export interface EscalationTicket {
 }
 
 // In-memory store for server (in production, use Redis/Postgres)
-const serverChunks: KnowledgeChunk[] = [];
+const serverChunks: KnowledgeChunk[] = [
+  {
+    id: 'chunk_seed_001',
+    source: 'service',
+    sourceId: 'arch-viz',
+    title: 'Architectural Visualization Services',
+    url: '/services',
+    content: 'VizTR Studio provides professional architectural visualization services including 3D exterior and interior renders, WebXR experiences, 360° virtual tours, and AI-generated marketing imagery for architecture firms. We work with residential, commercial, hospitality, and institutional projects. Contact us for a consultation.',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'chunk_seed_002',
+    source: 'service',
+    sourceId: 'xr-world',
+    title: 'XR World - WebXR & Virtual Tours',
+    url: '/xr-world',
+    content: 'VizTR XR World offers WebXR and WebAR experiences, 360° virtual tours, and immersive architectural presentations. Our virtual tours use Marzipano technology and our WebXR experiences run in browser without app downloads. Perfect for real estate previews, architectural walkthroughs, and interactive marketing.',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'chunk_seed_003',
+    source: 'service',
+    sourceId: 'booking',
+    title: 'Book a Consultation',
+    url: '/book',
+    content: 'Book a free architectural visualization consultation with VizTR Studio. We discuss your project requirements, timeline, budget, and deliverables. Consultations are available for exterior renders, interior renders, 360° tours, WebXR experiences, and AI marketing imagery. Fill out the booking form on our website to schedule.',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'chunk_seed_004',
+    source: 'contact',
+    sourceId: 'contact-info',
+    title: 'Contact VizTR Studio',
+    url: '/contact',
+    content: 'Contact VizTR Studio for architectural visualization services. Email us at admin@viztr.com or use the contact form on our website. We respond within 24 hours. For urgent inquiries, reach us on WhatsApp at +919336561591.',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'chunk_seed_005',
+    source: 'project',
+    sourceId: 'about',
+    title: 'About VizTR Studio',
+    url: '/about',
+    content: 'VizTR Studio is an architecture visualization studio specializing in 3D renders, WebXR experiences, virtual tours, and AI-generated marketing. We serve architecture firms, real estate developers, and interior designers worldwide. Our mission is to make architectural visualization accessible, fast, and beautiful.',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+];
 const serverTickets: EscalationTicket[] = [];
 
 export function searchKnowledgeChunks(query: string, limit = 5): KnowledgeChunk[] {

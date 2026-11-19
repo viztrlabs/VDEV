@@ -1,6 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import { searchKnowledgeChunks, createEscalationTicket, type KnowledgeChunk, type EscalationTicket } from '@/lib/knowledge-server';
-import { getEffectiveModels, getEffectiveSystemPrompt, getEffectiveEscalationPrompt, getEnabledProviders, getProviderConfig } from '@/lib/messaging/model-settings-store';
+import { getEffectiveModels, getEffectiveSystemPrompt, getEffectiveEscalationPrompt, getEnabledProviders, getProviderConfig, type AIProvider, type ModelConfig } from '@/lib/messaging/model-constants';
 
 const SYSTEM_PROMPT = `You are Hermes, the AI assistant for VizTR — a studio that produces architectural visualization, WebXR/WebAR experiences, 360° virtual tours, and AI-generated marketing for architecture firms. Be concise, professional, and helpful. If asked about technical topics, reference VizTR's stack: PlayCanvas WebXR and Marzipano 360 tours.`;
 

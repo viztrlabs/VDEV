@@ -12,9 +12,7 @@ import {
   ScanLine,
   Headset,
   Compass,
-  Cpu,
   CheckCircle2,
-  Play,
   Brain,
   Terminal,
   ChevronDown
@@ -22,7 +20,7 @@ import {
 
 export default function XRWorldHubPage() {
   const data = servicePagesData.xrHub;
-  const { openPixelStream, openModelViewer, openPanorama } = useAppStore();
+  const { openModelViewer, openPanorama } = useAppStore();
 
   const getIcon = (id: string) => {
     switch (id) {
@@ -34,8 +32,6 @@ export default function XRWorldHubPage() {
         return Headset;
       case 'virtual-tour':
         return Compass;
-      case 'pixel-streaming':
-        return Cpu;
       case 'gaussian-splat':
         return Brain;
       case 'xr-editor':
@@ -90,20 +86,19 @@ export default function XRWorldHubPage() {
           </p>
 
           <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]">
-            {data.description || 'Enterprise-grade WebXR, real-time Unreal Engine 5 pixel streaming, and 3D Gaussian Splatting for architecture.'}
+            {data.description || 'Enterprise-grade WebXR and 3D Gaussian Splatting for architecture.'}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-2xl sm:max-w-none mb-6">
-            <button
-              type="button"
-              onClick={openPixelStream}
+            <Link
+              href="/xr-world/showcase"
               id="hero-primary-cta"
               className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#00F0FF] hover:bg-[#33f3ff] text-black font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer hover:scale-105 active:scale-95"
             >
               <Sparkles className="w-4 h-4" />
-              <span>Launch Live Cloud GPU Demo</span>
+              <span>Explore XR Experiences</span>
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </button>
+            </Link>
 
             <Link
               href="/xr-world/link-generator"
@@ -166,25 +161,16 @@ export default function XRWorldHubPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {data.services?.map((svc) => {
             const Icon = getIcon(svc.id);
-            const isFlagship = svc.id === 'pixel-streaming';
-
             return (
               <div
                 key={svc.id}
-                className={`rounded-[2rem] p-8 flex flex-col justify-between transition-all duration-300 bg-[#131314] border border-[#1E293B] shadow-sm hover:shadow-[0_4px_24px_rgba(0,0,0,0.4)] ${
-                  isFlagship ? 'lg:col-span-2' : ''
-                }`}
+                className="rounded-[2rem] p-8 flex flex-col justify-between transition-all duration-300 bg-[#131314] border border-[#1E293B] shadow-sm hover:shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="p-3 w-12 h-12 rounded-full bg-[#0A0A0B] border border-[#1E293B] text-rose-500 flex items-center justify-center">
                       <Icon className="w-5 h-5" />
                     </div>
-                    {isFlagship && (
-                      <span className="px-3 py-1 rounded-full bg-[#0A0A0B] border border-[#1E293B] text-rose-500 text-xs font-bold uppercase tracking-wider animate-pulse">
-                        Flagship Architecture
-                      </span>
-                    )}
                   </div>
 
                   <h3 className="text-2xl font-bold font-display text-[#FAFAFA]">
@@ -218,15 +204,7 @@ export default function XRWorldHubPage() {
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
 
-                  {isFlagship ? (
-                    <button
-                      onClick={openPixelStream}
-                      className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md transition-colors flex items-center gap-1.5 cursor-pointer"
-                    >
-                      <Play className="w-3.5 h-3.5 fill-white" />
-                      <span>Launch Cloud Session</span>
-                    </button>
-                  ) : svc.id === 'virtual-tour' ? (
+                  {svc.id === 'virtual-tour' ? (
                     <button
                       onClick={() => openPanorama('', 'Sample 360 Tour')}
                       className="px-4 py-2 rounded-xl bg-[#0A0A0B] border border-[#1E293B] hover:bg-rose-600 hover:border-rose-600 hover:text-white text-xs font-semibold transition-colors"

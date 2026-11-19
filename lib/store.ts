@@ -64,11 +64,6 @@ interface AppState {
   openModelViewer: (url: string, title: string) => void;
   closeModelViewer: () => void;
 
-  // Pixel Streaming Demo Simulator
-  pixelStreamModalOpen: boolean;
-  openPixelStream: () => void;
-  closePixelStream: () => void;
-
   // Global Notification Toast
   toast: { message: string; type: 'success' | 'error' | 'info' } | null;
   showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
@@ -151,10 +146,6 @@ export const useAppStore = create<AppState>((set, get) => ({
   activeModelTitle: '',
   openModelViewer: (url, title) => set({ modelViewerOpen: true, activeModelUrl: url, activeModelTitle: title }),
   closeModelViewer: () => set({ modelViewerOpen: false }),
-
-  pixelStreamModalOpen: false,
-  openPixelStream: () => set({ pixelStreamModalOpen: true }),
-  closePixelStream: () => set({ pixelStreamModalOpen: false }),
 
   toast: null,
   showToast: (message, type = 'success') => {

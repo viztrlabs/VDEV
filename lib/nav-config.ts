@@ -78,12 +78,6 @@ export const primaryNav: NavItem[] = [
         description: 'Photorealistic 3D Gaussian Splat',
         badge: 'NEW',
       },
-      {
-        id: 'xr-pixel-streaming',
-        label: 'Pixel Streaming',
-        href: '/xr-world/pixel-streaming',
-        description: 'High-end Unreal experiences',
-      },
     ],
   },
   {

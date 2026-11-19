@@ -13,6 +13,7 @@ const config = {
     '^@/app/(.*)$': '<rootDir>/app/$1',
     '^@/hooks/(.*)$': '<rootDir>/hooks/$1',
     '^@/types/(.*)$': '<rootDir>/types/$1',
+    '^@google/genai$': '<rootDir>/__mocks__/google-genai.js',
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
   testEnvironment: 'jsdom',

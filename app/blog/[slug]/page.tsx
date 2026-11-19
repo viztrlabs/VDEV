@@ -118,14 +118,20 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
 
         {/* HERO IMAGE */}
         <div className="relative h-72 sm:h-96 w-full rounded-2xl overflow-hidden bg-[#18181B] border border-[#27272A] shadow-2xl">
-          <Image
-            src={post.image}
-            alt={post.title}
-            fill
-            className="object-cover"
-            priority
-            referrerPolicy="no-referrer"
-          />
+          {post.image ? (
+            <Image
+              src={post.image}
+              alt={post.title}
+              fill
+              className="object-cover"
+              priority
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-sm text-[#71717A] font-mono">
+              No image available
+            </div>
+          )}
         </div>
 
         {/* ARTICLE BODY */}

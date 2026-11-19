@@ -138,17 +138,23 @@ export default function BlogPage() {
           <div className="p-6 sm:p-8 rounded-[2rem] bg-[#131314] border border-[#1E293B] relative overflow-hidden group hover:border-[#3ECF8E]/40 transition-all shadow-sm">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-7 relative h-64 sm:h-96 rounded-xl overflow-hidden bg-black">
-                <Image
-                  src={featuredPost.image}
-                  alt={featuredPost.title}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-[#0A0A0B] border border-[#1E293B] text-[10px] font-mono text-[#3ECF8E] uppercase tracking-wider font-bold">
-                  Featured Insight
+                  {featuredPost.image ? (
+                    <Image
+                      src={featuredPost.image}
+                      alt={featuredPost.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-xs text-[#71717A] font-mono">
+                      No image
+                    </div>
+                  )}
+                  <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-[#0A0A0B] border border-[#1E293B] text-[10px] font-mono text-[#3ECF8E] uppercase tracking-wider font-bold">
+                    Featured Insight
+                  </div>
                 </div>
-              </div>
 
               <div className="lg:col-span-5 space-y-4">
                 <div className="flex items-center gap-3 text-xs font-mono text-[#71717A]">
@@ -237,13 +243,17 @@ export default function BlogPage() {
                 className="rounded-2xl bg-[#131314] border border-[#1E293B] overflow-hidden flex flex-col hover:border-[#3ECF8E]/50 transition-all group shadow-sm"
               >
                 <div className="relative h-48 w-full bg-black overflow-hidden">
-                  <Image
-                    src={post.image}
-                    alt={post.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    referrerPolicy="no-referrer"
-                  />
+                  {post.image ? (
+                    <Image
+                      src={post.image}
+                      alt={post.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-[#09090B]" />
+                  )}
                   <div className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-md bg-[#0A0A0B] border border-[#1E293B] text-[10px] font-mono text-[#3ECF8E] uppercase tracking-wider">
                     {post.category}
                   </div>

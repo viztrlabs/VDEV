@@ -138,7 +138,7 @@ const TEAM_MEMBERS_DIRECTORY = [
   { id: 'tm-1', name: 'Elena Rostova', role: 'Principal 3D Artist', discipline: '3D Modeling & CAD', avatar: 'ER' },
   { id: 'tm-2', name: 'Julian Vance', role: 'Lighting & Ray Tracing Lead', discipline: 'Spatial Engine / Lighting', avatar: 'JV' },
   { id: 'tm-3', name: 'Sarah Chen', role: 'Senior PBR Material Artist', discipline: 'PBR Materials & Shaders', avatar: 'SC' },
-  { id: 'tm-4', name: 'Marcus Sterling', role: 'XR & Real-Time Engineer', discipline: 'WebXR & Pixel Streaming', avatar: 'MS' },
+  { id: 'tm-4', name: 'Marcus Sterling', role: 'XR & Real-Time Engineer', discipline: 'WebXR & Spatial Experiences', avatar: 'MS' },
   { id: 'tm-5', name: 'Alex Thorne', role: 'QA & Client Deliverable Director', discipline: 'Client Review Prep', avatar: 'AT' }
 ];
 
@@ -231,7 +231,6 @@ export default function ProjectManagementSystem({
       image: newProjectData.image,
       lastUpdate: 'Created via Project Management System just now',
       xrAvailable: true,
-      pixelStreamingAvailable: newProjectData.projectType === 'Pixel Streaming',
       pendingRevisionsCount: 0,
       revisionsSummary: 'No pending revisions',
       notes: newProjectData.notes,
@@ -421,7 +420,6 @@ export default function ProjectManagementSystem({
                 <option value="WebAR">WebAR</option>
                 <option value="Exterior CGI">Exterior CGI</option>
                 <option value="Interior CGI">Interior CGI</option>
-                <option value="Pixel Streaming">Pixel Streaming</option>
                 <option value="Walkthrough 4K">Walkthrough 4K</option>
               </select>
             </div>
@@ -859,7 +857,6 @@ export default function ProjectManagementSystem({
                     <option value="WebAR">WebAR QuickLook</option>
                     <option value="Exterior CGI">Exterior Visualization 8K</option>
                     <option value="Interior CGI">Interior Staging CGI</option>
-                    <option value="Pixel Streaming">Pixel Streaming (UE5 Lumen)</option>
                     <option value="Walkthrough 4K">Walkthrough Animation 4K</option>
                   </select>
                 </div>

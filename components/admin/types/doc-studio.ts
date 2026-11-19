@@ -10,7 +10,7 @@ export type LeadStage =
 
 export const SERVICE_OPTIONS = [
   'Stills', 'Animation', 'WebXR', 'WebAR', 
-  'Virtual Reality', 'Virtual Tour', 'Pixel Streaming'
+  'Virtual Reality', 'Virtual Tour'
 ] as const;
 
 export const ADVANCE_OPTIONS = [

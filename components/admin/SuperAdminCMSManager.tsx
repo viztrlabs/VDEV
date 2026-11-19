@@ -261,7 +261,6 @@ export default function SuperAdminCMSManager() {
               { label: 'Interior Staging', key: 'pg-interior' },
               { label: 'Walkthrough Cinema', key: 'pg-walkthrough' },
               { label: 'XR World Hub', key: 'pg-xr-world' },
-              { label: 'Pixel Streaming', key: 'pg-pixel-streaming' },
             ].map((tmpl) => (
               <button
                 key={tmpl.key}
@@ -485,13 +484,19 @@ export default function SuperAdminCMSManager() {
                 >
                   <div>
                     <div className="relative h-44 w-full bg-[#09090B]">
-                      <Image
-                        src={post.image}
-                        alt={post.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        referrerPolicy="no-referrer"
-                      />
+                        {post.image ? (
+                          <Image
+                            src={post.image}
+                            alt={post.title}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            referrerPolicy="no-referrer"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-[11px] text-[#71717A] font-mono">
+                            No image
+                          </div>
+                        )}
                       <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
                         <span className="px-2 py-0.5 rounded bg-black/80 backdrop-blur-md text-[#3ECF8E] text-[10px] font-mono font-bold border border-[#3ECF8E]/30">
                           {post.category}
@@ -1652,8 +1657,8 @@ export default function SuperAdminCMSManager() {
                 setEditingSocial({
                   id: '',
                   platform: 'Instagram',
-                  url: 'https://instagram.com/viztr.studio',
-                  handle: '@viztr.studio',
+                  url: 'https://instagram.com/viztr_official',
+                  handle: '@viztr_official',
                   isVisible: true,
                   order: cms.socialLinks.length + 1,
                 });
@@ -2280,7 +2285,7 @@ export default function SuperAdminCMSManager() {
                   value={editingSocial.url}
                   onChange={(e) => setEditingSocial({ ...editingSocial, url: e.target.value })}
                   className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-[#3ECF8E]"
-                  placeholder="https://instagram.com/viztr.studio"
+                  placeholder="https://instagram.com/viztr_official"
                 />
               </div>
 

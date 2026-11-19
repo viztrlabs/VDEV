@@ -98,6 +98,13 @@ const DEFAULT_CREDENTIALS: CredentialField[] = [
     value: '',
   },
   {
+    key: 'RESEND_API_KEY',
+    label: 'Resend API Key',
+    description: 'Email delivery for booking confirmations, contact form notifications, and newsletters. Get it from https://resend.com/api-keys.',
+    placeholder: 're_1234567890abcdef',
+    value: '',
+  },
+  {
     key: 'TELEGRAM_WEBHOOK_SECRET',
     label: 'Telegram Webhook Secret',
     description: 'Arbitrary secret used to verify inbound webhook calls (add ?secret_token= to webhook URL).',

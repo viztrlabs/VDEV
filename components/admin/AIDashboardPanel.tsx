@@ -535,7 +535,6 @@ export default function AIDashboardPanel() {
                 'Schedule meeting with @alice about #VIZTR-882 by tomorrow',
                 'Create task: review 3D render for client',
                 'What is the status of project PROJ-123?',
-                'Help with broken pixel streaming',
                 'Assign resource @bob to VIZTR-900',
               ].map((example) => (
                 <button

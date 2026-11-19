@@ -13,6 +13,7 @@ import {
   SystemHealthLog
 } from '@/lib/super-admin-store';
 import { useAppStore } from '@/lib/store';
+import AIModelSettings from './AIModelSettings';
 import {
   Shield,
   Users,
@@ -71,7 +72,8 @@ type SuperAdminTab =
   | 'gpu-monitoring'
   | 'feature-toggles'
   | 'system-health'
-  | 'permissions-matrix';
+  | 'permissions-matrix'
+  | 'model-settings';
 
 interface SuperAdminPanelProps {
   currentRoleView?: UserRole;
@@ -421,6 +423,7 @@ export default function SuperAdminPanel({
           { id: 'feature-toggles', label: 'Feature Switchboard', icon: SlidersHorizontal, count: superAdmin.featureToggles.length },
           { id: 'system-health', label: 'Global Health & Error Logs', icon: Activity, count: superAdmin.systemLogs.length },
           { id: 'permissions-matrix', label: 'RBAC Permissions Matrix', icon: Lock },
+          { id: 'model-settings', label: 'AI Models & Providers', icon: Zap },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -1661,10 +1664,16 @@ export default function SuperAdminPanel({
             </div>
           </div>
         </div>
+)}
+
+      {activeTab === 'model-settings' && (
+        <div className="space-y-6" id="super-admin-model-settings-tab">
+          <AIModelSettings />
+        </div>
       )}
 
       {/* ============================================================ */}
-      {/* MODAL: ADD NEW ADMIN / USER                                 */}
+      {/* MODAL: ADD NEW ADMIN / USER                               */}
       {/* ============================================================ */}
       {isAddUserModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">

@@ -18,15 +18,12 @@ import {
   Sparkles,
   Box,
   Eye,
-  Shield,
   CreditCard,
   Building,
   Headset,
   Video,
-  Monitor,
   Camera,
   Compass,
-  FolderOpen
 } from 'lucide-react';
 import { ManagedProject, ProjectType, ProjectStatus, PaymentStatus } from '@/lib/projects-data';
 
@@ -79,7 +76,6 @@ export default function CollapsibleLeftFilterPanel({
     { id: 'WebAR', label: 'WebAR QuickLook', icon: Box },
     { id: 'Virtual Reality', label: 'Virtual Reality (6DOF)', icon: Headset },
     { id: 'Virtual Tour 360', label: 'Virtual Tour 360°', icon: Compass },
-    { id: 'Pixel Streaming', label: 'Pixel Streaming (UE5)', icon: Monitor },
     { id: 'Animation', label: 'Cinematic Animation', icon: Video },
     { id: 'Still Renders', label: '8K Still Renders', icon: Camera },
   ];
@@ -331,7 +327,7 @@ export default function CollapsibleLeftFilterPanel({
                   </div>
                 </div>
 
-                {/* FILTER: PROJECT TYPE (WebXR, WebAR, VR, 360, Pixel Streaming, Animation, Stills) */}
+                {/* FILTER: PROJECT TYPE */}
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <label className="text-[10px] uppercase tracking-wider text-[#A1A1AA] font-bold">
@@ -489,14 +485,20 @@ export default function CollapsibleLeftFilterPanel({
                           }`}
                         >
                           <div className="relative w-11 h-11 rounded-lg overflow-hidden shrink-0 bg-black">
-                            <Image
-                              src={project.image}
-                              alt={project.name}
-                              fill
-                              sizes="44px"
-                              className="object-cover"
-                              referrerPolicy="no-referrer"
-                            />
+                            {project.image ? (
+                              <Image
+                                src={project.image}
+                                alt={project.name}
+                                fill
+                                sizes="44px"
+                                className="object-cover"
+                                referrerPolicy="no-referrer"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-[10px] text-[#71717A] font-mono">
+                                {project.name?.slice(0, 2)?.toUpperCase() || '?'}
+                              </div>
+                            )}
                             <div className="absolute bottom-0 inset-x-0 bg-black/70 text-[8px] text-center text-white font-mono">
                               {project.progress}%
                             </div>

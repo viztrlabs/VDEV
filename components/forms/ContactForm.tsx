@@ -157,7 +157,6 @@ export default function ContactForm({ initialService = 'Exterior Visualization' 
             <option value="WebAR Augmented Reality">WebAR Augmented Reality</option>
             <option value="Virtual Reality (VR)">Virtual Reality (VR)</option>
             <option value="360° Virtual Tour">360° Virtual Tour</option>
-            <option value="Pixel Streaming (Cloud Unreal 5)">Pixel Streaming (Cloud Unreal 5)</option>
             <option value="Comprehensive Master Package">Comprehensive Master Package</option>
           </select>
         </div>

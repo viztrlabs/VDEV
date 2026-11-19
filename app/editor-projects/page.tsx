@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import ProjectCard, { Project } from '@/components/editor-projects/ProjectCard';
 import NewProjectModal from '@/components/editor-projects/NewProjectModal';
+import { openEditorProject } from '@/lib/editor/launch';
 
 type SortKey = 'updatedAt' | 'name' | 'createdAt';
 
@@ -69,8 +70,13 @@ export default function EditorProjectsPage() {
         }
     };
 
-    const handleOpen = (id: number | string) => {
-        window.open(`http://localhost:3487/editor/project/${id}`, '_blank');
+    const handleOpen = async (id: number | string) => {
+        setError(null);
+        try {
+            await openEditorProject(id);
+        } catch (e: unknown) {
+            setError(e instanceof Error ? e.message : 'Failed to open the editor');
+        }
     };
 
     const filtered = projects

@@ -6,7 +6,7 @@ export interface ServiceRecord {
   id: string;
   title: string;
   slug: string;
-  category: 'CGI Renders' | 'WebXR & 3D' | 'Unreal 5.4 Pixel Streaming' | 'Animation & Film' | 'VR / AR Worlds';
+  category: 'CGI Renders' | 'WebXR & 3D' | 'Animation & Film' | 'VR / AR Worlds';
   description: string;
   startingPrice: string;
   turnaroundTime: string;
@@ -31,20 +31,6 @@ let SERVICES_DB: ServiceRecord[] = [
     status: 'active',
     heroImageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80',
     badge: 'Popular Choice',
-  },
-  {
-    id: 'srv_02',
-    title: 'Unreal Engine 5.4 Pixel Streaming Worlds',
-    slug: 'unreal-pixel-streaming',
-    category: 'Unreal 5.4 Pixel Streaming',
-    description: 'Zero-latency cloud GPU streaming allowing clients and stakeholders to walk through photorealistic architectural worlds on any browser or mobile tablet.',
-    startingPrice: '$14,500 / project',
-    turnaroundTime: '2 – 3 Weeks',
-    deliverables: ['Custom WebRTC Player Portal', 'Real-Time Sun & Season Controls', 'Interactive Material Switchers', 'Global GPU Cloud Deployment'],
-    featured: true,
-    status: 'active',
-    heroImageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&auto=format&fit=crop&q=80',
-    badge: 'Enterprise Tier',
   },
   {
     id: 'srv_03',

@@ -17,7 +17,7 @@ export type UserRole = z.infer<typeof UserRoleSchema>;
 export const UserStatusSchema = z.enum(['active', 'invited', 'suspended', 'inactive']);
 export type UserStatus = z.infer<typeof UserStatusSchema>;
 
-export const ProjectTypeSchema = z.enum(['Architectural', 'Virtual Reality', 'Pixel Streaming', 'WebXR', 'Other']);
+export const ProjectTypeSchema = z.enum(['Architectural', 'Virtual Reality', 'WebXR', 'Other']);
 export type ProjectType = z.infer<typeof ProjectTypeSchema>;
 
 export const ProjectStatusSchema = z.enum(['Planning', 'Work in Progress', 'Client Review', 'Revisions', 'Final Delivery', 'On Hold', 'Completed']);
@@ -213,7 +213,6 @@ export const RevenueMetricSchema = z.object({
   month: z.string(),
   mrr: z.number().nonnegative(),
   oneOffCommissions: z.number().nonnegative(),
-  gpuStreamingRevenue: z.number().nonnegative(),
   vrLicenses: z.number().nonnegative(),
   total: z.number().nonnegative(),
   expenses: z.number().nonnegative(),
@@ -448,7 +447,6 @@ export type BookingStatus = z.infer<typeof BookingStatusSchema>;
 export const BookingServiceTypeSchema = z.enum([
   'Architectural',
   'Virtual Reality',
-  'Pixel Streaming',
   'WebXR',
   'WebAR',
   'Virtual Tour 360',
@@ -540,7 +538,6 @@ export type ContactStatus = z.infer<typeof ContactStatusSchema>;
 export const ContactServiceInterestSchema = z.enum([
   'Architectural',
   'Virtual Reality',
-  'Pixel Streaming',
   'WebXR',
   'WebAR',
   'Virtual Tour 360',

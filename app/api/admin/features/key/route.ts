@@ -32,19 +32,6 @@ const mockFeatureToggles: FeatureToggle[] = [
     lastModifiedAt: new Date().toISOString(),
     createdAt: '2025-01-10T08:00:00Z',
   },
-  {
-    id: 'ft-pixel-streaming',
-    key: 'ENABLE_PIXEL_STREAMING',
-    name: 'Unreal Engine 5.4 Pixel Streaming',
-    description: 'Routes WebRTC video/audio streams directly from global cloud GPU clusters to client web browsers.',
-    category: 'rendering',
-    enabled: true,
-    requiresRestart: false,
-    environment: 'all',
-    lastModifiedBy: null,
-    lastModifiedAt: new Date().toISOString(),
-    createdAt: '2025-01-10T08:00:00Z',
-  },
 ];
 
 // GET /api/admin/features/[key] - Get single feature toggle

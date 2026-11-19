@@ -35,7 +35,6 @@ const CONTACT_STATUSES = ['new', 'read', 'responded', 'archived'] as const;
 const SERVICE_INTERESTS = [
   'Architectural',
   'Virtual Reality',
-  'Pixel Streaming',
   'WebXR',
   'WebAR',
   'Virtual Tour 360',

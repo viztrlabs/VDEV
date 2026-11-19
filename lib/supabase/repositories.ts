@@ -146,7 +146,6 @@ export interface ProjectRow {
   image: string | null;
   last_update: string | null;
   xr_available: boolean;
-  pixel_streaming_available: boolean;
   hours_monitoring: any;
   pipeline: any;
   documents: any;

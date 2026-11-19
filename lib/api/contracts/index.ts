@@ -71,4 +71,4 @@ export {
   ForbiddenError,
 } from './schemas';
 
-export { adminApi, usersApi, gpuApi, featuresApi, logsApi, revenueApi, projectsApi, xrLinksApi, toursApi, discoveryApi, docStudioApi, storageApi, aiApi, pixelStreamingApi } from './client';
+export { adminApi, usersApi, gpuApi, featuresApi, logsApi, revenueApi, projectsApi, xrLinksApi, toursApi, discoveryApi, docStudioApi, storageApi, aiApi } from './client';

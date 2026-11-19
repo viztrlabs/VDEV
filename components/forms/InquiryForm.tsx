@@ -127,7 +127,6 @@ export default function InquiryForm({ projectTitle, projectId, onSuccess }: Inqu
             <option value="Cinematic Walkthrough">Cinematic Walkthrough Animation</option>
             <option value="WebXR & WebAR Interactive">WebXR & WebAR Interactive</option>
             <option value="360 Virtual Tour">360° Virtual Tour (16K Nodes)</option>
-            <option value="Cloud Pixel Streaming">Unreal Engine Pixel Streaming</option>
           </select>
         </div>
 

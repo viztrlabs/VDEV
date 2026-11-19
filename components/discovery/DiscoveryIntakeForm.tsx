@@ -103,11 +103,11 @@ const SAMPLE_FORM: DiscoveryFormData = {
     'Marketing website',
     'AI-powered feature',
   ],
-  otherSolution: 'NVIDIA RTX Cloud Pixel Streaming',
+  otherSolution: 'Interactive WebXR model viewer',
   featureList:
-    'Real-time Unreal Engine Pixel Streaming, Interactive BIM model viewer, Material/Finishes swapper (travertine vs marble), Day/Sunset/Night photometric sky simulation, Client sign-off portal.',
+    'Interactive BIM model viewer, Material/Finishes swapper (travertine vs marble), Day/Sunset/Night photometric sky simulation, Client sign-off portal.',
   priorityRanking:
-    'Must-have: 60fps cloud streaming & WebXR model. Nice-to-have: Multi-user voice chat in VR.',
+    'Must-have: WebXR model. Nice-to-have: Multi-user voice chat in VR.',
   endUsers: 'Institutional investors, high-net-worth individuals, architectural directors, client review committee.',
   existingSystems: 'Autodesk Revit BIM models, IFC steel framing geometry, Matterport floor scans.',
   brandAssets: 'Apex Tower Design Guidebook, Foster brand typography, custom charcoal/emerald color palette.',

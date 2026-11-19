@@ -1,9 +1,11 @@
 /**
  * Email Service
  * 
- * Mock email service for development/demo. In production, replace with
- * Resend, SendGrid, AWS SES, or another email provider.
+ * Supports Resend, SendGrid, AWS SES, or mock mode for development.
+ * Configure the appropriate provider via environment variables OR Supabase settings table.
  */
+
+import { getServerCredential } from '@/lib/server-credentials';
 
 export interface EmailMessage {
   to: string | string[];
@@ -41,6 +43,14 @@ export interface ContactNotificationEmail extends EmailMessage {
 const DEFAULT_FROM = 'VizTR Studio <noreply@viztr.com>';
 const ADMIN_EMAIL = 'admin@viztr.com';
 
+function isEmailProviderConfigured(): boolean {
+  return Boolean(
+    process.env.RESEND_API_KEY ||
+    process.env.SENDGRID_API_KEY ||
+    process.env.AWS_SES_ACCESS_KEY_ID
+  );
+}
+
 export async function sendEmail(message: EmailMessage): Promise<{ success: boolean; messageId?: string; error?: string }> {
   const emailConfig = {
     from: message.from || DEFAULT_FROM,
@@ -52,23 +62,49 @@ export async function sendEmail(message: EmailMessage): Promise<{ success: boole
     attachments: message.attachments,
   };
 
+  // Try Resend first (check env var, then Supabase settings)
+  const resendKey = process.env.RESEND_API_KEY || (await getServerCredential('RESEND_API_KEY'));
+  if (resendKey) {
+    try {
+      // @ts-ignore - optional provider, may not be installed
+      const resendModule = (await import('resend')) as any;
+      const resend = resendModule.Resend;
+      const resendClient = new resend(resendKey);
+      const result = await resendClient.emails.send(emailConfig as any);
+      if (result.error) {
+        throw new Error(result.error.message);
+      }
+      return { success: true, messageId: result.data?.id };
+    } catch (err: any) {
+      console.error('[Email] Resend failed:', err?.message);
+      return { success: false, error: err?.message || 'Resend send failed' };
+    }
+  }
+
+  // Try SendGrid (check env var, then Supabase settings)
+  const sendgridKey = process.env.SENDGRID_API_KEY || (await getServerCredential('SENDGRID_API_KEY'));
+  if (sendgridKey) {
+    try {
+      // @ts-ignore - optional provider, may not be installed
+      const sgMailModule = (await import('@sendgrid/mail')) as any;
+      const sgMail = sgMailModule.default;
+      sgMail.setApiKey(sendgridKey);
+      await sgMail.send(emailConfig as any);
+      return { success: true, messageId: `sg-${Date.now()}` };
+    } catch (err: any) {
+      console.error('[Email] SendGrid failed:', err?.message);
+      return { success: false, error: err?.message || 'SendGrid send failed' };
+    }
+  }
+
+  // Production but no provider configured — fail safely instead of silent success
   if (process.env.NODE_ENV === 'production') {
-    // Production: integrate with Resend, SendGrid, or AWS SES
-    // Example with Resend:
-    // const resend = new Resend(process.env.RESEND_API_KEY);
-    // const result = await resend.emails.send(emailConfig);
-    // return { success: true, messageId: result.id };
-    
-    console.log('[Email] Would send in production:', {
-      to: emailConfig.to,
-      subject: emailConfig.subject,
-      from: emailConfig.from,
-    });
-    return { success: true, messageId: `prod-${Date.now()}` };
+    console.error('[Email] No email provider configured in production. Set RESEND_API_KEY or SENDGRID_API_KEY in env vars or Supabase settings.');
+    return { success: false, error: 'Email provider not configured' };
   }
 
   // Development/demo: log to console
-  console.log('[Email] New email notification:', {
+  console.log('[Email] New email notification (dev mode — not delivered):', {
     to: emailConfig.to,
     subject: emailConfig.subject,
     from: emailConfig.from,
@@ -79,7 +115,7 @@ export async function sendEmail(message: EmailMessage): Promise<{ success: boole
     timestamp: new Date().toISOString(),
   });
 
-  return { success: true, messageId: `dev-${Date.now()}` };
+  return { success: true, messageId: `dev-${Date.now()}`, error: undefined };
 }
 
 export async function sendBookingCreatedNotification(booking: {

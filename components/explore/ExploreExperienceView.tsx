@@ -11,37 +11,22 @@ import {
   Headset,
   Compass,
   Sparkles,
-  Tv,
   Maximize2,
   Minimize2,
   Volume2,
   VolumeX,
   Eye,
-  EyeOff,
-  Sun,
-  Layers,
-  RotateCcw,
-  Sliders,
   QrCode,
   Scan,
   Activity,
-  Cpu,
   Wifi,
-  Radio,
-  CheckCircle2,
-  MapPin,
   Info,
   X,
-  Play,
-  Pause,
-  ZoomIn,
-  ZoomOut,
   ChevronRight,
-  Move3d,
   Sparkle
 } from 'lucide-react';
 
-export type ExperienceMode = 'xr' | 'ar' | 'vr' | 'vt' | 'splat' | 'pixel-stream';
+export type ExperienceMode = 'xr' | 'ar' | 'vr' | 'vt' | 'splat';
 
 interface ModeOption {
   id: ExperienceMode;
@@ -104,16 +89,6 @@ const MODES: ModeOption[] = [
     icon: Sparkles,
     color: '#EC4899',
     engine: 'Radiance Field / WebGL2',
-  },
-  {
-    id: 'pixel-stream',
-    key: '6',
-    altKey: 'P',
-    label: 'Pixel Streaming',
-    sublabel: 'Unreal Engine 5 Cloud',
-    icon: Tv,
-    color: '#3B82F6',
-    engine: 'WebRTC 4K 60FPS RT',
   },
 ];
 
@@ -184,7 +159,7 @@ export default function ExploreExperienceView() {
     }
   }, []);
 
-  // Keyboard shortcut listeners: 1-6, X, A, V, T, S, P, Esc/B, H, F, M
+  // Keyboard shortcut listeners: 1-5, X, A, V, T, S, Esc/B, H, F, M
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Don't trigger if user is in an input or textarea
@@ -215,9 +190,6 @@ export default function ExploreExperienceView() {
       } else if (key === '5' || key === 's') {
         e.preventDefault();
         handleModeChange('splat');
-      } else if (key === '6' || key === 'p') {
-        e.preventDefault();
-        handleModeChange('pixel-stream');
       } else if (key === 'h') {
         e.preventDefault();
         setShowHud((prev) => !prev);
@@ -260,7 +232,6 @@ export default function ExploreExperienceView() {
         {currentMode === 'vr' && <VRHeadsetView />}
         {currentMode === 'vt' && <VirtualTourCanvasView />}
         {currentMode === 'splat' && <SplatCanvasView />}
-        {currentMode === 'pixel-stream' && <PixelStreamingLiveView />}
       </div>
 
       {/* 2. CHROME & HUD OVERLAY (Can be toggled via [H] key for cinema mode) */}
@@ -505,7 +476,6 @@ export default function ExploreExperienceView() {
     </div>
   );
 }
-
 // ============================================================================
 // MODE 1: XR — INTERACTIVE 3D SPATIAL CANVAS
 // ============================================================================
@@ -1481,113 +1451,6 @@ function SplatCanvasView() {
           <div className="pt-1 flex items-center justify-between text-[10px] text-zinc-500 font-mono border-t border-white/5">
             <span>Render Time: 0.38ms</span>
             <span>VRAM: 248 MB</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ============================================================================
-// MODE 6: PIXEL STREAMING — UNREAL ENGINE 5 CLOUD STREAM TERMINAL
-// ============================================================================
-function PixelStreamingLiveView() {
-  const [activeCamera, setActiveCamera] = useState<'living' | 'balcony' | 'master' | 'pool'>('living');
-  const [activeMaterial, setActiveMaterial] = useState<'calacatta' | 'marquina' | 'oak' | 'brass'>('calacatta');
-
-  const cameraFeeds = {
-    living: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2400&q=85',
-    balcony: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2400&q=85',
-    master: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=2400&q=85',
-    pool: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=2400&q=85',
-  };
-
-  return (
-    <div className="relative w-full h-full overflow-hidden bg-black flex items-center justify-center">
-      {/* Real-time Photorealistic Cloud Unreal Engine 5 Stream Feed */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src={cameraFeeds[activeCamera]}
-          alt="Cloud Unreal Engine 5 Pixel Stream"
-          fill
-          className="object-cover"
-          priority
-        />
-        {/* Subtle scanline / stream raster overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40 pointer-events-none" />
-      </div>
-
-      {/* Floating Cloud UE5 Stream Controls */}
-      <div className="absolute top-24 left-4 sm:left-6 z-20 flex flex-col gap-2 max-w-xs">
-        <div className="p-4 rounded-2xl bg-[#0C0C10]/85 backdrop-blur-2xl border border-white/10 shadow-2xl text-xs flex flex-col gap-3">
-          <div className="flex items-center justify-between pb-2 border-b border-white/10">
-            <span className="font-bold text-white uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-              <Tv className="w-3.5 h-3.5 text-[#3B82F6]" /> Unreal Engine 5 Cloud
-            </span>
-            <span className="text-[10px] text-[#42CF8B] font-mono flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#42CF8B] animate-pulse" /> LIVE STREAM
-            </span>
-          </div>
-
-          {/* Camera Angles */}
-          <div className="flex flex-col gap-1.5">
-            <span className="text-zinc-400 text-[10px] uppercase font-mono">Camera Angle</span>
-            <div className="grid grid-cols-2 gap-1.5">
-              {(['living', 'balcony', 'master', 'pool'] as const).map((cam) => (
-                <button
-                  key={cam}
-                  onClick={() => setActiveCamera(cam)}
-                  className={`py-2 px-2.5 rounded-lg text-xs font-mono capitalize transition-all cursor-pointer ${
-                    activeCamera === cam
-                      ? 'bg-[#3B82F6] text-white font-bold'
-                      : 'bg-white/5 text-zinc-300 hover:bg-white/10'
-                  }`}
-                >
-                  {cam}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Real-time Material Swatch */}
-          <div className="flex flex-col gap-1.5">
-            <span className="text-zinc-400 text-[10px] uppercase font-mono">RT Material Finish</span>
-            <div className="grid grid-cols-2 gap-1.5">
-              {[
-                { id: 'calacatta' as const, label: 'Calacatta' },
-                { id: 'marquina' as const, label: 'Nero Marquina' },
-                { id: 'oak' as const, label: 'White Oak' },
-                { id: 'brass' as const, label: 'Brushed Brass' },
-              ].map((mat) => (
-                <button
-                  key={mat.id}
-                  onClick={() => setActiveMaterial(mat.id)}
-                  className={`py-2 px-2.5 rounded-lg text-[11px] font-mono transition-all cursor-pointer ${
-                    activeMaterial === mat.id
-                      ? 'bg-white text-black font-bold'
-                      : 'bg-white/5 text-zinc-300 hover:bg-white/10'
-                  }`}
-                >
-                  {mat.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* WebRTC Low-Latency Stream Telemetry */}
-          <div className="pt-2 border-t border-white/5 flex flex-col gap-1 text-[10px] font-mono text-zinc-400">
-            <div className="flex items-center justify-between">
-              <span>Server Node:</span>
-              <span className="text-zinc-200">AWS RTX 4090 ADA</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Codec:</span>
-              <span className="text-zinc-200">H.265 / WebRTC RT</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Bitrate:</span>
-              <span className="text-[#3B82F6]">25.4 Mbps</span>
-            </div>
           </div>
         </div>
       </div>

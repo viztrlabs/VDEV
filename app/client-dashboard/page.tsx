@@ -40,7 +40,7 @@ import ThreadedComments from '@/components/ThreadedComments';
 import FileDownloads from '@/components/FileDownloads';
 
 export default function ClientDashboardPage() {
-  const { user, showToast, openModelViewer, openPanorama, openPixelStream } = useAppStore();
+  const { user, showToast, openModelViewer, openPanorama } = useAppStore();
   const { status: nextAuthStatus } = useSession();
   const { clientId, clientFirm, assignedDirector, isAuthenticated } = useClientSession();
   const { projects: apiProjects, loading: projectsLoading, error: projectsError, refresh: refreshProjects } = useClientProjects();

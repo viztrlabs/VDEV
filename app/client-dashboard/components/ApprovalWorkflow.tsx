@@ -35,7 +35,7 @@ export default function ApprovalWorkflow() {
       status: 'queued',
       signedBy: null,
       date: 'Target: Sep 12, 2026',
-      notes: 'Final multi-angle production & cloud pixel streaming deployment.'
+      notes: 'Final multi-angle production and interactive WebXR deployment.'
     }
   ]);
 

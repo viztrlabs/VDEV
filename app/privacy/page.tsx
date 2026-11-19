@@ -28,7 +28,7 @@ export default function PrivacyPage() {
       <div className="space-y-6 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed pt-6 border-t border-zinc-200 dark:border-zinc-800">
         <h2 className="text-base font-bold text-zinc-900 dark:text-white font-display">1. Overview</h2>
         <p>
-          VizTR Studio (&ldquo;VizTR&rdquo;, &ldquo;we&rdquo;, &ldquo;our&rdquo;, or &ldquo;us&rdquo;) respects the privacy and confidentiality of our clients, architects, and web visitors. This Privacy Policy details how we handle project data, CAD drawings, personal contact information, and real-time WebXR/Pixel Streaming session telemetry.
+          VizTR Studio (&ldquo;VizTR&rdquo;, &ldquo;we&rdquo;, &ldquo;our&rdquo;, or &ldquo;us&rdquo;) respects the privacy and confidentiality of our clients, architects, and web visitors. This Privacy Policy details how we handle project data, CAD drawings, personal contact information, and WebXR session telemetry.
         </p>
 
         <h2 className="text-base font-bold text-zinc-900 dark:text-white font-display">2. Architectural Confidentiality & Non-Disclosure (NDA)</h2>
@@ -40,7 +40,7 @@ export default function PrivacyPage() {
         <ul className="list-disc pl-5 space-y-1">
           <li><strong>Contact Data:</strong> Name, work email, phone number, and company name provided via project inquiries or consultation bookings.</li>
           <li><strong>Project Specifications:</strong> CAD/BIM model geometries, floor plans, material schedules, and timeline parameters.</li>
-          <li><strong>Spatial Stream Telemetry:</strong> Anonymized GPU session metrics (latency, viewport resolution, frame rates) used to optimize WebRTC and Pixel Streaming cloud performance.</li>
+          <li><strong>Spatial Experience Telemetry:</strong> Anonymized performance metrics used to optimize browser-based interactive experiences.</li>
         </ul>
 
         <h2 className="text-base font-bold text-zinc-900 dark:text-white font-display">4. Data Security & Storage</h2>

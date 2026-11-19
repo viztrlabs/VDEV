@@ -89,27 +89,6 @@ const SplatConfigSchema = z.object({
 }).passthrough();
 
 // ============================================================
-// Pixel Streaming config schema
-// ============================================================
-
-const PixelStreamingConfigSchema = z.object({
-  engine: z.literal('pixel-streaming'),
-  streaming: z.object({
-    signalingUrl: z.string().url().optional(),
-    turnUrl: z.string().optional(),
-    turnUser: z.string().optional(),
-    turnPass: z.string().optional(),
-    iceServers: z.array(z.any()).optional(),
-    quality: z.object({
-      maxResolution: z.string().optional(),
-      maxBitrate: z.number().optional(),
-      fps: z.number().min(1).max(240).optional(),
-    }).passthrough().optional(),
-  }).passthrough().optional(),
-  gpu: z.record(z.any()).optional(),
-}).passthrough();
-
-// ============================================================
 // Union of all config types
 // ============================================================
 
@@ -117,7 +96,6 @@ const ConfigPayloadSchema = z.union([
   PlayCanvasConfigSchema,
   TourConfigSchema,
   SplatConfigSchema,
-  PixelStreamingConfigSchema,
 ]);
 
 // ============================================================

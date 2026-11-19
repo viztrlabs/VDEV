@@ -19,7 +19,6 @@ import type {
 
 import { INITIAL_USERS } from './super-admin-store-types';
 
-import { createMockRepositoryFactorySync } from './repositories/mock-repositories';
 import type { RepositoryFactory } from './repositories';
 
 export interface SuperAdminState {
@@ -83,13 +82,21 @@ export interface SuperAdminState {
 }
 
 // Repository instance (created once)
-let repositoryInstance: ReturnType<typeof import('./repositories/mock-repositories').createMockRepositoryFactorySync> | null = null;
+let repositoryInstance: RepositoryFactory | null = null;
 
-function getRepository() {
+function getRepository(): RepositoryFactory {
   if (!repositoryInstance) {
-    repositoryInstance = createMockRepositoryFactorySync();
+    const { getSupabaseAdmin } = require('@/lib/supabase-admin');
+    const admin = getSupabaseAdmin();
+    if (admin) {
+      const supabaseRepoModule = require('./repositories/supabase-repositories');
+      repositoryInstance = supabaseRepoModule.createSupabaseRepositoryFactory();
+    } else {
+      const mockRepoModule = require('./repositories/mock-repositories');
+      repositoryInstance = mockRepoModule.createMockRepositoryFactorySync();
+    }
   }
-  return repositoryInstance;
+  return repositoryInstance!;
 }
 
 const useSuperAdminStore = create<SuperAdminState>()(

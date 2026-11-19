@@ -455,24 +455,6 @@ export default function Header() {
                     </div>
                   </Link>
 
-                  {/* 6. Pixel Streaming */}
-                  <Link
-                    href="/xr-world/pixel-streaming"
-                    id="dropdown-item-pixel-streaming"
-                    onClick={() => setXrOpen(false)}
-                    className="item-link block px-3 py-2 text-xs text-[#dce5ff] hover:bg-white/10 transition-colors rounded-lg mx-1"
-                  >
-                    <div className="item-title font-semibold text-white flex items-center justify-between">
-                      <span>Pixel Streaming</span>
-                      <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-cyan-400 text-black font-mono">
-                        FLAGSHIP
-                      </span>
-                    </div>
-                    <div className="item-subtitle text-[11px] text-[#a1abc4] font-normal mt-0.5">
-                      Unreal Engine 5.4 Lumen cloud GPU stream
-                    </div>
-                  </Link>
-
                   <div className="border-t border-[#3e485e]/50 my-1.5" />
                   <Link
                     href="/xr-world"
@@ -559,10 +541,10 @@ export default function Header() {
                   <div className="border-t border-[#3e485e]/50 my-1.5" />
                   <div className="px-3.5 py-1.5 space-y-1">
                     <a
-                      href="mailto:hello@viztr.com"
+                      href="mailto:viztr.studio@gmail.com"
                       className="block text-[11px] font-mono text-cyan-400 hover:underline"
                     >
-                      hello@viztr.com
+                      viztr.studio@gmail.com
                     </a>
                     <span className="item-subtitle block text-[11px] font-mono text-[#a1abc4]">
                       +1 (555) 123-4567
@@ -850,16 +832,6 @@ export default function Header() {
                       </span>
                     </Link>
                     <Link
-                      href="/xr-world/pixel-streaming"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-cyan-400 rounded-md hover:bg-white/5 flex items-center justify-between"
-                    >
-                      <span>Pixel Streaming</span>
-                      <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-cyan-400 text-black font-mono">
-                        FLAGSHIP
-                      </span>
-                    </Link>
-                    <Link
                       href="/xr-world"
                       onClick={() => setMobileMenuOpen(false)}
                       className="block py-1 px-2 text-xs font-semibold text-cyan-400 hover:underline"
@@ -943,10 +915,10 @@ export default function Header() {
                     </Link>
                     <div className="pt-1.5 border-t border-white/10 space-y-0.5 px-2">
                       <a
-                        href="mailto:hello@viztr.com"
+                        href="mailto:viztr.studio@gmail.com"
                         className="block text-[11px] font-mono text-cyan-400 hover:underline"
                       >
-                        hello@viztr.com
+                        viztr.studio@gmail.com
                       </a>
                       <span className="block text-[11px] font-mono text-zinc-400">
                         +1 (555) 123-4567

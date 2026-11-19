@@ -157,6 +157,17 @@ describe('S2-03: Zod config validation', () => {
     expect(result.success).toBe(true);
   });
 
+  it('should reject removed Pixel Streaming config payloads', async () => {
+    const { validateExperienceConfig } = await import('@/lib/validation/experience-config');
+    const result = validateExperienceConfig({
+      experience_id: '550e8400-e29b-41d4-a716-446655440000',
+      config: { engine: 'pixel-streaming', streaming: {} },
+      assets: [],
+      settings: {},
+    }, 'POST');
+    expect(result.success).toBe(false);
+  });
+
   it('should reject PUT with no fields', async () => {
     const { validateExperienceConfig } = await import('@/lib/validation/experience-config');
     const result = validateExperienceConfig({
@@ -185,25 +196,6 @@ describe('S2-04: Demo account gating', () => {
     } finally {
       process.env.VERCEL_ENV = original;
     }
-  });
-});
-
-// ============================================================
-// S2-05: Pixel Streaming no simulation fallback
-// ============================================================
-describe('S2-05: Pixel Streaming routes', () => {
-  it('stop route should not have simulated response', async () => {
-    const { readFileSync } = await import('fs');
-    const { join } = await import('path');
-    const content = readFileSync(join(process.cwd(), 'app', 'api', 'pixel-streaming', 'stop', 'route.ts'), 'utf-8');
-    expect(content).not.toContain('simulated: true');
-  });
-
-  it('status route should not have SIMULATED health', async () => {
-    const { readFileSync } = await import('fs');
-    const { join } = await import('path');
-    const content = readFileSync(join(process.cwd(), 'app', 'api', 'pixel-streaming', 'status', 'route.ts'), 'utf-8');
-    expect(content).not.toContain("'SIMULATED'");
   });
 });
 

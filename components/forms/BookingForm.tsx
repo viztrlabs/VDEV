@@ -180,7 +180,6 @@ export default function BookingForm() {
             <option value="Exterior & Interior Visualization">Exterior & Interior Visualization</option>
             <option value="Cinematic Walkthrough Animation">Cinematic Walkthrough Animation</option>
             <option value="WebXR In-Browser Spatial 3D">WebXR In-Browser Spatial 3D</option>
-            <option value="Cloud Pixel Streaming (Unreal 5.4)">Cloud Pixel Streaming (Unreal 5.4)</option>
             <option value="Complete Master Development Suite">Complete Master Development Suite</option>
           </select>
         </div>
@@ -198,7 +197,7 @@ export default function BookingForm() {
             <option value="Under $5,000">Under $5,000 (Single Render/Fast Track)</option>
             <option value="$5,000 – $15,000">$5,000 – $15,000 (Standard Residential)</option>
             <option value="$15,000 – $50,000">$15,000 – $50,000 (Tower / Masterplan)</option>
-            <option value="$50,000 – $100,000">$50,000 – $100,000 (Full XR + Pixel Streaming)</option>
+            <option value="$50,000 – $100,000">$50,000 – $100,000 (Enterprise Visualization Suite)</option>
             <option value="$100,000+">$100,000+ (Enterprise Multi-Asset Suite)</option>
           </select>
         </div>

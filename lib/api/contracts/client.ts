@@ -431,21 +431,6 @@ export const aiApi = {
 };
 
 // =====================================================================
-// PIXEL STREAMING
-// =====================================================================
-
-export const pixelStreamingApi = {
-  start: (data: { projectId: string; region: string; settings?: Record<string, unknown> }) => 
-    post<{ sessionId: string; streamUrl: string }>('/pixel-streaming/start', data),
-
-  stop: (sessionId: string) => 
-    post<{ success: boolean }>(`/pixel-streaming/stop`, { sessionId }),
-
-  getStatus: (sessionId: string) => 
-    get<{ status: string; metrics?: Record<string, number> }>(`/pixel-streaming/${sessionId}/status`),
-};
-
-// =====================================================================
 // COMBINED EXPORT
 // =====================================================================
 // BOOKINGS
@@ -489,7 +474,6 @@ export const bookingsApi = {
   docStudio: docStudioApi,
   storage: storageApi,
   ai: aiApi,
-  pixelStreaming: pixelStreamingApi,
   bookings: bookingsApi,
 };
 

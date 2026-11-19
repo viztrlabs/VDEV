@@ -24,7 +24,7 @@ export async function GET() {
   <channel>
     <title>VizTR Studio — Perspectives &amp; Research</title>
     <link>${BASE_URL}/blog</link>
-    <description>High-density architectural rendering, real-time WebXR spatial computing, and scalable cloud Unreal Engine 5 pixel streaming.</description>
+    <description>High-density architectural rendering, real-time WebXR spatial computing, and immersive browser-based experiences.</description>
     <language>en</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="${BASE_URL}/blog/rss.xml" rel="self" type="application/rss+xml" />

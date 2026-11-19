@@ -39,7 +39,7 @@ Write-Host "Checking for orphaned VizTR node processes..." -ForegroundColor Cyan
 $nodeProcesses = Get-Process -Name "node" -ErrorAction SilentlyContinue
 foreach ($proc in $nodeProcesses) {
     $cmdLine = (Get-CimInstance Win32_Process -Filter "ProcessId = $($proc.Id)" -ErrorAction SilentlyContinue).CommandLine
-    if ($cmdLine -match "next dev|editor.server|serve.*3002|forks.splat.editor|playcanvas|viztr|rollup") {
+    if ($cmdLine -match "next dev|editor.server|serve.*3002|forks.splat.editor|playcanvas|viztr|rollup|whatsapp|baileys") {
         Write-Host "Killing orphan node PID $($proc.Id) ($($proc.ProcessName))..." -ForegroundColor Yellow
         taskkill /PID $proc.Id /F 2>$null | Out-Null
         $killed = $true

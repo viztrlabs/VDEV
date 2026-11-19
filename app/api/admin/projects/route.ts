@@ -73,7 +73,7 @@ function mapSupabaseProject(row: any): ManagedProject {
     id: row.id,
     name: row.name,
     clientName: row.client_name || '',
-    projectType: row.project_type || 'Architectural',
+    projectType: ProjectTypeSchema.safeParse(row.project_type).success ? row.project_type : 'Other',
     status: row.status || 'Work in Progress',
     startDate: row.start_date || '',
     endDate: row.end_date || '',

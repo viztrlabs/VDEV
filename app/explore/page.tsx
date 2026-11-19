@@ -4,7 +4,7 @@ import ExploreExperienceView from '@/components/explore/ExploreExperienceView';
 export const metadata: Metadata = {
   title: 'Explore & Experience — VizTR XR Studio',
   description:
-    'Interactive spatial visualization platform supporting WebXR, WebAR, VR Headset, 360° Virtual Tours, 3D Gaussian Splatting, and Unreal Engine 5 Pixel Streaming.',
+    'Interactive spatial visualization platform supporting WebXR, WebAR, VR Headset, 360° Virtual Tours, and 3D Gaussian Splatting.',
 };
 
 export default function ExplorePage() {

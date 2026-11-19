@@ -55,7 +55,7 @@ export interface CMSService {
   id: string;
   name: string;
   slug: string;
-  category: 'studio' | 'xr_world' | 'cloud_gpu';
+  category: 'studio' | 'xr_world';
   heroBadge: string;
   tagline: string;
   description: string;
@@ -77,7 +77,7 @@ export interface CMSProject {
   title: string;
   slug: string;
   client: string;
-  category: 'Exterior' | 'Interior' | 'Animation' | 'WebXR' | 'Pixel Streaming';
+  category: 'Exterior' | 'Interior' | 'Animation' | 'WebXR';
   year: string;
   coverImage: string;
   gallery: string[];
@@ -251,8 +251,8 @@ const INITIAL_PAGES: CMSPageItem[] = [
     author: 'Chief Architect',
     seo: {
       metaTitle: 'VizTR — High-Density Architectural CGI & WebXR Spatial Computing',
-      metaDescription: 'Photorealistic 8K exterior & interior CGI, cinematic walkthroughs, and real-time cloud Unreal Engine 5 pixel streaming for visionary architects and developers.',
-      keywords: ['architectural cgi', 'webxr', 'pixel streaming', 'unreal engine 5', 'photorealistic renders', '3d virtual tour'],
+      metaDescription: 'Photorealistic 8K exterior & interior CGI, cinematic walkthroughs, and immersive WebXR experiences for visionary architects and developers.',
+      keywords: ['architectural cgi', 'webxr', 'photorealistic renders', '3d virtual tour'],
       canonicalUrl: 'https://viztr.studio/',
       noIndex: false,
     },
@@ -355,36 +355,15 @@ const INITIAL_PAGES: CMSPageItem[] = [
     updatedAt: '2026-08-24T18:00:00Z',
     author: 'XR Engineering Lead',
     seo: {
-      metaTitle: 'XR World — In-Browser WebXR, WebAR & Cloud Pixel Streaming | VizTR',
+      metaTitle: 'XR World — In-Browser WebXR, WebAR & Virtual Tours | VizTR',
       metaDescription: 'Explore zero-installation real-time 3D spatial architecture, AR surface anchors, and 16K panoramic virtual tours.',
-      keywords: ['webxr', 'webar', 'virtual tour', 'pixel streaming', 'spatial computing architecture'],
+      keywords: ['webxr', 'webar', 'virtual tour', 'spatial computing architecture'],
       canonicalUrl: 'https://viztr.studio/xr-world',
       noIndex: false,
     },
-    contentSummary: 'Interactive portal to WebXR, WebAR, VR Tours, and cloud-hosted Unreal Engine 5 Pixel Streaming.',
+    contentSummary: 'Interactive portal to WebXR, WebAR, VR Tours, and 360° virtual tours.',
     sectionsCount: 7,
     viewCount: 31200,
-  },
-  {
-    id: 'pg-pixel-streaming',
-    title: 'Unreal Engine 5 Cloud Pixel Streaming',
-    slug: '/xr-world/pixel-streaming',
-    status: 'published',
-    category: 'xr',
-    templateName: 'Flagship Interactive Tech',
-    publishedAt: '2026-02-01T09:00:00Z',
-    updatedAt: '2026-08-25T19:30:00Z',
-    author: 'Systems Architect',
-    seo: {
-      metaTitle: 'Cloud Pixel Streaming (UE5.4 Lumen & Nanite) | VizTR',
-      metaDescription: 'Zero-install real-time ray-traced architectural configurator streamed live from NVIDIA RTX 4090 cloud nodes to any mobile or desktop browser.',
-      keywords: ['unreal pixel streaming', 'ue5 webrtc', 'real-time ray tracing', 'cloud architectural configurator'],
-      canonicalUrl: 'https://viztr.studio/xr-world/pixel-streaming',
-      noIndex: false,
-    },
-    contentSummary: 'Live WebRTC telemetry simulator, regional cluster controls, bitrate profiles, and interactive material switcher.',
-    sectionsCount: 6,
-    viewCount: 29800,
   },
   {
     id: 'pg-about',
@@ -512,35 +491,6 @@ const INITIAL_SERVICES: CMSService[] = [
       metaTitle: '4K 60FPS Cinematic Architectural Walkthrough | VizTR Studio',
       metaDescription: 'High-speed camera choreography and cinematic architectural film reels.',
       keywords: ['architectural flythrough', '4k walkthrough', 'real estate film'],
-    },
-  },
-  {
-    id: 'srv-pixel-streaming',
-    name: 'Cloud Pixel Streaming (UE5.4)',
-    slug: 'pixel-streaming',
-    category: 'cloud_gpu',
-    heroBadge: 'FLAGSHIP REAL-TIME GPU',
-    tagline: 'Zero-install real-time ray-traced architectural configurator streamed live.',
-    description: 'NVIDIA RTX 4090 cluster instances rendering Lumen and Nanite geometry streamed at 60 FPS WebRTC with under 30ms latency.',
-    heroImage: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1800&q=85',
-    status: 'published',
-    priceStartingFrom: '$3,200 setup + hourly GPU tier',
-    timeline: '1-2 Weeks Integration',
-    capabilities: [
-      'Unreal Engine 5.4 Lumen global illumination',
-      'Dynamic daylight & weather switching',
-      'Real-time material & floorplan configurator',
-      'Ultra low latency WebRTC stream under 30ms'
-    ],
-    deliverables: [
-      'Custom branded WebRTC client frontend',
-      'Dedicated cloud GPU streaming orchestration',
-      'Multi-user synchronized presentation mode'
-    ],
-    seo: {
-      metaTitle: 'Unreal Engine 5 Cloud Pixel Streaming | VizTR',
-      metaDescription: 'Zero-install real-time ray-traced architectural configurator streamed live to any browser.',
-      keywords: ['pixel streaming', 'unreal engine webrtc', 'cloud gpu architecture'],
     },
   },
 ];
@@ -732,7 +682,6 @@ const INITIAL_NAV_ITEMS: CMSNavItem[] = [
     order: 3,
     badge: 'SPATIAL',
     children: [
-      { id: 'sub-ps', label: 'Pixel Streaming', url: '/xr-world/pixel-streaming', description: 'Real-time UE5 cloud GPU stream', badge: 'FLAGSHIP', isVisible: true },
       { id: 'sub-wx', label: 'WebXR Spatial 3D', url: '/xr-world/webxr', description: 'In-browser interactive spatial models', isVisible: true },
       { id: 'sub-ar', label: 'WebAR Surface Anchor', url: '/xr-world/webar', description: '1:1 scale iOS USDZ / Android AR', isVisible: true },
       { id: 'sub-vr', label: 'Virtual Reality Tour', url: '/xr-world/virtual-reality', description: 'Meta Quest & Apple Vision Pro', isVisible: true },
@@ -795,7 +744,7 @@ const INITIAL_THEME_CUSTOMIZATION: CMSThemeCustomization = {
     { id: 'marquee', name: 'Precision Engineering Marquee', description: 'Infinite scrolling tape of studio capabilities & framerates', isVisible: true },
     { id: 'dual-core', name: 'Dual Architectural Core Cards', description: 'Studio Photorealism vs. XR World Immersive split presentation', isVisible: true },
     { id: 'studio-showcase', name: 'Studio Services Showcase', description: 'Exterior, Interior, and Walkthrough interactive feature grid', isVisible: true },
-    { id: 'xr-showcase', name: 'XR World Spatial Grid', description: 'WebXR, WebAR, VR, and Pixel Streaming flagship cards', isVisible: true },
+    { id: 'xr-showcase', name: 'XR World Spatial Grid', description: 'WebXR, WebAR, VR, and virtual tour cards', isVisible: true },
     { id: 'showreel', name: 'Cinematic Showreel Video Player', description: 'Embedded 4K architectural film reel with custom audio', isVisible: true },
     { id: 'benefits', name: 'Architectural Advantage Matrix', description: '8 key strategic benefits of working with VizTR', isVisible: true },
     { id: 'process', name: 'Production Pipeline (4 Stages)', description: 'Step-by-step workflow from CAD import to master delivery', isVisible: true },

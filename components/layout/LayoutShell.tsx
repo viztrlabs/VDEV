@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ViztrIntroOverlay from '@/components/landing/ViztrIntroOverlay';
+import { WhatsAppButton } from '@/components/ui/WhatsAppButton';
+import { MessagingAgent } from '@/components/ui/MessagingAgent';
 
 export default function LayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -18,6 +20,7 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
   const isTourBuilder = pathname.startsWith('/xr-world/virtual-tour/tour-builder');
   const isTourEditor = pathname.startsWith('/xr-world/virtual-tour/editor');
   const isExperience = pathname === '/explore' || pathname.startsWith('/explore/') || pathname === '/experience' || pathname.startsWith('/experience/');
+  const isPublicPage = !isEditor && !isDashboard && !isTourBuilder && !isTourEditor && !isExperience;
 
   // Listen for client-side navigation between pages
   useEffect(() => {
@@ -80,6 +83,8 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
       <Header />
       <div className="flex-1 flex flex-col">{children}</div>
       <Footer />
+      {isPublicPage && <WhatsAppButton />}
+      {isPublicPage && <MessagingAgent />}
     </>
   );
 }

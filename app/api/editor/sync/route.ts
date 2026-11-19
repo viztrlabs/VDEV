@@ -1,36 +1,52 @@
 export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 import { SceneSnapshot } from '@/lib/3d/bridge/types';
 import { requireAuth } from '@/lib/api-guard';
-
-const DATA_DIR = path.join(process.cwd(), 'data', 'editor');
-const SNAPSHOT_FILE = path.join(DATA_DIR, 'latest-scene.json');
-
-function ensureDataDir() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-}
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 
 /**
  * GET /api/editor/sync
- * Hydrates the latest scene snapshot
+ * Hydrates the latest scene snapshot from the database.
  */
 export async function GET(req: NextRequest) {
   const guard = await requireAuth(req);
   if (guard.error) return guard.error;
-  try {
-    ensureDataDir();
 
-    if (fs.existsSync(SNAPSHOT_FILE)) {
-      const content = fs.readFileSync(SNAPSHOT_FILE, 'utf-8');
-      const snapshot: SceneSnapshot = JSON.parse(content);
-      return NextResponse.json({ snapshot, cached: true });
+  const supabaseAdmin = getSupabaseAdmin();
+  if (!supabaseAdmin) {
+    return NextResponse.json(
+      { error: 'Database not configured' },
+      { status: 503 }
+    );
+  }
+
+  try {
+    // Fetch the user's most recent scene
+    const { data: scenes, error } = await supabaseAdmin
+      .from('editor_scenes')
+      .select('snapshot, version, updated_at, name, is_published')
+      .eq('user_id', guard.userId)
+      .order('updated_at', { ascending: false })
+      .limit(1);
+
+    if (error) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
     }
 
-    // Default sample snapshot
+    if (scenes && scenes.length > 0) {
+      const row = scenes[0];
+      return NextResponse.json({
+        snapshot: row.snapshot as SceneSnapshot,
+        version: row.version,
+        updatedAt: row.updated_at,
+        cached: true,
+      });
+    }
+
+    // Default sample snapshot when no saved scene exists
     const defaultSnapshot: SceneSnapshot = {
       id: 'default-scene',
       version: 1,
@@ -90,7 +106,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ snapshot: defaultSnapshot, cached: false });
   } catch (err: any) {
     return NextResponse.json(
-      { error: err.message || 'Failed to read scene snapshot' },
+      { error: err?.message || 'Failed to read scene snapshot' },
       { status: 500 }
     );
   }
@@ -98,11 +114,20 @@ export async function GET(req: NextRequest) {
 
 /**
  * POST /api/editor/sync
- * Persists updated scene snapshot
+ * Persists updated scene snapshot to the database.
  */
 export async function POST(req: NextRequest) {
   const guard = await requireAuth(req);
   if (guard.error) return guard.error;
+
+  const supabaseAdmin = getSupabaseAdmin();
+  if (!supabaseAdmin) {
+    return NextResponse.json(
+      { error: 'Database not configured' },
+      { status: 503 }
+    );
+  }
+
   try {
     const snapshot: SceneSnapshot = await req.json();
 
@@ -110,26 +135,73 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid scene snapshot payload' }, { status: 400 });
     }
 
-    ensureDataDir();
+    // Find existing scene for this user
+    const { data: existing } = await supabaseAdmin
+      .from('editor_scenes')
+      .select('id, version')
+      .eq('user_id', guard.userId)
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
-    // Increment version and timestamp
-    const updatedSnapshot: SceneSnapshot = {
-      ...snapshot,
-      version: (snapshot.version || 0) + 1,
-      updatedAt: new Date().toISOString(),
-    };
+    const now = new Date().toISOString();
+    const nextVersion = (existing?.version || 0) + 1;
 
-    fs.writeFileSync(SNAPSHOT_FILE, JSON.stringify(updatedSnapshot, null, 2), 'utf-8');
+    if (existing) {
+      // Update existing scene
+      const { data: updated, error } = await supabaseAdmin
+        .from('editor_scenes')
+        .update({
+          snapshot: snapshot,
+          version: nextVersion,
+          updated_at: now,
+          name: snapshot.name || 'Untitled Scene',
+        })
+        .eq('id', existing.id)
+        .select('id, version, updated_at')
+        .single();
 
-    return NextResponse.json({
-      success: true,
-      id: updatedSnapshot.id,
-      version: updatedSnapshot.version,
-      updatedAt: updatedSnapshot.updatedAt,
-    });
+      if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+      }
+
+      return NextResponse.json({
+        success: true,
+        id: updated.id,
+        version: updated.version,
+        updatedAt: updated.updated_at,
+      });
+    } else {
+      // Create new scene
+      const { data: created, error } = await supabaseAdmin
+        .from('editor_scenes')
+        .insert({
+          user_id: guard.userId,
+          name: snapshot.name || 'Untitled Scene',
+          engine: snapshot.engine || 'three',
+          version: nextVersion,
+          snapshot: snapshot,
+          is_published: false,
+          created_at: now,
+          updated_at: now,
+        })
+        .select('id, version, updated_at')
+        .single();
+
+      if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+      }
+
+      return NextResponse.json({
+        success: true,
+        id: created.id,
+        version: created.version,
+        updatedAt: created.updated_at,
+      });
+    }
   } catch (err: any) {
     return NextResponse.json(
-      { error: err.message || 'Failed to save scene snapshot' },
+      { error: err?.message || 'Failed to save scene snapshot' },
       { status: 500 }
     );
   }

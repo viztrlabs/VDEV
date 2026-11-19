@@ -21,7 +21,6 @@ const staticPages = [
   { url: '/xr-world/webar', priority: 0.7, changeFrequency: 'monthly' },
   { url: '/xr-world/virtual-reality', priority: 0.7, changeFrequency: 'monthly' },
   { url: '/xr-world/virtual-tour', priority: 0.7, changeFrequency: 'monthly' },
-  { url: '/xr-world/pixel-streaming', priority: 0.7, changeFrequency: 'monthly' },
   { url: '/xr-world/link-generator', priority: 0.6, changeFrequency: 'monthly' },
   { url: '/xr-world/showcase', priority: 0.6, changeFrequency: 'weekly' },
   { url: '/blog', priority: 0.8, changeFrequency: 'weekly' },

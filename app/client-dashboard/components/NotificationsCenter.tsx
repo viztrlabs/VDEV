@@ -21,14 +21,6 @@ export default function NotificationsCenter() {
       type: 'action',
       unread: true
     },
-    {
-      id: 'notif-3',
-      title: 'Cloud Pixel Streaming Node Provisioned',
-      message: 'Dedicated NVIDIA RTX 4090 cloud GPU instance ready for your live WebXR interactive walkthrough.',
-      time: 'Yesterday',
-      type: 'info',
-      unread: false
-    }
   ];
 
   return (
@@ -40,7 +32,7 @@ export default function NotificationsCenter() {
             <span>Project Activity & Pipeline Notifications</span>
           </h2>
           <p className="text-xs text-[#A1A1AA] mt-0.5">
-            Real-time cluster events, asset uploads, and director updates
+            Real-time project events, asset uploads, and director updates
           </p>
         </div>
       </div>

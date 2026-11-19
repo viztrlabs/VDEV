@@ -17,5 +17,4 @@ export const SERVICE_META: Record<string, ServiceMeta> = {
   webxr: { title: 'WebXR', category: 'xr', icon: '🥽', description: 'Immersive WebXR experiences', showDeviceCompatibility: true },
   'virtual-reality': { title: 'Virtual Reality', category: 'xr', icon: '🎮', description: 'Full VR experience', showDeviceCompatibility: true },
   'gaussian-splat': { title: 'Gaussian Splat', category: 'xr', icon: '🧊', description: '3D Gaussian Splatting viewer' },
-  'pixel-streaming': { title: 'Pixel Streaming', category: 'xr', icon: '📺', description: 'Unreal Engine pixel streaming', showDeviceCompatibility: true },
 };

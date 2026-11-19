@@ -25,7 +25,6 @@ function toMetric(row: any): RevenueMetric {
     month: row.month,
     mrr: num(row.mrr),
     oneOffCommissions: num(row.one_off_commissions),
-    gpuStreamingRevenue: num(row.gpu_streaming_revenue),
     vrLicenses: num(row.vr_licenses),
     total: num(row.total),
     expenses: num(row.expenses),
@@ -95,8 +94,8 @@ export async function POST(request: NextRequest) {
       .select('booking_amount,created_at');
     if (projectsError) throw new Error(projectsError.message);
 
-    // Aggregate confirmed booking value per calendar month. Category
-    // breakdowns (MRR, GPU, VR) have no billing source yet and stay 0.
+    // Aggregate confirmed booking value per calendar month. MRR and VR
+    // breakdowns have no billing source yet and stay 0.
     const byMonth = new Map<string, number>();
     for (const p of (projects ?? []) as any[]) {
       const month = new Date(p.created_at).toISOString().slice(0, 7);
@@ -107,7 +106,6 @@ export async function POST(request: NextRequest) {
       month,
       mrr: 0,
       one_off_commissions: total,
-      gpu_streaming_revenue: 0,
       vr_licenses: 0,
       total,
       expenses: 0,

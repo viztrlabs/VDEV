@@ -26,11 +26,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'VizTR — Architecture Visualization Studio & XR World Platform',
   description:
-    'Where Architecture Meets Immersive Reality. Photorealistic architectural CGI, 4K walkthrough animations, WebXR in-browser engines, 360° virtual tours, and cloud Pixel Streaming.',
+    'Where Architecture Meets Immersive Reality. Photorealistic architectural CGI, 4K walkthrough animations, WebXR in-browser engines, and 360° virtual tours.',
   openGraph: {
     title: 'VizTR — Architecture Visualization Studio & XR World Platform',
     description:
-      'Where Architecture Meets Immersive Reality. Photorealistic architectural CGI, WebXR spatial engines, and cloud Pixel Streaming.',
+      'Where Architecture Meets Immersive Reality. Photorealistic architectural CGI, WebXR spatial engines, and immersive browser-based experiences.',
     type: 'website',
     images: ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80']
   },
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'VizTR — Architecture Visualization Studio & XR World Platform',
     description:
-      'Where Architecture Meets Immersive Reality. Photorealistic architectural CGI, WebXR spatial engines, and cloud Pixel Streaming.',
+      'Where Architecture Meets Immersive Reality. Photorealistic architectural CGI, WebXR spatial engines, and immersive browser-based experiences.',
     images: ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80']
   },
 };
@@ -87,9 +87,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
             {/* Global Universal Lightboxes & Interactive Spatial Viewers */}
             <GlobalViewers />
-            
-            {/* VIZTR Messaging Agent */}
-            <MessagingAgent />
           </ThemeProvider>
         </NextAuthProvider>
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
@@ -99,8 +96,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           name="VizTR Studio"
           url="https://viztr.com"
           logo="https://viztr.com/logo.png"
-          description="High-density architectural rendering, real-time WebXR spatial computing, and scalable cloud Unreal Engine 5 pixel streaming."
-          email="hello@viztr.com"
+          description="High-density architectural rendering, real-time WebXR spatial computing, and immersive browser-based experiences."
+          email="viztr.studio@gmail.com"
           phone="+1 (555) 123-4567"
           address={{
             streetAddress: '123 Spatial Boulevard',
@@ -110,10 +107,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             addressCountry: 'US',
           }}
           socialLinks={[
-            'https://instagram.com',
-            'https://linkedin.com',
-            'https://twitter.com',
-            'https://youtube.com',
+            'https://instagram.com/viztr_official',
+            'https://www.threads.com/@viztr_official',
+            'https://x.com/viztr_official',
+            'https://facebook.com/profile.php?id=61581506345579',
+            'https://discord.gg/XKFwVBxSDR',
+            'https://linkedin.com/in/viztrofficial',
+            'https://www.youtube.com/@VizTR_Official',
           ]}
         />
         <WebSiteJsonLd

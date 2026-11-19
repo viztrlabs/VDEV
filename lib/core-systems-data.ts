@@ -6,7 +6,7 @@ export interface XRToken {
   projectName: string;
   modelUrl: string;
   modelFormat: 'glb' | 'gltf' | 'usdz';
-  experienceType: 'webxr' | 'webar' | 'vr_tour' | 'pixel_stream';
+  experienceType: 'webxr' | 'webar' | 'vr_tour';
   scale: number;
   environmentPreset: 'studio' | 'sunset' | 'city' | 'dawn';
   requiresPasscode: boolean;

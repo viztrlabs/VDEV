@@ -144,7 +144,7 @@ export default function BookConsultationPage() {
                   <div className="w-6 h-6 rounded-lg bg-[#0A0A0B] border border-[#1E293B] text-rose-500 flex items-center justify-center shrink-0 font-bold">3</div>
                   <div>
                     <div className="font-bold text-[#FAFAFA]">XR & Interactive Deployment Strategy</div>
-                    <p className="text-[#B9CACB] mt-0.5">Determine if your sales team will benefit from WebXR browser links, WebAR QR codes, or Pixel Streaming.</p>
+                    <p className="text-[#B9CACB] mt-0.5">Determine if your sales team will benefit from WebXR browser links, WebAR QR codes, or virtual reality experiences.</p>
                   </div>
                 </div>
 

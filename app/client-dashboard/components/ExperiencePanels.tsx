@@ -2,20 +2,12 @@
 
 import React from 'react';
 import { useAppStore } from '@/lib/store';
-import { Play, Sparkles, Box, Layers, Monitor } from 'lucide-react';
+import { Play, Sparkles, Box, Layers } from 'lucide-react';
 
 export default function ExperiencePanels() {
-  const { openPixelStream, openPanorama, openModelViewer } = useAppStore();
+  const { openPanorama, openModelViewer } = useAppStore();
 
   const experiences = [
-    {
-      id: 'exp-ps',
-      title: 'Unreal Engine 5.4 Pixel Streaming',
-      badge: 'Realtime Cloud GPU',
-      description: 'Stream the photorealistic Lumen interactive architectural walkthrough at 60fps directly in your browser.',
-      icon: <Monitor className="w-5 h-5 text-[#3ECF8E]" />,
-      action: () => openPixelStream()
-    },
     {
       id: 'exp-tour',
       title: '16K Ultra-HD Panoramic Virtual Tour',
@@ -43,12 +35,12 @@ export default function ExperiencePanels() {
             <span>Interactive Spatial & Realtime Viewers</span>
           </h2>
           <p className="text-xs text-[#A1A1AA] mt-0.5">
-            Launch browser-based immersive models, 360° virtual tours, and cloud GPU streams
+            Launch browser-based immersive models and 360° virtual tours
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {experiences.map((exp) => (
           <div
             key={exp.id}

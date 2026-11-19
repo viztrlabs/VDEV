@@ -41,15 +41,19 @@ export default function StudioPreview() {
  className="rounded-[2rem] overflow-hidden bg-[#131314] border border-[#1E293B] hover:border-[#00F0FF]/40 transition-all duration-300 flex flex-col justify-between group shadow-sm"
  >
  <div>
- <div className="relative h-52 w-full overflow-hidden border-b border-[#1E293B]">
- <Image
- src={svc.image}
- alt={svc.title}
- fill
- sizes="(max-width: 768px) 100vw, 33vw"
- quality={85}
- className="object-cover render-lighting-enhanced group-hover:scale-105 transition-transform duration-700"
- />
+<div className="relative h-52 w-full overflow-hidden border-b border-[#1E293B]">
+                    {svc.image ? (
+                      <Image
+                        src={svc.image}
+                        alt={svc.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        quality={85}
+                        className="object-cover render-lighting-enhanced group-hover:scale-105 transition-transform duration-700"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-[#09090B]" />
+                    )}
  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none z-[1]"/>
  <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#0A0A0B]/90 text-[#00F0FF] border border-[#1E293B] text-[10px] font-bold z-10 shadow-md">
  {svc.tag}

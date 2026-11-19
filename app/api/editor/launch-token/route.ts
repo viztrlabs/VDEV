@@ -1,8 +1,9 @@
-export const dynamic = 'force-dynamic'
+import { createHmac } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 // Extended session user type to include custom properties from auth callbacks
@@ -18,26 +19,42 @@ interface ExtendedUser {
   clientFirm?: string;
 }
 
-const EDITOR_LAUNCH_SECRET = process.env.EDITOR_LAUNCH_SECRET || process.env.NEXTAUTH_SECRET || 'dev-editor-launch-secret';
 const EDITOR_LAUNCH_TTL_SECONDS = Number(process.env.EDITOR_LAUNCH_TTL_SECONDS || '3600');
+
+function getEditorLaunchSecret(): string | null {
+  const secret = process.env.EDITOR_LAUNCH_SECRET || process.env.NEXTAUTH_SECRET;
+  if (secret) {
+    return secret;
+  }
+  return process.env.NODE_ENV === 'production' ? null : 'dev-editor-launch-secret';
+}
 
 function base64UrlEncode(input: Buffer): string {
   return input.toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
 }
 
 function signLaunchToken(payload: Record<string, unknown>) {
+  const secret = getEditorLaunchSecret();
+  if (!secret) {
+    throw new Error('EDITOR_LAUNCH_SECRET or NEXTAUTH_SECRET must be configured');
+  }
+
   const header = base64UrlEncode(Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })));
   const body = base64UrlEncode(Buffer.from(JSON.stringify(payload)));
   const data = `${header}.${body}`;
 
-  const crypto = require('crypto');
-  const signature = crypto.createHmac('sha256', EDITOR_LAUNCH_SECRET).update(data).digest('base64');
+  const signature = createHmac('sha256', secret).update(data).digest('base64');
   const encodedSignature = signature.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
 
   return `${data}.${encodedSignature}`;
 }
 
 function verifyLaunchToken(token: string): Record<string, unknown> | null {
+  const secret = getEditorLaunchSecret();
+  if (!secret) {
+    return null;
+  }
+
   const parts = token.split('.');
   if (parts.length !== 3) {
     return null;
@@ -49,8 +66,7 @@ function verifyLaunchToken(token: string): Record<string, unknown> | null {
 
   const data = `${header}.${body}`;
 
-  const crypto = require('crypto');
-  const expectedSignature = crypto.createHmac('sha256', EDITOR_LAUNCH_SECRET).update(data).digest('base64');
+  const expectedSignature = createHmac('sha256', secret).update(data).digest('base64');
   const encodedExpected = expectedSignature.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
 
   if (signature !== encodedExpected) {

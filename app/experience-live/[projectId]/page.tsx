@@ -13,7 +13,6 @@ import {
   Headset,
   Compass,
   Cpu,
-  Tv,
   Globe,
   Sparkles,
   Play,
@@ -26,9 +25,6 @@ import {
 const XRViewer = dynamic(() => import('@/components/xr/XRViewer'), { ssr: false });
 const TourViewer = dynamic(() => import('@/components/xr/TourViewer'), { ssr: false });
 const GaussianSplatViewer = dynamic(() => import('@/components/xr/GaussianSplatViewer'), {
-  ssr: false,
-});
-const PixelStreamingViewer = dynamic(() => import('@/components/xr/PixelStreamingViewer'), {
   ssr: false,
 });
 
@@ -93,16 +89,6 @@ const SERVICES: ServiceConfig[] = [
     bgColor: 'bg-emerald-500/10',
     description: '3D Gaussian Splatting viewer',
     viewerComponent: 'SplatViewer',
-  },
-  {
-    id: 'pixel-streaming',
-    name: 'Pixel Streaming',
-    slug: 'pixel-streaming',
-    icon: Tv,
-    color: 'text-rose-400',
-    bgColor: 'bg-rose-500/10',
-    description: 'Unreal Engine pixel streaming at 60fps',
-    viewerComponent: 'PixelStreamingPlayer',
   },
 ];
 
@@ -369,7 +355,7 @@ export default function ExperiencePage() {
   const params = useParams();
   const router = useRouter();
   const projectId = (params.projectId as string) || 'proj_smart_luxury_villa';
-  const { openPixelStream, openPanorama, openModelViewer } = useAppStore();
+  const { openPanorama, openModelViewer } = useAppStore();
 
   const [activeService, setActiveService] = useState<string>('webxr');
   const [loading, setLoading] = useState(false);
@@ -599,18 +585,6 @@ export default function ExperiencePage() {
         }
         return <GaussianSplatViewer scenes={scenes} />;
       }
-      case 'pixel-streaming':
-        if (!experience) {
-          return (
-            <EmptyExperience
-              icon={Tv}
-              iconClassName="text-rose-400"
-              title="No published pixel stream yet"
-              message={emptyMessage}
-            />
-          );
-        }
-        return <PixelStreamingViewer streamId={experience.slug} />;
       case 'exterior':
       case 'interior':
         return (

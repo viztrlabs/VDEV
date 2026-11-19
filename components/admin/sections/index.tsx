@@ -34,7 +34,7 @@ export function SuperAdminGovernance() {
           Master Super Admin Panel
         </h2>
         <p className="text-xs text-[#A1A1AA]">
-          Users, analytics, revenue, GPU monitoring, feature toggles, system health, and permissions.
+          Users, analytics, revenue, feature toggles, system health, and permissions.
         </p>
       </div>
       
@@ -54,7 +54,7 @@ export function CoreSystemsFleet() {
           Core Systems & Fleet Management
         </h2>
         <p className="text-xs text-[#A1A1AA]">
-          Project management, XR links, pixel streaming, file storage, and asset pipeline.
+          Project management, XR links, file storage, and asset pipeline.
         </p>
       </div>
       

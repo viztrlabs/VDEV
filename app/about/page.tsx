@@ -123,7 +123,7 @@ export default function AboutPage() {
               XR Technological Leadership
             </h3>
             <p className="text-xs sm:text-sm text-[#B9CACB] leading-relaxed">
-              We pioneer browser-native 3D, zero-install WebXR, and cloud Unreal Engine 5.4 Pixel Streaming so international buyers can walk unbuilt spaces without downloading an app.
+              We pioneer browser-native 3D and zero-install WebXR so international buyers can walk unbuilt spaces without downloading an app.
             </p>
           </div>
 
@@ -183,14 +183,20 @@ export default function AboutPage() {
                 className="p-5 rounded-[2rem] bg-[#131314] border border-[#1E293B] shadow-sm space-y-4"
               >
                 <div className="relative w-full aspect-square rounded-[1.5rem] overflow-hidden bg-black">
-                  <Image
-                    src={leader.image}
-                    alt={leader.name}
-                    width={400}
-                    height={400}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover"
-                  />
+                  {leader.image ? (
+                    <Image
+                      src={leader.image}
+                      alt={leader.name}
+                      width={400}
+                      height={400}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-sm text-[#71717A] font-mono">
+                      {leader.name?.slice(0, 2)?.toUpperCase() || '?'}
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-1">
                   <h4 className="text-base font-bold text-[#FAFAFA] font-display">

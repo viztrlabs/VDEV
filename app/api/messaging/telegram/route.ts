@@ -1,20 +1,45 @@
 export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
-import { getMessagingProvider, type MessagingProvider } from '@/lib/messaging/providers';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
+import { validateTelegramConfig } from '@/lib/telegram/config';
+import { createTelegramClient } from '@/lib/telegram/client';
+import { UpdateSchema, extractCommand, isCommand, validateUpdate } from '@/lib/telegram/validation';
+import { checkAndMarkProcessed } from '@/lib/telegram/deduplication';
+import { COMMAND_HANDLERS, isKnownCommand, getCommandHandler } from '@/lib/telegram/commands/registry';
+import { registerAllHandlers } from '@/lib/telegram/commands/handlers';
+import { handleCallbackQuery } from '@/lib/telegram/callbacks';
 import { getViztrAgentReply } from '@/lib/messaging/viztr-agent';
 
-export async function POST(req: NextRequest) {
-  const provider = req.nextUrl.pathname.split('/messaging/')[1] as 'telegram' | 'whatsapp' | undefined;
-  if (!provider) {
-    return NextResponse.json({ ok: false, error: 'Unknown messaging provider' }, { status: 404 });
-  }
-  const agentProvider = provider === 'telegram' ? 'telegram' : 'web';
+// Register all command handlers on module load
+registerAllHandlers();
 
+async function isDuplicateUpdate(supabaseAdmin: any, updateId: number): Promise<boolean> {
+  const { data } = await supabaseAdmin
+    .from('processed_updates')
+    .select('update_id')
+    .eq('update_id', updateId)
+    .maybeSingle();
+  return !!data;
+}
+
+async function markUpdateProcessed(supabaseAdmin: any, updateId: number): Promise<void> {
+  await supabaseAdmin
+    .from('processed_updates')
+    .insert({ update_id: updateId, processed_at: new Date().toISOString() });
+}
+
+export async function POST(req: NextRequest) {
+  let config;
+  try {
+    config = validateTelegramConfig();
+  } catch {
+    return NextResponse.json({ ok: false, error: 'Telegram bot not configured' }, { status: 503 });
+  }
+
+  // Validate secret token via header (never in query params per security requirements)
   const expectedSecret = process.env.TELEGRAM_WEBHOOK_SECRET;
   if (expectedSecret) {
-    const provided =
-      req.nextUrl.searchParams.get('secret_token') ||
-      req.headers.get('x-telegram-bot-api-secret-token');
+    const provided = req.headers.get('x-telegram-bot-api-secret-token');
     if (provided !== expectedSecret) {
       return NextResponse.json({ ok: false, error: 'Unauthorized webhook' }, { status: 401 });
     }
@@ -27,66 +52,110 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  if (!payload || typeof payload !== 'object') {
-    return NextResponse.json({ ok: true });
+  // Validate update structure
+  const validation = validateUpdate(payload);
+  if (!validation.success) {
+    return NextResponse.json({ ok: true }); // Ack invalid updates to prevent Telegram retries
   }
 
-  const adapter = getMessagingProvider(provider);
-  if (!adapter) {
-    return NextResponse.json({ ok: false, error: `${provider} provider not configured` }, { status: 503 });
+  const update = validation.data;
+  const { update_id, message, callback_query } = update;
+
+  // Deduplication using Supabase (falls back to in-memory if unavailable)
+  const supabaseAdmin = getSupabaseAdmin();
+  let isDuplicate = false;
+  if (supabaseAdmin) {
+    isDuplicate = await isDuplicateUpdate(supabaseAdmin, update_id);
+    if (!isDuplicate) {
+      await markUpdateProcessed(supabaseAdmin, update_id);
+    }
+  } else {
+    // Fallback to in-memory dedup (local dev only)
+    isDuplicate = !checkAndMarkProcessed(update_id);
   }
 
-  const incoming = adapter.parseWebhook(payload);
-  if (!incoming) {
-    return NextResponse.json({ ok: true });
+  if (isDuplicate) {
+    return NextResponse.json({ ok: true, duplicate: true });
   }
 
-  // Handle /resolve command from operators in the escalation channel
-  if (incoming.text.startsWith('/resolve ')) {
-    const parts = incoming.text.split(' ');
-    if (parts.length >= 3) {
-      const ticketId = parts[1];
-      const resolution = parts.slice(2).join(' ');
-      await handleOperatorResolution(ticketId, resolution, adapter, incoming.conversationId);
-      return NextResponse.json({ ok: true, resolved: ticketId });
+  const client = createTelegramClient();
+
+  // Handle callback queries (inline keyboard buttons)
+  if (callback_query) {
+    try {
+      await handleCallbackQuery(client, callback_query);
+      return NextResponse.json({ ok: true, type: 'callback_query' });
+    } catch (error) {
+      console.error('[telegram] callback query error:', (error as Error).message);
+      return NextResponse.json({ ok: false, error: 'Callback processing failed' }, { status: 500 });
     }
   }
 
-  try {
-    const reply = await getViztrAgentReply(incoming.text, {
-      userId: incoming.sender.id,
-      provider: agentProvider,
-      conversationId: incoming.conversationId,
-      escalateIfNoAnswer: true,
-    });
-    await adapter.sendTextReply(incoming.conversationId, reply.text);
-    return NextResponse.json({ ok: true, provider, conversationId: incoming.conversationId, escalated: reply.escalated });
-  } catch (error) {
-    console.error(`[messaging/${provider}] failed to reply:`, (error as Error).message);
-    return NextResponse.json({ ok: false, error: (error as Error).message }, { status: 500 });
+  // Handle messages
+  if (message && message.text && message.from && message.chat) {
+    const text = message.text.trim();
+
+    if (isCommand(text)) {
+      const parsed = extractCommand(text);
+      if (!parsed) {
+        return NextResponse.json({ ok: true });
+      }
+
+      // Strip leading / and @botname suffix, e.g. "/start@Viztr_bot" -> "start"
+      const commandName = parsed.command.replace(/^\//, '').split('@')[0].toLowerCase();
+
+      // Route to registered command handler
+      if (isKnownCommand(commandName)) {
+        const handler = getCommandHandler(commandName);
+        if (handler) {
+          try {
+            await handler({
+              client,
+              chatId: message.chat.id,
+              from: {
+                id: message.from.id,
+                first_name: message.from.first_name,
+                username: message.from.username,
+              },
+              messageId: message.message_id,
+            });
+            return NextResponse.json({ ok: true, type: 'command', command: commandName });
+          } catch (error) {
+            console.error(`[telegram] command handler ${commandName} error:`, (error as Error).message);
+            return NextResponse.json({ ok: false, error: 'Command handler failed' }, { status: 500 });
+          }
+        }
+      }
+
+      // Unknown command - helpful response, no escalation ticket
+      try {
+        await client.sendMessage(
+          message.chat.id,
+          `Unknown command: ${parsed.command}. Use /help to see available commands.`
+        );
+        return NextResponse.json({ ok: true, type: 'unknown_command' });
+      } catch (error) {
+        console.error('[telegram] unknown command reply error:', (error as Error).message);
+        return NextResponse.json({ ok: false, error: 'Failed to send response' }, { status: 500 });
+      }
+    }
+
+    // Regular message - route to AI agent (escalation only for genuine enquiries)
+    try {
+      const reply = await getViztrAgentReply(text, {
+        userId: String(message.from.id),
+        provider: 'telegram',
+        conversationId: String(message.chat.id),
+        escalateIfNoAnswer: true,
+      });
+      await client.sendMessage(message.chat.id, reply.text);
+      return NextResponse.json({ ok: true, type: 'message', escalated: reply.escalated });
+    } catch (error) {
+      console.error('[telegram] agent reply error:', (error as Error).message);
+      return NextResponse.json({ ok: false, error: 'Agent reply failed' }, { status: 500 });
+    }
   }
-}
 
-async function handleOperatorResolution(
-  ticketId: string,
-  resolution: string,
-  adapter: Awaited<ReturnType<typeof getMessagingProvider>>,
-  operatorChatId: string
-) {
-  if (!adapter) return;
-  // Notify operator
-  await adapter.sendTextReply(operatorChatId, `✅ Ticket ${ticketId} resolved. Reply sent to user.`);
-  // Note: In a full implementation, we'd look up the original user's conversationId
-  // from the ticket store and send the resolution there.
-  // For now, the operator needs to manually copy the response to the user chat.
-}
-
-export async function GET() {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  return NextResponse.json({
-    ok: true,
-    provider: 'telegram',
-    configured: !!token,
-    message: token ? 'Telegram webhook endpoint ready' : 'Set TELEGRAM_BOT_TOKEN to activate',
-  });
+  // Non-message, non-callback update - ack
+  return NextResponse.json({ ok: true });
 }

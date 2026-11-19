@@ -3,9 +3,9 @@ export type ProjectType =
   | 'WebAR'
   | 'Virtual Reality'
   | 'Virtual Tour 360'
-  | 'Pixel Streaming'
   | 'Animation'
-  | 'Still Renders';
+  | 'Still Renders'
+  | 'Other';
 
 export type ProjectStatus =
   | 'Complete'
@@ -82,7 +82,6 @@ export interface ManagedProject {
   image: string;
   lastUpdate: string;
   xrAvailable: boolean;
-  pixelStreamingAvailable: boolean;
   hoursMonitoring: {
     estimatedHours: number;
     hoursSpent: number;
@@ -143,14 +142,13 @@ export const PIPELINE_TEMPLATES: Record<ProjectType, { pipelineType: string; sta
       { stageNumber: 5, title: 'White-Label Branding & Client Embed Code', description: 'Embedding custom domain, typography, logo watermark, and analytics tracker.', eta: 'ETA: 4 days', deliverablesCount: 3, deliverablesList: ['iFrame Embed Snippet', 'Custom Subdomain Bundle', 'Client Analytics Access'] },
     ],
   },
-  'Pixel Streaming': {
-    pipelineType: 'Unreal Engine 5.4 Lumen & Nanite Cloud GPU Cluster',
+  'Other': {
+    pipelineType: 'Custom Architectural Visualization',
     stages: [
-      { stageNumber: 1, title: 'UE 5.4 Nanite Mesh & Geometry Optimization', description: 'Importing billion-polygon master BIM geometry with real-time Nanite micro-poly.', eta: 'Completed', deliverablesCount: 6, deliverablesList: ['Nanite Asset Cache', 'Coordinate Zero Offset Matrix', 'Complex Collision Meshes'] },
-      { stageNumber: 2, title: 'Lumen Real-Time GI & Dynamic Sun Positioner', description: 'Geographical latitude/longitude solar simulation with true real-time sun.', eta: 'Completed', deliverablesCount: 4, deliverablesList: ['Lumen Sky Atmosphere Setup', 'Sun Position Calculator Widget', 'Physical Camera Rig'] },
-      { stageNumber: 3, title: 'WebRTC Signaling Server & Latency Tuning', description: 'Low-latency NVENC H.265 video stream encoding with <20ms input lag.', eta: 'In Progress', deliverablesCount: 5, deliverablesList: ['Signaling Server Manifest', 'WebRTC Player Frontend', 'Adaptive Bitrate Controller'] },
-      { stageNumber: 4, title: 'Custom HTML5 Remote Control Overlay', description: 'Web UI for changing wall materials, furniture layouts, and camera paths.', eta: 'ETA: 3 days', deliverablesCount: 4, deliverablesList: ['Pixel Stream Command Bridge', 'Material Configurator Panel', 'Orbit & Fly-Through Cam Controller'] },
-      { stageNumber: 5, title: 'Cloud GPU Scaling & Load Balancer Setup', description: 'Autoscaling AWS/Azure GPU instances across US, EU, and Asia edge clusters.', eta: 'ETA: 5 days', deliverablesCount: 3, deliverablesList: ['Edge Load Balancer Rules', 'Cluster Autoscaler Script', 'Client Access Link'] },
+      { stageNumber: 1, title: 'Project Scope & Asset Review', description: 'Review project requirements, source assets, and delivery specifications.', eta: 'Completed', deliverablesCount: 4, deliverablesList: ['Project Brief', 'Asset Inventory', 'Delivery Schedule'] },
+      { stageNumber: 2, title: 'Model Preparation & Visualization', description: 'Prepare architectural assets and produce visualization drafts for review.', eta: 'In Progress', deliverablesCount: 6, deliverablesList: ['Prepared 3D Assets', 'Lighting Studies', 'Review Drafts'] },
+      { stageNumber: 3, title: 'Client Review & Revisions', description: 'Collect client feedback and refine the approved visualization deliverables.', eta: 'ETA: 3 days', deliverablesCount: 4, deliverablesList: ['Review Notes', 'Revised Visuals', 'Approval Record'] },
+      { stageNumber: 4, title: 'Final Delivery & Archive', description: 'Deliver approved project files and archive the completed commission.', eta: 'ETA: 5 days', deliverablesCount: 3, deliverablesList: ['Final Assets', 'Delivery Package', 'Project Archive'] },
     ],
   },
   'Animation': {
@@ -193,7 +191,6 @@ export const INITIAL_MANAGED_PROJECTS: ManagedProject[] = [
     image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
     lastUpdate: '2 hours ago by Lead CGI Supervisor',
     xrAvailable: true,
-    pixelStreamingAvailable: true,
     pendingRevisionsCount: 2,
     revisionsSummary: '2 active tickets (reflective glazing & sunset luminescence)',
     notes: 'Priority commission for London commercial headquarters. Client requested interactive WebXR with Apple Vision Pro support.',
@@ -294,7 +291,6 @@ export const INITIAL_MANAGED_PROJECTS: ManagedProject[] = [
     image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
     lastUpdate: '5 hours ago by Lead 3D Modeler',
     xrAvailable: true,
-    pixelStreamingAvailable: false,
     pendingRevisionsCount: 1,
     revisionsSummary: '1 revision pending (botanical canopy density adjustment)',
     notes: 'Curved parametric timber structures with immersive Oculus Quest 3 walk-through.',
@@ -359,7 +355,6 @@ export const INITIAL_MANAGED_PROJECTS: ManagedProject[] = [
     image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
     lastUpdate: 'Yesterday - Final Master Signed Off',
     xrAvailable: true,
-    pixelStreamingAvailable: false,
     pendingRevisionsCount: 0,
     revisionsSummary: '0 active tickets (All milestones locked & approved)',
     notes: 'Completed 16K 360 virtual tour with live day/night transition sliders and interactive FF&E spec sheets.',
@@ -415,43 +410,42 @@ export const INITIAL_MANAGED_PROJECTS: ManagedProject[] = [
     clientEmail: 'j.sterling@big.dk',
     clientCompany: 'BIG (Bjarke Ingels Group)',
     category: 'Masterplan & Infrastructure',
-    projectType: 'Pixel Streaming',
+    projectType: 'WebXR',
     status: 'Work in Progress',
     paymentStatus: 'Partial 50%',
     bookingAmount: 185000,
     progress: 60,
     leadArchitect: 'Julian Sterling, BIG',
     image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
-    lastUpdate: '3 hours ago · Cloud GPU Node Allocated',
+    lastUpdate: '3 hours ago · WebXR review updated',
     xrAvailable: true,
-    pixelStreamingAvailable: true,
     pendingRevisionsCount: 3,
     revisionsSummary: '3 revision tickets (traffic crowd density, sky daylight angle, tram speed)',
-    notes: 'Massive scale 4 sq km city center with Unreal Engine 5.4 Lumen real-time cloud pixel streaming at 60 FPS.',
+    notes: 'Large-scale city center visualization with interactive WebXR review.',
     hoursMonitoring: {
       estimatedHours: 280.0,
       hoursSpent: 168.0,
       hourlyRate: 195,
       disciplineBreakdown: [
         { discipline: 'Masterplan BIM Ingestion', hours: 54.0, budgetHours: 65.0, color: '#3ECF8E' },
-        { discipline: 'Nanite Mesh & Terrain Setup', hours: 48.0, budgetHours: 60.0, color: '#06B6D4' },
-        { discipline: 'Lumen Real-Time Lighting', hours: 38.0, budgetHours: 70.0, color: '#EAB308' },
-        { discipline: 'WebRTC Signaling Cluster', hours: 28.0, budgetHours: 85.0, color: '#EC4899' },
+        { discipline: 'Terrain & Building Models', hours: 48.0, budgetHours: 60.0, color: '#06B6D4' },
+        { discipline: 'Lighting & Materials', hours: 38.0, budgetHours: 70.0, color: '#EAB308' },
+        { discipline: 'WebXR Review Experience', hours: 28.0, budgetHours: 85.0, color: '#EC4899' },
       ],
       timesheetEntries: [
-        { id: 'ts-615-1', date: '2026-08-26', teamMember: 'Liam Gallagher', role: 'Lead Unreal Engine Tech', task: 'Configured dynamic tram spline simulation and Nanite transit roof', hours: 8.0, stage: 'Stage 3: WebRTC Signaling' },
-        { id: 'ts-615-2', date: '2026-08-25', teamMember: 'Liam Gallagher', role: 'Lead Unreal Engine Tech', task: 'Lumen real-time global illumination and solar trajectory rig', hours: 7.5, stage: 'Stage 2: Lumen Real-Time GI' },
+        { id: 'ts-615-1', date: '2026-08-26', teamMember: 'Liam Gallagher', role: 'Lead 3D Artist', task: 'Configured city district model and transit terminal assets', hours: 8.0, stage: 'Stage 3: WebXR Review' },
+        { id: 'ts-615-2', date: '2026-08-25', teamMember: 'Liam Gallagher', role: 'Lead 3D Artist', task: 'Refined lighting and materials for the masterplan', hours: 7.5, stage: 'Stage 2: Visualization' },
       ],
     },
     pipeline: {
-      pipelineType: 'Unreal Engine 5.4 Lumen & Nanite Cloud GPU Cluster',
+      pipelineType: 'WebXR City District Visualization',
       currentStageIndex: 2,
       stages: [
-        { stageNumber: 1, title: 'UE 5.4 Nanite Mesh & Geometry Optimization', description: 'Importing billion-polygon master BIM geometry with real-time Nanite micro-poly.', status: 'completed', eta: 'Completed', deliverablesCount: 6, deliverablesApproved: 6 },
-        { stageNumber: 2, title: 'Lumen Real-Time GI & Dynamic Sun Positioner', description: 'Geographical latitude/longitude solar simulation with true real-time sun.', status: 'completed', eta: 'Completed', deliverablesCount: 4, deliverablesApproved: 4 },
-        { stageNumber: 3, title: 'WebRTC Signaling Server & Latency Tuning', description: 'Low-latency NVENC H.265 video stream encoding with <20ms input lag.', status: 'in_progress', eta: 'In Progress', deliverablesCount: 5, deliverablesApproved: 2 },
-        { stageNumber: 4, title: 'Custom HTML5 Remote Control Overlay', description: 'Web UI for changing wall materials, furniture layouts, and camera paths.', status: 'pending', eta: 'ETA: 3 days', deliverablesCount: 4, deliverablesApproved: 0 },
-        { stageNumber: 5, title: 'Cloud GPU Scaling & Load Balancer Setup', description: 'Autoscaling AWS/Azure GPU instances across US, EU, and Asia edge clusters.', status: 'pending', eta: 'ETA: 5 days', deliverablesCount: 3, deliverablesApproved: 0 },
+        { stageNumber: 1, title: 'Masterplan Model Preparation', description: 'Prepare city district and transit terminal geometry for visualization.', status: 'completed', eta: 'Completed', deliverablesCount: 6, deliverablesApproved: 6 },
+        { stageNumber: 2, title: 'Lighting & Material Review', description: 'Tune environment lighting and architectural materials for review.', status: 'completed', eta: 'Completed', deliverablesCount: 4, deliverablesApproved: 4 },
+        { stageNumber: 3, title: 'WebXR Experience & Client Review', description: 'Prepare the interactive browser-based project review.', status: 'in_progress', eta: 'In Progress', deliverablesCount: 5, deliverablesApproved: 2 },
+        { stageNumber: 4, title: 'Revisions & Finalization', description: 'Apply client feedback and prepare final visualization assets.', status: 'pending', eta: 'ETA: 3 days', deliverablesCount: 4, deliverablesApproved: 0 },
+        { stageNumber: 5, title: 'Delivery & Archive', description: 'Package approved assets and archive the project.', status: 'pending', eta: 'ETA: 5 days', deliverablesCount: 3, deliverablesApproved: 0 },
       ],
     },
     documents: [],
@@ -472,7 +466,6 @@ export const INITIAL_MANAGED_PROJECTS: ManagedProject[] = [
     image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
     lastUpdate: 'Awaiting CAD Site Survey Ingestion',
     xrAvailable: false,
-    pixelStreamingAvailable: false,
     pendingRevisionsCount: 0,
     revisionsSummary: 'Awaiting client survey CAD data to begin camera placement',
     notes: '8K Master Still Renders celebrating rugged granite landscape and midnight sun reflections.',
@@ -519,7 +512,6 @@ export const INITIAL_MANAGED_PROJECTS: ManagedProject[] = [
     image: 'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=800&q=80',
     lastUpdate: 'Put on hold pending client engineering redesign',
     xrAvailable: false,
-    pixelStreamingAvailable: false,
     pendingRevisionsCount: 1,
     revisionsSummary: '1 hold notice (structural cantilever redesign in progress by client)',
     notes: '8K cinematic architectural film with kinetic shading louvers simulation.',
@@ -566,7 +558,6 @@ export const INITIAL_MANAGED_PROJECTS: ManagedProject[] = [
     image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80',
     lastUpdate: 'Completed & Delivered',
     xrAvailable: true,
-    pixelStreamingAvailable: false,
     pendingRevisionsCount: 0,
     revisionsSummary: '0 active tickets (All milestones locked & approved)',
     notes: 'Instant WebAR QuickLook experience viewable directly in Mobile Safari and Chrome with no app download.',

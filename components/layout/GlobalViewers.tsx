@@ -6,7 +6,6 @@ import dynamic from 'next/dynamic';
 const GalleryViewer = dynamic(() => import('@/components/viewers/GalleryViewer'), { ssr: false });
 const PanoramaViewer = dynamic(() => import('@/components/viewers/PanoramaViewer'), { ssr: false });
 const ModelViewer = dynamic(() => import('@/components/viewers/ModelViewer'), { ssr: false });
-const PixelStreamingTerminal = dynamic(() => import('@/components/viewers/PixelStreamingTerminal'), { ssr: false });
 const ToastNotification = dynamic(() => import('@/components/ui/ToastNotification'), { ssr: false });
 const PerformanceMonitor = dynamic(
   () => import('@/components/analytics/performance-monitor').then((mod) => ({ default: mod.PerformanceMonitor })),
@@ -23,7 +22,6 @@ export default function GlobalViewers() {
       <GalleryViewer />
       <PanoramaViewer />
       <ModelViewer />
-      <PixelStreamingTerminal />
       <ToastNotification />
       <PerformanceMonitor />
     </>

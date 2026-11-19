@@ -9,6 +9,7 @@ import { PermissionProvider } from '@/components/editor/permissions';
 import { SERVICE_META } from '@/lib/service-meta';
 import { buildServiceTabs } from '@/lib/service-editor-tabs';
 import { onEditorSave } from '@/lib/editor-sync';
+import { openEditorProject } from '@/lib/editor/launch';
 import { ExternalLink, Play } from 'lucide-react';
 
 export default function ServiceEditorPage() {
@@ -97,7 +98,7 @@ export default function ServiceEditorPage() {
         tabData={data} 
         loading={loading} 
         error={error}
-        onOpenEditor={(experienceId) => handleOpenEditor(experienceId)}
+        onOpenEditor={() => handleOpenEditor()}
       />
       {meta.showDeviceCompatibility && <DeviceCompatibility />}
       {meta.showTimeline && <Timeline items={timelineItems} />}
@@ -111,38 +112,57 @@ export default function ServiceEditorPage() {
     );
   }
 
-  const handleOpenEditor = async (experienceId?: string) => {
-    let url = '';
-    let token = '';
+  const handleOpenEditor = async () => {
+    const id = typeof projectId === 'string' ? projectId.trim() : '';
+    if (!id || id === 'undefined' || id === 'null') {
+      setError('A valid project ID is required to open the editor.');
+      return;
+    }
+
+    if (serviceSlug === 'virtual-tour') {
+      window.open(
+        `/xr-world/virtual-tour/editor?projectId=${encodeURIComponent(id)}`,
+        '_blank',
+        'noopener,noreferrer',
+      );
+      return;
+    }
+
+    if (serviceSlug !== 'gaussian-splat') {
+      try {
+        await openEditorProject(id);
+      } catch (error: unknown) {
+        setError(error instanceof Error ? error.message : 'Failed to open the editor');
+      }
+      return;
+    }
+
+    const editorWindow = window.open('about:blank', '_blank');
+    if (!editorWindow) {
+      setError('The editor window was blocked. Allow pop-ups and try again.');
+      return;
+    }
+    editorWindow.opener = null;
+
     try {
-      const res = await fetch('/api/editor/launch-token', {
+      const response = await fetch('/api/editor/launch-token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ projectId, service: serviceSlug }),
+        body: JSON.stringify({ projectId: id, service: serviceSlug }),
       });
-      const data = await res.json();
-      token = data.token || '';
-    } catch {}
+      const data = await response.json();
+      if (!response.ok || typeof data.token !== 'string' || !data.token) {
+        throw new Error(data.error || 'Failed to authenticate with the editor.');
+      }
 
-    switch (serviceSlug) {
-      case 'webxr':
-      case 'webar':
-      case 'virtual-reality':
-        url = `http://localhost:3487/editor/project/${projectId}${token ? '?token=' + token : ''}`;
-        break;
-      case 'gaussian-splat':
-        url = `http://localhost:3002${token ? '?token=' + token : ''}&projectId=${projectId}`;
-        break;
-      case 'virtual-tour':
-        url = `/xr-world/virtual-tour/editor?projectId=${projectId}`;
-        break;
-      case 'pixel-streaming':
-        url = `/xr-world/pixel-streaming/config?projectId=${projectId}`;
-        break;
-      default:
-        url = `http://localhost:3487/editor/project/${projectId}${token ? '?token=' + token : ''}`;
+      const editorUrl = new URL('http://localhost:3002/');
+      editorUrl.searchParams.set('token', data.token);
+      editorUrl.searchParams.set('projectId', id);
+      editorWindow.location.replace(editorUrl.toString());
+    } catch (error: unknown) {
+      editorWindow.close();
+      setError(error instanceof Error ? error.message : 'Failed to open the editor');
     }
-    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (

@@ -89,15 +89,6 @@ const STARTER_KITS: StarterKit[] = [
         fork_from: 2004,
         group: 'xr',
     },
-    {
-        id: 'pixel-streaming',
-        name: 'Pixel Streaming',
-        description: 'Cloud-rendered pixel streaming with low-latency WebRTC, adaptive quality, and input forwarding.',
-        gradient: 'from-red-500 to-rose-900',
-        icon: '📡',
-        fork_from: 2005,
-        group: 'xr',
-    },
 ];
 
 function KitCard({ kit, selected, onSelect }: { kit: StarterKit; selected: boolean; onSelect: (kit: StarterKit) => void }) {

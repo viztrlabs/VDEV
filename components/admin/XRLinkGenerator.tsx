@@ -47,7 +47,7 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
     projectId: projects[0]?.id || 'VIZTR-882',
     modelUrl: '/models/apex-tower-v3-draco.glb',
     modelFormat: 'glb' as 'glb' | 'gltf' | 'usdz',
-    experienceType: 'webxr' as 'webxr' | 'webar' | 'vr_tour' | 'pixel_stream',
+    experienceType: 'webxr' as 'webxr' | 'webar' | 'vr_tour',
     scale: 1.0,
     environmentPreset: 'sunset' as 'studio' | 'sunset' | 'city' | 'dawn',
     requiresPasscode: false,
@@ -497,7 +497,6 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                     <option value="webxr">WebXR Interactive 3D</option>
                     <option value="webar">WebAR Apple QuickLook</option>
                     <option value="vr_tour">VR Headset 360 Tour</option>
-                    <option value="pixel_stream">Pixel Streaming (Unreal 5)</option>
                   </select>
                 </div>
               </div>

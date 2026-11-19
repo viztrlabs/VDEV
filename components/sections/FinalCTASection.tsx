@@ -2,25 +2,45 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useAppStore } from '@/lib/store';
-import { ArrowRight, Calendar, Sparkles } from 'lucide-react';
+import { ArrowRight, Calendar } from 'lucide-react';
 import { useSiteSection } from '@/lib/use-site-section';
-import { getTextField } from '@/lib/site-content';
+import { getTextField, getDefaultSection } from '@/lib/site-content';
+import { sanitizeRichText } from '@/lib/sanitize-rich-text';
+import EditableText from '@/components/admin/live-editor/in-context/EditableText';
+import { useEditMode } from '@/components/admin/live-editor/in-context/EditModeContext';
+
+function CmsText({
+  fieldId,
+  value,
+  as: Tag = 'span',
+  className,
+  rich,
+}: {
+  fieldId: string;
+  value: string;
+  as?: React.ElementType;
+  className?: string;
+  rich?: boolean;
+}) {
+  const { editMode } = useEditMode();
+  if (editMode) return <EditableText fieldId={fieldId} as={Tag} className={className} />;
+  if (rich) return <Tag className={className} dangerouslySetInnerHTML={{ __html: sanitizeRichText(value) }} />;
+  return <Tag className={className}>{value}</Tag>;
+}
 
 export default function FinalCTASection() {
- const { openPixelStream } = useAppStore();
-  const section = useSiteSection('home', 'final-cta');
+  const section = useSiteSection('final-cta') ?? getDefaultSection('final-cta');
   const content = {
-    badge: section ? getTextField(section, 'badge', 'INITIALIZE ARCHITECTURAL PIPELINE') : 'INITIALIZE ARCHITECTURAL PIPELINE',
-    heading: section ? getTextField(section, 'heading', 'Ready to Transform Your Vision into Reality?') : 'Ready to Transform Your Vision into Reality?',
-    description: section ? getTextField(section, 'description', 'From unbuilt CAD masterplans to photorealistic 8K imagery, cinematic films, and interactive browser-based experiences.') : 'From unbuilt CAD masterplans to photorealistic 8K imagery, cinematic films, and interactive browser-based experiences.',
-    primaryLabel: section ? getTextField(section, 'primaryLabel', 'Start Your Project') : 'Start Your Project',
-    primaryHref: section ? getTextField(section, 'primaryHref', '/contact') : '/contact',
-    secondaryLabel: section ? getTextField(section, 'secondaryLabel', 'Book Consultation') : 'Book Consultation',
-    secondaryHref: section ? getTextField(section, 'secondaryHref', '/book-consultation') : '/book-consultation',
+    badge: getTextField(section, 'badge', ''),
+    heading: getTextField(section, 'heading', ''),
+    description: getTextField(section, 'description', ''),
+    primaryLabel: getTextField(section, 'primaryLabel', ''),
+    primaryHref: getTextField(section, 'primaryHref', ''),
+    secondaryLabel: getTextField(section, 'secondaryLabel', ''),
+    secondaryHref: getTextField(section, 'secondaryHref', ''),
   };
 
- return (
+  return (
  <section
  id="final-cta-section"
  className="relative py-24 px-4 sm:px-6 bg-[#0A0A0B] border-t border-[#1E293B] text-white overflow-hidden"
@@ -30,16 +50,12 @@ export default function FinalCTASection() {
  <div className="max-w-4xl mx-auto text-center relative z-10 space-y-6">
  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#131314] border border-[#1E293B] text-xs text-[#00F0FF] font-bold uppercase tracking-widest shadow-sm">
  <span className="w-2 h-2 rounded-full bg-[#42CF8B] animate-pulse"/>
- <span>{content.badge}</span>
+ <CmsText fieldId="badge" value={content.badge}/>
  </div>
 
- <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold tracking-tight text-[#FAFAFA]">
- {content.heading}
- </h2>
+ <CmsText fieldId="heading" value={content.heading} as="h2" className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold tracking-tight text-[#FAFAFA]"/>
 
- <p className="text-xs sm:text-sm text-[#B9CACB] max-w-xl mx-auto leading-relaxed">
- {content.description}
- </p>
+ <CmsText fieldId="description" value={content.description} as="p" rich className="text-xs sm:text-sm text-[#B9CACB] max-w-xl mx-auto leading-relaxed"/>
 
  <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
  <Link
@@ -47,7 +63,7 @@ export default function FinalCTASection() {
  id="final-cta-start-btn"
  className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#00F0FF] hover:bg-[#33f3ff] text-black font-display font-extrabold text-xs uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 active:scale-95"
  >
- <span>{content.primaryLabel}</span>
+ <CmsText fieldId="primaryLabel" value={content.primaryLabel}/>
  <ArrowRight className="w-4 h-4 text-black"/>
  </Link>
 
@@ -57,17 +73,9 @@ export default function FinalCTASection() {
  className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#131314] hover:bg-[#1E293B] text-[#FAFAFA] font-bold text-xs uppercase tracking-wider border border-[#1E293B] hover:border-[#00F0FF]/50 transition-all duration-300 flex items-center justify-center gap-2 shadow-sm active:scale-95"
  >
  <Calendar className="w-4 h-4 text-[#00F0FF]"/>
- <span>{content.secondaryLabel}</span>
+ <CmsText fieldId="secondaryLabel" value={content.secondaryLabel}/>
  </Link>
 
- <button
- onClick={openPixelStream}
- id="final-cta-demo-btn"
- className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#131314] hover:bg-[#1E293B] text-[#FAFAFA] font-bold text-xs uppercase tracking-wider border border-[#42CF8B]/40 hover:border-[#42CF8B] transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-95"
- >
- <Sparkles className="w-4 h-4 text-[#42CF8B]"/>
- <span>Request Demo</span>
- </button>
  </div>
  </div>
  </section>

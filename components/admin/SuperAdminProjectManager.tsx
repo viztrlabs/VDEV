@@ -136,7 +136,6 @@ export default function SuperAdminProjectManager({
         image: formData.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
         lastUpdate: 'Created by SuperAdmin just now',
         xrAvailable: pType === 'WebXR' || pType === 'WebAR' || pType === 'Virtual Reality' || pType === 'Virtual Tour 360',
-        pixelStreamingAvailable: pType === 'Pixel Streaming',
         pendingRevisionsCount: 0,
         revisionsSummary: 'No pending revisions',
         notes: formData.notes || '',
@@ -279,17 +278,23 @@ export default function SuperAdminProjectManager({
                       : 'bg-[#09090B]/60 border-[#27272A] hover:border-[#71717A]'
                   }`}
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-black shrink-0">
-                      <Image
-                        src={proj.image}
-                        alt={proj.name}
-                        fill
-                        sizes="48px"
-                        className="object-cover"
-                        referrerPolicy="no-referrer"
-                      />
-                    </div>
+<div className="flex items-center gap-3 min-w-0">
+                      <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-black shrink-0">
+                        {proj.image ? (
+                          <Image
+                            src={proj.image}
+                            alt={proj.name}
+                            fill
+                            sizes="48px"
+                            className="object-cover"
+                            referrerPolicy="no-referrer"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-[10px] text-[#71717A] font-mono">
+                            {proj.name?.slice(0, 2)?.toUpperCase() || '?'}
+                          </div>
+                        )}
+                      </div>
                     <div className="min-w-0 space-y-0.5">
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-mono font-bold text-[#3ECF8E]">{proj.id}</span>
@@ -374,7 +379,6 @@ export default function SuperAdminProjectManager({
                       <option value="WebAR">WebAR QuickLook</option>
                       <option value="Virtual Reality">Virtual Reality (6DOF)</option>
                       <option value="Virtual Tour 360">Virtual Tour 360°</option>
-                      <option value="Pixel Streaming">Pixel Streaming (UE 5.4)</option>
                       <option value="Animation">Cinematic Animation</option>
                       <option value="Still Renders">8K Still Renders</option>
                     </select>

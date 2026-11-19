@@ -9,15 +9,13 @@ import {
  ScanLine,
  Headset,
  Compass,
- Cpu,
  ArrowRight,
  Sparkles,
- Play
 } from 'lucide-react';
 
 export default function XRPreview() {
  const { xrPreview } = homepageData;
- const { openPixelStream, openPanorama, openModelViewer } = useAppStore();
+ const { openPanorama, openModelViewer } = useAppStore();
 
  const getIcon = (iconName: string) => {
  switch (iconName) {
@@ -29,8 +27,6 @@ export default function XRPreview() {
  return <Headset className="w-5 h-5 text-[#00F0FF]"/>;
  case 'Compass':
  return <Compass className="w-5 h-5 text-[#42CF8B]"/>;
- case 'Cpu':
- return <Cpu className="w-5 h-5 text-[#00F0FF]"/>;
  default:
  return <Box className="w-5 h-5 text-[#00F0FF]"/>;
  }
@@ -57,16 +53,10 @@ export default function XRPreview() {
 
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
  {xrPreview.services.map((svc) => {
- const isFlagship = svc.isFlagship;
-
  return (
  <div
  key={svc.id}
- className={`rounded-[2rem] p-6 flex flex-col justify-between transition-all duration-300 group shadow-sm ${
- isFlagship
- ? 'lg:col-span-2 bg-[#131314] text-white border-2 border-[#00F0FF] '
- : 'bg-[#131314] border border-[#1E293B] text-white hover:border-[#00F0FF]/40'
- }`}
+ className="rounded-[2rem] p-6 flex flex-col justify-between transition-all duration-300 group shadow-sm bg-[#131314] border border-[#1E293B] text-white hover:border-[#00F0FF]/40"
  >
  <div>
  <div className="flex items-center justify-between mb-4">
@@ -74,11 +64,7 @@ export default function XRPreview() {
  {getIcon(svc.icon)}
  </div>
  <span
- className={`text-[10px] font-mono font-bold uppercase px-3 py-1 rounded-full border ${
- isFlagship
- ? 'bg-[#00F0FF] text-black border-[#00F0FF] '
- : 'bg-[#0A0A0B] text-[#42CF8B] border-[#1E293B]'
- }`}
+ className="text-[10px] font-mono font-bold uppercase px-3 py-1 rounded-full border bg-[#0A0A0B] text-[#42CF8B] border-[#1E293B]"
  >
  {svc.badge}
  </span>
@@ -101,15 +87,7 @@ export default function XRPreview() {
  <ArrowRight className="w-3.5 h-3.5"/>
  </Link>
 
- {isFlagship ? (
- <button
- onClick={openPixelStream}
- className="px-4 py-2 rounded-full bg-[#00F0FF] hover:bg-[#33f3ff] text-black font-extrabold text-xs uppercase tracking-wider transition-all duration-300 flex items-center gap-2 cursor-pointer active:scale-95"
- >
- <Play className="w-3.5 h-3.5 fill-black text-black"/>
- <span>Launch Pixel Stream</span>
- </button>
- ) : svc.id === 'webxr' ? (
+ {svc.id === 'webxr' ? (
  <button
  onClick={() => openModelViewer('', 'WebXR Apex Tower')}
  className="px-3.5 py-1.5 rounded-full bg-[#0A0A0B] hover:bg-[#00F0FF] hover:text-black text-xs font-bold text-[#FAFAFA] border border-[#1E293B] hover:border-[#00F0FF] transition-all duration-300 cursor-pointer shadow-sm"

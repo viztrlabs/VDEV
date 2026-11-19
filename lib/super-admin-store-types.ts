@@ -72,7 +72,6 @@ export interface RevenueMetric {
   month: string;
   mrr: number;
   oneOffCommissions: number;
-  gpuStreamingRevenue: number;
   vrLicenses: number;
   total: number;
   expenses: number;
@@ -222,7 +221,7 @@ export const INITIAL_USERS: AdminUser[] = [
     role: 'admin',
     status: 'active',
     avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
-    department: 'Pixel Streaming Infrastructure Lead',
+    department: 'Spatial Systems Lead',
     assignedProjectsCount: 6,
     lastLogin: '30 minutes ago',
     twoFactorEnabled: true,
@@ -275,7 +274,6 @@ export type BookingStatus = 'pending' | 'approved' | 'rejected' | 'completed' | 
 export type BookingServiceType = 
   | 'Architectural'
   | 'Virtual Reality'
-  | 'Pixel Streaming'
   | 'WebXR'
   | 'WebAR'
   | 'Virtual Tour 360'
@@ -367,7 +365,6 @@ export type ContactStatus = 'new' | 'read' | 'responded' | 'archived';
 export type ContactServiceInterest =
   | 'Architectural'
   | 'Virtual Reality'
-  | 'Pixel Streaming'
   | 'WebXR'
   | 'WebAR'
   | 'Virtual Tour 360'

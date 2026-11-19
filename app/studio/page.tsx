@@ -114,14 +114,18 @@ export default function StudioHubPage() {
           >
             {/* Image */}
             <div className="w-full lg:w-1/2 rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800 relative group aspect-[16/10] bg-zinc-900">
-              <Image
-                src={svc.image}
-                alt={svc.title}
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                referrerPolicy="no-referrer"
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-              />
+              {svc.image ? (
+                <Image
+                  src={svc.image}
+                  alt={svc.title}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  referrerPolicy="no-referrer"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              ) : (
+                <div className="w-full h-full bg-zinc-800" />
+              )}
             </div>
 
             {/* Content */}

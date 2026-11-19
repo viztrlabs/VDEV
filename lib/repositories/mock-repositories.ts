@@ -394,12 +394,11 @@ function createRevenueRepository(): RevenueRepository {
     INITIAL_MANAGED_PROJECTS.forEach((p) => {
       const monthKey = p.lastUpdate.includes('2025') ? '2025-08' : '2025-09'; // Simplified
       if (!monthly[monthKey]) {
-        monthly[monthKey] = { month: monthKey, mrr: 0, oneOffCommissions: 0, gpuStreamingRevenue: 0, vrLicenses: 0, total: 0, expenses: 0, netMargin: 0 };
+        monthly[monthKey] = { month: monthKey, mrr: 0, oneOffCommissions: 0, vrLicenses: 0, total: 0, expenses: 0, netMargin: 0 };
       }
       monthly[monthKey].total += p.bookingAmount;
       if (p.paymentStatus === 'Paid') monthly[monthKey].mrr += p.bookingAmount / 12;
       else if (p.paymentStatus === 'Partial 50%') monthly[monthKey].oneOffCommissions += p.bookingAmount * 0.5;
-      if (p.projectType === 'Pixel Streaming') monthly[monthKey].gpuStreamingRevenue += p.bookingAmount;
       if (p.projectType === 'Virtual Reality') monthly[monthKey].vrLicenses += p.bookingAmount;
     });
     
@@ -551,7 +550,7 @@ function createBookingRepository(): BookingRepository {
     async getStats() {
       const byStatus: Record<BookingStatus, number> = { pending: 0, approved: 0, rejected: 0, completed: 0, cancelled: 0 };
       const byServiceType: Record<BookingServiceType, number> = {
-        Architectural: 0, 'Virtual Reality': 0, 'Pixel Streaming': 0, WebXR: 0, WebAR: 0, 'Virtual Tour 360': 0, Animation: 0, 'Still Renders': 0, Other: 0,
+        Architectural: 0, 'Virtual Reality': 0, WebXR: 0, WebAR: 0, 'Virtual Tour 360': 0, Animation: 0, 'Still Renders': 0, Other: 0,
       };
       
       bookings.forEach(b => {

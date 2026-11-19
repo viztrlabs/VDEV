@@ -15,8 +15,8 @@ interface SEOHeadProps {
 
 export default function SEOHead({
   title = 'VizTR | Architecture Visualization Studio & XR World Platform',
-  description = 'High-end photorealistic 8K architectural visualization, cinematic walkthroughs, WebXR, WebAR, 360° virtual tours, and Unreal Engine Pixel Streaming.',
-  keywords = ['architectural visualization', 'CGI rendering', 'WebXR', 'Pixel Streaming', 'Unreal Engine 5', 'virtual tour 360', 'real estate rendering'],
+  description = 'High-end photorealistic 8K architectural visualization, cinematic walkthroughs, WebXR, WebAR, and 360° virtual tours.',
+  keywords = ['architectural visualization', 'CGI rendering', 'WebXR', 'WebAR', 'virtual tour 360', 'real estate rendering'],
   ogImage = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
   canonicalUrl = 'https://viztr.io',
   type = 'website',
@@ -46,9 +46,13 @@ export default function SEOHead({
       },
     ],
     sameAs: [
-      'https://www.linkedin.com/company/viztr',
-      'https://www.instagram.com/viztr.studios',
-      'https://twitter.com/viztr_xr',
+      'https://instagram.com/viztr_official',
+      'https://www.threads.com/@viztr_official',
+      'https://x.com/viztr_official',
+      'https://facebook.com/profile.php?id=61581506345579',
+      'https://discord.gg/XKFwVBxSDR',
+      'https://linkedin.com/in/viztrofficial',
+      'https://www.youtube.com/@VizTR_Official',
     ],
   };
 

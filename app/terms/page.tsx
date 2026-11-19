@@ -41,10 +41,6 @@ export default function TermsPage() {
           Each package tier includes defined revision cycles at Stage 3 (Whitecard geometry & camera lock) and Stage 5 (Lighting, materials & draft review). Structural architectural design changes requested after camera approval may incur additional modeling fees.
         </p>
 
-        <h2 className="text-base font-bold text-zinc-900 dark:text-white font-display">4. Cloud Pixel Streaming Availability</h2>
-        <p>
-          Unreal Engine 5.4 Pixel Streaming instances are provisioned on dedicated GPU cloud clusters with 99.9% target uptime. Concurrency limits and bandwidth allocations scale according to the active enterprise subscription tier.
-        </p>
       </div>
     </main>
   );
