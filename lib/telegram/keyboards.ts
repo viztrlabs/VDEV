@@ -17,7 +17,8 @@ export function callbackButton(text: string, callbackData: string): TelegramInli
 }
 
 /** Main Menu Keyboard - 4 rows per spec */
-export function mainMenuKeyboard(): TelegramInlineKeyboardMarkup {
+export async function mainMenuKeyboard(): Promise<TelegramInlineKeyboardMarkup> {
+  const siteUrl = await getSiteUrl();
   return {
     inline_keyboard: [
       // Row 1: About VizTR | Our Services
@@ -25,7 +26,7 @@ export function mainMenuKeyboard(): TelegramInlineKeyboardMarkup {
       // Row 2: Portfolio | Get a Quote
       [callbackButton('Portfolio', 'portfolio'), callbackButton('Get a Quote', 'quote')],
       // Row 3: Website | Contact
-      [urlButton('Website', getSiteUrl()), callbackButton('Contact', 'contact')],
+      [urlButton('Website', siteUrl), callbackButton('Contact', 'contact')],
       // Row 4: WhatsApp Channel | WhatsApp Community
       [
         urlButton('WhatsApp Channel', COMMUNITY_LINKS.whatsappChannel),
@@ -118,22 +119,24 @@ export function communityKeyboard(): TelegramInlineKeyboardMarkup {
 }
 
 /** Contact Keyboard */
-export function contactKeyboard(): TelegramInlineKeyboardMarkup {
+export async function contactKeyboard(): Promise<TelegramInlineKeyboardMarkup> {
+  const siteUrl = await getSiteUrl();
   return {
     inline_keyboard: [
-      [urlButton('Visit Website', getSiteUrl())],
-      [urlButton('Book Consultation', `${getSiteUrl()}/book-consultation`)],
+      [urlButton('Visit Website', siteUrl)],
+      [urlButton('Book Consultation', `${siteUrl}/book-consultation`)],
       [callbackButton('Back to Main Menu', 'back:main')],
     ],
   };
 }
 
 /** Support Keyboard */
-export function supportKeyboard(): TelegramInlineKeyboardMarkup {
+export async function supportKeyboard(): Promise<TelegramInlineKeyboardMarkup> {
+  const siteUrl = await getSiteUrl();
   return {
     inline_keyboard: [
-      [urlButton('Contact Us', getSiteUrl())],
-      [urlButton('Book Consultation', `${getSiteUrl()}/book-consultation`)],
+      [urlButton('Contact Us', siteUrl)],
+      [urlButton('Book Consultation', `${siteUrl}/book-consultation`)],
       [callbackButton('Back to Main Menu', 'back:main')],
     ],
   };

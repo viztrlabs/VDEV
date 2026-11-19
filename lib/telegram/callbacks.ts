@@ -138,7 +138,7 @@ async function handleAbout(
   chatId: number | string,
   messageId: number | undefined
 ): Promise<void> {
-  await editMessage(client, chatId, messageId, ABOUT_TEXT, mainMenuKeyboard());
+  await editMessage(client, chatId, messageId, ABOUT_TEXT, await mainMenuKeyboard());
 }
 
 async function handleMainMenu(
@@ -152,7 +152,7 @@ Visualize \u2726 Experience \u2726 Transform
 Welcome to the VizTR ecosystem — Architectural Visualization, 3D Design, XR and Immersive Technology.
 
 Explore our services, projects and community.`;
-  await editMessage(client, chatId, messageId, welcomeText, mainMenuKeyboard());
+  await editMessage(client, chatId, messageId, welcomeText, await mainMenuKeyboard());
 }
 
 async function handleHelp(
@@ -217,17 +217,18 @@ async function handleQuote(
   chatId: number | string,
   messageId: number | undefined
 ): Promise<void> {
+  const siteUrl = await getSiteUrl();
   const text = `Get a Quote
 
 Tell us about your project and receive an itemized proposal within 24 hours.
 
-\u2022 Website: ${getSiteUrl()}/book-consultation
+\u2022 Website: ${siteUrl}/book-consultation
 \u2022 Email: ${CONTACT_INFO.email}
 
 Or use the button below to start your brief.`;
   await editMessage(client, chatId, messageId, text, {
     inline_keyboard: [
-      [{ text: 'Book Consultation', url: `${getSiteUrl()}/book-consultation` }],
+      [{ text: 'Book Consultation', url: `${siteUrl}/book-consultation` }],
       [{ text: 'Back to Main Menu', callback_data: 'back:main' }],
     ],
   });
@@ -327,14 +328,15 @@ async function handlePortfolioCategory(
     // parts = ['portfolio', 'web', 'exterior']
     const catId = parts[2];
     const category = PORTFOLIO_CATEGORIES.find(c => c.id === catId);
-    if (category) {
+      if (category) {
+      const siteUrl = await getSiteUrl();
       const text = `${category.name}
 
 View full case studies on our website:
-${getSiteUrl()}/portfolio`;
+${siteUrl}/portfolio`;
       await editMessage(client, chatId, messageId, text, {
         inline_keyboard: [
-          [{ text: 'Open on Website', url: `${getSiteUrl()}/portfolio` }],
+          [{ text: 'Open on Website', url: `${siteUrl}/portfolio` }],
           [{ text: 'Back to Portfolio', callback_data: 'back:portfolio' }],
         ],
       });
@@ -356,12 +358,13 @@ ${category.count} project${category.count !== 1 ? 's' : ''} available.
 
 Visit our website for full case studies and project details.`;
 
-  await editMessage(client, chatId, messageId, text, {
-    inline_keyboard: [
-      [{ text: 'View on Website', url: `${getSiteUrl()}/portfolio` }],
-      [{ text: 'Back to Portfolio', callback_data: 'back:portfolio' }],
-    ],
-  });
+    const siteUrl = await getSiteUrl();
+      await editMessage(client, chatId, messageId, text, {
+        inline_keyboard: [
+          [{ text: 'Open on Website', url: `${siteUrl}/portfolio` }],
+          [{ text: 'Back to Portfolio', callback_data: 'back:portfolio' }],
+        ],
+      });
 }
 
 async function handleContact(
@@ -385,7 +388,7 @@ async function handleContact(
 
 For project enquiries, use the website form for fastest response.`;
 
-  await editMessage(client, chatId, messageId, text, contactKeyboard());
+  await editMessage(client, chatId, messageId, text, await contactKeyboard());
 }
 
 async function handleBack(
@@ -400,7 +403,7 @@ async function handleBack(
 Visualize \u2726 Experience \u2726 Transform
 
 Welcome back! Explore our services, projects and community.`;
-      await editMessage(client, chatId, messageId, welcomeText, mainMenuKeyboard());
+  await editMessage(client, chatId, messageId, welcomeText, await mainMenuKeyboard());
       break;
     case 'services':
       await handleServices(client, chatId, messageId);

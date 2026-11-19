@@ -11,8 +11,8 @@ import {
   CONTACT_INFO,
   COMMUNITY_LINKS,
   PRIVACY_URL,
-  SUPPORT_INFO,
   getSiteUrl,
+  getSupportInfo,
 } from '../content';
 import {
   mainMenuKeyboard,
@@ -71,7 +71,7 @@ Hello ${name}! Welcome to the VizTR ecosystem \u2014 Architectural Visualization
 
 Explore our services, projects and community.`;
 
-  await sendWithKeyboard(client, chatId, welcomeText, mainMenuKeyboard());
+  await sendWithKeyboard(client, chatId, welcomeText, await mainMenuKeyboard());
 }
 
 /** /help - Command Reference */
@@ -106,7 +106,7 @@ Use the inline buttons for quick navigation, or type any command above.`;
 export async function handleAbout(ctx: CommandContext): Promise<void> {
   const { client, chatId } = ctx;
 
-  await sendWithKeyboard(client, chatId, ABOUT_TEXT, mainMenuKeyboard());
+  await sendWithKeyboard(client, chatId, ABOUT_TEXT, await mainMenuKeyboard());
 }
 
 /** /services - Service Categories */
@@ -153,7 +153,7 @@ Select a category to view projects or visit our website for full case studies.`;
 /** /website - Open Website */
 export async function handleWebsite(ctx: CommandContext): Promise<void> {
   const { client, chatId } = ctx;
-  const siteUrl = getSiteUrl();
+  const siteUrl = await getSiteUrl();
 
   const text = `Visit our website for full portfolio, services, and enquiry forms:
 
@@ -174,7 +174,7 @@ Our official Telegram channel is not yet configured.
 
 Please check back later or follow our other channels for updates.`;
 
-  await sendWithKeyboard(client, chatId, text, mainMenuKeyboard());
+  await sendWithKeyboard(client, chatId, text, await mainMenuKeyboard());
 }
 
 /** /community - WhatsApp Links */
@@ -214,14 +214,15 @@ export async function handleContact(ctx: CommandContext): Promise<void> {
 
 For project enquiries, use the website form for fastest response.`;
 
-  await sendWithKeyboard(client, chatId, text, contactKeyboard());
+  await sendWithKeyboard(client, chatId, text, await contactKeyboard());
 }
 
 /** /support - Support Instructions */
 export async function handleSupport(ctx: CommandContext): Promise<void> {
   const { client, chatId } = ctx;
 
-  await sendWithKeyboard(client, chatId, SUPPORT_INFO, supportKeyboard());
+  const supportInfo = await getSupportInfo();
+  await sendWithKeyboard(client, chatId, supportInfo, await supportKeyboard());
 }
 
 /** /privacy - Privacy Policy */

@@ -177,18 +177,35 @@ export const COMMUNITY_LINKS: CommunityLinks = {
 /** Privacy Policy URL */
 export const PRIVACY_URL = 'https://viztr.in/privacy-policy';
 
-/** Site URL (from env) */
-export function getSiteUrl(): string {
-  return process.env.NEXT_PUBLIC_SITE_URL || 'https://viztr.in';
+/** Site URL (from env or Supabase settings) */
+export async function getSiteUrl(): Promise<string> {
+  // 1. Check environment variable first
+  const envUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (envUrl) return envUrl;
+
+  // 2. Fall back to Supabase settings table (admin-configurable)
+  try {
+    const { getServerCredential } = await import('@/lib/server-credentials');
+    const supabaseUrl = await getServerCredential('NEXT_PUBLIC_SITE_URL');
+    if (supabaseUrl) return supabaseUrl;
+  } catch {
+    // Supabase not available or key not set - fall through to default
+  }
+
+  // 3. Default fallback
+  return 'https://viztr.in';
 }
 
-/** Support Information */
-export const SUPPORT_INFO = `For technical support and project inquiries:
+/** Support Information (async to resolve site URL from env or Supabase) */
+export async function getSupportInfo(): Promise<string> {
+  const siteUrl = await getSiteUrl();
+  return `For technical support and project inquiries:
 
 • Email: hello@viztr.studio
-• Website: ${getSiteUrl()}/contact
-• Project Enquiry: ${getSiteUrl()}/book-consultation
+• Website: ${siteUrl}/contact
+• Project Enquiry: ${siteUrl}/book-consultation
 
 For urgent production issues, contact your dedicated project manager directly.
 
 Response time: Within 24 hours during business days.`;
+}
