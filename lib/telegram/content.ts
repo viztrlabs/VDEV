@@ -196,6 +196,31 @@ export async function getSiteUrl(): Promise<string> {
   return 'https://viztr.in';
 }
 
+/** Social Media Links */
+export interface SocialLinks {
+  instagram: string;
+  threads: string;
+  x: string;
+  facebook: string;
+  discordProfile: string;
+  discordServer: string;
+  linkedIn: string;
+  telegramBot: string;
+  youtubeCommunity: string;
+}
+
+export const SOCIAL_LINKS: SocialLinks = {
+  instagram: 'https://instagram.com/viztr_official',
+  threads: 'https://threads.com/@viztr_official',
+  x: 'https://x.com/viztr_official',
+  facebook: 'https://facebook.com/profile.php?id=61581506345579',
+  discordProfile: 'https://discord.com/users/1422537346380730459',
+  discordServer: 'https://discord.gg/XKFwVBxSDR',
+  linkedIn: 'https://linkedin.com/in/viztrofficial',
+  telegramBot: 'https://t.me/viztr_bot',
+  youtubeCommunity: 'https://www.youtube.com/@VizTR_Official/community',
+};
+
 /** Support Information (async to resolve site URL from env or Supabase) */
 export async function getSupportInfo(): Promise<string> {
   const siteUrl = await getSiteUrl();

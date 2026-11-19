@@ -21,7 +21,9 @@ import {
   portfolioKeyboard,
   contactKeyboard,
   helpKeyboard,
+  socialLinksKeyboard,
 } from './keyboards';
+import { handleSocials } from './commands/handlers';
 
 /** Context for callback handlers */
 export interface CallbackContext {
@@ -63,6 +65,18 @@ export async function handleCallbackQuery(
         break;
       case 'help':
         await handleHelp(client, chatId, message?.message_id);
+        break;
+      case 'socials':
+        await handleSocials({
+          client,
+          chatId: message?.chat?.id || from.id,
+          messageId: message?.message_id,
+          from: {
+            id: from.id,
+            first_name: from.first_name,
+            username: from.username,
+          },
+        });
         break;
       case 'services':
         if (param === 'studio') {

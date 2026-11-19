@@ -1,4 +1,4 @@
-import { ABOUT_TEXT, SERVICES_DATA, PORTFOLIO_CATEGORIES, CONTACT_INFO, COMMUNITY_LINKS, PRIVACY_URL, getSiteUrl, SUPPORT_INFO } from '@/lib/telegram/content';
+import { ABOUT_TEXT, SERVICES_DATA, PORTFOLIO_CATEGORIES, CONTACT_INFO, COMMUNITY_LINKS, PRIVACY_URL, getSiteUrl, getSupportInfo } from '@/lib/telegram/content';
 
 describe('Telegram Content', () => {
   const originalEnv = process.env;
@@ -105,12 +105,12 @@ describe('Telegram Content', () => {
     expect(PRIVACY_URL).toBe('https://viztr.in/privacy-policy');
   });
 
-  test('getSiteUrl returns env value', () => {
-    expect(getSiteUrl()).toBe('https://viztr.in');
+  test('getSiteUrl returns env value', async () => {
+    expect(await getSiteUrl()).toBe('https://viztr.in');
   });
 
-  test('support info contains contact details', () => {
-    expect(SUPPORT_INFO).toContain('hello@viztr.studio');
-    expect(SUPPORT_INFO).toContain('viztr.in');
+  test('support info contains contact details', async () => {
+    expect(await getSupportInfo()).toContain('hello@viztr.studio');
+    expect(await getSupportInfo()).toContain('viztr.in');
   });
 });

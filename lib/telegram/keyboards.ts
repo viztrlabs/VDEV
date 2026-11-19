@@ -4,7 +4,7 @@
  */
 
 import type { TelegramInlineKeyboardMarkup, TelegramInlineKeyboardButton } from './types';
-import { COMMUNITY_LINKS, getSiteUrl } from './content';
+import { COMMUNITY_LINKS, getSiteUrl, SOCIAL_LINKS } from './content';
 
 /** Create a URL button */
 export function urlButton(text: string, url: string): TelegramInlineKeyboardButton {
@@ -32,6 +32,8 @@ export async function mainMenuKeyboard(): Promise<TelegramInlineKeyboardMarkup> 
         urlButton('WhatsApp Channel', COMMUNITY_LINKS.whatsappChannel),
         urlButton('WhatsApp Community', COMMUNITY_LINKS.whatsappCommunity),
       ],
+      // Row 5: Social Media
+      [callbackButton('Social Media', 'socials')],
     ],
   };
 }
@@ -138,6 +140,25 @@ export async function supportKeyboard(): Promise<TelegramInlineKeyboardMarkup> {
       [urlButton('Contact Us', siteUrl)],
       [urlButton('Book Consultation', `${siteUrl}/book-consultation`)],
       [callbackButton('Back to Main Menu', 'back:main')],
+    ],
+  };
+}
+
+/** Social Media Links Keyboard */
+export async function socialLinksKeyboard(): Promise<TelegramInlineKeyboardMarkup> {
+  const siteUrl = await getSiteUrl();
+  return {
+    inline_keyboard: [
+      [urlButton('Instagram', SOCIAL_LINKS.instagram)],
+      [urlButton('Threads', SOCIAL_LINKS.threads)],
+      [urlButton('X', SOCIAL_LINKS.x)],
+      [urlButton('Facebook', SOCIAL_LINKS.facebook)],
+      [urlButton('LinkedIn', SOCIAL_LINKS.linkedIn)],
+      [urlButton('Discord Profile', SOCIAL_LINKS.discordProfile)],
+      [urlButton('Discord Server', SOCIAL_LINKS.discordServer)],
+      [urlButton('Telegram Bot', SOCIAL_LINKS.telegramBot)],
+      [urlButton('YouTube Community', SOCIAL_LINKS.youtubeCommunity)],
+      [urlButton('Visit VizTR Website', siteUrl)],
     ],
   };
 }

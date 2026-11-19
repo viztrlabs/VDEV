@@ -11,6 +11,7 @@ import {
   CONTACT_INFO,
   COMMUNITY_LINKS,
   PRIVACY_URL,
+  SOCIAL_LINKS,
   getSiteUrl,
   getSupportInfo,
 } from '../content';
@@ -18,6 +19,7 @@ import {
   mainMenuKeyboard,
   servicesKeyboard,
   portfolioKeyboard,
+  socialLinksKeyboard,
   communityKeyboard,
   contactKeyboard,
   supportKeyboard,
@@ -91,6 +93,7 @@ export async function handleHelp(ctx: CommandContext): Promise<void> {
 /website \u2014 Open VizTR website
 /channel \u2014 Telegram channel (not configured)
 /community \u2014 WhatsApp Channel & Community
+/socials \u2014 Follow VizTR on social media
 
 <b>Contact & Support</b>
 /contact \u2014 Verified contact details
@@ -243,6 +246,28 @@ It covers:
   await sendWithKeyboard(client, chatId, text, privacyKeyboard());
 }
 
+/** /socials - Social Media Links */
+export async function handleSocials(ctx: CommandContext): Promise<void> {
+  const { client, chatId } = ctx;
+
+  const text = `Follow VizTR on Social Media
+
+Connect with us across all platforms:
+\u2022 Instagram: Visual inspiration and behind-the-scenes
+\u2022 Threads: Real-time updates and conversations
+\u2022 X: News and announcements
+\u2022 Facebook: Community discussions
+\u2022 LinkedIn: Professional network
+\u2022 Discord Profile: Personal profile
+\u2022 Discord Server: Community server
+\u2022 Telegram Bot: This bot
+\u2022 YouTube Community: Video content
+
+Click any button below to visit our social pages.`;
+
+  await sendWithKeyboard(client, chatId, text, await socialLinksKeyboard());
+}
+
 import { registerCommandHandler } from './registry';
 
 /** Register all handlers */
@@ -258,4 +283,5 @@ export function registerAllHandlers(): void {
   registerCommandHandler('contact', handleContact);
   registerCommandHandler('support', handleSupport);
   registerCommandHandler('privacy', handlePrivacy);
+  registerCommandHandler('socials', handleSocials);
 }
