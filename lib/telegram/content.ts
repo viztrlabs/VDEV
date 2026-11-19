@@ -206,10 +206,12 @@ export interface SocialLinks {
   discordServer: string;
   linkedIn: string;
   telegramBot: string;
+  youtube: string;
   youtubeCommunity: string;
 }
 
 export const SOCIAL_LINKS: SocialLinks = {
+  youtube: 'https://www.youtube.com/@VizTR_Official',
   instagram: 'https://instagram.com/viztr_official',
   threads: 'https://threads.com/@viztr_official',
   x: 'https://x.com/viztr_official',

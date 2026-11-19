@@ -149,6 +149,7 @@ export async function socialLinksKeyboard(): Promise<TelegramInlineKeyboardMarku
   const siteUrl = await getSiteUrl();
   return {
     inline_keyboard: [
+      [urlButton('YouTube Channel', SOCIAL_LINKS.youtube)],
       [urlButton('Instagram', SOCIAL_LINKS.instagram)],
       [urlButton('Threads', SOCIAL_LINKS.threads)],
       [urlButton('X', SOCIAL_LINKS.x)],

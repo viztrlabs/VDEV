@@ -213,9 +213,10 @@ describe('Inline Keyboard Builders', () => {
   });
 
   describe('socialLinksKeyboard', () => {
-    test('has all 10 social links as URL buttons', async () => {
+    test('has all 11 social links as URL buttons', async () => {
       const kb = await socialLinksKeyboard();
       const urls = kb.inline_keyboard.flat().map(b => b.url).filter(Boolean);
+      expect(urls[0]).toBe('https://www.youtube.com/@VizTR_Official');
       expect(urls).toContain('https://instagram.com/viztr_official');
       expect(urls).toContain('https://threads.com/@viztr_official');
       expect(urls).toContain('https://x.com/viztr_official');
@@ -228,9 +229,9 @@ describe('Inline Keyboard Builders', () => {
       expect(urls).toContain('https://viztr.in');
     });
 
-    test('has 10 rows', async () => {
+    test('has 11 rows', async () => {
       const kb = await socialLinksKeyboard();
-      expect(kb.inline_keyboard).toHaveLength(10);
+      expect(kb.inline_keyboard).toHaveLength(11);
     });
   });
 
