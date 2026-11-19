@@ -17,6 +17,14 @@ import {
   ExternalLink,
   Wifi,
   Mail,
+  RefreshCw,
+  Terminal,
+  Globe,
+  Link2,
+  ChevronDown,
+  ChevronUp,
+  FileText,
+  Zap,
 } from 'lucide-react';
 import { useCredentialsStore, maskSecret, CredentialField } from '@/lib/credentials-store';
 
@@ -61,6 +69,9 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
   const [draft, setDraft] = useState<Record<string, string>>({});
   const [copied, setCopied] = useState(false);
   const [testResult, setTestResult] = useState<{ ok: boolean; msg: string } | null>(null);
+  const [webhookUrl, setWebhookUrl] = useState('');
+  const [webhookResult, setWebhookResult] = useState<{ ok: boolean; msg: string } | null>(null);
+  const [showFullGuide, setShowFullGuide] = useState(false);
 
   const toggleReveal = (key: string) =>
     setRevealMap((m) => ({ ...m, [key]: !m[key] }));
@@ -97,9 +108,8 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
     }
   };
 
-  const testTelegramWebhook = async () => {
+  const testTelegramBot = async () => {
     const botToken = credentials.find((c) => c.key === 'TELEGRAM_BOT_TOKEN')?.value;
-    const secret = credentials.find((c) => c.key === 'TELEGRAM_WEBHOOK_SECRET')?.value;
 
     if (!botToken) {
       setTestResult({ ok: false, msg: 'Set TELEGRAM_BOT_TOKEN first' });
@@ -119,6 +129,61 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
       }
     } catch (e) {
       setTestResult({ ok: false, msg: (e as Error).message });
+    }
+  };
+
+  const registerWebhook = async () => {
+    const botToken = credentials.find((c) => c.key === 'TELEGRAM_BOT_TOKEN')?.value;
+    const secret = credentials.find((c) => c.key === 'TELEGRAM_WEBHOOK_SECRET')?.value;
+
+    if (!botToken || !secret) {
+      setWebhookResult({ ok: false, msg: 'Set TELEGRAM_BOT_TOKEN and TELEGRAM_WEBHOOK_SECRET first' });
+      return;
+    }
+    if (!webhookUrl) {
+      setWebhookResult({ ok: false, msg: 'Enter webhook base URL (e.g. https://xxx.trycloudflare.com)' });
+      return;
+    }
+
+    const fullUrl = `${webhookUrl.replace(/\/$/, '')}/api/messaging/telegram?secret_token=${secret}`;
+
+    try {
+      const res = await fetch(`https://api.telegram.org/bot${botToken}/setWebhook`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: fullUrl }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setWebhookResult({ ok: true, msg: `Webhook registered: ${fullUrl}` });
+        // Verify
+        const info = await fetch(`https://api.telegram.org/bot${botToken}/getWebhookInfo`).then(r => r.json());
+        if (info.ok) {
+          setWebhookResult({ ok: true, msg: `✅ Webhook active: ${info.result.url}` });
+        }
+      } else {
+        setWebhookResult({ ok: false, msg: data.description || 'Failed to register' });
+      }
+    } catch (e) {
+      setWebhookResult({ ok: false, msg: (e as Error).message });
+    }
+  };
+
+  const checkWebhookInfo = async () => {
+    const botToken = credentials.find((c) => c.key === 'TELEGRAM_BOT_TOKEN')?.value;
+    if (!botToken) return;
+    try {
+      const info = await fetch(`https://api.telegram.org/bot${botToken}/getWebhookInfo`).then(r => r.json());
+      if (info.ok) {
+        setWebhookResult({
+          ok: true,
+          msg: info.result.url
+            ? `Current webhook: ${info.result.url} (pending: ${info.result.pending_update_count})`
+            : 'No webhook set',
+        });
+      }
+    } catch {
+      setWebhookResult({ ok: false, msg: 'Failed to fetch webhook info' });
     }
   };
 
@@ -151,21 +216,75 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
         </div>
       </div>
 
-      {/* TELEGRAM STATUS & TEST */}
-      <div className="p-4 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3">
+      {/* TELEGRAM WEBHOOK MANAGEMENT */}
+      <div className="p-4 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Bot className="w-4 h-4 text-[#3ECF8E]" />
-            <span className="text-sm font-bold text-white font-display">Telegram Bot</span>
+            <span className="text-sm font-bold text-white font-display">Telegram Webhook Manager</span>
+          </div>
+        </div>
+
+        {/* Webhook URL Input */}
+        <div className="space-y-3">
+          <label className="block text-xs font-mono text-[#A1A1AA]">Webhook Base URL (Cloudflare/Vercel)</label>
+          <div className="flex gap-2">
+            <input
+              type="url"
+              value={webhookUrl}
+              onChange={(e) => setWebhookUrl(e.target.value)}
+              placeholder="https://trainer-exercises-smithsonian-lead.trycloudflare.com"
+              className="flex-1 px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+            />
+            <button
+              onClick={registerWebhook}
+              disabled={!webhookUrl || !credentials.find((c) => c.key === 'TELEGRAM_BOT_TOKEN')?.value || !credentials.find((c) => c.key === 'TELEGRAM_WEBHOOK_SECRET')?.value}
+              className="px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] disabled:opacity-40 text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <Zap className="w-3.5 h-3.5" />
+              <span>Register Webhook</span>
+            </button>
+            <button
+              onClick={checkWebhookInfo}
+              disabled={!credentials.find((c) => c.key === 'TELEGRAM_BOT_TOKEN')?.value}
+              className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] hover:text-white disabled:opacity-40 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Check Status</span>
+            </button>
+          </div>
+          <p className="text-[10px] text-[#71717A]">
+            After running <code className="bg-[#09090B] px-1 rounded">cloudflared tunnel --url http://localhost:3000</code>, paste the <strong>https://*.trycloudflare.com</strong> URL here and click Register.
+          </p>
+        </div>
+
+        {webhookResult && (
+          <div
+            className={`p-3 rounded-lg text-xs font-mono flex items-center gap-2 ${
+              webhookResult.ok
+                ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-700/60'
+                : 'bg-rose-950/80 text-rose-300 border border-rose-700/60'
+            }`}
+          >
+            {webhookResult.ok ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+            <span>{webhookResult.msg}</span>
+          </div>
+        )}
+
+        {/* Bot Connection Test */}
+        <div className="pt-4 border-t border-[#27272A] flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Wifi className="w-4 h-4 text-[#3ECF8E]" />
+            <span className="text-sm font-bold text-white font-display">Bot Connection Test</span>
           </div>
           <button
             type="button"
-            onClick={testTelegramWebhook}
+            onClick={testTelegramBot}
             disabled={!credentials.find((c) => c.key === 'TELEGRAM_BOT_TOKEN')?.value}
             className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] disabled:opacity-40 text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <Wifi className="w-3.5 h-3.5" />
-            <span>Test Connection</span>
+            <span>Test Bot</span>
           </button>
         </div>
         {testResult && (
@@ -180,9 +299,6 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
             <span>{testResult.msg}</span>
           </div>
         )}
-        <p className="text-[10px] text-[#71717A] leading-relaxed">
-          Webhook URL: <code className="text-[#A1A1AA] bg-[#09090B] px-1 rounded">https://your-domain/api/messaging/telegram?secret_token=YOUR_SECRET</code>
-        </p>
       </div>
 
       {/* CREDENTIAL FIELDS */}
@@ -323,13 +439,121 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
           </div>
           <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
             <div className="flex items-center gap-2 mb-2 text-[#3ECF8E] font-bold">3.</div>
-            <p>Deploy to Vercel (or tunnel with ngrok). Register webhook:</p>
+            <p>Run tunnel, paste URL above, click Register:</p>
             <pre className="text-[10px] mt-1 whitespace-pre-wrap bg-[#18181B] p-2 rounded border border-[#27272A]">
-{`curl -X POST "https://api.telegram.org/bot<TOKEN>/setWebhook" \\
-  -d "url=https://YOUR_DOMAIN/api/messaging/telegram?secret_token=YOUR_SECRET"`}
+{`cloudflared tunnel --url http://localhost:3000`}
             </pre>
-            <p className="mt-1">Click <strong>Test Connection</strong> → should show your bot username.</p>
+            <p className="mt-1">Paste the <code className="bg-[#09090B] px-1 rounded">https://*.trycloudflare.com</code> URL in the Webhook Manager above → click <strong>Register Webhook</strong>.</p>
           </div>
+        </div>
+      </details>
+
+      {/* COMPLETE GUIDE */}
+      <details className="group p-4 rounded-2xl bg-[#18181B] border border-[#27272A]" open={showFullGuide}>
+        <summary className="flex items-center gap-2 cursor-pointer list-none text-sm font-bold text-white font-display" onClick={() => setShowFullGuide(!showFullGuide)}>
+          <FileText className="w-4 h-4 text-[#3ECF8E]" />
+          Complete Telegram Bot Setup Guide
+          {showFullGuide ? <ChevronUp className="w-4 h-4 ml-auto text-[#71717A]" /> : <ChevronDown className="w-4 h-4 ml-auto text-[#71717A]" />}
+        </summary>
+        <div className="mt-4 space-y-4 text-xs text-[#A1A1AA] font-mono leading-relaxed">
+          
+          {/* Prerequisites */}
+          <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
+            <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
+              <Zap className="w-4 h-4 text-[#3ECF8E]" /> Prerequisites
+            </h4>
+            <ul className="space-y-1 list-disc list-inside">
+              <li>Node.js 18+ installed</li>
+              <li>Cloudflare account (for cloudflared) — free at dash.cloudflare.com</li>
+              <li>Telegram app installed</li>
+              <li>VizTR dev server running (<code className="bg-[#18181B] px-1 rounded">pnpm run dev:all</code>)</li>
+            </ul>
+          </div>
+
+          {/* Step 1: Create Bot */}
+          <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
+            <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
+              <Bot className="w-4 h-4 text-[#3ECF8E]" /> 1. Create Telegram Bot
+            </h4>
+            <ol className="space-y-1 list-decimal list-inside">
+              <li>Open Telegram → search <code className="bg-[#18181B] px-1 rounded">@BotFather</code></li>
+              <li>Send <code className="bg-[#18181B] px-1 rounded">/newbot</code></li>
+              <li>Name: <code>VizTR Assistant</code> | Username: <code>viztr_bot</code> (must end in _bot)</li>
+              <li>Copy the token: <code className="bg-[#18181B] px-1 rounded">123456:ABC-DEF...</code></li>
+              <li>Paste into <strong>Telegram Bot Token</strong> field above → Save</li>
+            </ol>
+          </div>
+
+          {/* Step 2: Generate Secret */}
+          <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
+            <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
+              <KeyRound className="w-4 h-4 text-[#3ECF8E]" /> 2. Generate Webhook Secret
+            </h4>
+            <ol className="space-y-1 list-decimal list-inside">
+              <li>Run: <code className="bg-[#18181B] px-1 rounded">openssl rand -hex 32</code></li>
+              <li>Copy output (e.g. <code className="bg-[#18181B] px-1 rounded">f0b93542221b5ce017c7452dd5412e708822081bfa052719c2bcca538a5715ecE</code>)</li>
+              <li>Paste into <strong>Telegram Webhook Secret</strong> field above → Save</li>
+            </ol>
+          </div>
+
+          {/* Step 3: Start Tunnel */}
+          <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
+            <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
+              <Terminal className="w-4 h-4 text-[#3ECF8E]" /> 3. Start Cloudflare Tunnel
+            </h4>
+            <p className="mb-2">In a <strong>new terminal</strong> (keep dev server running in first terminal):</p>
+            <pre className="text-[10px] whitespace-pre-wrap bg-[#18181B] p-2 rounded border border-[#27272A] mb-2">
+{`# Install cloudflared (one-time)
+# Windows: winget install Cloudflare.cloudflared
+# Mac: brew install cloudflared
+# Linux: snap install cloudflared
+
+# Run tunnel
+cloudflared tunnel --url http://localhost:3000`}
+            </pre>
+            <p className="mb-2">Copy the <strong>https://*.trycloudflare.com</strong> URL from output.</p>
+            <p>Paste it in <strong>Webhook Base URL</strong> field above → click <strong>Register Webhook</strong>.</p>
+          </div>
+
+          {/* Step 4: Verify */}
+          <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
+            <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-[#3ECF8E]" /> 4. Verify & Test
+            </h4>
+            <ol className="space-y-1 list-decimal list-inside">
+              <li>Click <strong>Check Status</strong> → should show your tunnel URL</li>
+              <li>Click <strong>Test Bot</strong> → should show <code>Connected as @viztr_bot</code></li>
+              <li>Open Telegram → message <code>@viztr_bot</code> → bot replies with AI response</li>
+            </ol>
+          </div>
+
+          {/* Production */}
+          <div className="p-3 rounded-lg bg-amber-950/40 border border-amber-700/60">
+            <h4 className="text-sm font-bold text-amber-300 mb-2 flex items-center gap-2">
+              <Globe className="w-4 h-4" /> Production Deployment (Permanent URL)
+            </h4>
+            <p className="mb-2">Cloudflare tunnels change URL on restart. For production:</p>
+            <ol className="space-y-1 list-decimal list-inside text-[10px]">
+              <li>Deploy to Vercel (permanent <code className="bg-[#18181B] px-1 rounded">https://your-app.vercel.app</code>)</li>
+              <li>Add all env vars in Vercel Dashboard (see .env.example)</li>
+              <li>Register webhook with Vercel URL: <code className="bg-[#18181B] px-1 rounded">https://your-app.vercel.app/api/messaging/telegram?secret_token=YOUR_SECRET</code></li>
+            </ol>
+          </div>
+
+          {/* Troubleshooting */}
+          <div className="p-3 rounded-lg bg-rose-950/40 border border-rose-700/60">
+            <h4 className="text-sm font-bold text-rose-300 mb-2 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4" /> Troubleshooting
+            </h4>
+            <ul className="space-y-1 list-disc list-inside text-[10px]">
+              <li><strong>Bot not replying:</strong> Check dev server terminal for <code>POST /api/messaging/telegram</code> — if missing, webhook URL is wrong</li>
+              <li><strong>401 Unauthorized:</strong> Webhook secret mismatch — ensure same secret in settings and webhook URL</li>
+              <li><strong>Connection refused:</strong> Dev server not running — run <code>pnpm run dev:all</code></li>
+              <li><strong>Tunnel URL changed:</strong> Re-run cloudflared, update Webhook Base URL, click Register</li>
+              <li><strong>Build fails on Vercel:</strong> Add all env vars in Vercel Dashboard → Settings → Environment Variables</li>
+            </ul>
+          </div>
+
         </div>
       </details>
     </div>
