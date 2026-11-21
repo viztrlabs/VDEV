@@ -71,6 +71,7 @@ import {
 } from '@/lib/projects-data';
 import { FolderKanban, QrCode, FileCheck } from 'lucide-react';
 import InContextEditor from '@/components/admin/live-editor/in-context/InContextEditor';
+import ServicesManager from '@/components/admin/ServicesManager';
 
 import {
   DashboardOverview,
@@ -187,6 +188,7 @@ const SIDEBAR_SECTIONS = [
     title: 'Core Systems Fleet',
     items: [
       { id: 'project-management', label: 'Project Management', icon: FolderKanban },
+      { id: 'services-publishing', label: 'Services & Publishing', icon: Layers },
       { id: 'xr-links', label: 'XR Link Generator', icon: Box },
       { id: 'file-storage', label: 'Multi-Cloud File Storage', icon: HardDrive },
       { id: 'asset-pipeline', label: 'Asset Pipeline', icon: Box },
@@ -1099,6 +1101,18 @@ function renderSection(section: ActiveSection, props: {
         <Suspense fallback={<SectionFallback />}>
           <ClientDiscoveryForm />
         </Suspense>
+    );
+    case 'services-publishing':
+      return (
+        <div className="space-y-6">
+          <div className="space-y-1">
+            <h2 className="text-2xl font-bold font-display text-white">Services & Publishing</h2>
+            <p className="text-xs text-[#A1A1AA]">
+              Enable or pause purchased services per project and control which experiences are visible to the client.
+            </p>
+          </div>
+          <ServicesManager />
+        </div>
       );
     case 'super-admin-governance':
       return (
