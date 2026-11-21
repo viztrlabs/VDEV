@@ -14,6 +14,8 @@ import {
 } from '@/lib/super-admin-store';
 import { useAppStore } from '@/lib/store';
 import AIModelSettings from './AIModelSettings';
+import GA4CredentialsTab from './GA4CredentialsTab';
+import GTMSettingsTab from './GTMSettingsTab';
 import {
   Shield,
   Users,
@@ -62,7 +64,8 @@ import {
   Wifi,
   Power,
   RotateCw,
-  FileText
+  FileText,
+  Tag
 } from 'lucide-react';
 
 type SuperAdminTab =
@@ -73,21 +76,32 @@ type SuperAdminTab =
   | 'feature-toggles'
   | 'system-health'
   | 'permissions-matrix'
-  | 'model-settings';
+  | 'model-settings'
+  | 'ga4-credentials'
+  | 'gtm-settings';
 
 interface SuperAdminPanelProps {
   currentRoleView?: UserRole;
   onSwitchRoleView?: (role: UserRole) => void;
+  initialTab?: SuperAdminTab;
 }
 
 export default function SuperAdminPanel({
   currentRoleView = 'super_admin',
-  onSwitchRoleView
+  onSwitchRoleView,
+  initialTab = 'users'
 }: SuperAdminPanelProps) {
   const { showToast } = useAppStore();
   const superAdmin = useSuperAdminStore();
 
-  const [activeTab, setActiveTab] = useState<SuperAdminTab>('users');
+  const [activeTab, setActiveTab] = useState<SuperAdminTab>(initialTab);
+
+  // Sync initialTab when it changes from outside
+  useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
 
   // Search & Filter States for Users
   const [userSearch, setUserSearch] = useState('');
@@ -424,6 +438,8 @@ export default function SuperAdminPanel({
           { id: 'system-health', label: 'Global Health & Error Logs', icon: Activity, count: superAdmin.systemLogs.length },
           { id: 'permissions-matrix', label: 'RBAC Permissions Matrix', icon: Lock },
           { id: 'model-settings', label: 'AI Models & Providers', icon: Zap },
+          { id: 'ga4-credentials', label: 'GA4 Credentials', icon: Key, count: superAdmin.ga4Credentials ? 1 : 0 },
+          { id: 'gtm-settings', label: 'Google Tag Manager', icon: Tag, count: superAdmin.gtmSettings?.isEnabled ? 1 : 0 },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -751,26 +767,8 @@ export default function SuperAdminPanel({
                 {platformStats ? `${platformStats.clients} registered clients` : 'Loading from Supabase...'}
               </p>
             </div>
+          </div>
 
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-2">
-              <div className="flex items-center justify-between text-[#A1A1AA]">
-                <span className="text-xs font-mono uppercase tracking-wider font-bold">Commissions & Projects</span>
-                <Layers className="w-4 h-4 text-[#3ECF8E]" />
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl sm:text-3xl font-bold font-display text-white" suppressHydrationWarning>
-                  {platformStats ? platformStats.projects.toLocaleString('en-US') : '—'}
-                </span>
-                {platformStats && (
-                  <span className="text-xs font-mono font-bold text-emerald-400 flex items-center">
-                    <ArrowUpRight className="w-3.5 h-3.5" /> Live
-                  </span>
-                )}
-              </div>
-              <p className="text-[11px] text-[#71717A] font-mono">
-                {platformStats ? `${platformStats.projects} total projects` : 'Loading from Supabase...'}
-              </p>
-            </div>
 
             <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-2">
               <div className="flex items-center justify-between text-[#A1A1AA]">
@@ -811,9 +809,7 @@ export default function SuperAdminPanel({
                 {platformStats ? `${platformStats.assets} production assets` : 'Loading from Supabase...'}
               </p>
             </div>
-          </div>
 
-          {/* Project Distribution & User Growth Visualizers */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Visualizer 1: Project Type Breakdown */}
             <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
@@ -1669,6 +1665,39 @@ export default function SuperAdminPanel({
       {activeTab === 'model-settings' && (
         <div className="space-y-6" id="super-admin-model-settings-tab">
           <AIModelSettings />
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* TAB 9: GA4 CREDENTIALS MANAGEMENT                            */}
+      {/* ============================================================ */}
+      {activeTab === 'ga4-credentials' && (
+        <div className="space-y-6" id="super-admin-ga4-credentials-tab">
+          <GA4CredentialsTab 
+            credentials={superAdmin.ga4Credentials}
+            loading={superAdmin.ga4CredentialsLoading}
+            error={superAdmin.ga4CredentialsError}
+            onFetch={superAdmin.fetchGA4Credentials}
+            onCreate={superAdmin.createGA4Credentials}
+            onUpdate={superAdmin.updateGA4Credentials}
+            onDelete={superAdmin.deleteGA4Credentials}
+            onSetActive={superAdmin.setActiveGA4Credentials}
+          />
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* TAB 10: GOOGLE TAG MANAGER SETTINGS                          */}
+      {/* ============================================================ */}
+      {activeTab === 'gtm-settings' && (
+        <div className="space-y-6" id="super-admin-gtm-settings-tab">
+          <GTMSettingsTab
+            settings={superAdmin.gtmSettings}
+            loading={superAdmin.gtmSettingsLoading}
+            error={superAdmin.gtmSettingsError}
+            onSave={superAdmin.updateGTMSettings}
+            onRefresh={superAdmin.fetchGTMSettings}
+          />
         </div>
       )}
 

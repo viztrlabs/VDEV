@@ -60,7 +60,7 @@
   - `/api/deliverables` → 401
   - `/api/project-services` → 401
 - [x] Public APIs work without auth:
-  - `/api/services` → 200 (4 services)
+  - `/api/services` → 200 (3 services)
   - `/api/experiences/public/{slug}` → 200 (published experiences)
   - `/api/auth/providers` → 200
 
@@ -75,7 +75,6 @@
 - [x] `/client-access` → 200
 - [x] `/xr-world` → 200
 - [x] `/xr-world/virtual-tour` → 200
-- [x] `/xr-world/pixel-streaming` → 200
 - [x] `/xr-world/showcase` → 200
 - [x] `/experience/{slug}` → 200 (public experience viewer)
 - [x] `/deliverable/{id}` → 200 (GLB viewer)

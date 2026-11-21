@@ -28,6 +28,11 @@ import type {
   ContactFilters,
   ContactStats,
   CreateContact,
+  GA4Credentials,
+  GA4CredentialsInput,
+  UpdateGA4Credentials,
+  GTMSettings,
+  GTMSettingsInput,
 } from '../super-admin-store-types';
 
 export interface PaginationParams {
@@ -196,6 +201,28 @@ export interface RevenueRepository {
 }
 
 // =====================================================================
+// GA4 CREDENTIALS REPOSITORY
+// =====================================================================
+
+export interface GA4CredentialsRepository {
+  findActive(): Promise<GA4Credentials | null>;
+  findById(id: string): Promise<GA4Credentials | null>;
+  create(credentials: GA4CredentialsInput): Promise<GA4Credentials>;
+  update(id: string, updates: UpdateGA4Credentials): Promise<GA4Credentials>;
+  delete(id: string): Promise<void>;
+  setActive(id: string): Promise<void>;
+}
+
+// =====================================================================
+// GTM SETTINGS REPOSITORY
+// =====================================================================
+
+export interface GTMSettingsRepository {
+  get(): Promise<GTMSettings | null>;
+  update(settings: GTMSettingsInput): Promise<GTMSettings>;
+}
+
+// =====================================================================
 // REPOSITORY FACTORY
 // =====================================================================
 
@@ -205,6 +232,8 @@ export interface RepositoryFactory {
   featureToggles: FeatureToggleRepository;
   logs: SystemLogRepository;
   revenue: RevenueRepository;
+  ga4Credentials: GA4CredentialsRepository;
+  gtmSettings: GTMSettingsRepository;
   bookings: BookingRepository;
   contacts: ContactRepository;
 }

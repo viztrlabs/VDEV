@@ -105,12 +105,11 @@ test.describe('Feature Toggles CRUD', () => {
     await waitForSectionContent(page);
   });
 
-  test('displays all 6 feature toggles', async ({ page }) => {
+  test('displays all 5 feature toggles', async ({ page }) => {
     await expect(page.locator('text=Feature Toggles Switchboard')).toBeVisible({ timeout: 15000 });
     
     const toggles = [
       'ENABLE_WEBXR_VIEWER',
-      'ENABLE_PIXEL_STREAMING',
       'ENABLE_GAUSSIAN_SPLAT',
       'ENABLE_AI_SUGGESTIONS',
       'ENABLE_ADVANCED_SECURITY',

@@ -7,7 +7,9 @@ import LayoutShell from '@/components/layout/LayoutShell';
 import GlobalViewers from '@/components/layout/GlobalViewers';
 import { MessagingAgent } from '@/components/ui/MessagingAgent';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
+import { GoogleTagManager } from '@/components/analytics/GoogleTagManager';
 import { OrganizationJsonLd, WebSiteJsonLd } from '@/components/seo';
+import ConsentModalWrapper from '@/components/analytics/ConsentModalWrapper';
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -72,13 +74,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   if (saved === 'system') document.documentElement.classList.add('theme-system');
                   document.documentElement.setAttribute('data-theme', themeId);
                   document.documentElement.setAttribute('data-theme-setting', saved);
-                  document.documentElement.setAttribute('data-theme-mode', mode);
                   document.documentElement.style.colorScheme = mode;
                 } catch (e) {}
               })();
             `,
           }}
         />
+        {/* Google Tag Manager (Controlled via Super Admin per-page settings) */}
+        <GoogleTagManager />
       </head>
       <body className={`${manrope.variable} ${inter.variable} min-h-screen flex flex-col antialiased bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors duration-200 selection:bg-[#00F0FF] selection:text-black`} suppressHydrationWarning>
         <NextAuthProvider>
@@ -92,19 +95,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
           <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
         )}
+        <ConsentModalWrapper />
         <OrganizationJsonLd
-          name="VizTR Studio"
-          url="https://viztr.com"
-          logo="https://viztr.com/logo.png"
+          name="VizTR"
+          url="https://viztr.vercel.app"
+          logo="https://viztr.vercel.app/logo.png"
           description="High-density architectural rendering, real-time WebXR spatial computing, and immersive browser-based experiences."
           email="viztr.studio@gmail.com"
-          phone="+1 (555) 123-4567"
+          phone="+91 9336561591"
           address={{
-            streetAddress: '123 Spatial Boulevard',
-            addressLocality: 'Silicon District',
-            addressRegion: 'CA',
-            postalCode: '94000',
-            addressCountry: 'US',
+            streetAddress: 'Pitampura',
+            addressLocality: 'Pitampura AU Block',
+            addressRegion: 'Delhi',
+            postalCode: '110092',
+            addressCountry: 'India',
           }}
           socialLinks={[
             'https://instagram.com/viztr_official',
@@ -118,8 +122,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <WebSiteJsonLd
           name="VizTR Studio"
-          url="https://viztr.com"
-          searchUrl="https://viztr.com/search?q={search_term_string}"
+          url="https://viztr.vercel.app"
+          searchUrl="https://viztr.vercel.app/search?q={search_term_string}"
         />
       </body>
     </html>

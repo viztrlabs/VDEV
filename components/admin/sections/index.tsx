@@ -2,6 +2,7 @@
 
 import React from 'react';
 import SuperAdminPanel from '../SuperAdminPanel';
+import SuperAdminGA4Dashboard from '../SuperAdminGA4Dashboard';
 
 export function DashboardOverview() {
   return (
@@ -159,6 +160,26 @@ export function CloudInfrastructure() {
       </div>
       
       <SuperAdminPanel />
+    </div>
+  );
+}
+
+export function SuperAdminGA4Analytics() {
+  return (
+    <div className="space-y-6">
+      <div className="space-y-1">
+        <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+          <span>GOOGLE ANALYTICS 4</span>
+        </div>
+        <h2 className="text-2xl font-bold font-display text-white">
+          Google Analytics 4
+        </h2>
+        <p className="text-xs text-[#A1A1AA]">
+          Website traffic, visitor behavior, acquisition channels, and conversion tracking.
+        </p>
+      </div>
+      
+      <SuperAdminGA4Dashboard />
     </div>
   );
 }

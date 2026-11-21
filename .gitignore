@@ -30,3 +30,12 @@ docs/superpowers/
 .env*
 
 cookies.txt
+
+# Local secrets / credentials (never commit)
+GA4VizTR.json
+
+# Separate repositories / local artifacts
+whatsapp_bot/
+ts-errors.txt
+model-section.txt
+.telegram-bot.lock

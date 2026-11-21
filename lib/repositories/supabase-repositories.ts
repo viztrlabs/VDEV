@@ -41,6 +41,11 @@ import type {
   ContactFilters,
   ContactStats,
   CreateContact,
+  GA4Credentials,
+  GA4CredentialsInput,
+  UpdateGA4Credentials,
+  GTMSettings,
+  GTMSettingsInput,
 } from '../super-admin-store-types';
 
 import { getSupabaseAdmin } from '@/lib/supabase-admin';
@@ -131,6 +136,213 @@ function toRevenueMetric(row: any): RevenueMetric {
     total: row.total,
     expenses: row.expenses,
     netMargin: row.net_margin,
+  };
+}
+
+function toGA4Credentials(row: any): GA4Credentials {
+  return {
+    id: row.id,
+    propertyId: row.property_id,
+    serviceAccountEmail: row.service_account_email,
+    privateKey: row.private_key,
+    isActive: row.is_active,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    createdBy: row.created_by,
+  };
+}
+
+function toGTMSettings(row: any): GTMSettings {
+  return {
+    id: row.id,
+    containerId: row.container_id,
+    isEnabled: row.is_enabled,
+    defaultRule: row.default_rule || 'include_all',
+    pageRules: Array.isArray(row.page_rules) ? row.page_rules : [],
+    updatedBy: row.updated_by || 'super_admin',
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+// =====================================================================
+// GA4 CREDENTIALS REPOSITORY
+// =====================================================================
+
+function createSupabaseGA4CredentialsRepository(): GA4CredentialsRepository {
+  const admin = requireAdmin();
+
+  return {
+    async findActive(): Promise<GA4Credentials | null> {
+      const { data, error } = await admin
+        .from('ga4_credentials')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      return data ? toGA4Credentials(data) : null;
+    },
+
+    async findById(id: string): Promise<GA4Credentials | null> {
+      const { data, error } = await admin
+        .from('ga4_credentials')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      return data ? toGA4Credentials(data) : null;
+    },
+
+    async create(input: GA4CredentialsInput): Promise<GA4Credentials> {
+      const now = new Date().toISOString();
+      
+      // If this is set as active, deactivate others first
+      if (input.isActive) {
+        await admin
+          .from('ga4_credentials')
+          .update({ is_active: false, updated_at: now })
+          .neq('id', '0'); // Update all rows
+      }
+
+      const { data, error } = await admin
+        .from('ga4_credentials')
+        .insert({
+          property_id: input.propertyId,
+          service_account_email: input.serviceAccountEmail,
+          private_key: input.privateKey,
+          is_active: input.isActive ?? true,
+          created_by: 'super_admin',
+          created_at: now,
+          updated_at: now,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return toGA4Credentials(data);
+    },
+
+    async update(id: string, updates: UpdateGA4Credentials): Promise<GA4Credentials> {
+      const now = new Date().toISOString();
+      
+      // If setting as active, deactivate others first
+      if (updates.isActive === true) {
+        await admin
+          .from('ga4_credentials')
+          .update({ is_active: false, updated_at: now })
+          .neq('id', id);
+      }
+
+      const { data, error } = await admin
+        .from('ga4_credentials')
+        .update({
+          ...(updates.propertyId !== undefined && { property_id: updates.propertyId }),
+          ...(updates.serviceAccountEmail !== undefined && { service_account_email: updates.serviceAccountEmail }),
+          ...(updates.privateKey !== undefined && { private_key: updates.privateKey }),
+          ...(updates.isActive !== undefined && { is_active: updates.isActive }),
+          updated_at: now,
+        })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return toGA4Credentials(data);
+    },
+
+    async delete(id: string): Promise<void> {
+      const { error } = await admin.from('ga4_credentials').delete().eq('id', id);
+      if (error) throw error;
+    },
+
+    async setActive(id: string): Promise<void> {
+      const now = new Date().toISOString();
+      
+      // Deactivate all
+      await admin
+        .from('ga4_credentials')
+        .update({ is_active: false, updated_at: now })
+        .neq('id', '0');
+      
+      // Activate the specified one
+      const { error } = await admin
+        .from('ga4_credentials')
+        .update({ is_active: true, updated_at: now })
+        .eq('id', id);
+      
+      if (error) throw error;
+    },
+  };
+}
+
+// =====================================================================
+// GTM SETTINGS REPOSITORY
+// =====================================================================
+
+function createSupabaseGTMSettingsRepository(): GTMSettingsRepository {
+  const admin = requireAdmin();
+
+  return {
+    async get(): Promise<GTMSettings | null> {
+      const { data, error } = await admin
+        .from('gtm_settings')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      return data ? toGTMSettings(data) : null;
+    },
+
+    async update(input: GTMSettingsInput): Promise<GTMSettings> {
+      const now = new Date().toISOString();
+      
+      // Check existing row
+      const { data: existing } = await admin
+        .from('gtm_settings')
+        .select('id')
+        .limit(1)
+        .single();
+
+      if (existing) {
+        const { data, error } = await admin
+          .from('gtm_settings')
+          .update({
+            container_id: input.containerId,
+            is_enabled: input.isEnabled,
+            default_rule: input.defaultRule || 'include_all',
+            page_rules: input.pageRules,
+            updated_at: now,
+          })
+          .eq('id', existing.id)
+          .select()
+          .single();
+
+        if (error) throw error;
+        return toGTMSettings(data);
+      } else {
+        const { data, error } = await admin
+          .from('gtm_settings')
+          .insert({
+            container_id: input.containerId,
+            is_enabled: input.isEnabled,
+            default_rule: input.defaultRule || 'include_all',
+            page_rules: input.pageRules,
+            created_at: now,
+            updated_at: now,
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+        return toGTMSettings(data);
+      }
+    },
   };
 }
 
@@ -930,6 +1142,8 @@ export function createSupabaseRepositoryFactory(): RepositoryFactory {
     featureToggles: createSupabaseFeatureToggleRepository(),
     logs: createSupabaseSystemLogRepository(),
     revenue: createSupabaseRevenueRepository(),
+    ga4Credentials: createSupabaseGA4CredentialsRepository(),
+    gtmSettings: createSupabaseGTMSettingsRepository(),
     bookings: createSupabaseBookingRepository(),
     contacts: createSupabaseContactRepository(),
   };

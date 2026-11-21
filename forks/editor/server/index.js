@@ -5,22 +5,32 @@ import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Load .env.local from editor-specific directory (NOT root)
-// Root secrets must not be loaded by the editor server
+// Load editor settings and only the app auth secrets needed for editor launches.
+const inheritedLaunchSecret = process.env.EDITOR_LAUNCH_SECRET;
+const inheritedNextAuthSecret = process.env.NEXTAUTH_SECRET;
 const editorEnvPath = join(__dirname, '..', '.env.local');
 dotenv.config({ path: editorEnvPath });
 
-// Also load root env for NEXTAUTH_SECRET (needed for JWT validation)
-// but do NOT load the full root .env.local which contains all secrets
-if (process.env.NEXTAUTH_SECRET) {
-    // Already loaded from editor env
-} else {
-    // Fallback: only load specific needed vars from root
-    const rootEnvPath = join(__dirname, '..', '..', '..', '.env.local');
-    const rootConfig = dotenv.parse(rootEnvPath);
-    if (rootConfig.NEXTAUTH_SECRET && !process.env.NEXTAUTH_SECRET) {
-        process.env.NEXTAUTH_SECRET = rootConfig.NEXTAUTH_SECRET;
-    }
+// Share only the launch secret with the app; do not load unrelated root secrets.
+const rootEnvPath = join(__dirname, '..', '..', '..', '.env.local');
+const rootConfig = existsSync(rootEnvPath)
+    ? dotenv.parse(readFileSync(rootEnvPath, 'utf-8'))
+    : {};
+const nextAuthSecret = inheritedNextAuthSecret || rootConfig.NEXTAUTH_SECRET;
+if (nextAuthSecret) {
+    process.env.NEXTAUTH_SECRET = nextAuthSecret;
+}
+
+const launchSecret =
+    inheritedLaunchSecret ||
+    rootConfig.EDITOR_LAUNCH_SECRET ||
+    nextAuthSecret ||
+    (process.env.NODE_ENV !== 'production' ? 'dev-editor-launch-secret' : undefined);
+if (launchSecret) {
+    process.env.EDITOR_LAUNCH_SECRET = launchSecret;
+}
+if (!process.env.NEXTAUTH_SECRET && process.env.NODE_ENV !== 'production') {
+    process.env.NEXTAUTH_SECRET = launchSecret;
 }
 
 import express from 'express';
@@ -32,13 +42,15 @@ import { setupShareDB } from './websocket/sharedb.js';
 import { handleMessengerConnection } from './websocket/messenger.js';
 import { handleRelayConnection } from './websocket/relay.js';
 import { getSupabase } from './supabase-client.js';
-import { requireEditorAuth, validateWsOrigin, extractToken, validateToken, validateLaunchToken } from './auth-middleware.js';
 import projectsRouter from './routes/real-api/projects.js';
 import scenesRouter from './routes/real-api/scenes.js';
 import assetsRouter from './routes/real-api/assets.js';
 import branchesRouter from './routes/real-api/branches.js';
 import mockRouter from './routes/mock/index.js';
 import configSaveRoutes from './routes/config-save.js';
+
+const { requireEditorAuth, validateWsOrigin, extractToken, validateToken, validateLaunchToken } =
+    await import('./auth-middleware.js');
 
 const app = express();
 const PORT = 3487;
@@ -64,7 +76,11 @@ app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 app.use((req, res, next) => {
     if (!req.url.startsWith('/editor/scene/img') && !req.url.startsWith('/css') && !req.url.startsWith('/static')) {
-        console.log('[HTTP]', req.method, req.url);
+        const requestUrl = new URL(req.url, 'http://localhost');
+        if (requestUrl.searchParams.has('token')) {
+            requestUrl.searchParams.set('token', '[REDACTED]');
+        }
+        console.log('[HTTP]', req.method, `${requestUrl.pathname}${requestUrl.search}`);
     }
     next();
 });
@@ -376,10 +392,8 @@ server.listen(PORT, '0.0.0.0', () => {
         });
     }, 1000);
     
-    // Keep-alive to prevent process exit
-    setInterval(() => {
-        console.log(`[Heartbeat] Server listening:`, server.listening, 'connections:', server.connections);
-    }, 30000);
+    // Keep-alive to prevent process exit (silent)
+    setInterval(() => {}, 30000);
 });
 server.on('error', (err) => {
     console.error('[Server Error]', err);
@@ -387,10 +401,6 @@ server.on('error', (err) => {
 server.on('close', () => {
     console.log('[Server Closed]');
 });
-// Additional debugging: check server state periodically
-setInterval(() => {
-    console.log(`[Debug] Server listening:`, server?.listening, 'address:', server?.address());
-}, 10000);
 
 process.on('uncaughtException', (err) => {
     console.error('[Editor Server UncaughtException]', err);

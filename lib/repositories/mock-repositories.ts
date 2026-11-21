@@ -13,6 +13,8 @@ import type {
   RevenueRepository,
   BookingRepository,
   ContactRepository,
+  GA4CredentialsRepository,
+  GTMSettingsRepository,
   RepositoryFactory,
   PaginationParams,
   PaginatedResult,
@@ -48,6 +50,11 @@ import {
   type ContactFilters,
   type ContactStats,
   type CreateContact,
+  type GA4Credentials,
+  type GA4CredentialsInput,
+  type UpdateGA4Credentials,
+  type GTMSettings,
+  type GTMSettingsInput,
 } from '../super-admin-store-types';
 
 import { INITIAL_MANAGED_PROJECTS } from '../projects-data';
@@ -63,6 +70,8 @@ const STORAGE_KEYS = {
   systemLogs: 'viztr_super_admin_system_logs',
   bookings: 'viztr_super_admin_bookings',
   contacts: 'viztr_super_admin_contacts',
+  ga4Credentials: 'viztr_super_admin_ga4_credentials',
+  gtmSettings: 'viztr_super_admin_gtm_settings',
 };
 
 function loadFromStorage<T>(key: string, fallback: T[]): T[] {
@@ -676,6 +685,133 @@ function createContactRepository(): ContactRepository {
   };
 }
 
+// =====================================================================
+// MOCK GA4 CREDENTIALS REPOSITORY
+// =====================================================================
+
+function createGA4CredentialsRepository(): GA4CredentialsRepository {
+  let credentials = loadFromStorage<GA4Credentials>(STORAGE_KEYS.ga4Credentials, []);
+
+  const persist = () => saveToStorage(STORAGE_KEYS.ga4Credentials, credentials);
+
+  return {
+    async findActive(): Promise<GA4Credentials | null> {
+      const active = credentials.find(c => c.isActive);
+      return active || null;
+    },
+
+    async findById(id: string): Promise<GA4Credentials | null> {
+      return credentials.find(c => c.id === id) || null;
+    },
+
+    async create(input: GA4CredentialsInput): Promise<GA4Credentials> {
+      const now = new Date().toISOString();
+      const newCred: GA4Credentials = {
+        id: `ga4-${Date.now()}`,
+        ...input,
+        isActive: input.isActive ?? true,
+        createdAt: now,
+        updatedAt: now,
+        createdBy: 'super_admin',
+      };
+      
+      // If this is set as active, deactivate others
+      if (newCred.isActive) {
+        credentials = credentials.map(c => ({ ...c, isActive: false }));
+      }
+      
+      credentials.push(newCred);
+      persist();
+      return newCred;
+    },
+
+    async update(id: string, updates: UpdateGA4Credentials): Promise<GA4Credentials> {
+      const idx = credentials.findIndex(c => c.id === id);
+      if (idx === -1) throw new Error(`GA4 Credentials ${id} not found`);
+      
+      const updated = {
+        ...credentials[idx],
+        ...updates,
+        updatedAt: new Date().toISOString(),
+      };
+      
+      // If setting as active, deactivate others
+      if (updates.isActive === true) {
+        credentials = credentials.map(c => c.id === id ? updated : ({ ...c, isActive: false }));
+      } else {
+        credentials[idx] = updated;
+      }
+      
+      persist();
+      return credentials.find(c => c.id === id)!;
+    },
+
+    async delete(id: string): Promise<void> {
+      credentials = credentials.filter(c => c.id !== id);
+      persist();
+    },
+
+    async setActive(id: string): Promise<void> {
+      credentials = credentials.map(c => ({ ...c, isActive: c.id === id }));
+      persist();
+    },
+  };
+}
+
+// =====================================================================
+// MOCK GTM SETTINGS REPOSITORY
+// =====================================================================
+
+const DEFAULT_GTM_SETTINGS: GTMSettings = {
+  id: 'gtm-default',
+  containerId: 'GTM-WL2Z8H5C',
+  isEnabled: true,
+  defaultRule: 'include_all',
+  pageRules: [
+    { id: 'home', path: '/', name: 'Homepage', enabled: true },
+    { id: 'portfolio', path: '/portfolio', name: 'Portfolio & Projects', enabled: true },
+    { id: 'pricing', path: '/pricing', name: 'Pricing', enabled: true },
+    { id: 'book-consultation', path: '/book-consultation', name: 'Book Consultation', enabled: true },
+    { id: 'contact', path: '/contact', name: 'Contact Us', enabled: true },
+    { id: 'about', path: '/about', name: 'About Studio', enabled: true },
+    { id: 'blog', path: '/blog', name: 'Blog & Articles', enabled: true },
+    { id: 'solutions', path: '/solutions', name: 'Solutions Hub', enabled: true },
+    { id: 'virtual-tour', path: '/virtual-tour', name: '360 Virtual Tours', enabled: true },
+    { id: 'vizsplat', path: '/vizsplat', name: 'VizSplat 3D Viewer', enabled: true },
+    { id: 'xr-world', path: '/xr-world', name: 'XR World Spatial', enabled: true },
+    { id: 'explore', path: '/explore', name: 'Explore Showcase', enabled: true },
+    { id: 'admin', path: '/admin', name: 'Admin Portals', enabled: false },
+    { id: 'client-dashboard', path: '/client-dashboard', name: 'Client Dashboard', enabled: false },
+  ],
+  updatedBy: 'super_admin',
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
+
+function createGTMSettingsRepository(): GTMSettingsRepository {
+  let settings = loadFromStorage<GTMSettings>(STORAGE_KEYS.gtmSettings, [DEFAULT_GTM_SETTINGS])[0] || DEFAULT_GTM_SETTINGS;
+  const persist = () => saveToStorage(STORAGE_KEYS.gtmSettings, [settings]);
+
+  return {
+    async get(): Promise<GTMSettings | null> {
+      return settings;
+    },
+
+    async update(input: GTMSettingsInput): Promise<GTMSettings> {
+      settings = {
+        ...settings,
+        containerId: input.containerId,
+        isEnabled: input.isEnabled,
+        defaultRule: input.defaultRule || 'include_all',
+        pageRules: input.pageRules,
+        updatedAt: new Date().toISOString(),
+      };
+      persist();
+      return settings;
+    },
+  };
+}
+
 export function createMockRepositoryFactory() {
   return {
     users: createUserRepository(),
@@ -683,6 +819,8 @@ export function createMockRepositoryFactory() {
     featureToggles: createFeatureToggleRepository(),
     logs: createSystemLogRepository(),
     revenue: createRevenueRepository(),
+    ga4Credentials: createGA4CredentialsRepository(),
+    gtmSettings: createGTMSettingsRepository(),
     bookings: createBookingRepository(),
     contacts: createContactRepository(),
   };

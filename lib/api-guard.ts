@@ -46,6 +46,31 @@ export async function requireAuth(
 }
 
 /**
+ * Check if the current user has super_admin role.
+ *
+ * Usage:
+ *   const guard = await requireSuperAdmin(req);
+ *   if (guard.error) return guard.error;
+ *   const { session, role } = guard;
+ */
+export async function requireSuperAdmin(
+  _req: NextRequest
+): Promise<
+  | { session: any; role: UserRole; userId: string; supabaseAccessToken?: string | null; error?: undefined }
+  | { error: NextResponse; session?: undefined; role?: undefined; userId?: undefined; supabaseAccessToken?: undefined }
+> {
+  const guard = await requireAuth(_req, ['super_admin']);
+  if (guard.error) return guard.error;
+
+  return {
+    session: guard.session,
+    role: guard.role,
+    userId: guard.userId,
+    supabaseAccessToken: guard.supabaseAccessToken,
+  };
+}
+
+/**
  * Sanitize a string input: trim, enforce max length, strip control characters.
  */
 export function sanitizeString(value: unknown, maxLength = 255): string {
@@ -64,8 +89,12 @@ export function validateEnum<T extends string>(value: unknown, allowed: T[]): T 
   return allowed.includes(value as T) ? (value as T) : null;
 }
 
+/**
+ * Guard object with shared helpers.
+ */
 const apiGuard = {
   requireAuth,
+  requireSuperAdmin,
   sanitizeString,
   validateEnum,
 };

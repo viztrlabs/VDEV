@@ -78,6 +78,64 @@ export interface RevenueMetric {
   netMargin: number;
 }
 
+// =====================================================================
+// GA4 CREDENTIALS
+// =====================================================================
+
+export interface GA4Credentials {
+  id: string;
+  propertyId: string;
+  serviceAccountEmail: string;
+  privateKey: string; // encrypted in production
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+}
+
+export interface GA4CredentialsInput {
+  propertyId: string;
+  serviceAccountEmail: string;
+  privateKey: string;
+  isActive?: boolean;
+}
+
+export interface UpdateGA4Credentials {
+  propertyId?: string;
+  serviceAccountEmail?: string;
+  privateKey?: string;
+  isActive?: boolean;
+}
+
+// =====================================================================
+// GTM SETTINGS
+// =====================================================================
+
+export interface GTMPageRule {
+  id: string;
+  path: string;
+  name: string;
+  enabled: boolean;
+}
+
+export interface GTMSettings {
+  id: string;
+  containerId: string;
+  isEnabled: boolean;
+  defaultRule: 'include_all' | 'exclude_all';
+  pageRules: GTMPageRule[];
+  updatedBy: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface GTMSettingsInput {
+  containerId: string;
+  isEnabled: boolean;
+  defaultRule?: 'include_all' | 'exclude_all';
+  pageRules: GTMPageRule[];
+}
+
 export interface SuperAdminState {
   // Repository (non-persisted)
   _repository: any;

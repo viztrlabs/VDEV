@@ -13,7 +13,7 @@ export interface TrackedProject {
   name: string;
   clientName: string;
   clientEmail: string;
-  serviceCategory: 'Exterior Visualization' | 'Interior Visualization' | 'Walkthrough Animation' | 'WebXR & 3D' | 'Pixel Streaming Experience';
+  serviceCategory: 'Exterior Visualization' | 'Interior Visualization' | 'Walkthrough Animation' | 'WebXR & 3D';
   progressPercentage: number;
   currentStage: number; // 1 to 7
   targetCompletion: string;
@@ -39,7 +39,7 @@ export const mockTrackedProjects: TrackedProject[] = [
     name: 'The Horizon Pavilion - Flagship Architectural Showcase',
     clientName: 'Foster & Partners Studio Group',
     clientEmail: 'commissions@fosterandpartners.com',
-    serviceCategory: 'Pixel Streaming Experience',
+    serviceCategory: 'WebXR & 3D',
     progressPercentage: 75,
     currentStage: 4,
     targetCompletion: 'April 10, 2026',

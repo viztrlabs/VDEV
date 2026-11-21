@@ -33,7 +33,7 @@ export interface ServicePageData {
   }>;
 }
 
-export type ServicePageKey = 'exterior' | 'interior' | 'walkthrough' | 'xr-gaussian-splat' | 'xr-pixel-streaming' | 'studioHub' | 'xrHub' | 'vr' | 'virtualTour' | 'webar';
+export type ServicePageKey = 'exterior' | 'interior' | 'walkthrough' | 'xr-gaussian-splat' | 'studioHub' | 'xrHub' | 'vr' | 'virtualTour' | 'webar';
 
 export const servicePagesData: Record<ServicePageKey, ServicePageData> = {
   exterior: {
@@ -243,112 +243,6 @@ export const servicePagesData: Record<ServicePageKey, ServicePageData> = {
         ],
         href: '/photo-to-3d',
         image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'
-      }
-    ]
-  },
-  'xr-pixel-streaming': {
-    title: 'Cloud Pixel Streaming',
-    category: 'XR World',
-    badge: 'REAL-TIME CLOUD RENDERING',
-    heroBadge: 'Zero-Install XR Experiences',
-    heroImage: 'https://images.unsplash.com/photo-1560518881-e2c60c24623f?auto=format&fit=crop&w=1800&q=85',
-    tagline: 'Access complex 3D applications from any device, instantly.',
-    description: 'Cloud pixel streaming delivers high-performance 3D rendering over the internet, eliminating the need for downloads, installations, or powerful hardware.',
-    subtitle: 'Unleash powerful 3D applications instantly',
-    capabilities: [
-      'Instant access to complex 3D software',
-      'High-quality streaming over standard internet connections',
-      'Multi-user collaborative experiences',
-      'Scalable cloud rendering infrastructure'
-    ],
-    benefits: [
-      {
-        title: 'Zero Installation',
-        desc: 'Launch complex 3D applications instantly from any browser'
-      },
-      {
-        title: 'Hardware Independence',
-        desc: 'Access professional-grade 3D tools on any device'
-      },
-      {
-        title: 'Collaborative Spaces',
-        desc: 'Real-time multi-user 3D collaboration and sharing'
-      }
-    ],
-    process: [
-      {
-        step: 1,
-        title: 'Application Selection',
-        desc: 'Choose from library of cloud-rendered 3D applications'
-      },
-      {
-        step: 2,
-        title: 'Streaming Setup',
-        desc: 'Automatic configuration for optimal streaming performance'
-      },
-      {
-        step: 3,
-        title: 'Real-time Access',
-        desc: 'Launch and use professional 3D tools instantly'
-      },
-      {
-        step: 4,
-        title: 'Collaboration & Sharing',
-        desc: 'Share access and collaborate with team members in real-time'
-      }
-    ],
-    deliverables: [
-      'Streaming application portals',
-      'Custom user interfaces and dashboards',
-      'Performance monitoring and analytics',
-      'Multi-user collaboration features',
-      'Security and access controls'
-    ],
-    gallery: [
-      'https://images.unsplash.com/photo-1560518881-e2c60c24623f?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80'
-    ],
-    faq: [
-      {
-        q: 'What kind of applications can I stream?',
-        a: 'We support a wide range of 3D applications including modeling software, game engines, CAD programs, and specialized 3D design tools.'
-      },
-      {
-        q: 'How much bandwidth do I need?',
-        a: 'Typical applications require 5-50 Mbps depending on complexity and quality settings. Our adaptive streaming adjusts automatically to your connection.'
-      },
-      {
-        q: 'Can I collaborate with others?',
-        a: 'Absolutely! Our platform supports real-time multi-user collaboration with shared workspaces and synchronized 3D environments.'
-      }
-    ],
-    services: [
-      {
-        id: 'pixel-streaming-portal',
-        title: 'Pixel Streaming Portal',
-        desc: 'Custom portal for streaming 3D applications',
-        features: [
-          'Application library management',
-          'Performance optimization',
-          'User authentication and access',
-          'Analytics and usage tracking'
-        ],
-        href: '/pixel-streaming',
-        image: 'https://images.unsplash.com/photo-1560518881-e2c60c24623f?auto=format&fit=crop&w=800&q=80'
-      },
-      {
-        id: 'cloud-3d-apps',
-        title: 'Cloud 3D Application Suite',
-        desc: 'Professional suite of cloud-rendered 3D applications',
-        features: [
-          'Modeling and design tools',
-          'Real-time collaboration',
-          'Version control and backup',
-          'Custom integration options'
-        ],
-        href: '/cloud-3d-apps',
-        image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80'
       }
     ]
   },
@@ -1000,25 +894,6 @@ export const blogPosts = [
     readTime: '10 min read',
     image: 'https://images.unsplash.com/photo-1560518881-e2c60c24623f?auto=format&fit=crop&w=1200&q=80',
     tags: ['WebXR', 'Spatial Computing', 'VR', 'AR']
-  },
-  {
-    slug: 'cloud-pixel-streaming-architecture',
-    title: 'Cloud Pixel Streaming: Architecture and Implementation',
-    excerpt: 'Deep dive into building scalable cloud pixel streaming infrastructure for real-time 3D.',
-    content: [
-      'Pixel streaming delivers high-fidelity 3D graphics to any device with a browser.',
-      'Cloud GPU instances handle the heavy lifting of real-time rendering.',
-      'WebRTC protocols ensure low-latency video and audio streaming.',
-      'TURN servers handle NAT traversal for reliable peer connections.',
-      'Auto-scaling infrastructure adapts to varying user demand.'
-    ],
-    category: 'Engineering & Web3D',
-    author: 'Elena Rostova',
-    authorRole: 'Cloud Streaming Engineer',
-    date: 'August 10, 2026',
-    readTime: '15 min read',
-    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80',
-    tags: ['Pixel Streaming', 'Cloud', 'WebRTC', 'Infrastructure']
   },
   {
     slug: 'ai-generated-marketing-content',

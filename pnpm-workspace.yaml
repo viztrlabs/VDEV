@@ -1,3 +1,17 @@
-packages: []
+packages:
+  - 'forks/supersplat'
+onlyBuiltDependencies:
+  - '@firebase/util'
+  - '@google/genai'
+  - '@parcel/watcher'
+  - '@prisma/engines'
+  - '@tailwindcss/oxide'
+  - core-js
+  - esbuild
+  - prisma
+  - protobufjs
+  - re2
+  - unrs-resolver
+  - webgpu
 minimumReleaseAgeExclude:
   - '@testing-library/react@16.3.3'

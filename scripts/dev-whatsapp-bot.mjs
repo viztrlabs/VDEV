@@ -12,7 +12,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
-import { execSync } from 'child_process';
+import { execSync, spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
@@ -31,6 +31,8 @@ const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const WHATSAPP_PHONE_NUMBER = process.env.WHATSAPP_PHONE_NUMBER || '919336561591'; // without +
 const WHATSAPP_WEBHOOK_SECRET = process.env.WHATSAPP_WEBHOOK_SECRET || 'viztr_whatsapp_webhook_9336561591_secret';
 const NEXTAUTH_URL = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+
+let botProcess = null;
 
 async function getSupabaseSetting(key) {
   if (!SUPABASE_URL || !SERVICE_ROLE_KEY) return null;
@@ -59,8 +61,47 @@ function printBanner() {
   console.log('');
 }
 
+// Kill any existing WhatsApp bot processes
+function killExistingBots() {
+  try {
+    const lockFile = path.join(WHATSAPP_BOT_DIR, '.bot.lock');
+    if (fs.existsSync(lockFile)) {
+      const pid = fs.readFileSync(lockFile, 'utf8').trim();
+      try {
+        process.kill(parseInt(pid), 'SIGTERM');
+        console.log(`  ✓ Killed existing WhatsApp bot (PID: ${pid})`);
+      } catch {
+        // Process already dead
+      }
+      fs.unlinkSync(lockFile);
+    }
+  } catch {}
+}
+
+// Cleanup on exit
+function cleanup() {
+  if (botProcess) {
+    try {
+      botProcess.kill('SIGTERM');
+    } catch {}
+  }
+  try {
+    const lockFile = path.join(WHATSAPP_BOT_DIR, '.bot.lock');
+    if (fs.existsSync(lockFile)) {
+      fs.unlinkSync(lockFile);
+    }
+  } catch {}
+  process.exit(0);
+}
+
+process.on('SIGINT', cleanup);
+process.on('SIGTERM', cleanup);
+
 async function start() {
   printBanner();
+  
+  // Kill any existing bot instances first
+  killExistingBots();
 
   // Step 1: Check if bot directory exists (clone FEI-XMD here)
   if (!fs.existsSync(WHATSAPP_BOT_DIR)) {
@@ -102,16 +143,35 @@ async function start() {
     console.log('📝 Created .env file for WhatsApp bot at:', envPath);
   }
 
+  // Create lock file
+  const lockFile = path.join(WHATSAPP_BOT_DIR, '.bot.lock');
+  fs.writeFileSync(lockFile, process.pid.toString());
+
   // Step 5/6: Start the bot (per video Step 5/6)
   console.log('🚀 Starting VizTR WhatsApp Bot (FEI-XMD)...');
   console.log('');
-  try {
-    execSync('npm start', { cwd: WHATSAPP_BOT_DIR, stdio: 'inherit' });
-  } catch (err) {
-    console.error('❌ WhatsApp bot exited:', err.message);
+  
+  botProcess = spawn('npm', ['start'], {
+    cwd: WHATSAPP_BOT_DIR,
+    stdio: 'inherit',
+    shell: true,
+  });
+
+  botProcess.on('error', (err) => {
+    console.error('❌ WhatsApp bot process error:', err.message);
+  });
+
+  botProcess.on('exit', (code, signal) => {
+    console.log(`⚠️  WhatsApp bot exited with code ${code}, signal ${signal}`);
+    // Remove lock file
+    try {
+      if (fs.existsSync(lockFile)) {
+        fs.unlinkSync(lockFile);
+      }
+    } catch {}
     console.log('  Restarting in 10 seconds...');
     setTimeout(start, 10000);
-  }
+  });
 }
 
 function getBotEnvTemplate() {

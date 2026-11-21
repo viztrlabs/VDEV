@@ -22,10 +22,10 @@ Write-Host ""
 # Kill any existing processes on our ports
 $ports = @(3000, 3002, 3487)
 foreach ($port in $ports) {
-    $pids = netstat -ano | Select-String ":$port\s" | ForEach-Object { ($_ -split '\s+')[-1] } | Sort-Object -Unique
-    foreach ($pid in $pids) {
-        if ($pid -ne "0" -and $pid -ne "") {
-            try { taskkill /PID $pid /F 2>$null | Out-Null } catch {}
+    $pidsList = netstat -ano | Select-String ":$port\s" | ForEach-Object { ($_ -split '\s+')[-1] } | Sort-Object -Unique
+    foreach ($procId in $pidsList) {
+        if ($procId -ne "0" -and $procId -ne "") {
+            try { taskkill /PID $procId /F 2>$null | Out-Null } catch {}
         }
     }
 }

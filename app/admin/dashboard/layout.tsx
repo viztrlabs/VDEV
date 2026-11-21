@@ -49,8 +49,10 @@ import {
   Box as Cube,
   Download,
   Brain,
+  BarChart3,
   Mail,
   Phone,
+  Tag,
 } from 'lucide-react';
 import { ViztrLogoMark } from '@/components/ui/Logo';
 import HermesButton from '@/components/admin/HermesButton';
@@ -80,6 +82,7 @@ import {
   MeetingsBookings,
   CloudInfrastructure,
   ClientDiscoveryForm,
+  SuperAdminGA4Analytics,
 } from '@/components/admin/sections';
 
 // =====================================================================
@@ -123,6 +126,7 @@ type ActiveSection =
   | 'super-admin-revenue'
   | 'super-admin-toggles'
   | 'super-admin-health'
+  | 'gtm-settings'
   | 'project-management'
   | 'xr-links'
   | 'file-storage'
@@ -241,6 +245,14 @@ const SIDEBAR_SECTIONS = [
       { id: 'playcanvas-engine', label: 'PlayCanvas XR Engine', icon: Cube },
       { id: 'settings', label: 'Platform Settings', icon: Settings },
       { id: 'ai-platform', label: 'AI Platform', icon: Brain },
+      { id: 'super-analytics', label: 'Super Admin Analytics', icon: BarChart3 },
+    ],
+  },
+  {
+    title: 'Google Analytics',
+    items: [
+      { id: 'ga4-analytics', label: 'Google Analytics 4', icon: TrendingUp },
+      { id: 'gtm-settings', label: 'Google Tag Manager', icon: Tag },
     ],
   },
 ];
@@ -908,6 +920,16 @@ function renderSection(section: ActiveSection, props: {
           />
         </Suspense>
       );
+    case 'gtm-settings':
+      return (
+        <Suspense fallback={<SectionFallback />}>
+          <SuperAdminPanel
+            currentRoleView={props.activeRoleView}
+            onSwitchRoleView={props.setActiveRoleView}
+            initialTab="gtm-settings"
+          />
+        </Suspense>
+      );
     case 'inquiries':
       return (
         <Suspense fallback={<SectionFallback />}>
@@ -1118,6 +1140,21 @@ function renderSection(section: ActiveSection, props: {
       return (
         <Suspense fallback={<SectionFallback />}>
           <CloudInfrastructure />
+        </Suspense>
+      );
+    case 'super-analytics':
+      return (
+        <Suspense fallback={<SectionFallback />}>
+          <SuperAdminPanel
+            currentRoleView={props.activeRoleView}
+            onSwitchRoleView={props.setActiveRoleView}
+          />
+        </Suspense>
+      );
+    case 'ga4-analytics':
+      return (
+        <Suspense fallback={<SectionFallback />}>
+          <SuperAdminGA4Analytics />
         </Suspense>
       );
     default:

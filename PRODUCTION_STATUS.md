@@ -36,7 +36,6 @@ All critical systems operational. Platform is launch-ready for solo-operator use
 | WebAR | ✅ `/xr-world/webar` → 200 |
 | Gaussian Splat (VizSplat) | ✅ `/xr-world/vizsplat` → 200 |
 | Splat Showcase | ✅ `/xr-world/splat-showcase` → 200 |
-| Pixel Streaming | ✅ `/xr-world/pixel-streaming` → 200 |
 
 ### §12: Auth Security (Unauthenticated)
 

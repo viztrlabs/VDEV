@@ -90,7 +90,6 @@ test.describe('Super Admin Dashboard Navigation', () => {
     const sections = [
       'Project Management',
       'XR Link Generator',
-      'Pixel Streaming Control',
       'Multi-Cloud File Storage',
       'Asset Pipeline',
     ];

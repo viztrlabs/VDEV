@@ -26,7 +26,6 @@
 - `/xr-world` - XR World Hub
 - `/xr-world/vizsplat` - VizSplat (Gaussian Splatting)
 - `/xr-world/vizsplat/editor` - SuperSplat Editor
-- `/xr-world/pixel-streaming` - Pixel Streaming (Flagship)
 - `/xr-world/webxr` - WebXR
 - `/xr-world/webar` - WebAR
 - `/xr-world/virtual-reality` - Virtual Reality
@@ -88,7 +87,6 @@
 - `/admin/dashboard?section=client-discovery` - Client Discovery Form
 - `/admin/dashboard?section=project-management` - Project Management
 - `/admin/dashboard?section=xr-links` - XR Link Generator
-- `/admin/dashboard?section=pixel-streaming-control` - Pixel Streaming Control
 - `/admin/dashboard?section=file-storage` - Multi-Cloud File Storage
 - `/admin/dashboard?section=asset-pipeline` - Asset Pipeline
 - `/admin/dashboard?section=cms-manager` - Master CMS Engine
@@ -100,7 +98,6 @@
 - `/admin/dashboard?section=doc-studio-crm` - Doc Studio & CRM
 - `/admin/dashboard?section=vr-configurator` - VR Tour Builder
 - `/admin/dashboard?section=ar` - AR QuickLook Assets
-- `/admin/dashboard?section=streaming` - GPU Pixel Streaming
 - `/admin/dashboard?section=splat-engine` - Gaussian Splat Engine
 - `/admin/dashboard?section=virtual-tour-config` - 360° Virtual Tour
 - `/admin/dashboard?section=google-meet` - Google Meet Fleet
@@ -254,7 +251,6 @@
 - `components/viewers/GalleryViewer.tsx`
 - `components/viewers/PanoramaViewer.tsx`
 - `components/viewers/ModelViewer.tsx`
-- `components/viewers/PixelStreamingTerminal.tsx`
 
 ### UI Components
 - `components/ui/ToastNotification.tsx`
@@ -274,7 +270,6 @@
 2. **Firebase** - Auth, realtime updates, notifications
 3. **3D Engine** - Standalone services on ports 3002-3003
 4. **SuperSplat** - Gaussian splatting editor on port 3002
-5. **Pixel Streaming** - Unreal Engine on port 3003
 
 ---
 

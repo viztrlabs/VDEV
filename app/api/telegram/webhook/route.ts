@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { validateTelegramConfig } from '@/lib/telegram/config';
 import { validateUpdate, extractCommand } from '@/lib/telegram/validation';
 import { checkAndMarkProcessed } from '@/lib/telegram/deduplication';
-import { createTelegramClient } from '@/lib/telegram/client';
+import { createTelegramClient, TelegramApiError } from '@/lib/telegram/client';
 import { handleCallbackQuery } from '@/lib/telegram/callbacks';
 import { COMMAND_HANDLERS, isKnownCommand } from '@/lib/telegram/commands/registry';
 import { applyRateLimit, type RateLimitConfig } from '@/lib/rate-limit';
@@ -122,36 +122,68 @@ async function processUpdate(
       if (isKnownCommand(command)) {
         const handler = COMMAND_HANDLERS[command];
         if (handler) {
-          await handler({
-            client,
-            chatId,
-            from: {
-              id: from.id,
-              first_name: from.first_name,
-              username: from.username,
-            },
-            messageId: message.message_id,
-          });
+          try {
+            await handler({
+              client,
+              chatId,
+              from: {
+                id: from.id,
+                first_name: from.first_name,
+                username: from.username,
+              },
+              messageId: message.message_id,
+            });
+          } catch (error) {
+            if (error instanceof TelegramApiError && error.errorCode === 400 && error.description?.includes('chat not found')) {
+              console.warn(`[telegram/webhook] Chat not found for command ${command}, chatId: ${chatId}`);
+            } else {
+              throw error;
+            }
+          }
         }
       } else {
         // Unknown command - send help
-        await client.sendMessage(chatId, `Unknown command: ${command}. Use /help to see available commands.`, {
-          parse_mode: 'HTML',
-        });
+        try {
+          await client.sendMessage(chatId, `Unknown command: ${command}. Use /help to see available commands.`, {
+            parse_mode: 'HTML',
+          });
+        } catch (error) {
+          if (error instanceof TelegramApiError && error.errorCode === 400 && error.description?.includes('chat not found')) {
+            console.warn(`[telegram/webhook] Chat not found for unknown command response, chatId: ${chatId}`);
+          } else {
+            throw error;
+          }
+        }
       }
       return;
     }
 
     // Non-command text - could implement AI agent here if needed
     // For Phase 1, just acknowledge
-    await client.sendMessage(chatId, 'I understand you\'re trying to tell me something. Use /help to see available commands.', {
-      parse_mode: 'HTML',
-    });
+    try {
+      await client.sendMessage(chatId, 'I understand you\'re trying to tell me something. Use /help to see available commands.', {
+        parse_mode: 'HTML',
+      });
+    } catch (error) {
+      if (error instanceof TelegramApiError && error.errorCode === 400 && error.description?.includes('chat not found')) {
+        console.warn(`[telegram/webhook] Chat not found for text response, chatId: ${chatId}`);
+      } else {
+        throw error;
+      }
+    }
   }
 
   // Handle callback query (inline keyboard buttons)
   if (update.callback_query) {
-    await handleCallbackQuery(client, update.callback_query);
+    try {
+      await handleCallbackQuery(client, update.callback_query);
+    } catch (error) {
+      if (error instanceof TelegramApiError && error.errorCode === 400 && error.description?.includes('chat not found')) {
+        console.warn(`[telegram/webhook] Chat not found for callback query, chatId: ${update.callback_query.message?.chat?.id}`);
+      } else {
+        throw error;
+      }
+    }
   }
 
   // Other update types (edited_message, channel_post, etc.) - acknowledge but don't process

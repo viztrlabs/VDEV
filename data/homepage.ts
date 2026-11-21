@@ -60,7 +60,6 @@ export const homepageData = {
       { id: 'vr', name: 'Virtual Reality', purpose: 'Fully immersive virtual reality', icon: 'Headset', href: '/xr-world/virtual-reality' },
       { id: 'virtual-tour', name: 'Virtual Tour', purpose: '360° interactive property tours', icon: 'Compass', href: '/xr-world/virtual-tour' },
       { id: 'vizsplat', name: 'VizSplat', purpose: 'Photorealistic 3D Gaussian Splat experiences', icon: 'Sparkles', href: '/xr-world/vizsplat', badge: 'NEW' },
-      { id: 'pixel-streaming', name: 'Pixel Streaming', purpose: 'High-end Unreal experiences streamed to browsers', icon: 'Cpu', href: '/xr-world/pixel-streaming', badge: 'FLAGSHIP' },
     ],
     cta: { label: 'Enter XR World', href: '/xr-world' }
   },
@@ -97,7 +96,6 @@ export const homepageData = {
       'WebAR EXPERIENCES',
       'VIRTUAL REALITY',
       'VIRTUAL TOUR',
-      'PIXEL STREAMING',
       'GAUSSIAN SPLAT — VIZSPLAT',
       '3D EDITOR'
     ],
@@ -118,11 +116,11 @@ export const homepageData = {
     xrWorld: {
       title: 'XR World',
       subtitle: 'Experience.',
-      description: 'Interactive, immersive property experiences with WebXR, WebAR, VR, virtual tours, and cloud pixel streaming.',
+      description: 'Interactive, immersive property experiences with WebXR, WebAR, VR, and virtual tours.',
       image: '/images/renders/clubhouse-pool.jpg',
       cta: 'Explore XR World',
       href: '/xr-world',
-      services: ['WebXR In-Browser', 'WebAR Mobile Projection', 'Virtual Reality Tour', '360° Virtual Tour', 'Pixel Streaming']
+      services: ['WebXR In-Browser', 'WebAR Mobile Projection', 'Virtual Reality Tour', '360° Virtual Tour']
     }
   },
   studioPreview: {
@@ -191,15 +189,6 @@ export const homepageData = {
         href: '/xr-world/virtual-tour',
         icon: 'Compass'
       },
-      {
-        id: 'pixel-streaming',
-        name: 'Pixel Streaming',
-        badge: 'FLAGSHIP',
-        description: 'Cloud-rendered real-time Unreal Engine 5 experiences streamed live to any smartphone, tablet, or browser with zero lag.',
-        href: '/xr-world/pixel-streaming',
-        icon: 'Cpu',
-        isFlagship: true
-      }
     ]
   },
   showreel: {
@@ -266,7 +255,7 @@ export const homepageData = {
     {
       audience: 'Real Estate Developers',
       problem: 'Struggling to sell off-plan luxury residences before physical construction begins.',
-      solution: 'Hyper-realistic interactive walkthroughs and Pixel Streaming sales center kiosks.',
+      solution: 'Hyper-realistic interactive walkthroughs and 360° virtual tours for sales centers.',
       benefit: 'Accelerate pre-sales cycles and secure early high-yield deposits.'
     },
     {
@@ -290,7 +279,7 @@ export const homepageData = {
     {
       audience: 'Enterprise & Hospitality',
       problem: 'Global stakeholders unable to physically inspect distant resort and resort developments.',
-      solution: 'Cloud Pixel Streaming sessions with synchronized multi-user guided tours.',
+      solution: 'WebXR experiences and synchronized virtual tours for remote stakeholders.',
       benefit: 'Seamless remote investor presentations and global stakeholder consensus.'
     }
   ],
@@ -307,12 +296,6 @@ export const homepageData = {
       role: 'Lead Architect, Snøhetta Atelier Group',
       rating: 5
     },
-    {
-      quote: 'Their Pixel Streaming solution powered our luxury Dubai showroom. Customers could customize marble finishes in real-time on our iPad displays with zero latency.',
-      clientName: 'Tariq Al-Mansoor',
-      role: 'VP of Development, Al-Jazeera Hospitality',
-      rating: 5
-    }
   ],
   stats: [
     { label: 'Completed Projects', value: '200+' },
@@ -328,10 +311,6 @@ export const homepageData = {
     {
       q: 'What is WebXR and do my clients need to install special software?',
       a: 'No software or plugin installation is required. WebXR runs natively in modern web browsers (Chrome, Safari, Edge, Firefox) on laptops, tablets, and smartphones.'
-    },
-    {
-      q: 'How does Cloud Pixel Streaming work?',
-      a: 'We host high-end Unreal Engine 5.4 instances on cloud GPU servers. The photorealistic scene is rendered in the cloud and streamed as an interactive video stream (under 30ms latency) to your client\'s device.'
     },
     {
       q: 'What is the typical timeline for an exterior or interior visualization?',

@@ -53,7 +53,7 @@ export async function generateConfig(projectId = null, sceneId = null) {
     const scene = await loadScene(resolvedProjectId, sceneId);
 
     return {
-        version: '2.31.4',
+        version: '2.35.23',
         self: {
             id: 1,
             username: 'viztr-user',

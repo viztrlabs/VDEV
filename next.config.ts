@@ -21,6 +21,8 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', 'motion'],
   },
+  // Allow cross-origin requests in development (e.g., from cloudflare tunnels)
+  allowedDevOrigins: ['*.trycloudflare.com', 'localhost'],
   // Allow access to remote image placeholder.
   images: {
     remotePatterns: [
@@ -73,6 +75,7 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+    qualities: [75, 85, 90],
   },
   transpilePackages: ['motion'],
   webpack: (config, { dev, isServer }) => {
@@ -216,6 +219,14 @@ const nextConfig: NextConfig = {
       { source: '/terms', destination: '/terms-conditions', permanent: true },
       { source: '/admin', destination: '/admin/dashboard', permanent: true },
       { source: '/app/super-admin/:path*', destination: '/admin/dashboard', permanent: true },
+    ];
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/supersplat/:path*',
+        destination: 'http://localhost:3002/:path*',
+      },
     ];
   },
 };

@@ -3,17 +3,19 @@
 ## Quick Start
 
 ```bash
-cd forks/editor
-
-# Build the frontend
-npm run build
-
-# Start the local backend server
-npm run start:local
+# Start the local backend server from the repository root
+pnpm run dev:engine
 ```
 
 **Editor:** http://localhost:3487
 **Dashboard:** http://localhost:3000/editor-projects (requires Next.js running)
+
+## Editor Frontend Version
+
+The local server serves the generated frontend from `forks/editor/dist`, which is ignored by Git.
+It is built from the upstream PlayCanvas Editor tag `v2.35.23`. To rebuild it, clone that tag,
+run `npm ci` and `npm run build`, then replace the contents of `forks/editor/dist` with the
+generated `dist` contents. Preserve the `viztr-*.svg` branding files in `dist/images`.
 
 ## How It Works
 

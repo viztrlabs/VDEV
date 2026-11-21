@@ -15,6 +15,12 @@ import type {
   FeatureToggle,
   SystemHealthLog,
   RevenueMetric,
+  GA4Credentials,
+  GA4CredentialsInput,
+  UpdateGA4Credentials,
+  GTMSettings,
+  GTMSettingsInput,
+  GTMPageRule,
 } from './super-admin-store-types';
 
 import { INITIAL_USERS } from './super-admin-store-types';
@@ -72,6 +78,23 @@ export interface SuperAdminState {
   revenueLoading: boolean;
   refreshRevenue: () => Promise<void>;
 
+  // GA4 Credentials
+  ga4Credentials: GA4Credentials | null;
+  ga4CredentialsLoading: boolean;
+  ga4CredentialsError: string | null;
+  fetchGA4Credentials: () => Promise<void>;
+  createGA4Credentials: (input: GA4CredentialsInput) => Promise<void>;
+  updateGA4Credentials: (id: string, updates: UpdateGA4Credentials) => Promise<void>;
+  deleteGA4Credentials: (id: string) => Promise<void>;
+  setActiveGA4Credentials: (id: string) => Promise<void>;
+
+  // GTM Settings
+  gtmSettings: GTMSettings | null;
+  gtmSettingsLoading: boolean;
+  gtmSettingsError: string | null;
+  fetchGTMSettings: () => Promise<void>;
+  updateGTMSettings: (settings: GTMSettingsInput) => Promise<void>;
+
   // Global Simulator Mode for Live Telemetry
   isLiveSimulationActive: boolean;
   toggleLiveSimulation: () => void;
@@ -127,6 +150,16 @@ const useSuperAdminStore = create<SuperAdminState>()(
       growthRateMom: 0,
       revenueLoading: false,
 
+      // GA4 Credentials
+      ga4Credentials: null,
+      ga4CredentialsLoading: false,
+      ga4CredentialsError: null,
+
+      // GTM Settings
+      gtmSettings: null,
+      gtmSettingsLoading: false,
+      gtmSettingsError: null,
+
       isLiveSimulationActive: false,
 
       // Initialize from repository
@@ -134,15 +167,29 @@ const useSuperAdminStore = create<SuperAdminState>()(
         if (get()._initialized) return;
         
         const repo = getRepository();
-        set({ _repository: repo, usersLoading: true, gpuLoading: true, togglesLoading: true, logsLoading: true, revenueLoading: true });
+        set({ _repository: repo, usersLoading: true, gpuLoading: true, togglesLoading: true, logsLoading: true, revenueLoading: true, ga4CredentialsLoading: true, gtmSettingsLoading: true });
 
         try {
-          const [users, gpuNodes, featureToggles, systemLogs, revenue] = await Promise.all([
+          // Fetch GA4 credentials from API endpoint
+          const ga4Promise = fetch('/api/admin/ga4/credentials')
+            .then(res => res.json())
+            .then(data => data.success ? data.data : null)
+            .catch(() => null);
+
+          // Fetch GTM settings from API endpoint
+          const gtmPromise = fetch('/api/admin/gtm/settings')
+            .then(res => res.json())
+            .then(data => data.success ? data.data : null)
+            .catch(() => null);
+
+          const [users, gpuNodes, featureToggles, systemLogs, revenue, ga4Creds, gtmSettings] = await Promise.all([
             repo.users.findAll().then((r: { data: AdminUser[] }) => r.data),
             repo.gpu.findAll(),
             repo.featureToggles.findAll(),
             repo.logs.findAll({}).then((r: { data: SystemHealthLog[] }) => r.data),
             repo.revenue.getMonthly(),
+            ga4Promise,
+            gtmPromise,
           ]);
 
           const summary = await repo.revenue.getSummary();
@@ -156,12 +203,16 @@ const useSuperAdminStore = create<SuperAdminState>()(
             currentMRR: summary.currentMRR,
             currentARR: summary.currentARR,
             growthRateMom: summary.growthRateMoM,
+            ga4Credentials: ga4Creds,
+            gtmSettings: gtmSettings,
             _initialized: true,
             usersLoading: false,
             gpuLoading: false,
             togglesLoading: false,
             logsLoading: false,
             revenueLoading: false,
+            ga4CredentialsLoading: false,
+            gtmSettingsLoading: false,
           });
         } catch (error) {
           console.error('Failed to initialize super admin store:', error);
@@ -171,6 +222,8 @@ const useSuperAdminStore = create<SuperAdminState>()(
             togglesLoading: false,
             logsLoading: false,
             revenueLoading: false,
+            ga4CredentialsLoading: false,
+            gtmSettingsLoading: false,
             usersError: error instanceof Error ? error.message : 'Initialization failed',
           });
         }
@@ -433,6 +486,148 @@ const useSuperAdminStore = create<SuperAdminState>()(
         isLiveSimulationActive: !state.isLiveSimulationActive,
       })),
 
+      // GA4 Credentials
+      fetchGA4Credentials: async () => {
+        set({ ga4CredentialsLoading: true, ga4CredentialsError: null });
+        try {
+          const res = await fetch('/api/admin/ga4/credentials');
+          const data = await res.json();
+          if (data.success) {
+            set({ ga4Credentials: data.data, ga4CredentialsLoading: false });
+          } else {
+            set({ ga4CredentialsLoading: false, ga4CredentialsError: data.error });
+          }
+        } catch (error) {
+          set({ ga4CredentialsLoading: false, ga4CredentialsError: error instanceof Error ? error.message : 'Failed to fetch GA4 credentials' });
+        }
+      },
+
+      createGA4Credentials: async (input: GA4CredentialsInput) => {
+        set({ ga4CredentialsLoading: true, ga4CredentialsError: null });
+        try {
+          const res = await fetch('/api/admin/ga4/credentials', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(input),
+          });
+          const data = await res.json();
+          if (data.success) {
+            set({ ga4Credentials: data.data, ga4CredentialsLoading: false });
+          } else {
+            set({ ga4CredentialsLoading: false, ga4CredentialsError: data.error });
+            throw new Error(data.error);
+          }
+        } catch (error) {
+          set({ ga4CredentialsLoading: false, ga4CredentialsError: error instanceof Error ? error.message : 'Failed to create GA4 credentials' });
+          throw error;
+        }
+      },
+
+      updateGA4Credentials: async (id: string, updates: UpdateGA4Credentials) => {
+        set({ ga4CredentialsLoading: true, ga4CredentialsError: null });
+        try {
+          const res = await fetch('/api/admin/ga4/credentials', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, ...updates }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            set({ ga4Credentials: data.data, ga4CredentialsLoading: false });
+          } else {
+            set({ ga4CredentialsLoading: false, ga4CredentialsError: data.error });
+            throw new Error(data.error);
+          }
+        } catch (error) {
+          set({ ga4CredentialsLoading: false, ga4CredentialsError: error instanceof Error ? error.message : 'Failed to update GA4 credentials' });
+          throw error;
+        }
+      },
+
+      deleteGA4Credentials: async (id: string) => {
+        set({ ga4CredentialsLoading: true, ga4CredentialsError: null });
+        try {
+          const res = await fetch(`/api/admin/ga4/credentials?id=${id}`, {
+            method: 'DELETE',
+          });
+          const data = await res.json();
+          if (data.success) {
+            set({ ga4CredentialsLoading: false });
+            // Refresh the active credentials
+            const fetchRes = await fetch('/api/admin/ga4/credentials');
+            const fetchData = await fetchRes.json();
+            set({ ga4Credentials: fetchData.data, ga4CredentialsLoading: false });
+          } else {
+            set({ ga4CredentialsLoading: false, ga4CredentialsError: data.error });
+            throw new Error(data.error);
+          }
+        } catch (error) {
+          set({ ga4CredentialsLoading: false, ga4CredentialsError: error instanceof Error ? error.message : 'Failed to delete GA4 credentials' });
+          throw error;
+        }
+      },
+
+      setActiveGA4Credentials: async (id: string) => {
+        set({ ga4CredentialsLoading: true, ga4CredentialsError: null });
+        try {
+          const res = await fetch('/api/admin/ga4/credentials/set-active', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            // Refresh the active credentials
+            const fetchRes = await fetch('/api/admin/ga4/credentials');
+            const fetchData = await fetchRes.json();
+            set({ ga4Credentials: fetchData.data, ga4CredentialsLoading: false });
+          } else {
+            set({ ga4CredentialsLoading: false, ga4CredentialsError: data.error });
+            throw new Error(data.error);
+          }
+        } catch (error) {
+          set({ ga4CredentialsLoading: false, ga4CredentialsError: error instanceof Error ? error.message : 'Failed to set GA4 credentials as active' });
+          throw error;
+        }
+      },
+
+      // GTM Settings
+      fetchGTMSettings: async () => {
+        set({ gtmSettingsLoading: true, gtmSettingsError: null });
+        try {
+          const res = await fetch('/api/admin/gtm/settings');
+          const data = await res.json();
+          if (data.success) {
+            set({ gtmSettings: data.data, gtmSettingsLoading: false });
+          } else {
+            set({ gtmSettingsLoading: false, gtmSettingsError: data.error });
+          }
+        } catch (error) {
+          set({ gtmSettingsLoading: false, gtmSettingsError: error instanceof Error ? error.message : 'Failed to fetch GTM settings' });
+        }
+      },
+
+      updateGTMSettings: async (input: GTMSettingsInput) => {
+        set({ gtmSettingsLoading: true, gtmSettingsError: null });
+        try {
+          const res = await fetch('/api/admin/gtm/settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(input),
+          });
+          const data = await res.json();
+          if (data.success) {
+            set({ gtmSettings: data.data, gtmSettingsLoading: false });
+          } else {
+            set({ gtmSettingsLoading: false, gtmSettingsError: data.error });
+            throw new Error(data.error);
+          }
+        } catch (error) {
+          set({ gtmSettingsLoading: false, gtmSettingsError: error instanceof Error ? error.message : 'Failed to update GTM settings' });
+          throw error;
+        }
+      },
+
       // Reset all to defaults
       resetAllSuperAdminData: async () => {
         const repo = getRepository();
@@ -459,6 +654,6 @@ const useSuperAdminStore = create<SuperAdminState>()(
 );
 
 // For backward compatibility - re-export types and constants
-export type { AdminUser, UserRole, UserStatus, RegionGPUNode, FeatureToggle, SystemHealthLog, RevenueMetric } from './super-admin-store-types';
+export type { AdminUser, UserRole, UserStatus, RegionGPUNode, FeatureToggle, SystemHealthLog, RevenueMetric, GA4Credentials, GA4CredentialsInput, UpdateGA4Credentials, GTMSettings, GTMSettingsInput, GTMPageRule } from './super-admin-store-types';
 export { INITIAL_USERS, INITIAL_GPU_NODES, INITIAL_FEATURE_TOGGLES, INITIAL_SYSTEM_LOGS } from './super-admin-store-types';
 export { useSuperAdminStore };
