@@ -1,11 +1,15 @@
 'use client';
 
 import React, { useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { SharedExperienceProvider } from './SharedExperienceContext';
 import { ExperienceLayout } from './ExperienceLayout';
 import TourViewer from './TourViewer';
 import GaussianSplatViewer from './GaussianSplatViewer';
 import { PlayCanvasPublicViewer } from './PlayCanvasPublicViewer';
+
+// Pano2VR package playback (browser-only iframe host)
+const Pano2VrPlayer = dynamic(() => import('@/components/experience/Pano2VrPlayer'), { ssr: false });
 
 interface ExperienceViewerProps {
   experience: { id: string; title: string; description?: string };
@@ -17,6 +21,11 @@ function ExperienceViewerInner({ config }: { config: Record<string, any> }) {
   const hasSplat = !!config.splat?.url;
   const hasTour = !!config.tour;
   const hasPlayCanvas = engine === 'playcanvas';
+  // Pano2VR hosted package: tour.mode === 'pano2vr' with a registered package
+  const pano2vrEntryUrl =
+    config.tour?.mode === 'pano2vr'
+      ? config.tour?.pano2vr?.entryUrl || config.tour?.entryUrl || ''
+      : '';
 
   const tourScene = useMemo(() => {
     if (!hasTour) return null;
@@ -68,6 +77,9 @@ function ExperienceViewerInner({ config }: { config: Record<string, any> }) {
   }, [config, hasTour]);
 
   const left = useMemo(() => {
+    if (pano2vrEntryUrl) {
+      return <Pano2VrPlayer entryUrl={pano2vrEntryUrl} title="Virtual Tour" className="w-full h-full border-0" />;
+    }
     if (hasTour && tourScene) {
       return <TourViewer scene={tourScene} />;
     }
@@ -80,7 +92,7 @@ function ExperienceViewerInner({ config }: { config: Record<string, any> }) {
       );
     }
     return null;
-  }, [hasTour, hasPlayCanvas, tourScene, config]);
+  }, [pano2vrEntryUrl, hasTour, hasPlayCanvas, tourScene, config]);
 
   const right = useMemo(() => {
     if (hasSplat) {
