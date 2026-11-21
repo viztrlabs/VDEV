@@ -107,6 +107,13 @@ export const featureFlags: Record<string, FeatureFlag> = {
     defaultValue: false,
     envVar: 'NEXT_PUBLIC_FLAG_SOLUTIONS_PAGES',
   },
+  'experience-hub': {
+    key: 'experience-hub',
+    name: 'Experience Dashboard Hub',
+    description: 'Unified project experience hub at /experience/p/[projectId] with in-place service switching',
+    defaultValue: false,
+    envVar: 'NEXT_PUBLIC_FLAG_EXPERIENCE_HUB',
+  },
 };
 
 /**
