@@ -1,5 +1,7 @@
 packages:
   - 'forks/supersplat'
+overrides:
+  '@iwsdk/core>three': 0.185.1
 onlyBuiltDependencies:
   - '@firebase/util'
   - '@google/genai'
