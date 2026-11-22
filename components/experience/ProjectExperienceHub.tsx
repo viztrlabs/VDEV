@@ -114,9 +114,9 @@ export default function ProjectExperienceHub({
 
   // Minimal QR code generator (simplified visual pattern)
   const generateQr = useCallback((url: string) => {
-    const canvasEl = qrCanvasRef.current;
-    if (!canvasEl) return;
-    const ctx = canvasEl.getContext('2d');
+    const canvas = qrCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const size = 256;
     const gridSize = 21;
@@ -142,11 +142,6 @@ export default function ProjectExperienceHub({
       grid[6][i] = i % 2;
       grid[i][6] = i % 2;
     }
-    const canvas = qrCanvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    const size = 256;
     canvas.width = size;
     canvas.height = size;
     ctx.fillStyle = '#09090B';
