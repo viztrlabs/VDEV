@@ -114,13 +114,11 @@ export default function ProjectExperienceHub({
 
   // Minimal QR code generator (simplified visual pattern)
   const generateQr = useCallback((url: string) => {
-    const canvas = qrCanvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const canvasEl = qrCanvasRef.current;
+    if (!canvasEl) return;
+    const ctx = canvasEl.getContext('2d');
     if (!ctx) return;
     const size = 256;
-    canvas.width = size;
-    canvas.height = size;
     const gridSize = 21;
     const grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(0));
     const drawFinder = (ox: number, oy: number) => {
@@ -140,7 +138,10 @@ export default function ProjectExperienceHub({
     drawFinder(0, 0);
     drawFinder(gridSize - 7, 0);
     drawFinder(0, gridSize - 7);
-    drawTiming();
+    for (let i = 8; i < gridSize - 8; i++) {
+      grid[6][i] = i % 2;
+      grid[i][6] = i % 2;
+    }
     const canvas = qrCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -155,7 +156,7 @@ export default function ProjectExperienceHub({
       for (let x = 0; x < gridSize; x++) {
         if (grid[y][x]) {
           const modSize = size / gridSize;
-          ctx.fillRect(x * modSize, y * modSize, modSize, modSize);
+          ctx.fillRect(x * (size / gridSize), y * (size / gridSize), size / gridSize, size / gridSize);
         }
       }
     }
