@@ -26,7 +26,7 @@ CREATE INDEX IF NOT EXISTS tour_packages_experience_id_idx ON public.tour_packag
 
 -- updated_at maintenance
 CREATE OR REPLACE FUNCTION public.tour_packages_touch_updated_at()
-RETURNS trigger LANGUAGE plpgsql AS $$
+RETURNS trigger LANGUAGE plpgsql SET search_path = public AS $$
 BEGIN
   NEW.updated_at := now();
   RETURN NEW;
