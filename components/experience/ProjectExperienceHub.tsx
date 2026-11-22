@@ -177,11 +177,6 @@ export default function ProjectExperienceHub({
     setShowQr(true);
   };
 
-  const active = useMemo(
-    () => servicesWithContent.find((s) => s.slug === activeSlug) || servicesWithContent[0] || null,
-    [servicesWithContent, activeSlug]
-  );
-
   const activeExperience = active?.experiences[0] || null;
 
   const capabilityNote = useMemo(() => {
