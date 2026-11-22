@@ -11,6 +11,9 @@ import { PlayCanvasPublicViewer } from './PlayCanvasPublicViewer';
 // Pano2VR package playback (browser-only iframe host)
 const Pano2VrPlayer = dynamic(() => import('@/components/experience/Pano2VrPlayer'), { ssr: false });
 
+// IWSDK Engine (browser-only dynamic import)
+const IWSDKViewer = dynamic(() => import('@/components/xr/IWSDKViewer'), { ssr: false });
+
 interface ExperienceViewerProps {
   experience: { id: string; title: string; description?: string };
   config: { config: Record<string, any> };
@@ -76,9 +79,14 @@ function ExperienceViewerInner({ config }: { config: Record<string, any> }) {
     };
   }, [config, hasTour]);
 
+  const hasIWSDK = engine === 'iwSDK';
+
   const left = useMemo(() => {
     if (pano2vrEntryUrl) {
       return <Pano2VrPlayer entryUrl={pano2vrEntryUrl} title="Virtual Tour" className="w-full h-full border-0" />;
+    }
+    if (hasIWSDK) {
+      return <IWSDKViewer experienceId={config.experienceId || 'default'} config={config.config} />;
     }
     if (hasTour && tourScene) {
       return <TourViewer scene={tourScene} />;
@@ -92,7 +100,7 @@ function ExperienceViewerInner({ config }: { config: Record<string, any> }) {
       );
     }
     return null;
-  }, [pano2vrEntryUrl, hasTour, hasPlayCanvas, tourScene, config]);
+  }, [pano2vrEntryUrl, hasTour, hasPlayCanvas, hasIWSDK, tourScene, config]);
 
   const right = useMemo(() => {
     if (hasSplat) {

@@ -6,7 +6,7 @@
  * (Three.js, PlayCanvas/WebGPU Splats, and Marzipano 360°).
  */
 
-export type EngineType = 'three' | 'playcanvas' | 'marzipano';
+export type EngineType = 'three' | 'playcanvas' | 'marzipano' | 'iwSDK';
 
 export type ToolType = 'select' | 'move' | 'rotate' | 'scale' | 'hotspot' | 'measure' | 'align';
 
@@ -177,7 +177,8 @@ export type EngineCommand =
   | { type: 'REMOVE_ALIGNMENT_MARKER'; payload: { markerId: string } }
   | { type: 'SET_ALIGNMENT_OVERLAY_VISIBILITY'; payload: { visible: boolean } }
   | { type: 'BEGIN_ALIGNMENT_POINT_PICK'; payload: { markerId: string } }
-  | { type: 'SET_RENDER_SUSPENDED'; payload: { suspended: boolean } };
+  | { type: 'SET_RENDER_SUSPENDED'; payload: { suspended: boolean } }
+  | { type: 'LAUNCH_XR'; payload: Record<string, never> };
 
 // ============================================================================
 // Engine Events (Engine -> UI)
