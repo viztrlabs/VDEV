@@ -34,6 +34,7 @@ import type {
   GTMSettings,
   GTMSettingsInput,
 } from '../super-admin-store-types';
+import { createSupabaseRepositoryFactory } from './supabase-repositories';
 
 export interface PaginationParams {
   page: number;
@@ -254,6 +255,10 @@ export async function createRepositoryFactory(mode: RepositoryMode = 'auto'): Pr
   }
   const { createMockRepositoryFactory } = await import('./mock-repositories');
   return createMockRepositoryFactory();
+}
+
+export function getSupabaseRepository(): RepositoryFactory {
+  return createSupabaseRepositoryFactory();
 }
 
 // Synchronous version for immediate use (mock only)

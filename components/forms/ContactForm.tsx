@@ -51,13 +51,13 @@ export default function ContactForm({ initialService = 'Exterior Visualization' 
 
   if (submitted) {
     return (
-      <div className="p-6 rounded-xl bg-[#18181B] border border-[#3ECF8E]/40 text-center space-y-4 animate-in fade-in">
-        <div className="w-10 h-10 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] flex items-center justify-center mx-auto">
+      <div className="p-6 rounded-xl bg-[#201f20] border border-[#dbfcff]/40 text-center space-y-4 animate-in fade-in">
+        <div className="w-10 h-10 rounded-full bg-[#dbfcff]/10 text-[#dbfcff] flex items-center justify-center mx-auto">
           <CheckCircle2 className="w-5 h-5" />
         </div>
-        <h3 className="text-lg font-bold text-[#FAFAFA]">Inquiry Received</h3>
+        <h3 className="text-lg font-bold text-[#e5e2e3]">Inquiry Received</h3>
         <p className="text-xs text-[#A1A1AA] max-w-md mx-auto">
-          Thank you, <strong className="text-[#FAFAFA]">{formData.name}</strong>. Our senior visual directors will review your project parameters and respond to <strong className="text-[#FAFAFA]">{formData.email}</strong> within 24 hours.
+          Thank you, <strong className="text-[#e5e2e3]">{formData.name}</strong>. Our senior visual directors will review your project parameters and respond to <strong className="text-[#e5e2e3]">{formData.email}</strong> within 24 hours.
         </p>
         <button
           onClick={() => {
@@ -72,7 +72,7 @@ export default function ContactForm({ initialService = 'Exterior Visualization' 
               honeypot: ''
             });
           }}
-          className="mt-3 px-5 py-2 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-[#FAFAFA] transition-colors cursor-pointer"
+          className="mt-3 px-5 py-2 rounded bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-xs font-mono text-[#e5e2e3] transition-colors cursor-pointer"
         >
           Send Another Message
         </button>
@@ -96,7 +96,7 @@ export default function ContactForm({ initialService = 'Exterior Visualization' 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-[#A1A1AA] mb-1.5">
-            Full Name <span className="text-[#3ECF8E]">*</span>
+            Full Name <span className="text-[#00F0FF]">*</span>
           </label>
           <input
             type="text"
@@ -105,13 +105,13 @@ export default function ContactForm({ initialService = 'Exterior Visualization' 
             placeholder="e.g. Sarah Sterling"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-3.5 py-2 rounded bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] transition-colors"
+            className="w-full px-3.5 py-2.5 rounded-full bg-[#131314] border border-[#3b494b] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#00F0FF] transition-colors"
           />
         </div>
 
         <div>
           <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-[#A1A1AA] mb-1.5">
-            Work Email <span className="text-[#3ECF8E]">*</span>
+            Work Email <span className="text-[#00F0FF]">*</span>
           </label>
           <input
             type="email"
@@ -120,7 +120,7 @@ export default function ContactForm({ initialService = 'Exterior Visualization' 
             placeholder="s.sterling@architects.com"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full px-3.5 py-2 rounded bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] transition-colors"
+            className="w-full px-3.5 py-2.5 rounded-full bg-[#131314] border border-[#3b494b] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#00F0FF] transition-colors"
           />
         </div>
       </div>
@@ -136,19 +136,19 @@ export default function ContactForm({ initialService = 'Exterior Visualization' 
             placeholder="+1 (555) 000-0000"
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-            className="w-full px-3.5 py-2 rounded bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] transition-colors"
+            className="w-full px-3.5 py-2.5 rounded-full bg-[#131314] border border-[#3b494b] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#00F0FF] transition-colors"
           />
         </div>
 
         <div>
           <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-[#A1A1AA] mb-1.5">
-            Service of Interest <span className="text-[#3ECF8E]">*</span>
+            Service of Interest <span className="text-[#00F0FF]">*</span>
           </label>
           <select
             id="contact-service"
             value={formData.service}
             onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-            className="w-full px-3.5 py-2 rounded bg-[#09090B] border border-[#27272A] text-xs text-white focus:outline-none focus:border-[#3ECF8E] transition-colors cursor-pointer"
+            className="w-full px-3.5 py-2.5 rounded-full bg-[#131314] border border-[#3b494b] text-xs text-white focus:outline-none focus:border-[#00F0FF] transition-colors cursor-pointer"
           >
             <option value="Exterior Visualization">Exterior Visualization</option>
             <option value="Interior Visualization">Interior Visualization</option>
@@ -164,7 +164,7 @@ export default function ContactForm({ initialService = 'Exterior Visualization' 
 
       <div>
         <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-[#A1A1AA] mb-1.5">
-          Project Details & Scope <span className="text-[#3ECF8E]">*</span>
+          Project Details & Scope <span className="text-[#00F0FF]">*</span>
         </label>
         <textarea
           required
@@ -173,7 +173,7 @@ export default function ContactForm({ initialService = 'Exterior Visualization' 
           placeholder="Please describe your development type, location, approximate square meters, timeline requirements, and available CAD/BIM assets..."
           value={formData.message}
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-          className="w-full px-3.5 py-2 rounded bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] transition-colors"
+          className="w-full px-3.5 py-2.5 rounded-2xl bg-[#131314] border border-[#3b494b] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#00F0FF] transition-colors"
         />
       </div>
 
@@ -185,7 +185,7 @@ export default function ContactForm({ initialService = 'Exterior Visualization' 
           required
           checked={formData.consent}
           onChange={(e) => setFormData({ ...formData, consent: e.target.checked })}
-          className="mt-0.5 h-3.5 w-3.5 rounded border-[#27272A] bg-[#09090B] text-[#3ECF8E] focus:ring-[#3ECF8E] cursor-pointer"
+          className="mt-0.5 h-3.5 w-3.5 rounded border-[#3b494b] bg-[#131314] text-[#00F0FF] focus:ring-[#00F0FF] cursor-pointer"
         />
         <label htmlFor="contact-consent" className="text-[11px] text-[#A1A1AA] leading-normal">
           I agree to allow VizTR to process my inquiry data and contact me regarding architectural visualization proposals.
@@ -196,7 +196,7 @@ export default function ContactForm({ initialService = 'Exterior Visualization' 
         type="submit"
         id="contact-submit-btn"
         disabled={loading}
-        className="w-full py-3 rounded bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+        className="w-full py-3.5 rounded-full bg-[#00F0FF] hover:bg-[#33f3ff] text-black font-display font-extrabold text-xs uppercase tracking-wider shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
       >
         {loading ? (
           <div className="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin" />

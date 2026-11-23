@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getSupabaseRepository } from '@/lib/repositories';
+import { createRepositoryFactory } from '@/lib/repositories';
 
 // GET /api/gtm/config - Publicly accessible lightweight configuration for frontend injection
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const repo = getSupabaseRepository();
+    const repo = await createRepositoryFactory();
     const settings = await repo.gtmSettings.get();
 
     if (!settings) {

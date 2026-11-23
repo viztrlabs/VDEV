@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getUserClient } from '@/lib/services/client';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { getRouteClient } from '@/lib/services/client';
 import ProjectExperienceHub, { HubService, HubProject } from '@/components/experience/ProjectExperienceHub';
 
 export const dynamic = 'force-dynamic';
@@ -20,11 +22,8 @@ interface ExperienceRow {
 /**
  * Experience Dashboard hub — one project URL, all enabled services.
  *
- * Data is fetched with the anon-key client so RLS decides access:
- * - experiences_anon_read allows published experiences of PUBLIC projects
- * - assets_anon_read allows media of PUBLIC / CLIENT_ONLY projects
- * Authenticated client access (CLIENT_ONLY projects) is a Phase 05 follow-up
- * that passes the session JWT through the same query path.
+ * Data is fetched with the user's session client when authenticated (respects
+ * CLIENT_ONLY project visibility), falling back to anon client for PUBLIC projects.
  */
 export default async function ExperienceHubPage({ params }: PageProps) {
   // Feature-flag gate (server-side read; flag env: NEXT_PUBLIC_FLAG_EXPERIENCE_HUB)
@@ -33,7 +32,12 @@ export default async function ExperienceHubPage({ params }: PageProps) {
   if (!hubEnabled) notFound();
 
   const { projectId } = await params;
-  const svc = getUserClient();
+
+  // Get the NextAuth session (if any) to create a Supabase client with the user's JWT
+  const session = await getServerSession(authOptions);
+  const supabaseAccessToken = (session?.user as any)?.supabaseAccessToken ?? null;
+
+  const svc = getRouteClient(supabaseAccessToken);
   if (!svc) notFound();
 
   const { data: project } = await svc.from('Project').select('*').eq('id', projectId).limit(1);
@@ -112,10 +116,10 @@ export default async function ExperienceHubPage({ params }: PageProps) {
 
   if (!hasAnyContent) {
     return (
-      <main className="min-h-screen flex flex-col items-center justify-center bg-[#09090B] text-[#FAFAFA] px-4">
+      <main className="min-h-screen flex flex-col items-center justify-center bg-[#131314] text-[#e5e2e3] px-4">
         <h1 className="text-2xl font-bold mb-2">{hubProject.name}</h1>
         <p className="text-sm text-[#A1A1AA] mb-6">No published experiences yet. Check back soon.</p>
-        <Link href="/" className="px-5 py-2.5 rounded bg-[#3ECF8E] text-black font-mono text-xs uppercase">
+        <Link href="/" className="px-5 py-2.5 rounded bg-[#dbfcff] text-black font-mono text-xs uppercase">
           Return to VizTR
         </Link>
       </main>

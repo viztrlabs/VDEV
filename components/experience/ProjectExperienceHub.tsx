@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -23,7 +23,8 @@ import {
   Smartphone,
   Monitor,
 } from 'lucide-react';
-import { detectCapabilities, type DeviceCapabilities, arFallbackMode, vrFallbackMode } from '@/lib/xr/capabilities';
+import { detectCapabilities, type DeviceCapabilities, arFallbackMode, vrFallbackMode, canRequestXR, launchQuickLook, requestARSession, requestVRSession } from '@/lib/xr/capabilities';
+import { useAppStore } from '@/lib/store';
 
 export interface HubExperience {
   id: string;
@@ -99,7 +100,16 @@ export default function ProjectExperienceHub({
   const [shared, setShared] = useState(false);
   const [showQr, setShowQr] = useState(false);
   const [lightbox, setLightbox] = useState<{ url: string; type: 'image' | 'video' } | null>(null);
+  const [launchError, setLaunchError] = useState<string | null>(null);
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Immersive launch state lives in the store so the deep ExperienceViewer tree
+  // can start a real XR session without losing the user-gesture context.
+  const xrMode = useAppStore((s) => s.xrMode);
+  const xrSession = useAppStore((s) => s.xrSession);
+  const startXR = useAppStore((s) => s.startXR);
+  const endXR = useAppStore((s) => s.endXR);
+  const setXRError = useAppStore((s) => s.setXRError);
 
   useEffect(() => {
     detectCapabilities().then(setCaps).catch(() => setCaps(null));
@@ -111,6 +121,71 @@ export default function ProjectExperienceHub({
   );
 
   const activeExperience = active?.experiences[0] || null;
+
+  const isAR = active?.slug === 'webar';
+  const isVR = active?.slug === 'virtual-reality';
+
+  // Best-effort USDZ asset for iOS AR Quick Look across common config shapes.
+  const usdzUrl = useMemo(() => {
+    const c = (activeExperience?.config || {}) as Record<string, any>;
+    const url = c.usdz || c.quickLook?.usdz || c.ar?.usdz || c.ios?.quickLookUrl;
+    return (url as string) || null;
+  }, [activeExperience]);
+
+  /**
+   * Launch (or exit) an immersive session. MUST run from a click handler so the
+   * browser's requestSession() keeps the user-gesture / camera-permission prompt.
+   */
+  const handleLaunchImmersive = useCallback(
+    async (target: 'ar' | 'vr') => {
+      setLaunchError(null);
+      const xr = (navigator as any).xr;
+
+      // iOS Quick Look (AR only) — requires a .usdz asset.
+      if (target === 'ar' && caps?.ios && usdzUrl) {
+        if (launchQuickLook(usdzUrl)) return;
+        const m = 'AR Quick Look could not be opened on this device.';
+        setLaunchError(m);
+        setXRError(m);
+        return;
+      }
+
+      const activeMode = target === 'ar' ? 'immersive-ar' : 'immersive-vr';
+      // Toggle off if already running this mode.
+      if (xrMode === activeMode) {
+        endXR();
+        return;
+      }
+
+      const supported =
+        target === 'ar' ? (caps?.webxrAR ?? canRequestXR()) : (caps?.webxrVR ?? canRequestXR());
+
+      if (canRequestXR() && supported) {
+        try {
+          // requestARSession/requestVRSession invoke navigator.xr.requestSession
+          // synchronously as their first action, preserving the gesture context.
+          const session = target === 'ar' ? await requestARSession() : await requestVRSession();
+          startXR(activeMode, session);
+          return;
+        } catch (e: any) {
+          const m = e?.message || `Failed to start ${activeMode}.`;
+          setLaunchError(m);
+          setXRError(m);
+          return;
+        }
+      }
+
+      const m =
+        !xr || !canRequestXR()
+          ? 'WebXR is not available in this browser. Showing the interactive 3D preview instead.'
+          : target === 'ar'
+            ? 'Immersive AR is not supported on this device. Showing the 3D preview — scan the QR code to open on an AR-capable phone.'
+            : 'Immersive VR is not supported on this device. Showing the 3D preview instead.';
+      setLaunchError(m);
+      setXRError(m);
+    },
+    [caps, usdzUrl, xrMode, startXR, endXR, setXRError]
+  );
 
   // Minimal QR code generator (simplified visual pattern)
   const generateQr = useCallback((url: string) => {
@@ -274,12 +349,56 @@ export default function ProjectExperienceHub({
         })}
       </nav>
 
-      {/* Capability banner */}
-      {capabilityNote && (
-        <div className="shrink-0 px-4 sm:px-6 py-2 bg-zinc-900/60 border-b border-zinc-800 text-[11px] text-zinc-400 flex items-center gap-2">
-          {activeSlug === 'virtual-reality' && <Headset className="w-3.5 h-3.5 text-[#dbfcff]" />}
-          {activeSlug === 'webar' && <Camera className="w-3.5 h-3.5 text-[#dbfcff]" />}
-          <span className="font-mono">{capabilityNote}</span>
+      {/* Immersive (AR/VR) control bar */}
+      {(isAR || isVR) && activeExperience && (
+        <div className="shrink-0 px-4 sm:px-6 py-2.5 bg-zinc-900/70 border-b border-zinc-800 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <div className="flex items-center gap-2 text-[11px] font-mono text-zinc-400 min-w-0">
+            {isVR ? (
+              <Headset className="w-3.5 h-3.5 text-[#dbfcff] shrink-0" />
+            ) : (
+              <Camera className="w-3.5 h-3.5 text-[#dbfcff] shrink-0" />
+            )}
+            <span className="truncate">
+              {capabilityNote ||
+                (isAR
+                  ? 'WebAR — browser-native augmented reality.'
+                  : 'WebXR VR — immersive headset experience.')}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 ml-auto shrink-0">
+            {xrMode && (
+              <span className="text-[10px] font-mono text-emerald-300 px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/30">
+                {xrMode === 'immersive-ar' ? 'AR LIVE' : 'VR LIVE'}
+              </span>
+            )}
+            <button
+              onClick={() => handleLaunchImmersive(isAR ? 'ar' : 'vr')}
+              className="px-3 py-1.5 rounded-lg bg-[#00F0FF] hover:bg-[#00d4e6] text-black text-[11px] font-mono font-bold uppercase tracking-wider transition-colors cursor-pointer"
+            >
+              {xrMode
+                ? 'Exit AR/VR'
+                : isAR
+                  ? caps?.ios && usdzUrl
+                    ? 'Open in AR (Quick Look)'
+                    : 'Launch AR'
+                  : 'Enter VR'}
+            </button>
+            {!xrMode &&
+              !(isAR && caps?.ios && usdzUrl) &&
+              !((isAR ? caps?.webxrAR : caps?.webxrVR) ?? false) && (
+                <button
+                  onClick={showQrCode}
+                  className="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-[11px] font-mono uppercase tracking-wider border border-zinc-700 transition-colors cursor-pointer"
+                >
+                  QR to mobile
+                </button>
+              )}
+          </div>
+
+          {launchError && (
+            <p className="w-full text-[10px] font-mono text-rose-300 leading-snug">{launchError}</p>
+          )}
         </div>
       )}
 
@@ -290,6 +409,7 @@ export default function ProjectExperienceHub({
         ) : activeExperience ? (
           <div className="absolute inset-0">
             <ExperienceViewer
+              key={`${project.id}-${active?.slug}-${activeExperience.id}-${xrMode ?? 'preview'}-${xrSession ? 'session' : 'preview'}`}
               experience={{ id: activeExperience.id, title: activeExperience.title }}
               config={{ config: activeExperience.config || {} }}
             />

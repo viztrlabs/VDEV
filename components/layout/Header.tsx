@@ -170,7 +170,6 @@ export default function Header() {
     setXrOpen(false);
   }; // No automatic close on mouse leave
 
-  const isHomeActive = pathname === '/';
   const isAnyMenuOpen = studioOpen || xrOpen || contactOpen || mobileMenuOpen;
   const shouldShowNav = isNavVisible || isAnyMenuOpen;
 
@@ -179,8 +178,6 @@ export default function Header() {
       <header
         id="main-header"
         className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ease-in-out ${
-          isHomeActive ? 'is-landing-header' : ''
-        } ${
           shouldShowNav
             ? 'opacity-100 translate-y-0 pointer-events-auto'
             : 'opacity-0 -translate-y-full pointer-events-none'
@@ -194,24 +191,20 @@ export default function Header() {
             id="header-logo-link"
             className="flex items-center gap-2.5 group shrink-0 cursor-pointer flex-shrink-0"
           >
-            <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:scale-105 transition-all shrink-0 p-1 shadow-[0_0_12px_rgba(0,240,255,0.25)]">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center group-hover:scale-105 transition-all shrink-0 p-1 shadow-[0_0_12px_var(--accent-glow)]">
               <ViztrLogoMark className="w-5 h-5" variant="cyan" />
             </div>
             <div className="flex items-center font-display text-xl font-bold tracking-tight">
-              <span className="text-white animate-[pulse_2s_ease-in-out_infinite]">Viz</span>
-              <span className="text-[#00F0FF] animate-[pulse_2.5s_ease-in-out_infinite]">TR</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#00F0FF] -mt-2.5 ml-0.5 shadow-[0_0_8px_#00F0FF]" />
+<span className="text-white animate-[pulse_2s_ease_in_out_infinite]">Viz</span>
+<span className="text-[var(--primary)] animate-[pulse_2.5s_ease_in_out_infinite]">TR</span>
+<span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] -mt-2.5 ml-0.5 shadow-[0_0_8px_var(--primary)]" />
             </div>
           </Link>
 
           {/* MID SECTION: Navigation Cluster (STUDIO, XR WORLD, CONTACT) Centered in Mid */}
           <nav
             id="header-mid-menu"
-            className={`!hidden md:!flex absolute left-1/2 -translate-x-1/2 flex-row items-center p-1 rounded-full transition-all duration-300 ease-in-out ${
-              isHomeActive
-                ? 'header-mid-menu-landing bg-transparent border-transparent shadow-none '
-                : 'header-mid-menu-cluster'
-            }`}
+            className="!hidden md:!flex absolute left-1/2 -translate-x-1/2 flex-row items-center p-1 rounded-full header-mid-menu-cluster transition-all duration-300 ease-in-out"
             aria-label="Main Navigation"
           >
             {/* 1. STUDIO PILL BUTTON */}
@@ -223,19 +216,19 @@ export default function Header() {
                 id="nav-dropdown-studio"
                 className={`header-cluster-btn flex items-center gap-2 px-3.5 py-1.5 rounded-full transition-all duration-300 font-mono text-[11px] sm:text-xs font-bold uppercase tracking-wider cursor-pointer select-none border ${
                   studioOpen
-                    ? 'active bg-[#00F0FF]/20 border-[#00F0FF]/60 text-white shadow-[0_0_12px_rgba(0,240,255,0.3)] scale-[1.02]'
-                    : 'border-transparent text-[#dce5ff] hover:text-[#00F0FF] hover:bg-white/5 opacity-75 hover:opacity-100'
+                    ? 'active bg-[var(--primary)]/20 border-[var(--primary)]/60 text-white shadow-[0_0_12px_var(--accent-glow)] scale-[1.02]'
+                    : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--primary)] hover:bg-white/5 opacity-75 hover:opacity-100'
                 }`}
                 onClick={() => { setStudioOpen(!studioOpen); setXrOpen(false); setContactOpen(false); }}
                 aria-expanded={studioOpen}
               >
-                <Box className={`w-3.5 h-3.5 transition-colors ${studioOpen ? 'text-[#00F0FF]' : 'opacity-60'}`} />
-                <span className={studioOpen ? 'text-[#00F0FF]' : ''}>Studio</span>
-                <ChevronDown
-                  className={`w-3 h-3 transition-transform duration-300 ${
-                    studioOpen ? 'rotate-180 text-[#00F0FF]' : 'opacity-50'
-                  }`}
-                />
+<Box className={`w-3.5 h-3.5 transition-colors ${studioOpen ? 'text-[var(--primary)]' : 'opacity-60'}`} />
+<span className={studioOpen ? 'text-[var(--primary)]' : ''}>Studio</span>
+<ChevronDown
+  className={`w-3 h-3 transition-transform duration-300 ${
+    studioOpen ? 'rotate-180 text-[var(--primary)]' : 'opacity-50'
+  }`}
+/>
               </button>
 
               {/* STUDIO DROPDOWN (Hierarchy: Still Renders -> Exterior/Interior, Animation & Walkthrough) */}
@@ -244,7 +237,7 @@ export default function Header() {
                   id="studio-dropdown-menu"
                   className="header-mid-dropdown absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-64 rounded-2xl py-2 z-[100] animate-in fade-in slide-in-from-top-2 duration-150 before:content-[''] before:absolute before:-top-3.5 before:left-0 before:right-0 before:h-3.5"
                 >
-                  <div className="dropdown-label px-3.5 py-1 text-[10px] font-bold uppercase tracking-widest text-[#a1abc4]">
+                  <div className="dropdown-label px-3.5 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
                     Studio Pipelines
                   </div>
 
@@ -256,15 +249,15 @@ export default function Header() {
                         e.stopPropagation();
                         setStillRendersSubOpen(!stillRendersSubOpen);
                       }}
-                      className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold rounded-lg text-[#dce5ff] hover:bg-white/10 transition-colors cursor-pointer group"
+                      className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold rounded-lg text-[var(--text-secondary)] hover:bg-white/10 transition-colors cursor-pointer group"
                       aria-expanded={stillRendersSubOpen}
                     >
                       <div className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] shadow-[0_0_6px_var(--primary)]" />
                         <span className="item-title font-semibold text-white">Still Renders</span>
                       </div>
                       <ChevronDown
-                        className={`w-3.5 h-3.5 text-cyan-400 transition-transform duration-200 ${
+                        className={`w-3.5 h-3.5 text-[var(--primary)] transition-transform duration-200 ${
                           stillRendersSubOpen ? 'rotate-180' : 'rotate-0'
                         }`}
                       />
@@ -272,18 +265,18 @@ export default function Header() {
 
                     {/* Nested Items: Exterior & Interior */}
                     {stillRendersSubOpen && (
-                      <div className="ml-3 pl-3 my-1 space-y-1 border-l-2 border-cyan-400/40 animate-in fade-in slide-in-from-top-1 duration-150">
+                      <div className="ml-3 pl-3 my-1 space-y-1 border-l-2 border-[var(--primary)]/40 animate-in fade-in slide-in-from-top-1 duration-150">
                         <Link
                           href="/studio/exterior"
                           id="dropdown-item-exterior"
                           onClick={() => setStudioOpen(false)}
-                          className="item-link block px-2.5 py-1.5 text-xs text-[#dce5ff] hover:bg-white/10 transition-colors rounded-md"
+                          className="item-link block px-2.5 py-1.5 text-xs text-[var(--text-secondary)] hover:bg-white/10 transition-colors rounded-md"
                         >
                           <div className="item-title font-semibold text-white flex items-center justify-between">
                             <span>Exterior</span>
-                            <span className="text-[9px] font-mono text-cyan-400 bg-black/50 px-1.5 py-0.5 rounded">8K</span>
+                            <span className="text-[9px] font-mono text-[var(--primary)] bg-black/50 px-1.5 py-0.5 rounded">8K</span>
                           </div>
-                          <div className="item-subtitle text-[11px] text-[#a1abc4] font-normal mt-0.5">
+                          <div className="item-subtitle text-[11px] text-[var(--text-muted)] font-normal mt-0.5">
                             Photorealistic daylight & twilight CGI
                           </div>
                         </Link>
@@ -292,12 +285,12 @@ export default function Header() {
                           href="/studio/interior"
                           id="dropdown-item-interior"
                           onClick={() => setStudioOpen(false)}
-                          className="item-link block px-2.5 py-1.5 text-xs text-[#dce5ff] hover:bg-white/10 transition-colors rounded-md"
+                          className="item-link block px-2.5 py-1.5 text-xs text-[var(--text-secondary)] hover:bg-white/10 transition-colors rounded-md"
                         >
                           <div className="item-title font-semibold text-white flex items-center justify-between">
                             <span>Interior</span>
                           </div>
-                          <div className="item-subtitle text-[11px] text-[#a1abc4] font-normal mt-0.5">
+                          <div className="item-subtitle text-[11px] text-[var(--text-muted)] font-normal mt-0.5">
                             Luxury staging & finishes
                           </div>
                         </Link>
@@ -323,11 +316,11 @@ export default function Header() {
                     </Link>
                   </div>
 
-                  <div className="border-t border-[#3e485e]/50 my-1.5" />
+                  <div className="border-t border-[var(--border)]/50 my-1.5" />
                   <Link
                     href="/studio"
                     onClick={() => setStudioOpen(false)}
-                    className="block px-3.5 py-1 text-[11px] font-semibold text-cyan-400 hover:underline"
+                    className="block px-3.5 py-1 text-[11px] font-semibold text-[var(--primary)] hover:underline"
                   >
                     View All Studio Services →
                   </Link>
@@ -336,32 +329,30 @@ export default function Header() {
             </div>
 
             {/* SUBTLE VERTICAL DIVIDER */}
-            {!isHomeActive && (
-              <div className="header-cluster-divider w-[1px] h-4 bg-[#3e485e]/50 mx-0.5 shrink-0" />
-            )}
+            <div className="header-cluster-divider w-[1px] h-4 bg-[var(--border)]/50 mx-0.5 shrink-0" />
 
             {/* 2. XR WORLD PILL BUTTON */}
             <div
               className="relative"
               onMouseEnter={handleXrEnter}
             >
-              <button
+<button
                 id="nav-dropdown-xr"
                 className={`header-cluster-btn flex items-center gap-2 px-3.5 py-1.5 rounded-full transition-all duration-300 font-mono text-[11px] sm:text-xs font-bold uppercase tracking-wider cursor-pointer select-none border ${
                   xrOpen
-                    ? 'active bg-[#00F0FF]/20 border-[#00F0FF]/60 text-white shadow-[0_0_12px_rgba(0,240,255,0.3)] scale-[1.02]'
-                    : 'border-transparent text-[#dce5ff] hover:text-[#00F0FF] hover:bg-white/5 opacity-75 hover:opacity-100'
+                    ? 'active bg-[var(--primary)]/20 border-[var(--primary)]/60 text-white shadow-[0_0_12px_var(--accent-glow)] scale-[1.02]'
+                    : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--primary)] hover:bg-white/5 opacity-75 hover:opacity-100'
                 }`}
                 onClick={() => { setXrOpen(!xrOpen); setStudioOpen(false); setContactOpen(false); }}
                 aria-expanded={xrOpen}
               >
-                <Sparkles className={`w-3.5 h-3.5 transition-colors ${xrOpen ? 'text-[#00F0FF]' : 'opacity-60'}`} />
-                <span className={xrOpen ? 'text-[#00F0FF]' : ''}>XR World</span>
+                <Sparkles className={`w-3.5 h-3.5 transition-colors ${xrOpen ? 'text-[var(--primary)]' : 'opacity-60'}`} />
+                <span className={xrOpen ? 'text-[var(--primary)]' : ''}>XR World</span>
                 <ChevronDown
                   className={`w-3 h-3 transition-transform duration-300 ${
-                    xrOpen ? 'rotate-180 text-[#00F0FF]' : 'opacity-50'
+                    xrOpen ? 'rotate-180 text-[var(--primary)]' : 'opacity-50'
                   }`}
-                />
+/>
               </button>
 
               {/* XR WORLD DROPDOWN */}
@@ -370,7 +361,7 @@ export default function Header() {
                   id="xr-dropdown-menu"
                   className="header-mid-dropdown absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-72 rounded-2xl py-2 z-[100] animate-in fade-in slide-in-from-top-2 duration-150 before:content-[''] before:absolute before:-top-3.5 before:left-0 before:right-0 before:h-3.5"
                 >
-                  <div className="dropdown-label px-3.5 py-1 text-[10px] font-bold uppercase tracking-widest text-[#a1abc4]">
+                  <div className="dropdown-label px-3.5 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
                     Spatial Computing Stack
                   </div>
 
@@ -379,15 +370,15 @@ export default function Header() {
                     href="/xr-world/webxr"
                     id="dropdown-item-webxr"
                     onClick={() => setXrOpen(false)}
-                    className="item-link block px-3 py-2 text-xs text-[#dce5ff] hover:bg-white/10 transition-colors rounded-lg mx-1"
+                    className="item-link block px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-white/10 transition-colors rounded-lg mx-1"
                   >
                     <div className="item-title font-semibold text-white flex items-center justify-between">
                       <span>WebXR</span>
-                      <span className="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded bg-black/60 text-cyan-400">
+                      <span className="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded bg-black/60 text-[var(--primary)]">
                         Zero Install
                       </span>
                     </div>
-                    <div className="item-subtitle text-[11px] text-[#a1abc4] font-normal mt-0.5">
+                    <div className="item-subtitle text-[11px] text-[var(--text-muted)] font-normal mt-0.5">
                       Interactive 3D geometry & PBR material swap
                     </div>
                   </Link>
@@ -397,12 +388,12 @@ export default function Header() {
                     href="/xr-world/webar"
                     id="dropdown-item-webar"
                     onClick={() => setXrOpen(false)}
-                    className="item-link block px-3 py-2 text-xs text-[#dce5ff] hover:bg-white/10 transition-colors rounded-lg mx-1"
+                    className="item-link block px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-white/10 transition-colors rounded-lg mx-1"
                   >
                     <div className="item-title font-semibold text-white">
                       WebAR
                     </div>
-                    <div className="item-subtitle text-[11px] text-[#a1abc4] font-normal mt-0.5">
+                    <div className="item-subtitle text-[11px] text-[var(--text-muted)] font-normal mt-0.5">
                       Tabletop & 1:1 real-world projection
                     </div>
                   </Link>
@@ -412,12 +403,12 @@ export default function Header() {
                     href="/xr-world/virtual-reality"
                     id="dropdown-item-vr"
                     onClick={() => setXrOpen(false)}
-                    className="item-link block px-3 py-2 text-xs text-[#dce5ff] hover:bg-white/10 transition-colors rounded-lg mx-1"
+                    className="item-link block px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-white/10 transition-colors rounded-lg mx-1"
                   >
                     <div className="item-title font-semibold text-white">
                       VR – Virtual Reality
                     </div>
-                    <div className="item-subtitle text-[11px] text-[#a1abc4] font-normal mt-0.5">
+                    <div className="item-subtitle text-[11px] text-[var(--text-muted)] font-normal mt-0.5">
                       Meta Quest & Apple Vision Pro immersion
                     </div>
                   </Link>
@@ -427,12 +418,12 @@ export default function Header() {
                     href="/xr-world/virtual-tour"
                     id="dropdown-item-tour"
                     onClick={() => setXrOpen(false)}
-                    className="item-link block px-3 py-2 text-xs text-[#dce5ff] hover:bg-white/10 transition-colors rounded-lg mx-1"
+                    className="item-link block px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-white/10 transition-colors rounded-lg mx-1"
                   >
                     <div className="item-title font-semibold text-white">
                       Virtual Tour
                     </div>
-                    <div className="item-subtitle text-[11px] text-[#a1abc4] font-normal mt-0.5">
+                    <div className="item-subtitle text-[11px] text-[var(--text-muted)] font-normal mt-0.5">
                       16K 360° panoramic hotspot tours
                     </div>
                   </Link>
@@ -442,24 +433,24 @@ export default function Header() {
                     href="/xr-world/vizsplat"
                     id="dropdown-item-vizsplat"
                     onClick={() => setXrOpen(false)}
-                    className="item-link block px-3 py-2 text-xs text-[#dce5ff] hover:bg-white/10 transition-colors rounded-lg mx-1"
+                    className="item-link block px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-white/10 transition-colors rounded-lg mx-1"
                   >
-                    <div className="item-title font-semibold text-white flex items-center justify-between">
+                    <div className="item-title font-semibold text-white flex items_center justify-between">
                       <span>VizSplat</span>
                       <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-rose-500 text-white font-mono">
                         NEW
                       </span>
                     </div>
-                    <div className="item-subtitle text-[11px] text-[#a1abc4] font-normal mt-0.5">
+                    <div className="item-subtitle text-[11px] text-[var(--text-muted)] font-normal mt-0.5">
                       Gaussian Splatting 3D capture & editing
                     </div>
                   </Link>
 
-                  <div className="border-t border-[#3e485e]/50 my-1.5" />
+                  <div className="border-t border-[var(--border)]/50 my-1.5" />
                   <Link
                     href="/xr-world"
                     onClick={() => setXrOpen(false)}
-                    className="block px-3.5 py-1 text-[11px] font-semibold text-cyan-400 hover:underline"
+                    className="block px-3.5 py-1 text-[11px] font-semibold text-[var(--primary)] hover:underline"
                   >
                     Explore XR World Hub →
                   </Link>
@@ -468,32 +459,30 @@ export default function Header() {
             </div>
 
             {/* SUBTLE VERTICAL DIVIDER */}
-            {!isHomeActive && (
-              <div className="header-cluster-divider w-[1px] h-4 bg-[#3e485e]/50 mx-0.5 shrink-0" />
-            )}
+            <div className="header-cluster-divider w-[1px] h-4 bg-[var(--border)]/50 mx-0.5 shrink-0" />
 
             {/* 3. CONTACT PILL BUTTON */}
             <div
               className="relative"
               onMouseEnter={handleContactEnter}
             >
-              <button
+<button
                 id="nav-dropdown-contact"
                 className={`header-cluster-btn flex items-center gap-2 px-3.5 py-1.5 rounded-full transition-all duration-300 font-mono text-[11px] sm:text-xs font-bold uppercase tracking-wider cursor-pointer select-none border ${
                   contactOpen
-                    ? 'active bg-[#00F0FF]/20 border-[#00F0FF]/60 text-white shadow-[0_0_12px_rgba(0,240,255,0.3)] scale-[1.02]'
-                    : 'border-transparent text-[#dce5ff] hover:text-[#00F0FF] hover:bg-white/5 opacity-75 hover:opacity-100'
+                    ? 'active bg-[var(--primary)]/20 border-[var(--primary)]/60 text-white shadow-[0_0_12px_var(--accent-glow)] scale-[1.02]'
+                    : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--primary)] hover:bg-white/5 opacity-75 hover:opacity-100'
                 }`}
                 onClick={() => { setContactOpen(!contactOpen); setStudioOpen(false); setXrOpen(false); }}
                 aria-expanded={contactOpen}
               >
-                <Send className={`w-3.5 h-3.5 transition-colors ${contactOpen ? 'text-[#00F0FF]' : 'opacity-60'}`} />
-                <span className={contactOpen ? 'text-[#00F0FF]' : ''}>Contact</span>
+                <Send className={`w-3.5 h-3.5 transition-colors ${contactOpen ? 'text-[var(--primary)]' : 'opacity-60'}`} />
+                <span className={contactOpen ? 'text-[var(--primary)]' : ''}>Contact</span>
                 <ChevronDown
                   className={`w-3 h-3 transition-transform duration-300 ${
-                    contactOpen ? 'rotate-180 text-[#00F0FF]' : 'opacity-50'
+                    contactOpen ? 'rotate-180 text-[var(--primary)]' : 'opacity-50'
                   }`}
-                />
+/>
               </button>
 
               {/* CONTACT DROPDOWN */}
@@ -502,17 +491,17 @@ export default function Header() {
                   id="contact-dropdown-menu"
                   className="header-mid-dropdown absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-64 rounded-2xl py-2 z-[100] animate-in fade-in slide-in-from-top-2 duration-150 before:content-[''] before:absolute before:-top-3.5 before:left-0 before:right-0 before:h-3.5"
                 >
-                  <div className="dropdown-label px-3.5 py-1 text-[10px] font-bold uppercase tracking-widest text-[#a1abc4]">
+                  <div className="dropdown-label px-3.5 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
                     Get in Touch
                   </div>
                   <Link
                     href="/contact"
                     id="dropdown-item-contact-main"
                     onClick={() => setContactOpen(false)}
-                    className="item-link block px-3 py-2 text-xs text-[#dce5ff] hover:bg-white/10 transition-colors rounded-lg mx-1"
+                    className="item-link block px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-white/10 transition-colors rounded-lg mx-1"
                   >
                     <div className="item-title font-semibold text-white">Project Inquiry</div>
-                    <div className="item-subtitle text-[11px] text-[#a1abc4] font-normal mt-0.5">
+                    <div className="item-subtitle text-[11px] text-[var(--text-muted)] font-normal mt-0.5">
                       Discuss briefs, timelines & estimates
                     </div>
                   </Link>
@@ -520,10 +509,10 @@ export default function Header() {
                     href="/book-consultation"
                     id="dropdown-item-consultation"
                     onClick={() => setContactOpen(false)}
-                    className="item-link block px-3 py-2 text-xs text-[#dce5ff] hover:bg-white/10 transition-colors rounded-lg mx-1"
+                    className="item-link block px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-white/10 transition-colors rounded-lg mx-1"
                   >
                     <div className="item-title font-semibold text-white">Book Consultation</div>
-                    <div className="item-subtitle text-[11px] text-[#a1abc4] font-normal mt-0.5">
+                    <div className="item-subtitle text-[11px] text-[var(--text-muted)] font-normal mt-0.5">
                       Live 1-on-1 virtual architectural session
                     </div>
                   </Link>
@@ -531,22 +520,22 @@ export default function Header() {
                     href="/track-project"
                     id="dropdown-item-track"
                     onClick={() => setContactOpen(false)}
-                    className="item-link block px-3 py-2 text-xs text-[#dce5ff] hover:bg-white/10 transition-colors rounded-lg mx-1"
+                    className="item-link block px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-white/10 transition-colors rounded-lg mx-1"
                   >
                     <div className="item-title font-semibold text-white">Track Project</div>
-                    <div className="item-subtitle text-[11px] text-[#a1abc4] font-normal mt-0.5">
+                    <div className="item-subtitle text-[11px] text-[var(--text-muted)] font-normal mt-0.5">
                       Real-time pipeline render status
                     </div>
                   </Link>
-                  <div className="border-t border-[#3e485e]/50 my-1.5" />
+                  <div className="border-t border-[var(--border)]/50 my-1.5" />
                   <div className="px-3.5 py-1.5 space-y-1">
                     <a
                       href="mailto:viztr.studio@gmail.com"
-                      className="block text-[11px] font-mono text-cyan-400 hover:underline"
+                      className="block text-[11px] font-mono text-[var(--primary)] hover:underline"
                     >
                       viztr.studio@gmail.com
                     </a>
-                    <span className="item-subtitle block text-[11px] font-mono text-[#a1abc4]">
+                    <span className="item-subtitle block text-[11px] font-mono text-[var(--text-muted)]">
                       +1 (555) 123-4567
                     </span>
                   </div>
@@ -559,31 +548,25 @@ export default function Header() {
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             {/* 3 Buttons Group: Theme, Message, Sign In */}
             <div
-              className={`hidden sm:flex items-center gap-1.5 p-1 rounded-full transition-all ${
-                isHomeActive
-                  ? 'header-mid-menu-landing bg-transparent border-transparent shadow-none '
-                  : 'header-mid-menu-cluster'
-              }`}
+              className="hidden sm:flex items-center gap-1.5 p-1 rounded-full header-mid-menu-cluster transition-all"
             >
               {/* 1. Theme Toggle Button */}
               <button
                 type="button"
                 onClick={cycleLightDarkSystem}
-                className="header-cluster-btn p-1.5 rounded-full text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer flex items-center justify-center"
+                className="header-cluster-btn p-1.5 rounded-full text-[var(--primary)] hover:text-[var(--primary-hover)] transition-colors cursor-pointer flex items-center justify-center"
                 title={`Current theme: ${resolvedTheme.toUpperCase()} (Click to toggle Light / Dark)`}
                 aria-label="Toggle Light and Dark theme"
               >
                 {resolvedTheme === 'light' ? (
                   <Sun className="w-4 h-4 text-amber-500" />
                 ) : (
-                  <Moon className="w-4 h-4 text-cyan-400" />
+                  <Moon className="w-4 h-4 text-[var(--primary)]" />
                 )}
               </button>
 
               {/* Divider */}
-              {!isHomeActive && (
-                <div className="header-cluster-divider w-[1px] h-3.5 bg-[#3e485e]/50 mx-0.5 shrink-0" />
-              )}
+              <div className="header-cluster-divider w-[1px] h-3.5 bg-[var(--border)]/50 mx-0.5 shrink-0" />
 
               {/* 2. Message Button */}
               <button
@@ -591,8 +574,8 @@ export default function Header() {
                 onClick={() => setAgentClosed(!isAgentClosed)}
                 className={`header-cluster-btn p-1.5 rounded-full transition-all cursor-pointer flex items-center justify-center ${
                   !isAgentClosed
-                    ? 'text-[#00F0FF] bg-[#00F0FF]/20 shadow-[0_0_10px_rgba(0,240,255,0.4)]'
-                    : 'text-[#dce5ff] hover:text-[#00F0FF] hover:bg-white/5 opacity-80 hover:opacity-100'
+                    ? 'text-[var(--primary)] bg-[var(--primary)]/20 shadow-[0_0_10px_var(--accent-glow)]'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--primary)] hover:bg-white/5 opacity-80 hover:opacity-100'
                 }`}
                 title={isAgentClosed ? 'Open VIZTR Messaging Agent' : 'Close VIZTR Messaging Agent'}
                 aria-label="Toggle Messaging Agent"
@@ -601,15 +584,13 @@ export default function Header() {
               </button>
 
               {/* Divider */}
-              {!isHomeActive && (
-                <div className="header-cluster-divider w-[1px] h-3.5 bg-[#3e485e]/50 mx-0.5 shrink-0" />
-              )}
+              <div className="header-cluster-divider w-[1px] h-3.5 bg-[var(--border)]/50 mx-0.5 shrink-0" />
 
               {/* 3. Sign In Button (Icon Only) */}
               <Link
                 href={user ? '/client-dashboard' : '/client-access'}
                 id="header-client-access-btn"
-                className="header-cluster-btn p-1.5 rounded-full text-[#dce5ff] hover:text-[#00F0FF] hover:bg-white/5 transition-all cursor-pointer flex items-center justify-center"
+                className="header-cluster-btn p-1.5 rounded-full text-[var(--text-secondary)] hover:text-[var(--primary)] hover:bg-white/5 transition-all cursor-pointer flex items-center justify-center"
                 title={user ? `Logged in as ${user.name}` : 'Sign In / Client Access'}
                 aria-label="Sign In"
               >
@@ -627,14 +608,10 @@ export default function Header() {
             <button
               id="mobile-menu-toggle-btn"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`md:hidden p-2 sm:p-2.5 rounded-full transition-all cursor-pointer flex items-center justify-center active:scale-95 ${
-                isHomeActive
-                  ? 'bg-transparent border-transparent text-white hover:text-[#00F0FF] shadow-none'
-                  : 'border border-white/10 dark:border-white/15 bg-black/40 dark:bg-black/50  text-zinc-200 hover:text-[#00F0FF] hover:border-[#00F0FF]/40 shadow-[0_2px_10px_rgba(0,0,0,0.3)]'
-              }`}
+              className="md:hidden p-2 sm:p-2.5 rounded-full transition-all cursor-pointer flex items-center justify-center active:scale-95 border border-white/10 dark:border-white/15 bg-black/40 dark:bg-black/50  text-zinc-200 hover:text-[var(--primary)] hover:border-[var(--primary)]/40 shadow-[0_2px_10px_rgba(0,0,0,0.3)]"
               aria-label="Toggle navigation menu"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5 text-[#00F0FF]" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 text-[var(--primary)]" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
@@ -653,7 +630,7 @@ export default function Header() {
           {/* Mobile Menu Panel - Slides from right */}
           <div
             id="mobile-nav-overlay"
-            className="fixed inset-y-0 right-0 z-[120] w-full sm:w-[380px] sm:max-w-sm md:hidden animate-in slide-in-from-right-full duration-300 ease-out shadow-2xl flex flex-col bg-[#131314] border-l border-white/10 dark:border-white/10"
+            className="fixed inset-y-0 right-0 z-[120] w-full sm:w-[380px] sm:max-w-sm md:hidden animate-in slide-in-from-right-full duration-300 ease-out shadow-2xl flex flex-col bg-[var(--bg-card)] border-l border-white/10 dark:border-white/10"
             role="dialog"
             aria-modal="true"
             aria-label="Navigation menu"
@@ -661,13 +638,13 @@ export default function Header() {
             {/* Header with brand logo and close button */}
             <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/10 dark:border-white/10 shrink-0">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full flex items-center justify-center p-0.5 shadow-[0_0_10px_rgba(0,240,255,0.25)]">
+                <div className="w-7 h-7 rounded-full flex items-center justify-center p-0.5 shadow-[0_0_10px_var(--accent-glow)]">
                   <ViztrLogoMark className="w-4 h-4" variant="cyan" />
                 </div>
                 <div className="flex items-center font-display text-base font-bold tracking-tight">
                   <span className="text-white">Viz</span>
-                  <span className="text-[#00F0FF]">TR</span>
-                  <span className="w-1 h-1 rounded-full bg-[#00F0FF] -mt-2 ml-0.5 shadow-[0_0_6px_#00F0FF]" />
+                  <span className="text-[var(--primary)]">TR</span>
+                  <span className="w-1 h-1 rounded-full bg-[var(--primary)] -mt-2 ml-0.5 shadow-[0_0_6px_var(--primary)]" />
                 </div>
               </div>
               <button
@@ -697,17 +674,17 @@ export default function Header() {
                   onClick={() => setMobileStudioOpen(!mobileStudioOpen)}
                   className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all ${
                     mobileStudioOpen
-                      ? 'text-cyan-400 bg-cyan-500/10 font-semibold'
+                      ? 'text-[var(--primary)] bg-[var(--primary)]/10 font-semibold'
                       : 'text-zinc-200 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <Box className={`w-4 h-4 ${mobileStudioOpen ? 'text-cyan-400' : 'text-zinc-400'}`} />
+                    <Box className={`w-4 h-4 ${mobileStudioOpen ? 'text-[var(--primary)]' : 'text-zinc-400'}`} />
                     <span>Studio</span>
                   </div>
                   <ChevronDown
                     className={`w-4 h-4 transition-transform duration-200 ${
-                      mobileStudioOpen ? 'rotate-180 text-cyan-400' : 'text-zinc-400'
+                      mobileStudioOpen ? 'rotate-180 text-[var(--primary)]' : 'text-zinc-400'
                     }`}
                   />
                 </button>
@@ -718,32 +695,32 @@ export default function Header() {
                       <button
                         type="button"
                         onClick={() => setMobileStillRendersOpen(!mobileStillRendersOpen)}
-                        className="w-full flex items-center justify-between px-2 py-1 text-xs font-semibold rounded-lg text-zinc-300 hover:text-cyan-300 transition-colors"
+                        className="w-full flex items_center justify-between px-2 py-1 text-xs font-semibold rounded-lg text-zinc-300 hover:text-[var(--primary)] transition-colors"
                       >
                         <span className="flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]" />
                           <span>Still Renders</span>
                         </span>
                         <ChevronDown
                           className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                            mobileStillRendersOpen ? 'rotate-180 text-cyan-400' : 'text-zinc-500'
+                            mobileStillRendersOpen ? 'rotate-180 text-[var(--primary)]' : 'text-zinc-500'
                           }`}
                         />
                       </button>
-                      {mobileStillRendersOpen && (
-                        <div className="pl-3 py-1 space-y-1 border-l border-cyan-400/30 my-0.5 ml-1.5">
+{mobileStillRendersOpen && (
+                        <div className="pl-3 py-1 space-y-1 border-l border-[var(--primary)]/30 my-0.5 ml-1.5">
                           <Link
                             href="/studio/exterior"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="block py-1 px-2 text-xs text-zinc-400 hover:text-cyan-300 flex items-center justify-between rounded-md hover:bg-white/5"
+                            className="block py-1 px-2 text-xs text-zinc-400 hover:text-[var(--primary)] flex items-center justify-between rounded-md hover:bg-white/5"
                           >
                             <span>Exterior</span>
-                            <span className="text-[9px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-400/30 px-1 rounded">8K</span>
+                            <span className="text-[9px] font-mono text-[var(--primary)] bg-[var(--primary)]/20 border border-[var(--primary)]/30 px-1 rounded">8K</span>
                           </Link>
                           <Link
                             href="/studio/interior"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="block py-1 px-2 text-xs text-zinc-400 hover:text-cyan-300 rounded-md hover:bg-white/5"
+                            className="block py-1 px-2 text-xs text-zinc-400 hover:text-[var(--primary)] rounded-md hover:bg-white/5"
                           >
                             Interior
                           </Link>
@@ -755,15 +732,15 @@ export default function Header() {
                     <Link
                       href="/studio/walkthrough"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-cyan-400 rounded-md hover:bg-white/5 flex items-center gap-1.5"
+                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-[var(--primary)] rounded-md hover:bg-white/5 flex items-center gap-1.5"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]" />
                       <span>Animation & Walkthrough</span>
                     </Link>
                     <Link
                       href="/studio"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-1 px-2 text-xs font-semibold text-cyan-400 hover:underline"
+                      className="block py-1 px-2 text-xs font-semibold text-[var(--primary)] hover:underline"
                     >
                       Studio Overview →
                     </Link>
@@ -771,23 +748,23 @@ export default function Header() {
                 )}
               </div>
 
-              {/* XR World Mobile Accordion */}
+{/* XR World Mobile Accordion */}
               <div>
                 <button
                   onClick={() => setMobileXrOpen(!mobileXrOpen)}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+                  className={`w-full flex items_center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all ${
                     mobileXrOpen
-                      ? 'text-cyan-400 bg-cyan-500/10 font-semibold'
+                      ? 'text-[var(--primary)] bg-[var(--primary)]/10 font-semibold'
                       : 'text-zinc-200 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <Sparkles className={`w-4 h-4 ${mobileXrOpen ? 'text-cyan-400' : 'text-zinc-400'}`} />
+                    <Sparkles className={`w-4 h-4 ${mobileXrOpen ? 'text-[var(--primary)]' : 'text-zinc-400'}`} />
                     <span>XR World</span>
                   </div>
                   <ChevronDown
                     className={`w-4 h-4 transition-transform duration-200 ${
-                      mobileXrOpen ? 'rotate-180 text-cyan-400' : 'text-zinc-400'
+                      mobileXrOpen ? 'rotate-180 text-[var(--primary)]' : 'text-zinc-400'
                     }`}
                   />
                 </button>
@@ -824,7 +801,7 @@ export default function Header() {
                     <Link
                       href="/xr-world/vizsplat"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-cyan-400 rounded-md hover:bg-white/5 flex items-center justify-between"
+                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-[var(--primary)] rounded-md hover:bg-white/5 flex items-center justify-between"
                     >
                       <span>VizSplat</span>
                       <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-rose-500 text-white font-mono">
@@ -834,7 +811,7 @@ export default function Header() {
                     <Link
                       href="/xr-world"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-1 px-2 text-xs font-semibold text-cyan-400 hover:underline"
+                      className="block py-1 px-2 text-xs font-semibold text-[var(--primary)] hover:underline"
                     >
                       XR World Overview →
                     </Link>
@@ -874,19 +851,19 @@ export default function Header() {
               <div>
                 <button
                   onClick={() => setMobileContactOpen(!mobileContactOpen)}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+                  className={`w-full flex items_center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all ${
                     mobileContactOpen
-                      ? 'text-cyan-400 bg-cyan-500/10 font-semibold'
+                      ? 'text-[var(--primary)] bg-[var(--primary)]/10 font-semibold'
                       : 'text-zinc-200 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <Send className={`w-4 h-4 ${mobileContactOpen ? 'text-cyan-400' : 'text-zinc-400'}`} />
+                    <Send className={`w-4 h-4 ${mobileContactOpen ? 'text-[var(--primary)]' : 'text-zinc-400'}`} />
                     <span>Contact</span>
                   </div>
                   <ChevronDown
                     className={`w-4 h-4 transition-transform duration-200 ${
-                      mobileContactOpen ? 'rotate-180 text-cyan-400' : 'text-zinc-400'
+                      mobileContactOpen ? 'rotate-180 text-[var(--primary)]' : 'text-zinc-400'
                     }`}
                   />
                 </button>
@@ -895,28 +872,28 @@ export default function Header() {
                     <Link
                       href="/contact"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-cyan-400 rounded-md hover:bg-white/5"
+                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-[var(--primary)] rounded-md hover:bg-white/5"
                     >
                       Project Inquiry
                     </Link>
                     <Link
                       href="/book-consultation"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-cyan-400 rounded-md hover:bg-white/5"
+                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-[var(--primary)] rounded-md hover:bg-white/5"
                     >
                       Book Consultation
                     </Link>
                     <Link
                       href="/track-project"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-cyan-400 rounded-md hover:bg-white/5"
+                      className="block py-1 px-2 text-xs text-zinc-300 hover:text-[var(--primary)] rounded-md hover:bg-white/5"
                     >
                       Track Project
                     </Link>
                     <div className="pt-1.5 border-t border-white/10 space-y-0.5 px-2">
                       <a
                         href="mailto:viztr.studio@gmail.com"
-                        className="block text-[11px] font-mono text-cyan-400 hover:underline"
+                        className="block text-[11px] font-mono text-[var(--primary)] hover:underline"
                       >
                         viztr.studio@gmail.com
                       </a>
@@ -953,12 +930,12 @@ export default function Header() {
                     onClick={() => { setTheme('dark'); setMobileMenuOpen(false); }}
                     className={`px-2.5 py-1 rounded-md flex items-center gap-1.5 text-xs font-mono transition-all ${
                       theme === 'dark'
-                        ? 'bg-white/20 text-[#42CF8B] font-bold shadow-sm'
+                        ? 'bg-white/20 text-[var(--secondary)] font-bold shadow-sm'
                         : 'text-zinc-400 hover:text-white'
                     }`}
                     title="Dark"
                   >
-                    <Moon className="w-3.5 h-3.5 text-[#42CF8B]" />
+                    <Moon className="w-3.5 h-3.5 text-[var(--secondary)]" />
                     <span>Dark</span>
                   </button>
                   <button
@@ -985,9 +962,9 @@ export default function Header() {
                     setAgentClosed(false);
                     setMobileMenuOpen(false);
                   }}
-                  className="py-2 px-2.5 text-center rounded-xl border border-cyan-500/40 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 font-semibold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_0_10px_rgba(0,240,255,0.15)] active:scale-[0.98]"
+                  className="py-2 px-2.5 text-center rounded-xl border border-[var(--primary)]/40 bg-[var(--primary)]/10 hover:bg-[var(--primary)]/20 text-[var(--primary)] font-semibold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-[0_0_10px_var(--accent-glow)] active:scale-[0.98]"
                 >
-                  <MessageSquare className="w-3.5 h-3.5 text-cyan-400" />
+                  <MessageSquare className="w-3.5 h-3.5 text-[var(--primary)]" />
                   <span>AI Agent</span>
                 </button>
 

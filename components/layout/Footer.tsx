@@ -19,7 +19,7 @@ const ThreadsIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const socialLinkClass = 'p-2 rounded-full bg-[#131314] border border-[#1E293B] hover:border-[#00F0FF] text-[#A1A1AA] hover:text-[#00F0FF] transition-all';
+const socialLinkClass = 'p-2 rounded-full bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--primary)] text-[var(--text-muted)] hover:text-[var(--primary)] transition-all';
 
 export default function Footer() {
   const { showToast } = useAppStore();
@@ -54,29 +54,29 @@ export default function Footer() {
   };
 
   return (
-    <footer id="main-footer" className="bg-[#0A0A0B] text-[#A1A1AA] border-t border-[#1E293B] pt-12 pb-10 backdrop-blur-xl transition-colors relative">
+    <footer id="main-footer" className="bg-[var(--bg-primary)] text-[var(--text-muted)] border-t border-[var(--border)] pt-12 pb-10 backdrop-blur-xl transition-colors relative">
       <div className="w-full container-ultrawide">
         {/* TELEMETRY TOP BAR - Glass Panel with maximum pill shape */}
-        <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 rounded-full glass-panel text-xs font-mono mb-8 border border-[#1E293B]">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3 rounded-full glass-panel text-xs font-mono mb-8 border border-[var(--border)]">
           <div className="flex items-center gap-4 flex-wrap">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#00F0FF] animate-pulse shadow-[0_0_8px_#00F0FF]"></span>
-              <span className="text-[#FAFAFA] font-bold">SYSTEMS OPERATIONAL</span>
+              <span className="w-2 h-2 rounded-full bg-[var(--primary)] animate-pulse shadow-[0_0_8px_var(--primary)]"></span>
+              <span className="text-[var(--text-primary)] font-bold">SYSTEMS OPERATIONAL</span>
             </div>
             <span className="text-white/20">|</span>
-            <span className="text-[#a1abc4]">LATENCY: 12ms (US-EAST-1)</span>
+            <span className="text-[var(--text-muted)]">LATENCY: 12ms (US-EAST-1)</span>
             <span className="text-white/20">|</span>
-            <span className="text-[#a1abc4]">UE5.4 LUMEN ENGINE: ONLINE</span>
+            <span className="text-[var(--text-muted)]">UE5.4 LUMEN ENGINE: ONLINE</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="px-3 py-1 rounded-full glass text-[#00F0FF] text-[10px] font-bold border border-[#1E293B]">
+            <span className="px-3 py-1 rounded-full glass text-[var(--primary)] text-[10px] font-bold border border-[var(--border)]">
               VIZTR COMPUTE v2.4.8
             </span>
           </div>
         </div>
 
         {/* 4 COLUMNS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 py-10 border-b border-[#1E293B]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 py-10 border-b border-[#3b494b]">
           
           {/* COLUMN 1: Brand & Bio */}
           <div className="space-y-3">
@@ -93,14 +93,14 @@ export default function Footer() {
                 ENGINEERING JOURNAL
               </div>
               {subscribed ? (
-                <div className="flex items-center gap-2 text-xs text-[#00F0FF] glass px-3 py-2 rounded-full border border-[#1E293B]">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#00F0FF] shrink-0" />
+                <div className="flex items-center gap-2 text-xs text-[var(--primary)] glass px-3 py-2 rounded-full border border-[var(--border)]">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[var(--primary)] shrink-0" />
                   <span>Subscribed to engineering briefs.</span>
                 </div>
               ) : (
                 <form
                   onSubmit={handleSubscribe}
-                  className="flex items-center bg-[#121316] border border-[#27272A] focus-within:border-[#0c8793]/70 focus-within:ring-1 focus-within:ring-[#0c8793]/30 rounded-full p-1 pl-4 pr-1.5 transition-all shadow-inner w-full max-w-sm"
+                  className="flex items-center bg-[var(--bg-secondary)] border border-[var(--border)] focus-within:border-[var(--primary)]/70 focus-within:ring-1 focus-within:ring-[var(--primary)]/30 rounded-full p-1 pl-4 pr-1.5 transition-all shadow-inner w-full max-w-sm"
                 >
                   <input
                     type="email"
@@ -110,13 +110,13 @@ export default function Footer() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     disabled={loading || subscribed}
-                    className="bg-transparent text-xs sm:text-sm text-[#FAFAFA] placeholder-[#71717A] focus:outline-none flex-1 font-sans pr-2 disabled:opacity-50"
+                    className="bg-transparent text-xs sm:text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none flex-1 font-sans pr-2 disabled:opacity-50"
                   />
                   <button
                     type="submit"
                     id="newsletter-submit-btn"
                     disabled={loading || subscribed || !email.includes('@')}
-                    className="w-9 h-9 rounded-full bg-[#0c8793] hover:bg-[#0ea5b3] text-black flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-[0_0_12px_rgba(12,135,147,0.35)] hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:bg-[#0c8793]"
+                    className="w-9 h-9 rounded-full bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-black flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-[0_0_12px_var(--accent-glow)] hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:bg-[var(--primary)]"
                     aria-label="Send"
                   >
                     {loading ? (
@@ -132,41 +132,41 @@ export default function Footer() {
 
           {/* COLUMN 2: Studio Services */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-[#FAFAFA] font-mono">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-[#e5e2e3] font-mono">
               STUDIO PIPELINES
             </h3>
             <ul className="space-y-2 text-xs">
               <li>
                 <Link
                   href="/studio/exterior"
-                  className="text-[#A1A1AA] hover:text-[#00F0FF] transition-colors inline-flex items-center gap-1.5"
+                  className="text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors inline-flex items-center gap-1.5"
                 >
-                  <ArrowRight className="w-3 h-3 text-[#00F0FF]" />
+                  <ArrowRight className="w-3 h-3 text-[var(--primary)]" />
                   Exterior Visualization (8K)
                 </Link>
               </li>
               <li>
                 <Link
                   href="/studio/interior"
-                  className="text-[#A1A1AA] hover:text-[#00F0FF] transition-colors inline-flex items-center gap-1.5"
+                  className="text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors inline-flex items-center gap-1.5"
                 >
-                  <ArrowRight className="w-3 h-3 text-[#00F0FF]" />
+                  <ArrowRight className="w-3 h-3 text-[var(--primary)]" />
                   Interior Architectural Staging
                 </Link>
               </li>
               <li>
                 <Link
                   href="/studio/walkthrough"
-                  className="text-[#A1A1AA] hover:text-[#00F0FF] transition-colors inline-flex items-center gap-1.5"
+                  className="text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors inline-flex items-center gap-1.5"
                 >
-                  <ArrowRight className="w-3 h-3 text-[#00F0FF]" />
+                  <ArrowRight className="w-3 h-3 text-[var(--primary)]" />
                   Cinematic Walkthrough (60 FPS)
                 </Link>
               </li>
               <li>
                 <Link
                   href="/studio"
-                  className="text-[#71717A] hover:text-[#FAFAFA] transition-colors text-[11px] font-semibold pt-1 block"
+                  className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors text-[11px] font-semibold pt-1 block"
                 >
                   Studio Overview →
                 </Link>
@@ -176,43 +176,43 @@ export default function Footer() {
 
           {/* COLUMN 3: XR World */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-[#FAFAFA] font-mono">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-[#e5e2e3] font-mono">
               SPATIAL COMPUTING
             </h3>
             <ul className="space-y-2 text-xs">
               <li>
                 <Link
                   href="/xr-world/webxr"
-                  className="text-[#A1A1AA] hover:text-[#00F0FF] transition-colors inline-flex items-center gap-1.5"
+                  className="text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors inline-flex items-center gap-1.5"
                 >
-                  <ArrowRight className="w-3 h-3 text-[#00F0FF]" />
+                  <ArrowRight className="w-3 h-3 text-[var(--primary)]" />
                   WebXR In-Browser Spatial
                 </Link>
               </li>
               <li>
                 <Link
                   href="/xr-world/webar"
-                  className="text-[#A1A1AA] hover:text-[#00F0FF] transition-colors inline-flex items-center gap-1.5"
+                  className="text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors inline-flex items-center gap-1.5"
                 >
-                  <ArrowRight className="w-3 h-3 text-[#00F0FF]" />
+                  <ArrowRight className="w-3 h-3 text-[var(--primary)]" />
                   WebAR Surface Projection
                 </Link>
               </li>
               <li>
                 <Link
                   href="/xr-world/virtual-reality"
-                  className="text-[#A1A1AA] hover:text-[#00F0FF] transition-colors inline-flex items-center gap-1.5"
+                  className="text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors inline-flex items-center gap-1.5"
                 >
-                  <ArrowRight className="w-3 h-3 text-[#00F0FF]" />
+                  <ArrowRight className="w-3 h-3 text-[var(--primary)]" />
                   Virtual Reality (Quest & Vision Pro)
                 </Link>
               </li>
               <li>
                 <Link
                   href="/xr-world/virtual-tour"
-                  className="text-[#A1A1AA] hover:text-[#00F0FF] transition-colors inline-flex items-center gap-1.5"
+                  className="text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors inline-flex items-center gap-1.5"
                 >
-                  <ArrowRight className="w-3 h-3 text-[#00F0FF]" />
+                  <ArrowRight className="w-3 h-3 text-[var(--primary)]" />
                   16K Panoramic Virtual Tour
                 </Link>
               </li>
@@ -221,44 +221,44 @@ export default function Footer() {
 
           {/* COLUMN 4: Connect & Studio Info */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-[#FAFAFA] font-mono">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-[#e5e2e3] font-mono">
               STUDIO & DISPATCH
             </h3>
-            <ul className="space-y-1.5 text-xs text-[#A1A1AA] pb-2 border-b border-[#1E293B]">
+            <ul className="space-y-1.5 text-xs text-[var(--text-muted)] pb-2 border-b border-[var(--border)]">
               <li>
-                <Link href="/about" className="hover:text-[#00F0FF] transition-colors inline-flex items-center gap-1.5">
-                  <ArrowRight className="w-3 h-3 text-[#00F0FF]" />
+                <Link href="/about" className="hover:text-[var(--primary)] transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3 h-3 text-[var(--primary)]" />
                   About VizTR Studio
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="hover:text-[#00F0FF] transition-colors inline-flex items-center gap-1.5">
-                  <ArrowRight className="w-3 h-3 text-[#00F0FF]" />
+                <Link href="/blog" className="hover:text-[var(--primary)] transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3 h-3 text-[var(--primary)]" />
                   Perspectives & Research Blog
                 </Link>
               </li>
               <li>
-                <Link href="/book-consultation" className="hover:text-[#00F0FF] transition-colors inline-flex items-center gap-1.5">
-                  <ArrowRight className="w-3 h-3 text-[#00F0FF]" />
+                <Link href="/book-consultation" className="hover:text-[var(--primary)] transition-colors inline-flex items-center gap-1.5">
+                  <ArrowRight className="w-3 h-3 text-[var(--primary)]" />
                   Book Project Consultation
                 </Link>
               </li>
             </ul>
-            <div className="space-y-2 text-xs text-[#A1A1AA]">
+            <div className="space-y-2 text-xs text-[var(--text-muted)]">
               <div className="flex items-center gap-2">
-                <Mail className="w-3.5 h-3.5 text-[#00F0FF] shrink-0" />
-                <a href="mailto:viztr.studio@gmail.com" className="hover:text-white transition-colors">
+                <Mail className="w-3.5 h-3.5 text-[var(--primary)] shrink-0" />
+                <a href="mailto:viztr.studio@gmail.com" className="hover:text-[var(--text-primary)] transition-colors">
                   viztr.studio@gmail.com
                 </a>
               </div>
               <div className="flex items-center gap-2">
-                <Phone className="w-3.5 h-3.5 text-[#00F0FF] shrink-0" />
-                <a href="tel:+15551234567" className="hover:text-white transition-colors">
+                <Phone className="w-3.5 h-3.5 text-[var(--primary)] shrink-0" />
+                <a href="tel:+15551234567" className="hover:text-[var(--text-primary)] transition-colors">
                   +1 (555) 123-4567
                 </a>
               </div>
               <div className="flex items-start gap-2">
-                <MapPin className="w-3.5 h-3.5 text-[#42CF8B] shrink-0 mt-0.5" />
+                <MapPin className="w-3.5 h-3.5 text-[var(--secondary)] shrink-0 mt-0.5" />
                 <span>123 Spatial Boulevard, Silicon District</span>
               </div>
             </div>
@@ -333,30 +333,30 @@ export default function Footer() {
         </div>
 
         {/* BOTTOM BAR */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-[#849495]">
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-[var(--text-muted)]">
           <div className="flex items-center gap-3">
             <span>© 2026 VizTR Architectural CGI & Spatial XR Engines.</span>
             <button
               type="button"
               onClick={cycleLightDarkSystem}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 border border-[#1E293B] text-zinc-300 hover:text-white transition-colors cursor-pointer text-[10px] font-mono"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 border border-[var(--border)] text-zinc-300 hover:text-white transition-colors cursor-pointer text-[10px] font-mono"
               title="Toggle Light / Dark theme"
             >
-              <Palette className="w-3 h-3 text-[#00F0FF]" />
-              <span>Theme: <strong className="text-[#00F0FF] capitalize">{resolvedTheme}</strong></span>
+              <Palette className="w-3 h-3 text-[var(--primary)]" />
+              <span>Theme: <strong className="text-[var(--primary)] capitalize">{resolvedTheme}</strong></span>
             </button>
           </div>
           <div className="flex items-center space-x-4">
-            <Link href="/privacy-policy" className="hover:text-[#FAFAFA] transition-colors">
+            <Link href="/privacy-policy" className="hover:text-[var(--text-primary)] transition-colors">
               Privacy
             </Link>
-            <Link href="/terms-conditions" className="hover:text-[#FAFAFA] transition-colors">
+            <Link href="/terms-conditions" className="hover:text-[var(--text-primary)] transition-colors">
               Terms
             </Link>
-            <Link href="/client-access" className="hover:text-[#00F0FF] transition-colors font-medium">
+            <Link href="/client-access" className="hover:text-[var(--primary)] transition-colors font-medium">
               Client Access
             </Link>
-            <Link href="/admin/dashboard" className="hover:text-[#FAFAFA] transition-colors">
+            <Link href="/admin/dashboard" className="hover:text-[var(--text-primary)] transition-colors">
               Admin CMS
             </Link>
           </div>

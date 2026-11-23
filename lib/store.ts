@@ -64,6 +64,16 @@ interface AppState {
   openModelViewer: (url: string, title: string) => void;
   closeModelViewer: () => void;
 
+  // Immersive XR / AR launch state. Set from a user-gesture click handler so the
+  // deep ExperienceViewer tree can start a real immersive-ar / immersive-vr
+  // session without prop-drilling and without losing the gesture context.
+  xrMode: 'immersive-ar' | 'immersive-vr' | null;
+  xrSession: any | null;
+  xrError: string | null;
+  startXR: (mode: 'immersive-ar' | 'immersive-vr', session: any) => void;
+  endXR: () => void;
+  setXRError: (message: string | null) => void;
+
   // Global Notification Toast
   toast: { message: string; type: 'success' | 'error' | 'info' } | null;
   showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
@@ -146,6 +156,13 @@ export const useAppStore = create<AppState>((set, get) => ({
   activeModelTitle: '',
   openModelViewer: (url, title) => set({ modelViewerOpen: true, activeModelUrl: url, activeModelTitle: title }),
   closeModelViewer: () => set({ modelViewerOpen: false }),
+
+  xrMode: null,
+  xrSession: null,
+  xrError: null,
+  startXR: (mode, session) => set({ xrMode: mode, xrSession: session, xrError: null }),
+  endXR: () => set({ xrMode: null, xrSession: null, xrError: null }),
+  setXRError: (message) => set({ xrError: message }),
 
   toast: null,
   showToast: (message, type = 'success') => {

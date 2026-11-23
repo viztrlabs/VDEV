@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
@@ -17,6 +17,8 @@ import {
   useFeedbackRealtime,
 } from '@/lib/useRealtime';
 import ThemeSwitcherDropdown from '@/components/ui/ThemeSwitcherDropdown';
+import CollapsibleSidebar from './components/CollapsibleSidebar';
+import { useTelemetry } from '@/lib/hooks/useTelemetry';
 
 // Import all dashboard subcomponents
 import ProjectIdAccessCodeAuth from './components/ProjectIdAccessCodeAuth';
@@ -60,6 +62,9 @@ export default function ClientDashboardPage() {
   useActivityRealtime(realtimeId, noop);
   useDeliverableRealtime(realtimeId, noop);
   useFeedbackRealtime(realtimeId, noop);
+
+  // Telemetry tracking
+  const telemetry = useTelemetry();
 
   const projects = useAppStore((s) => s.projects);
   const experiences = useAppStore((s) => s.experiences);
@@ -142,7 +147,13 @@ export default function ClientDashboardPage() {
   const [authStep, setAuthStep] = useState<'auth' | 'email' | 'password'>('auth');
   const [authEmail, setAuthEmail] = useState('');
   const [authPassword, setAuthPassword] = useState('');
-  const [activeDashboardTab, setActiveDashboardTab] = useState('overview');
+  const [activeDashboardTab, setActiveDashboardTabRaw] = useState('overview');
+
+// Wrap setActiveDashboardTab to add telemetry tracking
+const setActiveDashboardTab = useCallback((tabId: string) => {
+  setActiveDashboardTabRaw(tabId);
+  telemetry.track('tab_change', { tab: tabId });
+}, []);
 
   // Authentication handlers
   const handleProjectAuthentication = () => {
@@ -187,9 +198,9 @@ export default function ClientDashboardPage() {
   // Show email setup step
   if (authStep === 'email') {
     return (
-      <div className="min-h-screen bg-[#09090B] text-[#FAFAFA] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#131314] text-[#e5e2e3] flex items-center justify-center p-4">
         <div className="w-full max-w-md">
-          <div className="bg-[#18181B] border border-[#27272A] rounded-2xl p-8 shadow-2xl">
+          <div className="bg-[#201f20] border border-[#353436] rounded-2xl p-8 shadow-2xl">
             <div className="text-center mb-8">
               <h1 className="text-2xl font-bold text-white mb-2">Set Up Your Email</h1>
               <p className="text-[#A1A1AA] text-sm">
@@ -207,13 +218,13 @@ export default function ClientDashboardPage() {
                   value={authEmail}
                   onChange={(e) => setAuthEmail(e.target.value)}
                   placeholder="your.email@example.com"
-                  className="w-full px-4 py-3 bg-[#09090B] border border-[#27272A] rounded-lg text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] transition-colors"
+                  className="w-full px-4 py-3 bg-[#131314] border border-[#353436] rounded-lg text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] transition-colors"
                   required
                 />
               </div>
               <button
                 type="submit"
-                className="w-full px-4 py-3 bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-semibold rounded-lg transition-colors cursor-pointer"
+                className="w-full px-4 py-3 bg-[#dbfcff] hover:bg-[#34b27b] text-black font-semibold rounded-lg transition-colors cursor-pointer"
               >
                 Continue → Add Password
               </button>
@@ -222,7 +233,7 @@ export default function ClientDashboardPage() {
             <div className="mt-6 text-center">
               <button
                 onClick={() => setAuthStep('auth')}
-                className="text-sm text-[#3ECF8E] hover:text-[#34b27b] transition-colors cursor-pointer"
+                className="text-sm text-[#dbfcff] hover:text-[#34b27b] transition-colors cursor-pointer"
               >
                 ← Back to Project ID
               </button>
@@ -236,9 +247,9 @@ export default function ClientDashboardPage() {
   // Show password setup step
   if (authStep === 'password') {
     return (
-      <div className="min-h-screen bg-[#09090B] text-[#FAFAFA] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#131314] text-[#e5e2e3] flex items-center justify-center p-4">
         <div className="w-full max-w-md">
-          <div className="bg-[#18181B] border border-[#27272A] rounded-2xl p-8 shadow-2xl">
+          <div className="bg-[#201f20] border border-[#353436] rounded-2xl p-8 shadow-2xl">
             <div className="text-center mb-8">
               <h1 className="text-2xl font-bold text-white mb-2">Add Password (Optional)</h1>
               <p className="text-[#A1A1AA] text-sm">
@@ -256,7 +267,7 @@ export default function ClientDashboardPage() {
                   value={authPassword}
                   onChange={(e) => setAuthPassword(e.target.value)}
                   placeholder="Leave blank for no password"
-                  className="w-full px-4 py-3 bg-[#09090B] border border-[#27272A] rounded-lg text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] transition-colors"
+                  className="w-full px-4 py-3 bg-[#131314] border border-[#353436] rounded-lg text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] transition-colors"
                 />
                 <p className="text-xs text-[#71717A] mt-1">
                   You can skip this and use email-only login
@@ -264,7 +275,7 @@ export default function ClientDashboardPage() {
               </div>
               <button
                 type="submit"
-                className="w-full px-4 py-3 bg-gradient-to-r from-[#3ECF8E] to-[#14B8A6] hover:from-[#34b27b] hover:to-[#0f9faa] text-black font-semibold rounded-lg transition-all cursor-pointer"
+                className="w-full px-4 py-3 bg-gradient-to-r from-[#dbfcff] to-[#14B8A6] hover:from-[#34b27b] hover:to-[#0f9faa] text-black font-semibold rounded-lg transition-all cursor-pointer"
               >
                 Complete Setup
               </button>
@@ -273,7 +284,7 @@ export default function ClientDashboardPage() {
             <div className="mt-6 text-center">
               <button
                 onClick={() => setAuthStep('email')}
-                className="text-sm text-[#3ECF8E] hover:text-[#34b27b] transition-colors cursor-pointer"
+                className="text-sm text-[#dbfcff] hover:text-[#34b27b] transition-colors cursor-pointer"
               >
                 ← Back to Email
               </button>
@@ -303,105 +314,88 @@ export default function ClientDashboardPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-[#09090B] text-[#FAFAFA] flex flex-col w-full">
-      {/* AUTHENTICATED HEADER */}
-      <header className="h-16 border-b border-[#27272A] bg-[#18181B] px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-40 w-full">
-        <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-7 h-7 bg-gradient-to-r from-[#3ECF8E] to-[#14B8A6] rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
-              <span className="text-black font-bold text-sm">V</span>
-            </div>
-            <span className="font-serif font-bold text-lg tracking-wider text-white">
-              VizTR
-            </span>
-          </Link>
-          <span className="hidden sm:inline-block px-2 py-0.5 rounded bg-[#09090B] border border-[#27272A] text-[10px] font-mono text-[#3ECF8E]">
-            Client Workspace
-          </span>
-        </div>
+    <div className="min-h-screen bg-[#131314] text-[#e5e2e3] flex w-full">
+      {/* COLLAPSIBLE SIDEBAR */}
+      <CollapsibleSidebar activeTab={activeDashboardTab} onTabChange={setActiveDashboardTab} />
 
-        <div className="hidden md:flex items-center gap-4 max-w-md w-full">
-          <div className="relative w-full">
-            <Search className="w-3.5 h-3.5 text-[#71717A] absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search projects, files, assets, milestones..."
-              className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
-            />
+      {/* MAIN CONTENT AREA */}
+      <div className="flex-1 flex flex-col min-w-0 lg:ml-0">
+        {/* TOP HEADER BAR */}
+        <header className="h-16 border-b border-[var(--border)] bg-[var(--bg-card)]/80 backdrop-blur-md px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-40 w-full">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              <Link href="/client-dashboard" className="flex items-center gap-2.5 group">
+                <div className="w-7 h-7 bg-gradient-to-r from-[#dbfcff] to-[#14B8A6] rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <span className="text-black font-bold text-sm">V</span>
+                </div>
+                <span className="font-serif font-bold text-lg tracking-wider text-white">
+                  VizTR
+                </span>
+              </Link>
+              <span className="hidden sm:inline-block px-2 py-0.5 rounded bg-[var(--bg-tertiary)] border border-[var(--border)] text-[10px] font-mono text-[var(--primary)]">
+                Client Workspace
+              </span>
+            </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* THEME SWITCHER DROPDOWN */}
-          <ThemeSwitcherDropdown />
-
-          {/* NOTIFICATION BUTTON */}
-          <button
-            onClick={() => showToast('Cluster healthy: 0 critical pipeline alerts.', 'info')}
-            className="p-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] hover:text-white relative cursor-pointer"
-            title="Notifications"
-          >
-            <Bell className="w-4 h-4" />
-            <span className="w-2 h-2 rounded-full bg-[#3ECF8E] absolute top-1.5 right-1.5" />
-          </button>
-
-          {/* USER ACCOUNT BADGE */}
-          <div className="flex items-center gap-2 pl-2 border-l border-[#27272A]">
-            <div className="w-8 h-8 rounded-full bg-[#3ECF8E]/20 border border-[#3ECF8E]/40 flex items-center justify-center text-xs font-mono font-bold text-[#3ECF8E]">
-              {user?.name?.charAt(0) || 'C'}
+          <div className="hidden md:flex items-center gap-4 max-w-md w-full">
+            <div className="relative w-full">
+              <Search className="w-3.5 h-3.5 text-[var(--text-muted)] absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search projects, files, assets, milestones..."
+                className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border)] text-xs font-mono text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--primary)]"
+              />
             </div>
-            <div className="hidden xl:block text-left">
-              <div className="text-xs font-mono font-bold text-white">
-                {user?.name || 'Client User'}
+          </div>
+
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* THEME SWITCHER DROPDOWN */}
+            <ThemeSwitcherDropdown />
+
+            {/* NOTIFICATION BUTTON */}
+            <button
+              onClick={() => showToast('Cluster healthy: 0 critical pipeline alerts.', 'info')}
+              className="p-2 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-primary)] relative cursor-pointer"
+              title="Notifications"
+            >
+              <Bell className="w-4 h-4" />
+              <span className="w-2 h-2 rounded-full bg-[var(--primary)] absolute top-1.5 right-1.5" />
+            </button>
+
+            {/* USER ACCOUNT BADGE */}
+            <div className="flex items-center gap-2 pl-2 border-l border-[var(--border)]">
+              <div className="w-8 h-8 rounded-full bg-[var(--primary)]/20 border border-[var(--primary)]/40 flex items-center justify-center text-xs font-mono font-bold text-[var(--primary)]">
+                {user?.name?.charAt(0) || 'C'}
               </div>
-              <div className="text-[10px] font-mono text-[#3ECF8E]">
-                Authorized Client Portal
+              <div className="hidden xl:block text-left">
+                <div className="text-xs font-mono font-bold text-[var(--text-primary)]">
+                  {user?.name || 'Client User'}
+                </div>
+                <div className="text-[10px] font-mono text-[var(--primary)]">
+                  Authorized Client Portal
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* SIGN OUT */}
-          <button
-            onClick={handleSignOut}
-            className="px-2.5 py-1.5 rounded-lg text-xs font-mono border bg-[#09090B] hover:bg-red-950/60 border-[#27272A] hover:border-red-700/60 text-[#A1A1AA] hover:text-red-300 transition-colors flex items-center gap-1.5 cursor-pointer"
-            title="Sign out of client workspace"
-          >
-            <LogOut className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Sign Out</span>
-          </button>
-        </div>
-      </header>
-
-      {/* DASHBOARD TAB NAVIGATION */}
-      <nav className="border-b border-[#27272A] bg-[#18181B]/80 backdrop-blur-md sticky top-16 z-30">
-        <div className="max-w-[2400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex overflow-x-auto gap-1 py-2 no-scrollbar">
-            {TABS.map((tab) => {
-              const isActive = activeDashboardTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveDashboardTab(tab.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium flex items-center gap-2 whitespace-nowrap transition-all cursor-pointer ${
-                    isActive
-                      ? 'bg-[#27272A] text-white border border-[#3ECF8E]/40 font-bold shadow-sm'
-                      : 'text-[#A1A1AA] hover:text-white hover:bg-[#27272A]/50 border border-transparent'
-                  }`}
-                >
-                  <span>{tab.icon}</span>
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
+            {/* SIGN OUT */}
+            <button
+              onClick={handleSignOut}
+              className="px-2.5 py-1.5 rounded-lg text-xs font-mono border bg-[var(--bg-tertiary)] hover:bg-red-950/60 border-[var(--border)] hover:border-red-700/60 text-[var(--text-muted)] hover:text-red-300 transition-colors flex items-center gap-1.5 cursor-pointer"
+              title="Sign out of client workspace"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Sign Out</span>
+            </button>
           </div>
-        </div>
-      </nav>
+        </header>
 
       {/* CONDITIONAL RENDERING BASED ON ACTIVE TAB */}
-      <div className="flex-1 w-full max-w-[2400px] mx-auto p-4 sm:p-6 lg:p-8">
+      <div className="flex-1 flex flex-col min-w-0 lg:ml-0">
+        <div className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8 max-w-[2400px] mx-auto w-full">
         {activeDashboardTab === 'overview' && (
           <div className="space-y-8">
-            <ProjectOverview />
+            <ProjectOverview projects={displayProjects} />
             <ActionRequiredPanel />
             <PhaseProgressTracker />
           </div>
@@ -409,7 +403,7 @@ export default function ClientDashboardPage() {
 
         {activeDashboardTab === 'projects' && (
           <div className="space-y-6">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-3 border-b border-[#27272A]">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-3 border-b border-[#353436]">
               <div>
                 <h2 className="text-xl font-bold text-white flex items-center gap-2">
                   <span>🏗️ Assigned Architectural Commissions</span>
@@ -420,7 +414,7 @@ export default function ClientDashboardPage() {
               </div>
               <button
                 onClick={() => refreshProjects()}
-                className="px-3 py-1.5 rounded-lg text-xs font-mono border bg-[#09090B] border-[#27272A] hover:border-[#3ECF8E]/60 text-[#A1A1AA] hover:text-[#3ECF8E] transition-colors flex items-center gap-2 cursor-pointer"
+                className="px-3 py-1.5 rounded-lg text-xs font-mono border bg-[#131314] border-[#353436] hover:border-[#dbfcff]/60 text-[#A1A1AA] hover:text-[#dbfcff] transition-colors flex items-center gap-2 cursor-pointer"
               >
                 Refresh
               </button>
@@ -428,7 +422,7 @@ export default function ClientDashboardPage() {
 
             {projectsLoading && (
               <div className="flex items-center justify-center py-12">
-                <div className="animate-spin w-8 h-8 border-2 border-[#3ECF8E] border-t-transparent rounded-full" />
+                <div className="animate-spin w-8 h-8 border-2 border-[#dbfcff] border-t-transparent rounded-full" />
                 <span className="ml-3 text-[#A1A1AA] text-sm font-mono">Loading projects...</span>
               </div>
             )}
@@ -447,35 +441,39 @@ export default function ClientDashboardPage() {
                   </div>
                 ) : (
                   displayProjects.map((project) => (
-                    <div key={project.id} className="p-5 rounded-xl bg-[#18181B] border border-[#27272A] hover:border-[#3ECF8E]/40 transition-all space-y-4">
+                    <Link
+                      key={project.id}
+                      href={`/client-dashboard/projects/${project.id}`}
+                      className="block p-5 rounded-xl bg-[#201f20] border border-[#353436] hover:border-[#dbfcff]/40 hover:bg-[#201f20]/80 transition-all space-y-4 group"
+                    >
                       <div className="flex items-center justify-between">
-                        <span className="px-2 py-0.5 rounded bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] text-[10px] font-mono font-bold">
+                        <span className="px-2 py-0.5 rounded bg-[#dbfcff]/10 border border-[#dbfcff]/30 text-[#dbfcff] text-[10px] font-mono font-bold">
                           {project.id}
                         </span>
                         <span className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase font-bold border ${
                           project.status === 'Complete' ? 'bg-emerald-950/40 text-emerald-400 border-emerald-800/40' :
                           project.status === 'Client Review' ? 'bg-amber-950/40 text-amber-400 border-amber-800/40' :
                           project.status === 'Work in Progress' ? 'bg-blue-950/40 text-blue-400 border-blue-800/40' :
-                          'bg-[#27272A] text-[#A1A1AA] border-[#3f3f46]'
+                          'bg-[#353436] text-[#A1A1AA] border-[#3f3f46]'
                         }`}>
                           {project.status}
                         </span>
                       </div>
                       <div>
-                        <h3 className="text-base font-bold text-white">{project.name}</h3>
+                        <h3 className="text-base font-bold text-white group-hover:text-[#dbfcff] transition-colors">{project.name}</h3>
                         <p className="text-xs text-[#A1A1AA] mt-1">
                           {project.projectType} • {project.category}
                         </p>
                       </div>
-                      <div className="pt-3 border-t border-[#27272A] flex items-center justify-between text-xs font-mono text-[#71717A]">
+                      <div className="pt-3 border-t border-[#353436] flex items-center justify-between text-xs font-mono text-[#71717A]">
                         <span>{project.lastUpdate}</span>
                         <span className={`font-bold ${
                           project.progress === 100 ? 'text-emerald-400' :
-                          project.progress >= 50 ? 'text-[#3ECF8E]' :
+                          project.progress >= 50 ? 'text-[#dbfcff]' :
                           'text-amber-400'
                         }`}>{project.progress}% Complete</span>
                       </div>
-                    </div>
+                    </Link>
                   ))
                 )}
               </div>
@@ -489,7 +487,7 @@ export default function ClientDashboardPage() {
             <ExperiencePanels />
             {experiences.length > 0 && (
               <section className="space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#27272A]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#353436]">
                   <div>
                     <h2 className="text-xl font-bold text-white flex items-center gap-2">
                       <span>⚡ Live Experiences</span>
@@ -498,31 +496,35 @@ export default function ClientDashboardPage() {
                       Synced in realtime from Supabase — updates appear without refresh
                     </p>
                   </div>
-                  <span className="px-2 py-0.5 rounded bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] text-[10px] font-mono font-bold">
+                  <span className="px-2 py-0.5 rounded bg-[#dbfcff]/10 border border-[#dbfcff]/30 text-[#dbfcff] text-[10px] font-mono font-bold">
                     {experiences.length} synced
                   </span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                   {experiences.map((exp: any) => (
-                    <div key={exp.id} className="p-5 rounded-xl bg-[#18181B] border border-[#27272A] hover:border-[#3ECF8E]/40 transition-all space-y-3">
+                    <Link
+                      key={exp.id}
+                      href={`/client-dashboard/experiences/${exp.id}${realtimeId ? `?projectId=${realtimeId}` : ''}`}
+                      className="block p-5 rounded-xl bg-[#201f20] border border-[#353436] hover:border-[#dbfcff]/40 hover:bg-[#201f20]/80 transition-all space-y-3 group"
+                    >
                       <div className="flex items-center justify-between">
-                        <span className="px-2 py-0.5 rounded bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] text-[10px] font-mono font-bold">
+                        <span className="px-2 py-0.5 rounded bg-[#dbfcff]/10 border border-[#dbfcff]/30 text-[#dbfcff] text-[10px] font-mono font-bold">
                           {exp.slug ?? exp.id}
                         </span>
-                        <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase font-bold border bg-[#27272A] text-[#A1A1AA] border-[#3f3f46]">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase font-bold border bg-[#353436] text-[#A1A1AA] border-[#3f3f46]">
                           {exp.status ?? '—'}
                         </span>
                       </div>
                       <div>
-                        <h3 className="text-base font-bold text-white">{exp.title ?? exp.id}</h3>
+                        <h3 className="text-base font-bold text-white group-hover:text-[#dbfcff] transition-colors">{exp.title ?? exp.id}</h3>
                         {exp.description && (
                           <p className="text-xs text-[#A1A1AA] mt-1 line-clamp-2">{exp.description}</p>
                         )}
                       </div>
-                      <div className="pt-3 border-t border-[#27272A] text-xs font-mono text-[#71717A]">
+                      <div className="pt-3 border-t border-[#353436] text-xs font-mono text-[#71717A]">
                         Updated {exp.updated_at ?? exp.created_at ?? '—'}
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </section>
@@ -594,8 +596,10 @@ export default function ClientDashboardPage() {
         {activeDashboardTab === 'activity' && <ActivityLog projectId={realtimeId || undefined} />}
         {activeDashboardTab === 'search' && <ClientSearch />}
         {activeDashboardTab === 'deadlines' && <DeadlineTracker />}
-        {activeDashboardTab === 'documents' && <div className="p-8 text-center"><p className="text-[var(--text-muted)] text-xs">Documents view coming soon...</p></div>}
+{activeDashboardTab === 'documents' && <div className="p-8 text-center"><p className="text-[var(--text-muted)] text-xs">Documents view coming soon...</p></div>}
       </div>
-    </main>
+    </div>
+  </div>
+  </div>
   );
 }

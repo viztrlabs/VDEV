@@ -125,6 +125,10 @@ export class IWSDKEngineAdapter implements EngineAdapter {
 
     // 3. Initialize IWSDK World
     const { World, SessionMode } = this.iwSDKModule;
+    const arMode = options.xrMode === 'immersive-ar';
+    const sessionMode = arMode
+      ? (SessionMode?.ImmersiveAR ?? 'immersive-ar')
+      : (SessionMode?.ImmersiveVR ?? 'immersive-vr');
     const features: any = {
       locomotion: true,
       grabbing: true,
@@ -133,10 +137,12 @@ export class IWSDKEngineAdapter implements EngineAdapter {
     };
     this.world = await World.create(this.renderer.domElement, {
       xr: {
-        sessionMode: SessionMode.ImmersiveVR,
-        offer: 'none', // Don't auto-offer; let UI trigger
-        requiredFeatures: ['local-floor', 'bounded-floor'],
-        optionalFeatures: ['hand-tracking', 'layers', 'depth-sensing', 'hit-test'],
+        sessionMode,
+        offer: 'none', // Don't auto-offer; let UI trigger (preserves user gesture)
+        requiredFeatures: arMode ? ['hit-test'] : ['local-floor', 'bounded-floor'],
+        optionalFeatures: arMode
+          ? ['dom-overlay', 'local-floor', 'anchors']
+          : ['hand-tracking', 'layers', 'depth-sensing', 'hit-test'],
       },
       features,
       render: {
@@ -173,8 +179,71 @@ export class IWSDKEngineAdapter implements EngineAdapter {
       });
   }
 
+  /**
+   * Start an immersive session.
+   *
+   * `session` is an optional pre-created XRSession (requested synchronously from
+   * a user-gesture click handler in the UI so the browser will prompt for camera
+   * access). When omitted, IWSDK creates the session itself.
+   */
+  public async startXR(
+    session?: unknown,
+    mode: 'immersive-ar' | 'immersive-vr' = 'immersive-vr'
+  ): Promise<boolean> {
+    if (!this.renderer) return false;
+
+    if (mode === 'immersive-ar' && this.renderer.xr) {
+      // AR runs in a 'local' reference space; three.js defaults to 'local-floor'.
+      try {
+        this.renderer.xr.setReferenceSpaceType('local');
+      } catch {
+        /* ignore on runtimes without setReferenceSpaceType */
+      }
+    }
+
+    try {
+      if (session) {
+        if (this.world && typeof this.world.launchXR === 'function') {
+          await this.world.launchXR({ sessionMode: mode, session });
+        } else if (this.renderer.xr && typeof this.renderer.xr.setSession === 'function') {
+          await this.renderer.xr.setSession(session as never);
+        } else {
+          return false;
+        }
+      } else if (this.world && typeof this.world.launchXR === 'function') {
+        await this.world.launchXR({ sessionMode: mode });
+      } else {
+        return false;
+      }
+      this.emit({
+        type: 'ENGINE_READY',
+        payload: { engine: 'iwSDK', version: this.iwSDKModule?.VERSION || '1.2.0-rc.0' },
+      });
+      return true;
+    } catch (err) {
+      this.emit({
+        type: 'ENGINE_ERROR',
+        payload: {
+          code: 'XR_SESSION_FAILED',
+          message: err instanceof Error ? err.message : String(err),
+        },
+      });
+      return false;
+    }
+  }
+
   public destroy(): void {
     this.isDisposed = true;
+
+    // End any active immersive session before tearing down the renderer.
+    try {
+      const session = this.renderer?.xr?.getSession?.();
+      if (session && typeof session.end === 'function') {
+        session.end().catch(() => {});
+      }
+    } catch {
+      /* no active session */
+    }
 
     // Stop IWSDK render loop
     if (this.world) {
@@ -254,11 +323,9 @@ export class IWSDKEngineAdapter implements EngineAdapter {
       }
 
       case 'LAUNCH_XR': {
-        if (this.world && this.world.launchXR) {
-          await this.world.launchXR({ sessionMode: 'immersive-vr' });
-          return true;
-        }
-        return false;
+        const session = command.payload?.session;
+        const mode = command.payload?.mode ?? 'immersive-vr';
+        return this.startXR(session, mode);
       }
 
       case 'SET_CAMERA_POSE': {

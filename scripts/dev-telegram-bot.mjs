@@ -30,10 +30,16 @@ const TELEGRAM_WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET;
 const NEXTAUTH_URL = process.env.NEXTAUTH_URL || 'https://viztr.vercel.app';
 const TELEGRAM_BOT_PORT = process.env.TELEGRAM_BOT_PORT || 4567;
 
-// Determine mode: webhook requires public HTTPS URL, polling works locally
+// Determine mode. TELEGRAM_MODE=webhook|polling explicitly overrides the
+// heuristic. IMPORTANT: when testing the website-chat handoff with a tunnel,
+// use `TELEGRAM_MODE=webhook` — polling mode calls deleteWebhook and would
+// silently break the Next.js webhook route.
 const IS_LOCALHOST = NEXTAUTH_URL?.includes('localhost') || NEXTAUTH_URL?.includes('127.0.0.1');
 const IS_HTTPS = NEXTAUTH_URL?.startsWith('https://') && !IS_LOCALHOST;
-const MODE = IS_HTTPS ? 'webhook' : 'polling';
+const ENV_MODE = String(process.env.TELEGRAM_MODE || '').toLowerCase();
+const MODE = ENV_MODE === 'webhook' || ENV_MODE === 'polling'
+  ? ENV_MODE
+  : (IS_HTTPS ? 'webhook' : 'polling');
 
 // Markdown escape function (v2)
 function escapeMarkdown(text) {
@@ -423,17 +429,31 @@ async function handleUpdate(update) {
     return;
   }
 
+  // Handle regular messages
   const message = update.message;
-
-  if (!message || !message.from) {
-    return; // Skip updates without message or from
+  if (message && message.from) {
+    await handleMessage(message, bot);
+    return;
   }
 
-  const text = message.text;
+  // Handle channel posts (no 'from' field, use sender_chat)
+  const channelPost = update.channel_post || update.edited_channel_post;
+  if (channelPost && channelPost.sender_chat) {
+    await handleChannelPost(channelPost, bot);
+    return;
+  }
 
-  if (!text) {
+  // Skip updates without valid message or channel post
+  return;
+}
+
+// Handle regular messages with 'from' field
+async function handleMessage(message, bot) {
+  if (!message.text) {
     return; // Skip non-text messages
   }
+
+  const text = message.text.trim();
 
   // Commands
   if (text === '/start') {
@@ -451,6 +471,71 @@ async function handleUpdate(update) {
   } else if (text === '/status') {
     await handleStatus(message, bot);
   }
+}
+
+// Handle channel posts (no 'from' field, use sender_chat)
+async function handleChannelPost(channelPost, bot) {
+  if (!channelPost.text) {
+    return; // Skip non-text channel posts
+  }
+
+  const text = channelPost.text.trim();
+
+  // Channel posts don't have 'from' field, so we can't identify the sender
+  // We can only respond to commands in channel posts if needed
+  if (text === '/start') {
+    const chatId = channelPost.chat.id;
+    const welcomeMessage = `
+👋 Hello!
+
+Welcome to the VizTR Telegram Bot. I help you explore our social channels,
+get support, and learn more about our projects.
+
+Use /help to see available commands.
+`;
+
+    const mainMenu = createMainMenuKeyboard();
+
+    await bot.sendMessage(chatId, welcomeMessage, {
+      reply_markup: mainMenu,
+    });
+  } else if (text === '/help') {
+    const chatId = channelPost.chat.id;
+    const helpText = `
+📚 Available Commands
+
+/start - Start the bot and see main menu
+/help - Show this help message
+/socials - Open social media links
+/register - Register as VizTR user
+/enquiry - Submit project enquiry
+/profile - View your profile
+/status - Check registration status
+
+📌 Social Media: View our official links on Instagram, X, Facebook, LinkedIn, Discord, YouTube, and more.
+
+💡 Tips: Click any button below to open the link directly.
+`;
+
+    await bot.sendMessage(chatId, helpText);
+  } else if (text === '/socials') {
+    const chatId = channelPost.chat.id;
+    const socialsText = `
+🌐 Official Social Media Links
+
+Click any button below to open the link directly.
+
+🔗 All links are official VizTR channels.
+`;
+
+    const keyboard = createSocialKeyboard();
+
+    await bot.sendMessage(chatId, socialsText, {
+      reply_markup: keyboard,
+    });
+  }
+  // Other commands like /register, /enquiry, /profile, /status require user identification
+  // which is not available in channel posts (no 'from' field)
 }
 
 // Start polling
@@ -606,7 +691,9 @@ async function start() {
   if (MODE === 'webhook') {
     try {
       // Register webhook
-      const webhookUrl = `${NEXTAUTH_URL}/api/messaging/telegram?secret_token=${TELEGRAM_WEBHOOK_SECRET || ''}`;
+      // Secret travels via setWebhook's `secret_token` (Telegram sends it in
+      // the x-telegram-bot-api-secret-token header), never in the URL.
+      const webhookUrl = `${NEXTAUTH_URL}/api/messaging/telegram`;
       console.log('🔗 Registering Telegram webhook...');
       const webhookResponse = await fetch(
         `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setWebhook`,

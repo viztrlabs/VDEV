@@ -16,7 +16,7 @@ export default function ThemeToggle() {
       type="button"
       onClick={cycleLightDarkSystem}
       suppressHydrationWarning
-      className="group relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#18181B]/80 hover:bg-[#27272A] text-zinc-300 hover:text-white border border-[#27272A] hover:border-emerald-500/40 backdrop-blur-md transition-all duration-200 cursor-pointer shadow-sm active:scale-95 text-xs font-semibold select-none"
+      className="group relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--bg-secondary)]/80 hover:bg-[var(--bg-secondary)] text-[var(--text-muted)] hover:text-[var(--text-primary)] border border-[var(--border)] hover:border-[var(--primary)]/40 backdrop-blur-md transition-all duration-200 cursor-pointer shadow-sm active:scale-95 text-xs font-semibold select-none"
       title={`Current Theme: ${currentMode.toUpperCase()} (Click to cycle Light → Dark → System)`}
       aria-label={`Current theme: ${currentMode}. Click to cycle Light, Dark, and System.`}
     >
@@ -26,7 +26,7 @@ export default function ThemeToggle() {
           <Sun className="w-4 h-4 text-amber-400 animate-in spin-in-90 zoom-in-75 duration-200" />
         )}
         {currentMode === 'dark' && (
-          <Moon className="w-4 h-4 text-[#3ECF8E] animate-in -spin-in-90 zoom-in-75 duration-200" />
+          <Moon className="w-4 h-4 text-[var(--primary)] animate-in -spin-in-90 zoom-in-75 duration-200" />
         )}
         {currentMode === 'system' && (
           <Monitor className="w-4 h-4 text-sky-400 animate-in zoom-in-75 duration-200" />
@@ -34,7 +34,7 @@ export default function ThemeToggle() {
       </span>
 
       {/* Pill Label */}
-      <span className="hidden sm:inline capitalize text-[11px] font-mono tracking-wide text-zinc-300 group-hover:text-white transition-colors">
+      <span className="hidden sm:inline capitalize text-[11px] font-mono tracking-wide text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors">
         {currentMode}
       </span>
 
@@ -47,7 +47,7 @@ export default function ThemeToggle() {
         />
         <span
           className={`w-1.5 h-1.5 rounded-full transition-all duration-200 ${
-            currentMode === 'dark' ? 'bg-[#3ECF8E] scale-110 shadow-[0_0_6px_rgba(62,207,142,0.6)]' : 'bg-zinc-600/50'
+            currentMode === 'dark' ? 'bg-[var(--primary)] scale-110 shadow-[0_0_6px_var(--accent-glow)]' : 'bg-zinc-600/50'
           }`}
         />
         <span

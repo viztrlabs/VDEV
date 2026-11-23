@@ -178,7 +178,7 @@ export type EngineCommand =
   | { type: 'SET_ALIGNMENT_OVERLAY_VISIBILITY'; payload: { visible: boolean } }
   | { type: 'BEGIN_ALIGNMENT_POINT_PICK'; payload: { markerId: string } }
   | { type: 'SET_RENDER_SUSPENDED'; payload: { suspended: boolean } }
-  | { type: 'LAUNCH_XR'; payload: Record<string, never> };
+  | { type: 'LAUNCH_XR'; payload?: { session?: unknown; mode?: 'immersive-ar' | 'immersive-vr' } };
 
 // ============================================================================
 // Engine Events (Engine -> UI)
@@ -214,6 +214,8 @@ export interface EngineInitOptions {
   pixelRatio?: number;
   backgroundColor?: string;
   enableGizmos?: boolean;
+  /** Requested immersive mode; selects AR vs VR session features in IWSDK. */
+  xrMode?: 'immersive-ar' | 'immersive-vr';
 }
 
 export interface EngineAdapter {

@@ -5,36 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VizTR — Virtual Tour Development Preview</title>
 <style>
-  :root{--bg:#09090B;--card:#18181B;--border:#27272A;--accent:#3ECF8E;--muted:#71717A;--fg:#FAFAFA;--red:#EF4444;--amber:#F59E0B;--sky:#38BDF8}
+  :root{--bg:#131314;--card:#201f20;--border:#353436;--accent:#dbfcff;--muted:#71717A;--fg:#e5e2e3;--red:#EF4444;--amber:#F59E0B;--sky:#38BDF8}
   *{margin:0;padding:0;box-sizing:border-box}
   body{background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,sans-serif;padding:24px;min-height:100vh}
   h1{font-size:20px;font-weight:800;margin-bottom:4px}
   .sub{font-size:11px;color:var(--muted);font-family:monospace;margin-bottom:20px}
   .viewer{background:linear-gradient(135deg,#0a0a0c 0%,#111 50%,#0a0a0c 100%);border:1px solid var(--border);border-radius:16px;height:220px;position:relative;overflow:hidden;margin-bottom:20px}
-  .viewer .grid-bg{position:absolute;inset:0;background-image:radial-gradient(#3ECF8E08 1px,transparent 1px);background-size:20px 20px}
+  .viewer .grid-bg{position:absolute;inset:0;background-image:radial-gradient(#dbfcff08 1px,transparent 1px);background-size:20px 20px}
   .viewer .center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
   .viewer .ring{width:72px;height:72px;border:2px solid var(--accent);border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:28px;animation:pulse 2s infinite}
   .viewer .hint{font-size:10px;font-family:monospace;color:var(--muted)}
   .hs{position:absolute;width:10px;height:10px;background:var(--accent);border-radius:50%;border:2px solid #fff;animation:pulse 1.5s infinite}
-  .viewer .bar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#09090Baa;backdrop-filter:blur(8px);border-bottom:1px solid #27272A80}
+  .viewer .bar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#131314aa;backdrop-filter:blur(8px);border-bottom:1px solid #35343680}
   .viewer .bar span{font-size:11px;font-family:monospace}
   .viewer .ctrls{position:absolute;bottom:10px;right:10px;display:flex;gap:3px}
-  .viewer .ctrls div{width:26px;height:26px;background:#18181B90;border:1px solid var(--border);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);backdrop-filter:blur(4px)}
-  .viewer .info{position:absolute;bottom:10px;left:10px;font-size:9px;font-family:monospace;color:var(--muted);background:#09090B90;padding:2px 8px;border-radius:4px;border:1px solid var(--border);backdrop-filter:blur(4px)}
+  .viewer .ctrls div{width:26px;height:26px;background:#201f2090;border:1px solid var(--border);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);backdrop-filter:blur(4px)}
+  .viewer .info{position:absolute;bottom:10px;left:10px;font-size:9px;font-family:monospace;color:var(--muted);background:#13131490;padding:2px 8px;border-radius:4px;border:1px solid var(--border);backdrop-filter:blur(4px)}
   @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.08)}}
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
   .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
   .card h3{font-size:11px;font-weight:700;font-family:monospace;color:var(--accent);margin-bottom:8px}
   .route{display:inline-block;font-size:10px;font-family:monospace;padding:3px 8px;border-radius:5px;margin:2px}
-  .route.new{background:#3ECF8E15;border:1px solid #3ECF8E40;color:var(--accent)}
-  .route.old{background:#71717A10;border:1px solid #27272A;color:var(--muted);text-decoration:line-through}
+  .route.new{background:#dbfcff15;border:1px solid #dbfcff40;color:var(--accent)}
+  .route.old{background:#71717A10;border:1px solid #353436;color:var(--muted);text-decoration:line-through}
   ul{list-style:none;padding:0}
-  ul li{font-size:10px;padding:5px 0;border-bottom:1px solid #27272A40;display:flex;align-items:center;gap:6px}
+  ul li{font-size:10px;padding:5px 0;border-bottom:1px solid #35343640;display:flex;align-items:center;gap:6px}
   ul li:last-child{border:none}
   .ok{color:var(--accent);font-weight:bold}
   .badge{font-size:8px;padding:1px 5px;border-radius:3px;font-family:monospace}
   .badge.cr{background:#EF444420;color:var(--red);border:1px solid #EF444440}
-  .badge.nw{background:#3ECF8E20;color:var(--accent);border:1px solid #3ECF8E40}
+  .badge.nw{background:#dbfcff20;color:var(--accent);border:1px solid #dbfcff40}
   .file{font-size:9px;font-family:monospace;color:var(--muted);padding:3px 0;display:flex;gap:6px;align-items:center}
   .file b{color:#A1A1AA;font-weight:600}
   .arch{display:flex;flex-direction:column;gap:4px}
@@ -67,7 +67,7 @@
   <div class="center">
     <div class="ring">🌐</div>
     <div class="hint">TourViewer — dynamically imported Marzipano</div>
-    <div style="font-size:9px;color:#3ECF8E;margin-top:6px;font-family:monospace">Multi-res tiles · Context-loss recovery · Keyboard nav</div>
+    <div style="font-size:9px;color:#dbfcff;margin-top:6px;font-family:monospace">Multi-res tiles · Context-loss recovery · Keyboard nav</div>
   </div>
   <div class="hs" style="top:50%;left:30%"></div>
   <div class="hs" style="top:40%;right:25%"></div>

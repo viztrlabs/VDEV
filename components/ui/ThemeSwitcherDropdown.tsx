@@ -51,8 +51,8 @@ export default function ThemeSwitcherDropdown() {
     {
       id: 'dark',
       label: 'Dark',
-      description: 'Cyber Emerald Dark',
-      icon: <Moon className="w-4 h-4 text-[#3ECF8E]" />,
+      description: 'Cyan Spark Dark',
+      icon: <Moon className="w-4 h-4 text-[var(--primary)]" />,
     },
     {
       id: 'system',
@@ -70,7 +70,7 @@ export default function ThemeSwitcherDropdown() {
       return <Monitor className="w-4 h-4 text-sky-400" />;
     }
     // Dark or any dark preset
-    return <Moon className="w-4 h-4 text-[#3ECF8E]" />;
+    return <Moon className="w-4 h-4 text-[var(--primary)]" />;
   };
 
   return (
@@ -81,7 +81,7 @@ export default function ThemeSwitcherDropdown() {
         type="button"
         onClick={() => setDropdownOpen(!dropdownOpen)}
         suppressHydrationWarning
-        className="p-2 rounded-md bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/40 transition-all cursor-pointer flex items-center justify-center text-white focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]"
+        className="p-2 rounded-md bg-[var(--bg-primary)] hover:bg-[var(--bg-secondary)] border border-[var(--border)] hover:border-[var(--primary)]/40 transition-all cursor-pointer flex items-center justify-center text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
         title={`Theme: ${activeThemeId.toUpperCase()} (Click to switch Light / Dark / System)`}
         aria-label={`Current theme is ${activeThemeId}. Click to switch theme.`}
       >
@@ -92,13 +92,13 @@ export default function ThemeSwitcherDropdown() {
       {dropdownOpen && (
         <div
           id="theme-switcher-dropdown"
-          className="absolute right-0 top-full mt-2 w-56 rounded-xl bg-[#18181B] border border-[#27272A] shadow-2xl shadow-black/80 p-1.5 z-[100] animate-in fade-in slide-in-from-top-2 duration-150 text-[#FAFAFA]"
+          className="absolute right-0 top-full mt-2 w-56 rounded-xl bg-[var(--bg-primary)] border border-[var(--border)] shadow-2xl shadow-black/80 p-1.5 z-[100] animate-in fade-in slide-in-from-top-2 duration-150 text-[var(--text-primary)]"
         >
-          <div className="px-2.5 py-1.5 border-b border-[#27272A] mb-1 flex items-center justify-between">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#A1A1AA]">
+          <div className="px-2.5 py-1.5 border-b border-[var(--border)] mb-1 flex items-center justify-between">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--text-muted)]">
               Appearance
             </span>
-            <span className="text-[9px] font-mono text-[#71717A] capitalize">
+            <span className="text-[9px] font-mono text-[var(--text-muted)] capitalize">
               {resolvedTheme} Mode
             </span>
           </div>
@@ -117,23 +117,23 @@ export default function ThemeSwitcherDropdown() {
                   onMouseLeave={() => previewTheme(null)}
                   className={`w-full px-2.5 py-2 rounded-lg text-left flex items-center justify-between transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-[#27272A] text-white border border-[#3ECF8E]/40 font-bold'
-                      : 'hover:bg-[#27272A]/70 text-[#A1A1AA] hover:text-white border border-transparent'
+                      ? 'bg-[var(--bg-secondary)] text-[var(--text-primary)] border border-[var(--primary)]/40 font-bold'
+                      : 'hover:bg-[var(--bg-secondary)]/70 text-[var(--text-muted)] hover:text-[var(--text-primary)] border border-transparent'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="p-1 rounded-md bg-[#09090B] border border-[#27272A] shrink-0">
+                    <div className="p-1 rounded-md bg-[var(--bg-primary)] border border-[var(--border)] shrink-0">
                       {opt.icon}
                     </div>
                     <div>
-                      <div className="text-xs font-medium text-white">{opt.label}</div>
-                      <div className="text-[10px] text-[#71717A] line-clamp-1">
+                      <div className="text-xs font-medium text-[var(--text-primary)]">{opt.label}</div>
+                      <div className="text-[10px] text-[var(--text-muted)] line-clamp-1">
                         {opt.description}
                       </div>
                     </div>
                   </div>
 
-                  {isSelected && <Check className="w-3.5 h-3.5 text-[#3ECF8E]" />}
+                  {isSelected && <Check className="w-3.5 h-3.5 text-[var(--primary)]" />}
                 </button>
               );
             })}

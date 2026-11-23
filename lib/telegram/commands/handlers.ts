@@ -1,6 +1,6 @@
 /**
- * Telegram Bot Command Handlers
- * Implements all 11 command handlers
+ * Telegram Bot Command Handlers — Phase 02 Integration
+ * Implements all command handlers with Phase 02 backend integration
  */
 
 import { TelegramClient } from '../client';
@@ -26,6 +26,15 @@ import {
   privacyKeyboard,
   helpKeyboard,
 } from '../keyboards';
+import {
+  registerTelegramUser,
+  isTelegramRegistered,
+  getProfileByTelegramChat,
+  getUserProfile,
+  createEnquiry,
+  type ServiceResponse,
+} from '@/lib/telegram-services';
+import { normalizeUserRole, type UserRole } from '@/lib/rbac';
 
 /** Command handler function type */
 export type CommandHandler = (ctx: CommandContext) => Promise<void>;
@@ -99,6 +108,12 @@ export async function handleHelp(ctx: CommandContext): Promise<void> {
 /contact \u2014 Verified contact details
 /support \u2014 Support & project enquiry
 /privacy \u2014 Privacy policy
+
+<b>Registration</b>
+/register \u2014 Register as VizTR user
+/enquiry \u2014 Submit project enquiry
+/profile \u2014 View your profile
+/status \u2014 Check registration status
 
 Use the inline buttons for quick navigation, or type any command above.`;
 
@@ -270,7 +285,20 @@ Click any button below to visit our social pages.`;
 
 /** /register - Register as VizTR User */
 export async function handleRegister(ctx: CommandContext): Promise<void> {
-  const { client, chatId } = ctx;
+  const { client, chatId, from } = ctx;
+
+  const telegramChatId = from.id.toString();
+
+  // Check if user is already registered
+  const registeredCheck = await isTelegramRegistered(telegramChatId);
+  if (registeredCheck.success && registeredCheck.data?.registered) {
+    const statusText = registeredCheck.data.profileId
+      ? `You are already registered! Your profile ID is ${registeredCheck.data.profileId}. Use /profile to view your details.`
+      : 'You are already registered.';
+
+    await client.sendMessage(chatId, statusText);
+    return;
+  }
 
   const text = `VizTR User Registration
 
@@ -290,7 +318,7 @@ Please reply with your category name to register.`;
 
 /** /enquiry - Submit Project Enquiry */
 export async function handleEnquiry(ctx: CommandContext): Promise<void> {
-  const { client, chatId } = ctx;
+  const { client, chatId, from } = ctx;
 
   const text = `VizTR Project Enquiry
 
@@ -308,9 +336,15 @@ Reply with your project details to submit an enquiry.`;
 
 /** /profile - View User Profile */
 export async function handleProfile(ctx: CommandContext): Promise<void> {
-  const { client, chatId } = ctx;
+  const { client, chatId, from } = ctx;
 
-  const text = `VizTR User Profile
+  const telegramChatId = from.id.toString();
+
+  // Get profile from database
+  const profileResult = await getProfileByTelegramChat(telegramChatId);
+
+  if (!profileResult.success || !profileResult.data?.profile) {
+    await client.sendMessage(chatId, `VizTR User Profile
 
 Use /register to create your profile if you haven't already.
 
@@ -318,29 +352,80 @@ Once registered, your profile will show:
 - Category and experience level
 - Company and location
 - Portfolio link (if provided)
-- Registration status`;
+- Registration status`);
+    return;
+  }
 
-  await client.sendMessage(chatId, text);
+  const { profile, consent } = profileResult.data;
+  const statusText = profile.status === 'approved'
+    ? '✅ Approved'
+    : profile.status === 'rejected'
+      ? '❌ Rejected'
+      : '⏳ Pending';
+
+  const consentText = consent ? `\nTerms accepted: ${consent.terms_accepted ? 'Yes' : 'No'}` : '';
+
+  const text = `VizTR User Profile
+
+<b>Category:</b> ${profile.category}
+<b>Status:</b> ${statusText}
+<b>Company:</b> ${profile.company || 'Not provided'}
+<b>Location:</b> ${profile.location || 'Not provided'}
+<b>Experience Level:</b> ${profile.experience_level || 'Not provided'}
+<b>Bio:</b> ${profile.bio || 'Not provided'}
+<b>Website:</b> ${profile.website || 'Not provided'}
+<b>Portfolio URL:</b> ${profile.portfolio_url || 'Not provided'}
+${consentText}
+
+<b>Registration Date:</b> ${new Date(profile.created_at).toLocaleDateString()}`;
+
+  await client.sendMessage(chatId, text, {
+    parse_mode: 'HTML',
+  });
 }
 
 /** /status - Check Registration Status */
 export async function handleStatus(ctx: CommandContext): Promise<void> {
-  const { client, chatId } = ctx;
+  const { client, chatId, from } = ctx;
 
-  const text = `VizTR Registration Status
+  const telegramChatId = from.id.toString();
+
+  // Get profile from database
+  const profileResult = await getProfileByTelegramChat(telegramChatId);
+
+  if (!profileResult.success || !profileResult.data?.profile) {
+    await client.sendMessage(chatId, `VizTR Registration Status
 
 Use /register to create your profile if you haven't already.
 
 Your registration status will be displayed here once registered.
 
 Status options:
-\u2022 Pending - Awaiting admin approval
-\u2022 Approved - Active community member
-\u2022 Rejected - Application not approved`;
+- Pending - Awaiting admin approval
+- Approved - Active community member
+- Rejected - Application not approved`);
+    return;
+  }
+
+  const profile = profileResult.data.profile;
+  const statusText = profile.status === 'approved'
+    ? '✅ Approved - Active community member'
+    : profile.status === 'rejected'
+      ? '❌ Rejected - Application not approved'
+      : '⏳ Pending - Awaiting admin approval';
+
+  const text = `VizTR Registration Status
+
+${statusText}
+
+Your profile was submitted on ${new Date(profile.created_at).toLocaleDateString()}.
+
+Use /profile to view your full profile details.`;
 
   await client.sendMessage(chatId, text);
 }
 
+// Register all handlers with the command registry
 import { registerCommandHandler } from './registry';
 
 /** Register all handlers */

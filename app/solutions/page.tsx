@@ -15,7 +15,7 @@ const solutions = [
 
 export default function SolutionsHub() {
   return (
-    <main className="flex-1 w-full pb-20 bg-zinc-950 text-white">
+    <main className="flex-1 w-full pb-20 bg-[var(--bg-primary)] text-[var(--text-primary)]">
       {/* 1. HERO PRESENTATION AREA (Full Landing Page Presentation Aspect Ratio) */}
       <section
         id="hero-section"
@@ -34,15 +34,15 @@ export default function SolutionsHub() {
               className="hero-bg-image object-cover object-center render-lighting-enhanced"
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/40 to-[#0A0A0B]/65 pointer-events-none z-20" />
-          <div className="absolute inset-0 bg-radial from-transparent via-[#0A0A0B]/25 to-[#0A0A0B]/80 pointer-events-none z-20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#131314] via-[#131314]/40 to-[#131314]/65 pointer-events-none z-20" />
+          <div className="absolute inset-0 bg-radial from-transparent via-[#131314]/25 to-[#131314]/80 pointer-events-none z-20" />
         </div>
 
         {/* TOP AREA: Clears floating header & hosts Eyebrow Badge */}
         <div className="relative z-20 w-full pt-16 sm:pt-20 shrink-0 flex justify-center px-2 sm:px-4">
-          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#0A0A0B] shadow-2xl transition-all border border-[#1E293B] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#42CF8B] animate-pulse shrink-0" />
-            <span className="font-bold text-[#42CF8B] tracking-wider uppercase shrink-0">INDUSTRY ARCHITECTURE</span>
+          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#131314] shadow-2xl transition-all border border-[#3b494b] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#54de99] animate-pulse shrink-0" />
+            <span className="font-bold text-[#54de99] tracking-wider uppercase shrink-0">INDUSTRY ARCHITECTURE</span>
             <span className="opacity-40 shrink-0">|</span>
             <span className="opacity-80 shrink-0">Sector-Specific Solutions</span>
           </div>
@@ -58,7 +58,7 @@ export default function SolutionsHub() {
             Tailored visualization solutions for every industry.
           </p>
 
-          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]">
+          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#e5e2e3]">
             From conceptual design development for architects to high-converting marketing visuals and WebXR for global developers and luxury agencies.
           </p>
 
@@ -75,9 +75,9 @@ export default function SolutionsHub() {
             <Link
               href="/book-consultation"
               id="hero-secondary-cta"
-              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#1E293B] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#1E293B]"
+              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#3b494b] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#3b494b]"
             >
-              <Sparkles className="w-4 h-4 text-[#42CF8B]" />
+              <Sparkles className="w-4 h-4 text-[#54de99]" />
               <span>Request Custom Solution</span>
             </Link>
           </div>
@@ -96,7 +96,7 @@ export default function SolutionsHub() {
                     window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
                   }
                 }}
-                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0A0A0B] text-[#FAFAFA] text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-sm hover:bg-[#131314] border border-[#1E293B]"
+                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#131314] text-[#e5e2e3] text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-sm hover:bg-[#131314] border border-[#3b494b]"
                 aria-label="Scroll down to explore solutions"
               >
                 <span>Scroll to explore</span>
@@ -116,13 +116,13 @@ export default function SolutionsHub() {
               <Link
                 key={sol.name}
                 href={sol.href}
-                className="group flex items-center gap-4 p-6 bg-[#131314] border border-[#1E293B] rounded-2xl hover:border-[#00F0FF]/40 transition-all duration-300 shadow-sm hover:shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
+                className="group flex items-center gap-4 p-6 bg-[#131314] border border-[#3b494b] rounded-2xl hover:border-[#00F0FF]/40 transition-all duration-300 shadow-sm hover:shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
               >
-                <div className="p-3 w-12 h-12 rounded-full bg-[#0A0A0B] border border-[#1E293B] text-[#00F0FF] flex items-center justify-center group-hover:border-[#00F0FF]/50 transition-colors">
+                <div className="p-3 w-12 h-12 rounded-full bg-[#131314] border border-[#3b494b] text-[#00F0FF] flex items-center justify-center group-hover:border-[#00F0FF]/50 transition-colors">
                   <Icon className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold mb-1 text-[#FAFAFA] group-hover:text-[#00F0FF]">{sol.name}</h3>
+                  <h3 className="text-xl font-bold mb-1 text-[#e5e2e3] group-hover:text-[#00F0FF]">{sol.name}</h3>
                   <p className="text-sm text-[#B9CACB]">{sol.desc}</p>
                 </div>
                 <ChevronRight className="w-5 h-5 text-[#B9CACB] group-hover:text-[#00F0FF] transition-colors" />

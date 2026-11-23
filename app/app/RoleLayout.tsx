@@ -358,7 +358,7 @@ export default function RoleLayout({
   const hideHeaderAndFooter = false;
 
   return (
-    <div className={`min-h-screen bg-zinc-950 text-white`}>
+    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
       {/* Mobile sidebar backdrop */}
       {!hideHeaderAndFooter && sidebarOpen && (
         <div
@@ -370,11 +370,11 @@ export default function RoleLayout({
       {/* Sidebar */}
       {!hideHeaderAndFooter && (
         <aside
-          className={`fixed inset-y-0 left-0 z-50 w-64 bg-zinc-900 border-r border-zinc-800 transform transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+          className={`fixed inset-y-0 left-0 z-50 w-64 bg-[var(--bg-card)] border-r border-[var(--border)] transform transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
         >
           <div className="flex flex-col h-full">
             {/* Logo & Role */}
-            <div className="p-5 border-b border-zinc-800">
+            <div className="p-5 border-b border-[var(--border)]">
               <Link href="/" className="flex items-center gap-3 mb-4">
                 <div className={`p-2 rounded-lg ${roleClassMap[role].bgBadge}`}>
                   <Sparkles className={`w-6 h-6 ${roleClassMap[role].textBadge}`} />
@@ -413,7 +413,7 @@ export default function RoleLayout({
             </nav>
 
             {/* Quick Actions */}
-            <div className="p-4 border-t border-zinc-800">
+            <div className="p-4 border-t border-[var(--border)]">
               <Link
                 href="/creator/3d-editor"
                 target="_blank"
