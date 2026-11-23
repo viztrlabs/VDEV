@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { useAppStore } from '@/lib/store';
+import { requestARSession, launchQuickLook, canRequestXR, isQuickLookSupported } from '@/lib/xr/capabilities';
 import {
   X,
   Rotate3d,
@@ -19,6 +20,7 @@ import {
   Headset,
   Sliders,
   CheckCircle2,
+  QrCode,
 } from 'lucide-react';
 
 type RenderMode = 'pbr' | 'clay' | 'wireframe';
@@ -34,6 +36,7 @@ export function ModelCanvas({
   renderMode,
   lighting,
   showGrid,
+  xrSession = null,
 }: {
   url: string;
   rotX: number;
@@ -42,15 +45,26 @@ export function ModelCanvas({
   renderMode: RenderMode;
   lighting: Lighting;
   showGrid: boolean;
+  xrSession?: any;
 }) {
   const mountRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<any>(null);
+  // Live XR hit-test state shared between the render loop and the AR effect.
+  const xrRef = useRef<{
+    hitTestSource?: any;
+    refSpace?: any;
+    reticle?: THREE.Mesh;
+  }>({});
   const stateRef = useRef<{
     model?: any;
     key?: any;
     fill?: any;
     amb?: any;
     clayMaterial?: any;
+    renderer?: THREE.WebGLRenderer;
+    scene?: THREE.Scene;
+    camera?: THREE.PerspectiveCamera;
+    controls?: any;
   }>({});
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(
     url ? 'loading' : 'ready'
@@ -65,7 +79,6 @@ export function ModelCanvas({
       return;
     }
     let disposed = false;
-    let raf = 0;
     let cleanupFns: Array<() => void> = [];
 
     (async () => {
@@ -197,7 +210,17 @@ export function ModelCanvas({
           }
         };
 
-        stateRef.current = { model, key, fill, amb, clayMaterial };
+        stateRef.current = { model, key, fill, amb, clayMaterial, renderer, scene, camera, controls };
+
+        // Hit-test reticle — hidden until an AR surface is detected.
+        const reticle = new THREE.Mesh(
+          new THREE.RingGeometry(0.08, 0.12, 32).rotateX(-Math.PI / 2),
+          new THREE.MeshBasicMaterial({ color: 0x00f0ff, side: THREE.DoubleSide })
+        );
+        reticle.matrixAutoUpdate = false;
+        reticle.visible = false;
+        scene.add(reticle);
+        xrRef.current.reticle = reticle;
         applyMaterialMode();
         applyLighting();
 
@@ -215,16 +238,34 @@ export function ModelCanvas({
         });
         resizeObserver.observe(mount);
 
-        const animate = () => {
+        const animate = (time?: number, frame?: any) => {
           if (disposed) return;
-          raf = requestAnimationFrame(animate);
-          controls.update();
+          if (renderer.xr.isPresenting) {
+            const hit = xrRef.current;
+            if (hit.hitTestSource && hit.refSpace && frame && model) {
+              const results = frame.getHitTestResults(hit.hitTestSource);
+              if (results.length > 0) {
+                const pose = results[0].getPose(hit.refSpace);
+                if (pose && hit.reticle) {
+                  hit.reticle.visible = true;
+                  hit.reticle.matrix.fromArray(pose.transform.matrix);
+                  // Auto-place the model on the detected real-world surface.
+                  const p = new THREE.Vector3().setFromMatrixPosition(hit.reticle.matrix);
+                  model.position.lerp(p, 0.35);
+                }
+              } else if (hit.reticle) {
+                hit.reticle.visible = false;
+              }
+            }
+          } else {
+            controls.update();
+          }
           renderer.render(scene, camera);
         };
-        animate();
+        renderer.setAnimationLoop(animate);
 
         cleanupFns.push(() => {
-          cancelAnimationFrame(raf);
+          renderer.setAnimationLoop(null);
           resizeObserver.disconnect();
           controls.dispose();
           renderer.dispose();
@@ -256,6 +297,76 @@ export function ModelCanvas({
       cleanupFns = [];
     };
   }, [url]);
+
+  // Real WebXR immersive-ar: start the session, enable hit-test, and keep the
+  // canvas transparent so the live camera passthrough is visible behind the model.
+  useEffect(() => {
+    if (!xrSession) return;
+    const st = stateRef.current;
+    const renderer = st.renderer;
+    const scene = st.scene;
+    const model = st.model;
+    if (!renderer || !scene) return;
+
+    let cancelled = false;
+    let hitTestSource: any = null;
+
+    try {
+      renderer.xr.setReferenceSpaceType('local');
+    } catch {
+      /* ignore */
+    }
+    scene.background = null;
+    renderer.setClearColor(0x000000, 0);
+    renderer.domElement.style.background = 'transparent';
+
+    // Scale + place the model in front of the viewer for AR.
+    if (model) {
+      const box = new THREE.Box3().setFromObject(model);
+      const size = box.getSize(new THREE.Vector3());
+      const center = box.getCenter(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z) || 1;
+      const s = 1.2 / maxDim;
+      model.scale.setScalar(s);
+      model.position.set(-center.x * s, -center.y * s, -2 - center.z * s);
+    }
+
+    const start = async () => {
+      try {
+        await renderer.xr.setSession(xrSession);
+        if (cancelled) return;
+        const session = renderer.xr.getSession();
+        if (!session) return;
+        const anySession = session as any;
+        const viewerSpace = await anySession.requestReferenceSpace('viewer');
+        const refSpace = renderer.xr.getReferenceSpace();
+        hitTestSource = await anySession.requestHitTestSource({ space: viewerSpace });
+        xrRef.current.hitTestSource = hitTestSource;
+        xrRef.current.refSpace = refSpace;
+      } catch (e) {
+        // Hit-test is optional; the model still renders in front of the camera.
+        console.warn('[ModelViewer] AR hit-test unavailable:', e);
+      }
+    };
+    start();
+
+    return () => {
+      cancelled = true;
+      xrRef.current.hitTestSource = undefined;
+      xrRef.current.refSpace = undefined;
+      if (xrRef.current.reticle) xrRef.current.reticle.visible = false;
+      try {
+        hitTestSource?.cancel?.();
+      } catch {
+        /* ignore */
+      }
+      try {
+        xrSession.end?.()?.catch?.(() => {});
+      } catch {
+        /* ignore */
+      }
+    };
+  }, [xrSession, status]);
 
   // Live-update render mode / lighting / grid without reloading the model.
   useEffect(() => {
@@ -317,7 +428,7 @@ export function ModelCanvas({
   );
 }
 
-export default function ModelViewer() {
+export function ModelViewer() {
   const {
     modelViewerOpen,
     activeModelUrl,
@@ -338,6 +449,18 @@ export default function ModelViewer() {
   const [arSupported, setArSupported] = useState(false);
   const [vrSupported, setVrSupported] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [arSession, setArSession] = useState<any>(null);
+  const [arError, setArError] = useState<string | null>(null);
+  const [showQr, setShowQr] = useState(false);
+  const topBarRef = useRef<HTMLDivElement>(null);
+
+  // iOS AR Quick Look uses a .usdz asset when the showcase provides one.
+  const usdzUrl =
+    activeModelUrl && /\.usdz(\?|$)/i.test(activeModelUrl) ? activeModelUrl : null;
+  const shareUrl =
+    typeof window !== 'undefined'
+      ? `${window.location.origin}/xr-world/webar`
+      : '/xr-world/webar';
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -369,7 +492,43 @@ export default function ModelViewer() {
   };
 
   const handleLaunchAR = () => {
-    showToast('Initializing WebAR session... Point camera at a flat surface.', 'success');
+    setArError(null);
+    // Toggle off if a live session is already running.
+    if (arSession) {
+      try {
+        arSession.end?.();
+      } catch {
+        /* ignore */
+      }
+      setArSession(null);
+      return;
+    }
+
+    // iOS Safari — native AR Quick Look.
+    if (usdzUrl && isQuickLookSupported()) {
+      if (launchQuickLook(usdzUrl)) return;
+    }
+
+    // Android Chrome / WebXR immersive-ar — requestSession must run in this gesture.
+    if (canRequestXR() && arSupported) {
+      requestARSession(topBarRef.current)
+        .then((session) => setArSession(session))
+        .catch((e: any) => {
+          const m = e?.message || 'Failed to start the live AR camera.';
+          setArError(m);
+          showToast(m, 'error');
+        });
+      return;
+    }
+
+    // Desktop / unsupported — keep the interactive 3D simulator + QR handoff.
+    const msg =
+      usdzUrl && isQuickLookSupported()
+        ? 'AR Quick Look needs a valid .usdz asset. Showing the 3D simulator.'
+        : 'Live camera AR is not supported here. Showing the 3D simulator — scan the QR to open on an AR-capable phone.';
+    setArError(msg);
+    showToast('Showing 3D AR simulator', 'info');
+    setShowQr(true);
   };
 
   const handleLaunchVR = () => {
@@ -394,7 +553,7 @@ export default function ModelViewer() {
       onMouseUp={handleMouseUp}
     >
       {/* TOP BAR */}
-      <div className="px-4 py-3 bg-[#131314] border-b border-[#353436] flex items-center justify-between z-30">
+      <div ref={topBarRef} className="px-4 py-3 bg-[#131314] border-b border-[#353436] flex items-center justify-between z-30">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 px-2.5 py-1 rounded bg-[#201f20] border border-[#353436] text-[#dbfcff] text-[10px] font-mono font-bold uppercase tracking-wider">
             <Box className="w-3.5 h-3.5" />
@@ -409,11 +568,30 @@ export default function ModelViewer() {
           <button
             onClick={handleLaunchAR}
             className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#201f20] hover:bg-[#353436] text-[10px] font-mono text-[#e5e2e3] transition-colors border border-[#353436] cursor-pointer"
-            title="Launch WebAR mode"
+            title={arSession ? 'Exit live AR' : 'Launch WebAR mode'}
           >
             <Smartphone className="w-3 h-3 text-[#dbfcff]" />
-            <span>{arSupported ? 'WebAR Active' : 'Simulate AR'}</span>
+            <span>
+              {arSession
+                ? 'Exit AR'
+                : arSupported
+                  ? 'Launch Live AR'
+                  : usdzUrl && isQuickLookSupported()
+                    ? 'Open in AR'
+                    : 'Simulate AR'}
+            </span>
           </button>
+
+          {!arSupported && (
+            <button
+              onClick={() => setShowQr(true)}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#201f20] hover:bg-[#353436] text-[10px] font-mono text-[#e5e2e3] transition-colors border border-[#353436] cursor-pointer"
+              title="Scan QR to open live AR on mobile"
+            >
+              <QrCode className="w-3 h-3 text-[#dbfcff]" />
+              <span>QR</span>
+            </button>
+          )}
 
           <button
             onClick={handleLaunchVR}
@@ -442,6 +620,16 @@ export default function ModelViewer() {
         </div>
       </div>
 
+      {arError && (
+        <div className="px-4 py-2 bg-rose-950/70 border-b border-rose-800/60 text-[10px] font-mono text-rose-200 flex items-center gap-2 z-30">
+          <span className="text-rose-300">⚠</span>
+          <span className="flex-1">{arError}</span>
+          <button onClick={() => setArError(null)} className="text-rose-300 hover:text-white px-1" aria-label="Dismiss">
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* 3D INTERACTIVE VIEWPORT */}
       <div
         className="relative flex-1 flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing bg-[#131314]"
@@ -460,6 +648,7 @@ export default function ModelViewer() {
           renderMode={renderMode}
           lighting={lighting}
           showGrid={showGrid}
+          xrSession={arSession}
         />
 
         {/* Floating Controls HUD Sidebar */}
@@ -549,6 +738,38 @@ export default function ModelViewer() {
           <div>Zoom: {zoom.toFixed(1)}x</div>
         </div>
       </div>
+
+      {/* QR handoff — desktop / unsupported browsers */}
+      {showQr && (
+        <div
+          className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setShowQr(false)}
+        >
+          <div
+            className="bg-[#201f20] border border-[#353436] rounded-xl p-6 flex flex-col items-center gap-3 max-w-sm w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-sm font-mono text-[#e5e2e3]">Scan to open live AR on mobile</h3>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(shareUrl)}`}
+              alt="QR code to open WebAR on mobile"
+              width={240}
+              height={240}
+              className="rounded bg-white p-2"
+            />
+            <p className="text-[10px] font-mono text-[#71717A] break-all text-center">{shareUrl}</p>
+            <button
+              onClick={() => setShowQr(false)}
+              className="mt-1 px-3 py-1.5 rounded bg-[#dbfcff] text-black text-[11px] font-mono font-bold cursor-pointer"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+export default ModelViewer;
