@@ -16,7 +16,7 @@ export function ViztrLogoMark({ className = 'w-8 h-8', size, variant = 'cyan', .
   const isGold = variant === 'gold';
   const isWhite = variant === 'white';
   const startColor = isGold ? '#e2c073' : isWhite ? '#ffffff' : '#00F0FF';
-  const endColor = isGold ? '#9a7d33' : isWhite ? '#b9cacb' : '#42CF8B';
+  const endColor = isGold ? '#9a7d33' : isWhite ? '#b9cacb' : '#54de99';
 
   return (
     <svg

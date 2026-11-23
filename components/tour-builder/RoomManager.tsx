@@ -160,8 +160,8 @@ export function RoomManager({ selectedRoomId, onSelectRoom }: RoomManagerProps) 
   };
 
   return (
-    <div className="h-full flex flex-col bg-[#09090B]">
-      <div className="flex items-center justify-between px-3 py-2 border-b border-[#27272A]">
+    <div className="h-full flex flex-col bg-[#131314]">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-[#353436]">
         <span className="text-xs font-mono font-bold text-white">ROOMS</span>
         <div className="flex items-center gap-1">
           <button
@@ -231,13 +231,13 @@ export function RoomManager({ selectedRoomId, onSelectRoom }: RoomManagerProps) 
                   onContextMenu={(e) => handleContextMenu(e, room.id)}
                   className={`flex items-center gap-2 px-3 py-2 cursor-pointer ${
                     selectedRoomId === room.id
-                      ? 'bg-[#3ECF8E]/10 border-l-2 border-[#3ECF8E]'
+                      ? 'bg-[#dbfcff]/10 border-l-2 border-[#dbfcff]'
                       : 'hover:bg-white/5 border-l-2 border-transparent'
-                  } ${dragOverId === room.id ? 'border-t-2 border-[#3ECF8E]' : ''}`}
+                  } ${dragOverId === room.id ? 'border-t-2 border-[#dbfcff]' : ''}`}
                 >
                   <GripVertical className="w-3 h-3 text-[#71717A] cursor-grab flex-shrink-0" />
                   {room.thumbnailUrl ? (
-                    <div className="w-8 h-8 rounded bg-[#18181B] flex-shrink-0 overflow-hidden">
+                    <div className="w-8 h-8 rounded bg-[#201f20] flex-shrink-0 overflow-hidden">
                       <img
                         src={room.thumbnailUrl}
                         alt=""
@@ -248,7 +248,7 @@ export function RoomManager({ selectedRoomId, onSelectRoom }: RoomManagerProps) 
                       />
                     </div>
                   ) : (
-                    <div className="w-8 h-8 rounded bg-[#18181B] flex-shrink-0 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded bg-[#201f20] flex-shrink-0 flex items-center justify-center">
                       <Eye className="w-3 h-3 text-[#71717A]" />
                     </div>
                   )}
@@ -258,7 +258,7 @@ export function RoomManager({ selectedRoomId, onSelectRoom }: RoomManagerProps) 
                       onChange={(e) => setEditName(e.target.value)}
                       onBlur={() => handleRename(room.id)}
                       onKeyDown={(e) => e.key === 'Enter' && handleRename(room.id)}
-                      className="flex-1 bg-[#18181B] border border-[#3F3F46] rounded px-2 py-0.5 text-xs font-mono text-white"
+                      className="flex-1 bg-[#201f20] border border-[#3F3F46] rounded px-2 py-0.5 text-xs font-mono text-white"
                       autoFocus
                     />
                   ) : (
@@ -287,7 +287,7 @@ export function RoomManager({ selectedRoomId, onSelectRoom }: RoomManagerProps) 
             <p className="text-xs text-[#71717A] mb-3">Your tour is empty.</p>
             <button
               onClick={handleAddRoom}
-              className="px-3 py-1.5 rounded bg-[#27272A] text-xs font-mono text-white hover:bg-[#3F3F46]"
+              className="px-3 py-1.5 rounded bg-[#353436] text-xs font-mono text-white hover:bg-[#3F3F46]"
             >
               <Plus className="w-3 h-3 inline mr-1" />
               Add First Room
@@ -303,7 +303,7 @@ export function RoomManager({ selectedRoomId, onSelectRoom }: RoomManagerProps) 
             onClick={() => setContextMenu(null)}
           />
           <div
-            className="fixed z-50 bg-[#18181B] border border-[#27272A] rounded shadow-lg py-1 min-w-[160px]"
+            className="fixed z-50 bg-[#201f20] border border-[#353436] rounded shadow-lg py-1 min-w-[160px]"
             style={{ left: contextMenu.x, top: contextMenu.y }}
           >
             <button
@@ -328,7 +328,7 @@ export function RoomManager({ selectedRoomId, onSelectRoom }: RoomManagerProps) 
             >
               Duplicate
             </button>
-            <div className="border-t border-[#27272A] my-1" />
+            <div className="border-t border-[#353436] my-1" />
             <button
               onClick={() => {
                 reorderRoom(contextMenu.roomId, 'up');
@@ -347,7 +347,7 @@ export function RoomManager({ selectedRoomId, onSelectRoom }: RoomManagerProps) 
             >
               Move Down
             </button>
-            <div className="border-t border-[#27272A] my-1" />
+            <div className="border-t border-[#353436] my-1" />
             <button
               onClick={() => {
                 if (confirm('Delete this room?')) {

@@ -69,19 +69,19 @@ export default function ShareDialog({
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-display font-bold text-white flex items-center gap-2">
-                <Share2 className="w-5 h-5 text-[#3ECF8E]" />
+                <Share2 className="w-5 h-5 text-[#dbfcff]" />
                 Share This Room
               </h3>
               <button
                 onClick={onClose}
-                className="p-1.5 rounded-lg hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors"
+                className="p-1.5 rounded-lg hover:bg-[#353436] text-[#A1A1AA] hover:text-white transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <p className="text-sm text-[#A1A1AA] mb-4">
-              Share <span className="text-[#3ECF8E] font-medium">{currentRoom.name}</span> with others. The link includes the exact room and view.
+              Share <span className="text-[#dbfcff] font-medium">{currentRoom.name}</span> with others. The link includes the exact room and view.
             </p>
 
             <div className="flex items-center gap-2 mb-4">
@@ -89,14 +89,14 @@ export default function ShareDialog({
                 type="text"
                 readOnly
                 value={getShareUrl()}
-                className="flex-1 px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs text-white font-mono focus:outline-none focus:border-[#3ECF8E]"
+                className="flex-1 px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs text-white font-mono focus:outline-none focus:border-[#dbfcff]"
               />
               <button
                 onClick={onCopy}
                 className={`px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors shrink-0 ${
                   shareCopied
                     ? 'bg-emerald-500 text-white'
-                    : 'bg-[#3ECF8E] hover:bg-[#34b27b] text-black'
+                    : 'bg-[#dbfcff] hover:bg-[#34b27b] text-black'
                 }`}
               >
                 {shareCopied ? 'Copied!' : 'Copy'}
@@ -107,7 +107,7 @@ export default function ShareDialog({
             <div className="flex items-center gap-2 mb-4">
               <button
                 onClick={() => handleSocialShare('twitter')}
-                className="w-9 h-9 rounded-full bg-[#18181B] hover:bg-[#27272A] text-[#1DA1F2] border border-[#27272A] flex items-center justify-center transition-colors"
+                className="w-9 h-9 rounded-full bg-[#201f20] hover:bg-[#353436] text-[#1DA1F2] border border-[#353436] flex items-center justify-center transition-colors"
                 aria-label="Share on Twitter"
                 title="Share on Twitter"
               >
@@ -115,7 +115,7 @@ export default function ShareDialog({
               </button>
               <button
                 onClick={() => handleSocialShare('facebook')}
-                className="w-9 h-9 rounded-full bg-[#18181B] hover:bg-[#27272A] text-[#1877F3] border border-[#27272A] flex items-center justify-center transition-colors"
+                className="w-9 h-9 rounded-full bg-[#201f20] hover:bg-[#353436] text-[#1877F3] border border-[#353436] flex items-center justify-center transition-colors"
                 aria-label="Share on Facebook"
                 title="Share on Facebook"
               >
@@ -123,7 +123,7 @@ export default function ShareDialog({
               </button>
               <button
                 onClick={() => handleSocialShare('linkedin')}
-                className="w-9 h-9 rounded-full bg-[#18181B] hover:bg-[#27272A] text-[#0A66C2] border border-[#27272A] flex items-center justify-center transition-colors"
+                className="w-9 h-9 rounded-full bg-[#201f20] hover:bg-[#353436] text-[#0A66C2] border border-[#353436] flex items-center justify-center transition-colors"
                 aria-label="Share on LinkedIn"
                 title="Share on LinkedIn"
               >
@@ -131,7 +131,7 @@ export default function ShareDialog({
               </button>
               <button
                 onClick={() => handleSocialShare('whatsapp')}
-                className="w-9 h-9 rounded-full bg-[#18181B] hover:bg-[#27272A] text-[#25D366] border border-[#27272A] flex items-center justify-center transition-colors"
+                className="w-9 h-9 rounded-full bg-[#201f20] hover:bg-[#353436] text-[#25D366] border border-[#353436] flex items-center justify-center transition-colors"
                 aria-label="Share on WhatsApp"
                 title="Share on WhatsApp"
               >

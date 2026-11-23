@@ -181,15 +181,15 @@ export default function GaussianSplatShowcasePage() {
             className="w-full h-full pointer-events-auto"
             style={{ touchAction: 'none' }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/40 to-[#0A0A0B]/65 pointer-events-none z-20" />
-          <div className="absolute inset-0 bg-radial from-transparent via-[#0A0A0B]/25 to-[#0A0A0B]/80 pointer-events-none z-20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#131314] via-[#131314]/40 to-[#131314]/65 pointer-events-none z-20" />
+          <div className="absolute inset-0 bg-radial from-transparent via-[#131314]/25 to-[#131314]/80 pointer-events-none z-20" />
         </div>
 
         {/* TOP AREA: Clears floating header & hosts Eyebrow Badge (No directory breadcrumbs) */}
         <div className="relative z-20 w-full pt-16 sm:pt-20 shrink-0 flex justify-center px-2 sm:px-4">
-          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full  shadow-2xl transition-all border border-[#1E293B] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#42CF8B] animate-pulse shadow-[0_0_8px_#42CF8B] shrink-0" />
-            <span className="font-bold text-[#42CF8B] tracking-wider uppercase shrink-0">NEURAL RADIANCE</span>
+          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full  shadow-2xl transition-all border border-[#3b494b] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#54de99] animate-pulse shadow-[0_0_8px_#54de99] shrink-0" />
+            <span className="font-bold text-[#54de99] tracking-wider uppercase shrink-0">NEURAL RADIANCE</span>
             <span className="opacity-40 shrink-0">|</span>
             <span className="opacity-80 shrink-0">{data.badge || '3D Gaussian Splatting Engine'}</span>
           </div>
@@ -205,7 +205,7 @@ export default function GaussianSplatShowcasePage() {
             {data.tagline}
           </p>
 
-          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]">
+          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#e5e2e3]">
             Real-time neural radiance rendering representing complex architectural physical reality as millions of 3D Gaussians with instant 60fps browser rendering.
           </p>
 
@@ -225,15 +225,15 @@ export default function GaussianSplatShowcasePage() {
               target="_blank"
               rel="noopener noreferrer"
               id="hero-secondary-cta"
-              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider  transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#1E293B]"
+              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider  transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#3b494b]"
             >
-              <Box className="w-4 h-4 text-[#42CF8B]" />
+              <Box className="w-4 h-4 text-[#54de99]" />
               <span>Open XR Editor</span>
             </Link>
 
             <a
               href="#splat-interactive-suite"
-              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider  transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#1E293B]"
+              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider  transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#3b494b]"
             >
               <span>Explore Splat Metrics</span>
             </a>
@@ -250,7 +250,7 @@ export default function GaussianSplatShowcasePage() {
                   if (target) target.scrollIntoView({ behavior: 'smooth' });
                   else window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
                 }}
-                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full  text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-lg border border-[#1E293B]"
+                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full  text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-lg border border-[#3b494b]"
                 aria-label="Scroll down to explore"
               >
                 <span>Scroll to explore</span>

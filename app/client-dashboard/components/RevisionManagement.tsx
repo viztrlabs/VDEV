@@ -914,7 +914,7 @@ completedAt: new Date('2024-12-19'),
 
         .section-header {
           padding: 32px;
-          border-bottom: 1px solid #27272A;
+          border-bottom: 1px solid #353436;
         }
 
         .section-header h2 {
@@ -939,7 +939,7 @@ completedAt: new Date('2024-12-19'),
           align-items: center;
           gap: 8px;
           padding: 12px 24px;
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
           border: none;
           border-radius: 8px;
@@ -968,8 +968,8 @@ completedAt: new Date('2024-12-19'),
         }
 
         .revision-form {
-          background: #18181B;
-          border: 1px solid #27272A;
+          background: #201f20;
+          border: 1px solid #353436;
           border-radius: 16px;
           padding: 32px;
           width: 100%;
@@ -1004,8 +1004,8 @@ completedAt: new Date('2024-12-19'),
         .form-group textarea {
           width: 100%;
           padding: 12px 16px;
-          background: #09090B;
-          border: 1px solid #27272A;
+          background: #131314;
+          border: 1px solid #353436;
           border-radius: 8px;
           color: #FFFFFF;
           font-size: 14px;
@@ -1016,7 +1016,7 @@ completedAt: new Date('2024-12-19'),
         .form-group select:focus,
         .form-group textarea:focus {
           outline: none;
-          border-color: #3ECF8E;
+          border-color: #dbfcff;
           box-shadow: 0 0 0 3px rgba(62, 207, 142, 0.1);
         }
 
@@ -1035,8 +1035,8 @@ completedAt: new Date('2024-12-19'),
         }
 
         .workflow-step {
-          background: #09090B;
-          border: 1px solid #27272A;
+          background: #131314;
+          border: 1px solid #353436;
           border-radius: 8px;
           padding: 16px;
           margin-bottom: 16px;
@@ -1119,7 +1119,7 @@ completedAt: new Date('2024-12-19'),
 
         .complete-step-btn {
           padding: 8px 16px;
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
           border: none;
           border-radius: 6px;
@@ -1136,7 +1136,7 @@ completedAt: new Date('2024-12-19'),
         .step-completed-info {
           margin-top: 8px;
           padding-top: 8px;
-          border-top: 1px solid #27272A;
+          border-top: 1px solid #353436;
           font-size: 12px;
           color: #A1A1AA;
         }
@@ -1164,17 +1164,17 @@ completedAt: new Date('2024-12-19'),
         }
 
         .cancel-btn {
-          background: #27272A;
+          background: #353436;
           color: #FFFFFF;
           flex: 1;
         }
 
         .cancel-btn:hover {
-          background: #3a3a3d;
+          background: #3a393a;
         }
 
         .save-btn {
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
         }
 
@@ -1208,8 +1208,8 @@ completedAt: new Date('2024-12-19'),
 
         .filter-tab {
           padding: 8px 16px;
-          background: #27272A;
-          border: 1px solid #3a3a3d;
+          background: #353436;
+          border: 1px solid #3a393a;
           border-radius: 6px;
           color: #A1A1AA;
           cursor: pointer;
@@ -1221,9 +1221,9 @@ completedAt: new Date('2024-12-19'),
         }
 
         .filter-tab.active {
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
-          border-color: #3ECF8E;
+          border-color: #dbfcff;
         }
 
         .count {
@@ -1251,15 +1251,15 @@ completedAt: new Date('2024-12-19'),
         }
 
         .revision-card {
-          background: #18181B;
-          border: 1px solid #27272A;
+          background: #201f20;
+          border: 1px solid #353436;
           border-radius: 12px;
           padding: 20px;
           transition: all 0.2s;
         }
 
         .revision-card:hover {
-          border-color: #3ECF8E;
+          border-color: #dbfcff;
           transform: translateY(-2px);
         }
 
@@ -1324,14 +1324,14 @@ n          cursor: pointer;
         }
 
         .workflow-progress {
-          background: #27272A;
+          background: #353436;
           border-radius: 4px;
           padding: 8px;
           margin-top: 12px;
         }
 
         .progress-bar {
-          background: #3a3a3d;
+          background: #3a393a;
           border-radius: 2px;
           height: 6px;
           margin-bottom: 4px;
@@ -1339,14 +1339,14 @@ n          cursor: pointer;
         }
 
         .progress-fill {
-          background: #3ECF8E;
+          background: #dbfcff;
           height: 100%;
           transition: width 0.3s ease;
         }
 
         .modal-content {
-          background: #18181B;
-          border: 1px solid #27272A;
+          background: #201f20;
+          border: 1px solid #353436;
           border-radius: 16px;
           padding: 32px;
           width: 100%;
@@ -1369,7 +1369,7 @@ n          cursor: pointer;
 
         .close-modal-btn {
           padding: 8px;
-          background: #27272A;
+          background: #353436;
           border: none;
           border-radius: 6px;
           color: #FFFFFF;
@@ -1395,8 +1395,8 @@ n          cursor: pointer;
 
         .info-item {
           padding: 8px;
-          background: #09090B;
-          border: 1px solid #27272A;
+          background: #131314;
+          border: 1px solid #353436;
           border-radius: 6px;
           font-size: 14px;
         }
@@ -1479,8 +1479,8 @@ n          cursor: pointer;
           align-items: center;
           gap: 12px;
           padding: 12px;
-          background: #09090B;
-          border: 1px solid #27272A;
+          background: #131314;
+          border: 1px solid #353436;
           border-radius: 8px;
         }
 
@@ -1490,7 +1490,7 @@ n          cursor: pointer;
 
         .download-attachment-btn {
           padding: 6px 12px;
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
           border: none;
           border-radius: 6px;

@@ -110,13 +110,13 @@ export default function TourManager() {
   };
 
   return (
-    <div className="rounded-2xl border border-[#27272A] bg-[#0c0c0f] p-4 space-y-4">
+    <div className="rounded-2xl border border-[#353436] bg-[#201f20] p-4 space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-[#3ECF8E]">Tour Manager</h3>
+        <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-[#dbfcff]">Tour Manager</h3>
         <button
           onClick={createTour}
           disabled={busy}
-          className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
+          className="px-3 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
         >
           + New Tour
         </button>
@@ -131,7 +131,7 @@ export default function TourManager() {
           <div
             key={t.id}
             className={`flex items-center justify-between rounded-lg px-2 py-1.5 border ${
-              activeId === t.id ? 'border-[#3ECF8E]/40 bg-[#18181B]' : 'border-transparent hover:bg-[#18181B]'
+              activeId === t.id ? 'border-[#dbfcff]/40 bg-[#201f20]' : 'border-transparent hover:bg-[#201f20]'
             }`}
           >
             <button onClick={() => setActiveTour(t)} className="flex-1 text-left">
@@ -149,17 +149,17 @@ export default function TourManager() {
         ))}
       </div>
 
-      {msg && <div className="text-[10px] font-mono text-[#3ECF8E]">{msg}</div>}
+      {msg && <div className="text-[10px] font-mono text-[#dbfcff]">{msg}</div>}
 
       {active && (
-        <div className="border-t border-[#27272A] pt-3">
+        <div className="border-t border-[#353436] pt-3">
           <div className="flex gap-1 mb-3">
             {(['tours', 'team', 'collab', 'guided', 'publish'] as const).map((tb) => (
               <button
                 key={tb}
                 onClick={() => setTab(tb)}
                 className={`px-2 py-1 rounded text-[10px] font-mono ${
-                  tab === tb ? 'bg-[#3ECF8E] text-black' : 'bg-[#18181B] text-[#A1A1AA]'
+                  tab === tb ? 'bg-[#dbfcff] text-black' : 'bg-[#201f20] text-[#A1A1AA]'
                 }`}
               >
                 {tb}
@@ -183,7 +183,7 @@ function TourMeta({ active, onPatch, busy }: { active: TourSummary; onPatch: (p:
       <input
         defaultValue={active.title}
         onBlur={(e) => onPatch({ title: e.target.value })}
-        className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+        className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
         placeholder="Tour title"
       />
       <label className="flex items-center gap-2 text-[10px] font-mono text-[#A1A1AA]">
@@ -193,7 +193,7 @@ function TourMeta({ active, onPatch, busy }: { active: TourSummary; onPatch: (p:
       <select
         defaultValue={active.access_level}
         onChange={(e) => onPatch({ access_level: e.target.value })}
-        className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+        className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
       >
         <option value="public">Public</option>
         <option value="private">Private</option>
@@ -218,13 +218,13 @@ function PublishTab({ active, onPatch, busy }: { active: TourSummary; onPatch: (
         defaultValue={active.custom_domain || ''}
         onBlur={(e) => onPatch({ custom_domain: e.target.value })}
         placeholder="tour.yourdomain.com"
-        className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+        className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
       />
       <label className="block text-[10px] font-mono text-[#A1A1AA]">Max resolution (px)</label>
       <select
         defaultValue={active.max_resolution || 8192}
         onChange={(e) => onPatch({ max_resolution: Number(e.target.value) })}
-        className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+        className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
       >
         <option value="4096">4096</option>
         <option value="8192">8192</option>
@@ -236,7 +236,7 @@ function PublishTab({ active, onPatch, busy }: { active: TourSummary; onPatch: (
         defaultValue={active.streetview_status === 'synced' ? '' : ''}
         onBlur={(e) => onPatch({ streetview_target: e.target.value, streetview_status: e.target.value ? 'pending' : 'unsynced' })}
         placeholder="Street View publish target id"
-        className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+        className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
       />
       <div className="text-[10px] font-mono text-[#71717A]">Street View status: {active.streetview_status || 'unsynced'}</div>
     </div>
@@ -287,19 +287,19 @@ function TeamTab({ tourId }: { tourId: string }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="member@email.com"
-          className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+          className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
         />
-        <select value={role} onChange={(e) => setRole} className="bg-[#18181B] border border-[#27272A] rounded px-1 text-xs text-white">
+        <select value={role} onChange={(e) => setRole} className="bg-[#201f20] border border-[#353436] rounded px-1 text-xs text-white">
           <option value="viewer">viewer</option>
           <option value="editor">editor</option>
           <option value="owner">owner</option>
         </select>
-        <button onClick={invite} disabled={busy} className="px-2 py-1 rounded bg-[#3ECF8E] text-black text-xs font-mono">invite</button>
+        <button onClick={invite} disabled={busy} className="px-2 py-1 rounded bg-[#dbfcff] text-black text-xs font-mono">invite</button>
       </div>
       {(members || []).map((m) => (
         <div key={m.id} className="flex items-center justify-between text-[10px] font-mono text-[#A1A1AA]">
           <span>{m.email || '(pending)'}</span>
-          <select value={m.role} onChange={(e) => changeRole(m.id, e.target.value)} className="bg-[#18181B] border border-[#27272A] rounded px-1">
+          <select value={m.role} onChange={(e) => changeRole(m.id, e.target.value)} className="bg-[#201f20] border border-[#353436] rounded px-1">
             <option value="viewer">viewer</option>
             <option value="editor">editor</option>
             <option value="owner">owner</option>
@@ -332,8 +332,8 @@ function CollabTab({ tourId }: { tourId: string }) {
         <div className="text-[10px] font-mono text-[#71717A] mb-1">Comments</div>
         <div className="space-y-1 max-h-32 overflow-y-auto">
           {(comments || []).map((c) => (
-            <div key={c.id} className="text-[10px] font-mono text-[#A1A1AA] bg-[#18181B] rounded p-1">
-              <span className="text-[#3ECF8E]">{c.author_name || 'Guest'}: </span>
+            <div key={c.id} className="text-[10px] font-mono text-[#A1A1AA] bg-[#201f20] rounded p-1">
+              <span className="text-[#dbfcff]">{c.author_name || 'Guest'}: </span>
               {c.body}
             </div>
           ))}
@@ -343,7 +343,7 @@ function CollabTab({ tourId }: { tourId: string }) {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Add comment"
-            className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+            className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
           />
           <button
             onClick={async () => {
@@ -356,7 +356,7 @@ function CollabTab({ tourId }: { tourId: string }) {
               setComment('');
               load();
             }}
-            className="px-2 py-1 rounded bg-[#3ECF8E] text-black text-xs font-mono"
+            className="px-2 py-1 rounded bg-[#dbfcff] text-black text-xs font-mono"
           >
             post
           </button>
@@ -385,7 +385,7 @@ function CollabTab({ tourId }: { tourId: string }) {
             value={task}
             onChange={(e) => setTask(e.target.value)}
             placeholder="New task"
-            className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+            className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
           />
           <button
             onClick={async () => {
@@ -398,7 +398,7 @@ function CollabTab({ tourId }: { tourId: string }) {
               setTask('');
               load();
             }}
-            className="px-2 py-1 rounded bg-[#3ECF8E] text-black text-xs font-mono"
+            className="px-2 py-1 rounded bg-[#dbfcff] text-black text-xs font-mono"
           >
             add
           </button>
@@ -441,7 +441,7 @@ function GuidedTab({ tourId }: { tourId: string }) {
           <select
             value={w.room_id}
             onChange={(e) => setWaypoints((arr) => arr.map((x, j) => (j === i ? { ...x, room_id: e.target.value } : x)))}
-            className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-1 py-0.5 text-white"
+            className="flex-1 bg-[#201f20] border border-[#353436] rounded px-1 py-0.5 text-white"
           >
             {(rooms || []).map((r) => (
               <option key={r.id} value={r.id}>{r.name}</option>
@@ -451,14 +451,14 @@ function GuidedTab({ tourId }: { tourId: string }) {
             type="number"
             value={w.dwell_seconds}
             onChange={(e) => setWaypoints((arr) => arr.map((x, j) => (j === i ? { ...x, dwell_seconds: Number(e.target.value) } : x)))}
-            className="w-14 bg-[#18181B] border border-[#27272A] rounded px-1 py-0.5 text-white"
+            className="w-14 bg-[#201f20] border border-[#353436] rounded px-1 py-0.5 text-white"
             title="dwell seconds"
           />
         </div>
       ))}
       <div className="flex gap-1">
-        <button onClick={addWp} className="px-2 py-1 rounded bg-[#18181B] border border-[#27272A] text-[#3ECF8E] text-xs font-mono">+ waypoint</button>
-        <button onClick={save} className="px-2 py-1 rounded bg-[#3ECF8E] text-black text-xs font-mono">save sequence</button>
+        <button onClick={addWp} className="px-2 py-1 rounded bg-[#201f20] border border-[#353436] text-[#dbfcff] text-xs font-mono">+ waypoint</button>
+        <button onClick={save} className="px-2 py-1 rounded bg-[#dbfcff] text-black text-xs font-mono">save sequence</button>
       </div>
     </div>
   );

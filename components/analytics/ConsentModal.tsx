@@ -20,7 +20,7 @@ export function ConsentModal({ isOpen, setIsOpen, onAccept, onReject, hasEssenti
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
     >
       <div
-        className="bg-[#18181B] border border-[#27272A] rounded-xl p-8 max-w-md w-full mx-4 transform scale-95 opacity-0 transition-all duration-300 focus:scale-101 focus:opacity-100"
+        className="bg-[#201f20] border border-[#353436] rounded-xl p-8 max-w-md w-full mx-4 transform scale-95 opacity-0 transition-all duration-300 focus:scale-101 focus:opacity-100"
       >
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-bold font-display text-white">
@@ -28,7 +28,7 @@ export function ConsentModal({ isOpen, setIsOpen, onAccept, onReject, hasEssenti
           </h3>
           <button
             onClick={() => setIsOpen(false)}
-            className="p-1 rounded-lg bg-[#27272A] hover:bg-[#374151] text-white hover:text-white transition-all"
+            className="p-1 rounded-lg bg-[#353436] hover:bg-[#374151] text-white hover:text-white transition-all"
           >
             <X className="w-4 h-4" />
           </button>
@@ -45,7 +45,7 @@ export function ConsentModal({ isOpen, setIsOpen, onAccept, onReject, hasEssenti
               type="checkbox"
               checked={true}
               disabled={hasEssential}
-              className="rounded w-4 h-4 bg-[#27272A] border border-[#3F3F46] cursor-pointer accent-color:#3ECF8E"
+              className="rounded w-4 h-4 bg-[#353436] border border-[#3F3F46] cursor-pointer accent-color:#dbfcff"
             />
             <div>
               <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#71717A]">Essential</div>
@@ -58,7 +58,7 @@ export function ConsentModal({ isOpen, setIsOpen, onAccept, onReject, hasEssenti
               type="checkbox"
               checked={true}
               disabled={hasEssential}
-              className="rounded w-4 h-4 bg-[#27272A] border border-[#3F3F46] cursor-pointer accent-color:#3ECF8E"
+              className="rounded w-4 h-4 bg-[#353436] border border-[#3F3F46] cursor-pointer accent-color:#dbfcff"
             />
             <div>
               <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#71717A]">Performance</div>
@@ -73,7 +73,7 @@ export function ConsentModal({ isOpen, setIsOpen, onAccept, onReject, hasEssenti
               setIsOpen(false);
               onReject();
             }}
-            className="flex-1 px-4 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[10px] font-mono text-[#71717A] hover:text-white hover:bg-[#374151] transition-all"
+            className="flex-1 px-4 py-2 rounded-lg bg-[#131314] border border-[#353436] text-[10px] font-mono text-[#71717A] hover:text-white hover:bg-[#374151] transition-all"
           >
             Reject Analytics
           </button>

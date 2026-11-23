@@ -82,7 +82,7 @@ export class ThreeEngineAdapter implements EngineAdapter {
 
     // 1. Scene
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(options.backgroundColor || '#09090b');
+    this.scene.background = new THREE.Color(options.backgroundColor || '#131314');
 
     // 2. Camera
     this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
@@ -522,7 +522,7 @@ export class ThreeEngineAdapter implements EngineAdapter {
     if (ctx) {
       ctx.beginPath();
       ctx.arc(32, 32, 26, 0, Math.PI * 2);
-      ctx.fillStyle = data.color || '#3ecf8e';
+      ctx.fillStyle = data.color || '#dbfcff';
       ctx.fill();
       ctx.lineWidth = 4;
       ctx.strokeStyle = '#ffffff';

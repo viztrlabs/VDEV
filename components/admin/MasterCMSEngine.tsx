@@ -24,8 +24,8 @@ export default function MasterCMSEngine({ onOpenLiveEditor }: { onOpenLiveEditor
             onClick={() => setMode(id)}
             className={`px-3.5 py-2 rounded-xl text-xs font-mono font-semibold flex items-center gap-2 cursor-pointer ${
               mode === id
-                ? 'bg-[#3ECF8E] text-black shadow-lg shadow-[#3ECF8E]/20'
-                : 'bg-[#18181B] text-[#A1A1AA] hover:text-white border border-[#27272A]'
+                ? 'bg-[#dbfcff] text-black shadow-lg shadow-[#dbfcff]/20'
+                : 'bg-[#201f20] text-[#A1A1AA] hover:text-white border border-[#353436]'
             }`}
           >
             <Icon className="w-3.5 h-3.5" />
@@ -35,7 +35,7 @@ export default function MasterCMSEngine({ onOpenLiveEditor }: { onOpenLiveEditor
         <button
           type="button"
           onClick={() => onOpenLiveEditor?.()}
-          className="ml-auto flex items-center gap-2 rounded-xl border border-[#3ECF8E]/60 bg-[#3ECF8E]/10 px-3.5 py-2 text-xs font-mono font-semibold text-[#3ECF8E] transition-colors hover:bg-[#3ECF8E] hover:text-black"
+          className="ml-auto flex items-center gap-2 rounded-xl border border-[#dbfcff]/60 bg-[#dbfcff]/10 px-3.5 py-2 text-xs font-mono font-semibold text-[#dbfcff] transition-colors hover:bg-[#dbfcff] hover:text-black"
         >
           <Maximize2 className="w-3.5 h-3.5" />
           Open Live Editor

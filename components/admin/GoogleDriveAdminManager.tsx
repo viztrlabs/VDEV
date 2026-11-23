@@ -269,10 +269,10 @@ export default function GoogleDriveAdminManager() {
   return (
     <div id="google-drive-admin-manager" className="space-y-6">
       {/* TOP HEADER */}
-      <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
+      <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-md bg-[#09090B] border border-[#3ECF8E]/40 text-[10px] font-mono font-bold uppercase text-[#3ECF8E] flex items-center gap-1.5">
+            <span className="px-2.5 py-0.5 rounded-md bg-[#131314] border border-[#dbfcff]/40 text-[10px] font-mono font-bold uppercase text-[#dbfcff] flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>Super Admin Storage Hub</span>
             </span>
@@ -304,9 +304,9 @@ export default function GoogleDriveAdminManager() {
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="px-3.5 py-2 rounded-xl bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-white font-mono font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="px-3.5 py-2 rounded-xl bg-[#131314] hover:bg-[#353436] border border-[#353436] text-white font-mono font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
           >
-            <Plus className="w-3.5 h-3.5 text-[#3ECF8E]" />
+            <Plus className="w-3.5 h-3.5 text-[#dbfcff]" />
             <span>Add Mail ID</span>
           </button>
         </div>
@@ -318,7 +318,7 @@ export default function GoogleDriveAdminManager() {
           <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#A1A1AA]">
             Linked Google Drive Storage Accounts ({accounts.length})
           </h3>
-          <span className="text-[11px] font-mono text-[#3ECF8E]">
+          <span className="text-[11px] font-mono text-[#dbfcff]">
             {isSuperAdmin ? 'Full SuperAdmin Edit Privileges Active' : 'Admin View'}
           </span>
         </div>
@@ -333,14 +333,14 @@ export default function GoogleDriveAdminManager() {
                 onClick={() => setSelectedAccountId(acc.id)}
                 className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-4 ${
                   isSelected
-                    ? 'bg-[#18181B] border-[#3ECF8E] shadow-xl shadow-[#3ECF8E]/10'
-                    : 'bg-[#18181B]/60 border-[#27272A] hover:border-[#3ECF8E]/40'
+                    ? 'bg-[#201f20] border-[#dbfcff] shadow-xl shadow-[#dbfcff]/10'
+                    : 'bg-[#201f20]/60 border-[#353436] hover:border-[#dbfcff]/40'
                 }`}
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2.5 overflow-hidden">
-                      <div className="w-9 h-9 rounded-xl bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 flex items-center justify-center text-[#3ECF8E] shrink-0 font-mono font-bold text-xs">
+                      <div className="w-9 h-9 rounded-xl bg-[#dbfcff]/10 border border-[#dbfcff]/30 flex items-center justify-center text-[#dbfcff] shrink-0 font-mono font-bold text-xs">
                         <HardDrive className="w-4 h-4" />
                       </div>
                       <div className="overflow-hidden">
@@ -367,8 +367,8 @@ export default function GoogleDriveAdminManager() {
                       <span className="text-[#A1A1AA]">Drive Capacity</span>
                       <span className="text-white font-bold">{acc.totalStorageUsed || '240 GB'} / {acc.storageQuota || '2.0 TB'}</span>
                     </div>
-                    <div className="w-full h-1.5 rounded-full bg-[#09090B] overflow-hidden">
-                      <div className="h-full bg-[#3ECF8E]" style={{ width: '35%' }} />
+                    <div className="w-full h-1.5 rounded-full bg-[#131314] overflow-hidden">
+                      <div className="h-full bg-[#dbfcff]" style={{ width: '35%' }} />
                     </div>
                   </div>
 
@@ -377,7 +377,7 @@ export default function GoogleDriveAdminManager() {
                     {(acc.assignedProjects || []).map((pId) => (
                       <span
                         key={pId}
-                        className="px-1.5 py-0.5 rounded bg-[#09090B] border border-[#27272A] text-[9px] font-mono text-[#A1A1AA]"
+                        className="px-1.5 py-0.5 rounded bg-[#131314] border border-[#353436] text-[9px] font-mono text-[#A1A1AA]"
                       >
                         {pId}
                       </span>
@@ -386,7 +386,7 @@ export default function GoogleDriveAdminManager() {
                 </div>
 
                 {/* CONTROLS (EDITABLE BY SUPER ADMIN) */}
-                <div className="flex items-center justify-between pt-2 border-t border-[#27272A]">
+                <div className="flex items-center justify-between pt-2 border-t border-[#353436]">
                   <span className="text-[10px] font-mono text-[#71717A]">
                     {acc.accountRole || 'ADMIN'}
                   </span>
@@ -395,7 +395,7 @@ export default function GoogleDriveAdminManager() {
                     <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={() => handleOpenEditModal(acc)}
-                        className="p-1.5 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors"
+                        className="p-1.5 rounded hover:bg-[#353436] text-[#A1A1AA] hover:text-white transition-colors"
                         title="Edit Drive Settings"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
@@ -418,10 +418,10 @@ export default function GoogleDriveAdminManager() {
 
       {/* SELECTED ACCOUNT DETAIL WORKSPACE & REPOSITORY */}
       {selectedAccount && (
-        <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-6">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-[#27272A] pb-4">
+        <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-[#353436] pb-4">
             <div className="space-y-1">
-              <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E]">
+              <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff]">
                 <span>ACCOUNT WORKSPACE</span>
                 <span>•</span>
                 <span>{selectedAccount.email}</span>
@@ -442,13 +442,13 @@ export default function GoogleDriveAdminManager() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search repository files..."
-                  className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                  className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
                 />
               </div>
 
               <button
                 onClick={() => showToast(`Synchronized files for ${selectedAccount.email}`, 'success')}
-                className="p-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white"
+                className="p-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white"
                 title="Refresh Account Data"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
@@ -461,10 +461,10 @@ export default function GoogleDriveAdminManager() {
             {filteredFiles.map((file) => (
               <div
                 key={file.id}
-                className="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A] flex flex-col justify-between space-y-3"
+                className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] flex flex-col justify-between space-y-3"
               >
                 <div className="flex items-start gap-2.5">
-                  <div className="p-2 rounded-lg bg-[#18181B] text-[#3ECF8E] shrink-0">
+                  <div className="p-2 rounded-lg bg-[#201f20] text-[#dbfcff] shrink-0">
                     {file.category === 'model3d' ? (
                       <Layers className="w-4 h-4" />
                     ) : file.category === 'blueprint' ? (
@@ -480,12 +480,12 @@ export default function GoogleDriveAdminManager() {
                     <div className="text-[10px] font-mono text-[#71717A] flex items-center gap-2">
                       <span>{file.size}</span>
                       <span>•</span>
-                      <span className="text-[#3ECF8E]">{file.projectId || 'General'}</span>
+                      <span className="text-[#dbfcff]">{file.projectId || 'General'}</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-[#27272A] text-[10px] font-mono text-[#71717A]">
+                <div className="flex items-center justify-between pt-2 border-t border-[#353436] text-[10px] font-mono text-[#71717A]">
                   <span>{new Date(file.modifiedTime).toLocaleDateString()}</span>
                   <span className="text-emerald-400">Vault Synced</span>
                 </div>
@@ -503,16 +503,16 @@ export default function GoogleDriveAdminManager() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-md w-full p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5 shadow-2xl text-xs font-mono"
+              className="max-w-md w-full p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5 shadow-2xl text-xs font-mono"
             >
-              <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+              <div className="flex items-center justify-between border-b border-[#353436] pb-3">
                 <div className="flex items-center gap-2 text-white font-bold text-sm font-display">
-                  <Edit2 className="w-4 h-4 text-[#3ECF8E]" />
+                  <Edit2 className="w-4 h-4 text-[#dbfcff]" />
                   <span>Super Admin Edit Drive Account</span>
                 </div>
                 <button
                   onClick={() => setEditingAccount(null)}
-                  className="p-1 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white"
+                  className="p-1 rounded hover:bg-[#353436] text-[#A1A1AA] hover:text-white"
                 >
                   ✕
                 </button>
@@ -525,7 +525,7 @@ export default function GoogleDriveAdminManager() {
                     type="text"
                     disabled
                     value={editingAccount.email}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] opacity-80 cursor-not-allowed"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] opacity-80 cursor-not-allowed"
                   />
                 </div>
 
@@ -535,7 +535,7 @@ export default function GoogleDriveAdminManager() {
                     type="text"
                     value={editDisplayName}
                     onChange={(e) => setEditDisplayName(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   />
                 </div>
 
@@ -544,7 +544,7 @@ export default function GoogleDriveAdminManager() {
                   <select
                     value={editStorageQuota}
                     onChange={(e) => setEditStorageQuota(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     <option value="1.0 TB">1.0 TB Standard</option>
                     <option value="2.0 TB">2.0 TB Professional</option>
@@ -553,29 +553,29 @@ export default function GoogleDriveAdminManager() {
                   </select>
                 </div>
 
-                <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
+                <div className="p-3 rounded-lg bg-[#131314] border border-[#353436]">
                   <label className="flex items-center justify-between cursor-pointer">
                     <span className="text-white">Designate as Primary Studio Storage</span>
                     <input
                       type="checkbox"
                       checked={editIsPrimary}
                       onChange={(e) => setEditIsPrimary(e.target.checked)}
-                      className="accent-[#3ECF8E]"
+                      className="accent-[#dbfcff]"
                     />
                   </label>
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#27272A]">
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#353436]">
                   <button
                     type="button"
                     onClick={() => setEditingAccount(null)}
-                    className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white"
+                    className="px-3 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold uppercase"
+                    className="px-4 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-bold uppercase"
                   >
                     Save Changes
                   </button>
@@ -594,16 +594,16 @@ export default function GoogleDriveAdminManager() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-md w-full p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5 shadow-2xl text-xs font-mono"
+              className="max-w-md w-full p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5 shadow-2xl text-xs font-mono"
             >
-              <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+              <div className="flex items-center justify-between border-b border-[#353436] pb-3">
                 <div className="flex items-center gap-2 text-white font-bold text-sm font-display">
-                  <Plus className="w-4 h-4 text-[#3ECF8E]" />
+                  <Plus className="w-4 h-4 text-[#dbfcff]" />
                   <span>Link Google Drive by Mail ID</span>
                 </div>
                 <button
                   onClick={() => setShowAddModal(false)}
-                  className="p-1 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white"
+                  className="p-1 rounded hover:bg-[#353436] text-[#A1A1AA] hover:text-white"
                 >
                   ✕
                 </button>
@@ -618,7 +618,7 @@ export default function GoogleDriveAdminManager() {
                     value={newEmail}
                     onChange={(e) => setNewEmail(e.target.value)}
                     placeholder="e.g. director.renders@viztr.com or your-name@gmail.com"
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
                   />
                 </div>
 
@@ -629,7 +629,7 @@ export default function GoogleDriveAdminManager() {
                     value={newDisplayName}
                     onChange={(e) => setNewDisplayName(e.target.value)}
                     placeholder="e.g. Executive 8K Render Vault"
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
                   />
                 </div>
 
@@ -638,7 +638,7 @@ export default function GoogleDriveAdminManager() {
                   <select
                     value={newQuota}
                     onChange={(e) => setNewQuota(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     <option value="1.0 TB">1.0 TB Standard</option>
                     <option value="2.0 TB">2.0 TB Professional</option>
@@ -646,17 +646,17 @@ export default function GoogleDriveAdminManager() {
                   </select>
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#27272A]">
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#353436]">
                   <button
                     type="button"
                     onClick={() => setShowAddModal(false)}
-                    className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white"
+                    className="px-3 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold uppercase"
+                    className="px-4 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-bold uppercase"
                   >
                     Link Drive Account
                   </button>
@@ -675,7 +675,7 @@ export default function GoogleDriveAdminManager() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-sm w-full p-6 rounded-2xl bg-[#18181B] border border-rose-900/50 space-y-4 shadow-2xl text-xs font-mono"
+              className="max-w-sm w-full p-6 rounded-2xl bg-[#201f20] border border-rose-900/50 space-y-4 shadow-2xl text-xs font-mono"
             >
               <div className="flex items-center gap-2 text-rose-400 font-bold text-sm font-display">
                 <AlertCircle className="w-5 h-5" />
@@ -687,7 +687,7 @@ export default function GoogleDriveAdminManager() {
               <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   onClick={() => setAccountToDelete(null)}
-                  className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-white"
+                  className="px-3 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-white"
                 >
                   Cancel
                 </button>

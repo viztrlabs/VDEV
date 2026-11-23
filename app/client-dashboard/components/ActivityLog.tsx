@@ -70,10 +70,10 @@ export default function ActivityLog({ projectId }: { projectId?: string }) {
 
   return (
     <section className="space-y-6">
-      <div className="flex items-center justify-between pb-4 border-b border-[#27272A]">
+      <div className="flex items-center justify-between pb-4 border-b border-[#353436]">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <Activity className="w-5 h-5 text-[#3ECF8E]" />
+            <Activity className="w-5 h-5 text-[#dbfcff]" />
             <span>Audit Trail & Project Activity History</span>
           </h2>
           <p className="text-xs text-[#A1A1AA] mt-0.5">
@@ -95,9 +95,9 @@ export default function ActivityLog({ projectId }: { projectId?: string }) {
       ) : (
         <div className="space-y-2">
           {logs.map((log) => (
-            <div key={log.id} className="p-3.5 rounded-xl bg-[#18181B] border border-[#27272A] flex items-center justify-between">
+            <div key={log.id} className="p-3.5 rounded-xl bg-[#201f20] border border-[#353436] flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[#3ECF8E] shrink-0">
+                <div className="p-2 rounded-lg bg-[#131314] border border-[#353436] text-[#dbfcff] shrink-0">
                   {getIcon(log.entity_type)}
                 </div>
                 <div>

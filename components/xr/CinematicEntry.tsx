@@ -37,10 +37,10 @@ export default function CinematicEntry({ title, subtitle, onComplete }: Cinemati
       }`}
     >
       <div className="space-y-3 max-w-md animate-in fade-in zoom-in-90 duration-700">
-        <div className="w-10 h-10 rounded-xl bg-[#18181B] border border-[#3ECF8E]/40 flex items-center justify-center mx-auto text-[#3ECF8E] shadow-2xl">
+        <div className="w-10 h-10 rounded-xl bg-[#201f20] border border-[#dbfcff]/40 flex items-center justify-center mx-auto text-[#dbfcff] shadow-2xl">
           <Compass className="w-5 h-5 animate-spin-slow" />
         </div>
-        <div className="text-[10px] font-mono text-[#3ECF8E] uppercase tracking-widest font-bold">
+        <div className="text-[10px] font-mono text-[#dbfcff] uppercase tracking-widest font-bold">
           VizTR Spatial Engine
         </div>
         <h2 className="text-2xl font-bold font-display text-white tracking-tight">

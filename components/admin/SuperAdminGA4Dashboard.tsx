@@ -402,8 +402,8 @@ export function SuperAdminGA4Dashboard({ initialSection = 'overview' }: SuperAdm
 
   if (!propertyId) {
     return (
-      <div className="p-8 rounded-2xl bg-[#18181B] border border-[#27272A] text-center space-y-8">
-        <div className="w-16 h-16 rounded-full bg-[#3ECF8E]/20 border border-[#3ECF8E]/40 flex items-center justify-center mx-auto text-[#3ECF8E]">
+      <div className="p-8 rounded-2xl bg-[#201f20] border border-[#353436] text-center space-y-8">
+        <div className="w-16 h-16 rounded-full bg-[#dbfcff]/20 border border-[#dbfcff]/40 flex items-center justify-center mx-auto text-[#dbfcff]">
           <BarChart3 className="w-8 h-8" />
         </div>
         <h3 className="text-lg font-bold font-display text-white margin-top-8">GA4 Not Configured</h3>
@@ -416,13 +416,13 @@ export function SuperAdminGA4Dashboard({ initialSection = 'overview' }: SuperAdm
   }
 
   return (
-    <div className="p-6 bg-[#09090B] min-h-screen">
+    <div className="p-6 bg-[#131314] min-h-screen">
       {/* Header */}
-      <header className="border-b border-[#27272A] pb-4 mb-6">
+      <header className="border-b border-[#353436] pb-4 mb-6">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[#27272A] flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-[#3ECF8E]" />
+            <div className="w-10 h-10 rounded-lg bg-[#353436] flex items-center justify-center">
+              <BarChart3 className="w-5 h-5 text-[#dbfcff]" />
             </div>
             <div>
               <h2 className="text-xl font-bold font-display text-white">Google Analytics 4</h2>
@@ -436,11 +436,11 @@ export function SuperAdminGA4Dashboard({ initialSection = 'overview' }: SuperAdm
               <input
                 type="text"
                 placeholder="Search..."
-                className="pl-8 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                className="pl-8 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
               />
             </div>
             
-            <div className="flex items-center gap-1.5 bg-[#27272A] border border-[#27272A] rounded-full px-3">
+            <div className="flex items-center gap-1.5 bg-[#353436] border border-[#353436] rounded-full px-3">
               <span className="text-[10px] font-mono text-[#71717A]">{dateRangeLabel}</span>
               <ChevronDown className="w-3 h-3 text-[#71717A]" />
             </div>
@@ -454,7 +454,7 @@ export function SuperAdminGA4Dashboard({ initialSection = 'overview' }: SuperAdm
               type="checkbox"
               checked={showComparison}
               onChange={(e) => setShowComparison(e.target.checked)}
-              className="rounded bg-[#09090B] border border-[#27272A] p-1 cursor-pointer"
+              className="rounded bg-[#131314] border border-[#353436] p-1 cursor-pointer"
             />
             Compare with previous period
           </label>
@@ -469,8 +469,8 @@ export function SuperAdminGA4Dashboard({ initialSection = 'overview' }: SuperAdm
             onClick={() => setDateRange(option.value)}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-mono font-bold transition-all cursor-pointer ${
               dateRange === option.value
-                ? 'bg-[#3ECF8E]/20 text-[#3ECF8E] border-[#3ECF8E]/40'
-                : 'text-[#A1A1AA] hover:text-white hover:bg-[#09090B]/50'
+                ? 'bg-[#dbfcff]/20 text-[#dbfcff] border-[#dbfcff]/40'
+                : 'text-[#A1A1AA] hover:text-white hover:bg-[#131314]/50'
             }`}
           >
             <option.icon className="w-3 h-3" />
@@ -487,7 +487,7 @@ export function SuperAdminGA4Dashboard({ initialSection = 'overview' }: SuperAdm
               <MetricCard
                 title="Total Users"
                 value={kPIData.totalUsers}
-                color="#3ECF8E"
+                color="#dbfcff"
               />
               <MetricCard
                 title="Active Users"
@@ -551,16 +551,16 @@ export function SuperAdminGA4Dashboard({ initialSection = 'overview' }: SuperAdm
                     {trafficData.map((point, idx) => (
                       <div
                         key={point.date}
-                        className={`p-3 rounded-xl bg-[#18181B] border border-[#27272A] ${idx % 2 === 0 ? 'border-zinc-800' : 'border-zinc-700'} relative overflow-hidden`}
+                        className={`p-3 rounded-xl bg-[#201f20] border border-[#353436] ${idx % 2 === 0 ? 'border-zinc-800' : 'border-zinc-700'} relative overflow-hidden`}
                         style={{ animationDelay: `${idx * 0.05}s` }}
                       >
                         <div className="flex items-baseline justify-between">
                           <span className="text-[10px] font-mono text-[#71717A] capitalize">{point.date}</span>
-                          <span className="text-xs font-mono text-[#3ECF8E]">{point.users} users</span>
+                          <span className="text-xs font-mono text-[#dbfcff]">{point.users} users</span>
                         </div>
                         <div className="mt-2 h-8">
                           <div
-                            className={`h-full rounded-t bg-[#27272A] overflow-hidden transition-all duration-500 ${point.users > 0 ? 'bg-[#3ECF8E]' : 'bg-zinc-800'}`}
+                            className={`h-full rounded-t bg-[#353436] overflow-hidden transition-all duration-500 ${point.users > 0 ? 'bg-[#dbfcff]' : 'bg-zinc-800'}`}
                             style={{ height: `${point.users > 0 ? Math.min((point.users / Math.max(...trafficData.map((p) => p.users)) || 1) * 100, 100) : 0}%` }}
                           />
                         </div>
@@ -573,8 +573,8 @@ export function SuperAdminGA4Dashboard({ initialSection = 'overview' }: SuperAdm
                 </div>
               )}
               {!trafficData || trafficData.length === 0 && (
-                <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] text-center">
-                  <div className="w-12 h-12 rounded-full bg-[#3ECF8E]/20 border border-[#3ECF8E]/40 flex items-center justify-center mx-auto text-[#3ECF8E]">
+                <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] text-center">
+                  <div className="w-12 h-12 rounded-full bg-[#dbfcff]/20 border border-[#dbfcff]/40 flex items-center justify-center mx-auto text-[#dbfcff]">
                     <Loader2 className="w-6 h-6" />
                   </div>
                   <p className="text-center text-[#71717A] margin-top-4">No traffic data available</p>
@@ -594,23 +594,23 @@ export function SuperAdminGA4Dashboard({ initialSection = 'overview' }: SuperAdm
                   {acquisitionData.map((src, idx) => (
                     <div
                       key={idx}
-                      className={`p-4 rounded-xl bg-[#18181B] border border-[#27272A] ${idx % 2 === 0 ? 'border-zinc-800' : 'border-zinc-700'} relative overflow-hidden`}
+                      className={`p-4 rounded-xl bg-[#201f20] border border-[#353436] ${idx % 2 === 0 ? 'border-zinc-800' : 'border-zinc-700'} relative overflow-hidden`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded bg-[#27272A] flex items-center justify-center flex-shrink-0">
-                          <Search className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                        <div className="w-8 h-8 rounded bg-[#353436] flex items-center justify-center flex-shrink-0">
+                          <Search className="w-3.5 h-3.5 text-[#dbfcff]" />
                         </div>
                         <div>
                           <div className="text-[10px] font-mono text-[#71717A] uppercase tracking-wider">{src.medium}</div>
                           <div className="text-sm font-medium text-white">{src.source}</div>
                         </div>
-                        <span className="text-[10px] font-mono text-[#3ECF8E] ml-auto">{src.sessions} sessions</span>
+                        <span className="text-[10px] font-mono text-[#dbfcff] ml-auto">{src.sessions} sessions</span>
                       </div>
                     </div>
                   ))}
                   {!acquisitionData.length && (
-                    <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] text-center">
-                      <div className="w-12 h-12 rounded-full bg-[#3ECF8E]/20 border border-[#3ECF8E]/40 flex items-center justify-center mx-auto text-[#3ECF8E]">
+                    <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] text-center">
+                      <div className="w-12 h-12 rounded-full bg-[#dbfcff]/20 border border-[#dbfcff]/40 flex items-center justify-center mx-auto text-[#dbfcff]">
                         <Search className="w-6 h-6" />
                       </div>
                       <p className="text-center text-[#71717A] margin-top-4">No acquisition data available</p>
@@ -631,7 +631,7 @@ export function SuperAdminGA4Dashboard({ initialSection = 'overview' }: SuperAdm
                   {audienceData.map((aud, idx) => (
                     <div
                       key={idx}
-                      className={`p-3 rounded-xl bg-[#18181B] border border-[#27272A] ${idx % 2 === 0 ? 'border-zinc-800' : 'border-zinc-700'}`}
+                      className={`p-3 rounded-xl bg-[#201f20] border border-[#353436] ${idx % 2 === 0 ? 'border-zinc-800' : 'border-zinc-700'}`}
                     >
                       <div className="text-[10px] font-mono text-[#71717A] uppercase tracking-wider">{aud.deviceCategory || '—'}</div>
                       <div className="text-sm font-medium text-white">{aud.operatingSystem || '—'}</div>
@@ -645,8 +645,8 @@ export function SuperAdminGA4Dashboard({ initialSection = 'overview' }: SuperAdm
                     </div>
                   ))}
                   {!audienceData.length && (
-                    <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] text-center">
-                      <div className="w-12 h-12 rounded-full bg-[#3ECF8E]/20 border border-[#3ECF8E]/40 flex items-center justify-center mx-auto text-[#3ECF8E]">
+                    <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] text-center">
+                      <div className="w-12 h-12 rounded-full bg-[#dbfcff]/20 border border-[#dbfcff]/40 flex items-center justify-center mx-auto text-[#dbfcff]">
                         <UserCheck className="w-6 h-6" />
                       </div>
                       <p className="text-center text-[#71717A] margin-top-4">No audience data available</p>
@@ -678,7 +678,7 @@ export function SuperAdminGA4Dashboard({ initialSection = 'overview' }: SuperAdm
                 <tbody>
                   {pagesData && pagesData.length > 0 ? (
                     pagesData.map((page, idx) => (
-                      <tr key={idx} className="border-t border-[#27272A]">
+                      <tr key={idx} className="border-t border-[#353436]">
                         <td className="py-3 px-4 whitespace-nowrap">
                           <div className="text-[10px] font-mono text-white truncate" title={page.pagePath}>
                             {page.pagePath}
@@ -723,42 +723,42 @@ export function SuperAdminGA4Dashboard({ initialSection = 'overview' }: SuperAdm
         {activeSection === 'conversions' && (
           <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+              <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436]">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">Total Leads</div>
                 <div className="text-2xl font-bold font-display text-white">{conversionData?.conversions?.totalConversions || 0}</div>
                 <div className="text-[10px] font-mono text-zinc-500">GA4-reported conversions</div>
               </div>
-              <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+              <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436]">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">Contact Form</div>
                 <div className="text-2xl font-bold font-display text-white">{conversionData?.conversions?.conversionEvents?.find((e: ConversionEvent) => e.name === 'contact_form_submit')?.count || 0}</div>
                 <div className="text-[10px] font-mono text-zinc-500">form submissions</div>
               </div>
-              <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+              <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436]">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">WhatsApp Clicks</div>
                 <div className="text-2xl font-bold font-display text-white">{conversionData?.conversions?.conversionEvents?.find((e: ConversionEvent) => e.name === 'whatsapp_click')?.count || 0}</div>
                 <div className="text-[10px] font-mono text-zinc-500">click events</div>
               </div>
-              <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+              <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436]">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">Email Clicks</div>
                 <div className="text-2xl font-bold font-display text-white">{conversionData?.conversions?.conversionEvents?.find((e: ConversionEvent) => e.name === 'email_click')?.count || 0}</div>
                 <div className="text-[10px] font-mono text-zinc-500">click events</div>
               </div>
-              <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+              <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436]">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">Service Views</div>
                 <div className="text-2xl font-bold font-display text-white">{conversionData?.conversions?.conversionEvents?.find((e: ConversionEvent) => e.name === 'service_view')?.count || 0}</div>
                 <div className="text-[10px] font-mono text-zinc-500">view events</div>
               </div>
-              <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+              <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436]">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">Project Inquiries</div>
                 <div className="text-2xl font-bold font-display text-white">{conversionData?.conversions?.conversionEvents?.find((e: ConversionEvent) => e.name === 'project_inquiry')?.count || 0}</div>
                 <div className="text-[10px] font-mono text-zinc-500">inquiry events</div>
               </div>
-              <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+              <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436]">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">CTA Clicks</div>
                 <div className="text-2xl font-bold font-display text-white">{conversionData?.conversions?.conversionEvents?.find((e: ConversionEvent) => e.name === 'cta_click')?.count || 0}</div>
                 <div className="text-[10px] font-mono text-zinc-500">click events</div>
               </div>
-              <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+              <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436]">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">Client Dashboard</div>
                 <div className="text-2xl font-bold font-display text-white">{conversionData?.conversions?.conversionEvents?.find((e: ConversionEvent) => e.name === 'client_dashboard_access')?.count || 0}</div>
                 <div className="text-[10px] font-mono text-zinc-500">access events</div>
@@ -766,22 +766,22 @@ export function SuperAdminGA4Dashboard({ initialSection = 'overview' }: SuperAdm
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
-              <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+              <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436]">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">Form Submissions</div>
                 <div className="text-2xl font-bold font-display text-white">{conversionData?.bizPerformance?.formSubmissions || 0}</div>
                 <div className="text-[10px] font-mono text-zinc-500">Custom biz events</div>
               </div>
-              <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+              <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436]">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">WhatsApp Clicks</div>
                 <div className="text-2xl font-bold font-display text-white">{conversionData?.bizPerformance?.whatsappClicks || 0}</div>
                 <div className="text-[10px] font-mono text-zinc-500">Custom biz events</div>
               </div>
-              <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+              <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436]">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">Email Clicks</div>
                 <div className="text-2xl font-bold font-display text-white">{conversionData?.bizPerformance?.emailClicks || 0}</div>
                 <div className="text-[10px] font-mono text-zinc-500">Custom biz events</div>
               </div>
-              <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+              <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436]">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">CTA Clicks</div>
                 <div className="text-2xl font-bold font-display text-white">{conversionData?.bizPerformance?.ctaClicks || 0}</div>
                 <div className="text-[10px] font-mono text-zinc-500">Custom biz events</div>

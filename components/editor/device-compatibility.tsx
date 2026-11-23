@@ -45,14 +45,14 @@ export function DeviceCompatibility({ items, onChange, readOnly = false }: Devic
   };
 
   return (
-    <div className="rounded border border-[#27272A] bg-[#0F0F11]">
-      <div className="flex items-center justify-between border-b border-[#27272A] px-3 py-2">
+    <div className="rounded border border-[#353436] bg-[#131314]">
+      <div className="flex items-center justify-between border-b border-[#353436] px-3 py-2">
         <div className="text-[11px] font-mono text-[#A1A1AA]">Device compatibility</div>
         {!readOnly && (
           <button
             type="button"
             onClick={add}
-            className="px-2 py-1 rounded border border-[#3ECF8E]/40 bg-[#3ECF8E]/15 text-[10px] font-mono text-[#3ECF8E] hover:bg-[#3ECF8E]/25"
+            className="px-2 py-1 rounded border border-[#dbfcff]/40 bg-[#dbfcff]/15 text-[10px] font-mono text-[#dbfcff] hover:bg-[#dbfcff]/25"
           >
             + Add device
           </button>
@@ -72,13 +72,13 @@ export function DeviceCompatibility({ items, onChange, readOnly = false }: Devic
           </thead>
           <tbody>
             {local.map((item, index) => (
-              <tr key={`${item.device}-${index}`} className="border-t border-[#27272A]">
+              <tr key={`${item.device}-${index}`} className="border-t border-[#353436]">
                 <td className="px-3 py-2">
                   <input
                     disabled={readOnly}
                     value={item.device}
                     onChange={(e) => update(index, { device: e.target.value })}
-                    className="w-full rounded border border-[#27272A] bg-[#09090B] px-2 py-1 text-[11px] font-mono text-white outline-none focus:border-[#3ECF8E]/60"
+                    className="w-full rounded border border-[#353436] bg-[#131314] px-2 py-1 text-[11px] font-mono text-white outline-none focus:border-[#dbfcff]/60"
                   />
                 </td>
                 <td className="px-3 py-2">
@@ -94,7 +94,7 @@ export function DeviceCompatibility({ items, onChange, readOnly = false }: Devic
                     disabled={readOnly}
                     value={item.fallback ?? ''}
                     onChange={(e) => update(index, { fallback: e.target.value })}
-                    className="w-full rounded border border-[#27272A] bg-[#09090B] px-2 py-1 text-[11px] font-mono text-white outline-none focus:border-[#3ECF8E]/60"
+                    className="w-full rounded border border-[#353436] bg-[#131314] px-2 py-1 text-[11px] font-mono text-white outline-none focus:border-[#dbfcff]/60"
                   />
                 </td>
                 <td className="px-3 py-2">
@@ -102,7 +102,7 @@ export function DeviceCompatibility({ items, onChange, readOnly = false }: Devic
                     disabled={readOnly}
                     value={item.note ?? ''}
                     onChange={(e) => update(index, { note: e.target.value })}
-                    className="w-full rounded border border-[#27272A] bg-[#09090B] px-2 py-1 text-[11px] font-mono text-white outline-none focus:border-[#3ECF8E]/60"
+                    className="w-full rounded border border-[#353436] bg-[#131314] px-2 py-1 text-[11px] font-mono text-white outline-none focus:border-[#dbfcff]/60"
                   />
                 </td>
                 {!readOnly && (

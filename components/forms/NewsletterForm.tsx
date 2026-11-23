@@ -43,7 +43,7 @@ export default function NewsletterForm() {
 
   if (subscribed) {
     return (
-      <div className="flex items-center gap-2 p-2 rounded-lg bg-[#18181B] border border-[#3ECF8E]/40 text-xs font-mono text-[#3ECF8E]">
+      <div className="flex items-center gap-2 p-2 rounded-lg bg-[#201f20] border border-[#dbfcff]/40 text-xs font-mono text-[#dbfcff]">
         <CheckCircle2 className="w-4 h-4 shrink-0" />
         <span>Thank you for subscribing!</span>
       </div>
@@ -60,14 +60,14 @@ export default function NewsletterForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="firm.lead@architects.com"
-          className="w-full pl-8 pr-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] transition-colors"
+          className="w-full pl-8 pr-3 py-2 rounded-lg bg-[#201f20] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] transition-colors"
         />
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="px-3.5 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors shrink-0 flex items-center gap-1 cursor-pointer disabled:opacity-50"
+        className="px-3.5 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors shrink-0 flex items-center gap-1 cursor-pointer disabled:opacity-50"
       >
         {loading ? (
           <div className="w-3 h-3 border-2 border-black border-t-transparent rounded-full animate-spin" />

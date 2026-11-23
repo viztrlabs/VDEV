@@ -9,9 +9,9 @@ import { ZoomIn, ZoomOut, Maximize, Minimize, RotateCw, Pause, ChevronUp } from 
 import type { TourScene } from '@/lib/tourClientStore';
 
 const BTN_CLASS =
-  'p-2 rounded-lg bg-[#18181B]/70 border border-[#27272A] text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-all cursor-pointer';
+  'p-2 rounded-lg bg-[#201f20]/70 border border-[#353436] text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-all cursor-pointer';
 const BTN_ACTIVE_CLASS =
-  'p-2 rounded-lg bg-[#3ECF8E]/20 border border-[#3ECF8E] text-[#3ECF8E] hover:bg-[#3ECF8E]/30 transition-all cursor-pointer';
+  'p-2 rounded-lg bg-[#dbfcff]/20 border border-[#dbfcff] text-[#dbfcff] hover:bg-[#dbfcff]/30 transition-all cursor-pointer';
 
 interface TourControlsProps {
   onZoomIn: () => void;
@@ -66,7 +66,7 @@ export function TourControls({
           </button>
           {menuOpen && (
             <div
-              className="absolute bottom-full right-0 mb-2 min-w-[160px] max-h-64 overflow-y-auto rounded-lg bg-[#09090B] border border-[#27272A] py-1"
+              className="absolute bottom-full right-0 mb-2 min-w-[160px] max-h-64 overflow-y-auto rounded-lg bg-[#131314] border border-[#353436] py-1"
               role="menu"
             >
               {scenes.map((s) => (
@@ -75,7 +75,7 @@ export function TourControls({
                   role="menuitem"
                   onClick={() => handleSelectScene(s.id)}
                   className={`w-full text-left px-3 py-1.5 text-xs font-mono transition-colors cursor-pointer ${
-                    s.id === activeSceneId ? 'text-[#3ECF8E]' : 'text-[#A1A1AA] hover:text-white hover:bg-white/5'
+                    s.id === activeSceneId ? 'text-[#dbfcff]' : 'text-[#A1A1AA] hover:text-white hover:bg-white/5'
                   }`}
                 >
                   {s.name || s.id}

@@ -40,13 +40,13 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
   };
 
   return (
-    <main className="min-h-screen bg-[#09090B] text-[#FAFAFA] py-12 px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[#131314] text-[#e5e2e3] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* TOP BREADCRUMB & BACK LINK */}
         <div className="flex items-center justify-between">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-xs font-mono text-[#A1A1AA] hover:text-[#3ECF8E] transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-mono text-[#A1A1AA] hover:text-[#dbfcff] transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Return to Perspectives & Research</span>
@@ -54,14 +54,14 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
           <div className="flex items-center gap-2">
             <button
               onClick={handleShare}
-              className="p-2 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#FAFAFA] transition-colors cursor-pointer"
+              className="p-2 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#e5e2e3] transition-colors cursor-pointer"
               title="Share Article"
             >
               <Share2 className="w-4 h-4" />
             </button>
             <button
               onClick={() => showToast('Article saved to client reading list.', 'info')}
-              className="p-2 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#FAFAFA] transition-colors cursor-pointer"
+              className="p-2 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#e5e2e3] transition-colors cursor-pointer"
               title="Bookmark"
             >
               <Bookmark className="w-4 h-4" />
@@ -71,8 +71,8 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
 
         {/* HEADER SECTION */}
         <div className="space-y-4">
-          <div className="flex items-center gap-3 text-xs font-mono text-[#3ECF8E] flex-wrap">
-            <span className="px-2.5 py-0.5 rounded bg-[#18181B] border border-[#27272A] uppercase font-bold">
+          <div className="flex items-center gap-3 text-xs font-mono text-[#dbfcff] flex-wrap">
+            <span className="px-2.5 py-0.5 rounded bg-[#201f20] border border-[#353436] uppercase font-bold">
               {post.category}
             </span>
             <span>•</span>
@@ -91,15 +91,15 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
           </p>
 
           {/* AUTHOR PROFILE BAR */}
-          <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] flex items-center justify-between">
+          <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436] flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#09090B] border border-[#3ECF8E]/40 flex items-center justify-center text-[#3ECF8E] font-bold font-display">
+              <div className="w-10 h-10 rounded-full bg-[#131314] border border-[#dbfcff]/40 flex items-center justify-center text-[#dbfcff] font-bold font-display">
                 {post.author.charAt(0)}
               </div>
               <div>
                 <div className="text-xs font-bold text-white flex items-center gap-1.5">
                   <span>{post.author}</span>
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#dbfcff]" />
                 </div>
                 <div className="text-[11px] font-mono text-[#71717A]">
                   {post.authorRole} • VizTR Labs
@@ -117,7 +117,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
         </div>
 
         {/* HERO IMAGE */}
-        <div className="relative h-72 sm:h-96 w-full rounded-2xl overflow-hidden bg-[#18181B] border border-[#27272A] shadow-2xl">
+        <div className="relative h-72 sm:h-96 w-full rounded-2xl overflow-hidden bg-[#201f20] border border-[#353436] shadow-2xl">
           {post.image ? (
             <Image
               src={post.image}
@@ -135,13 +135,13 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
         </div>
 
         {/* ARTICLE BODY */}
-        <div className="p-6 sm:p-10 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-6 text-[#E4E4E7] text-sm sm:text-base leading-relaxed">
+        <div className="p-6 sm:p-10 rounded-2xl bg-[#201f20] border border-[#353436] space-y-6 text-[#E4E4E7] text-sm sm:text-base leading-relaxed">
           {post.content.map((paragraph: string, index: number) => {
             if (paragraph.startsWith('### ')) {
               return (
                 <h3
                   key={index}
-                  className="text-xl sm:text-2xl font-bold font-display text-white pt-4 pb-1 border-b border-[#27272A]"
+                  className="text-xl sm:text-2xl font-bold font-display text-white pt-4 pb-1 border-b border-[#353436]"
                 >
                   {paragraph.replace('### ', '')}
                 </h3>
@@ -149,7 +149,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
             }
             if (paragraph.startsWith('1. ') || paragraph.startsWith('2. ') || paragraph.startsWith('3. ')) {
               return (
-                <div key={index} className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] text-xs sm:text-sm font-mono text-[#FAFAFA]">
+                <div key={index} className="p-3 rounded-lg bg-[#131314] border border-[#353436] text-xs sm:text-sm font-mono text-[#e5e2e3]">
                   {paragraph}
                 </div>
               );
@@ -166,7 +166,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
         {relatedPosts.length > 0 && (
           <div className="space-y-4 pt-6">
             <h3 className="text-lg font-bold font-display text-white flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-[#3ECF8E]" />
+              <BookOpen className="w-4 h-4 text-[#dbfcff]" />
               <span>Related Architectural & XR Research</span>
             </h3>
 
@@ -175,19 +175,19 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                 <Link
                   key={rel.slug}
                   href={`/blog/${rel.slug}`}
-                  className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] hover:border-[#3ECF8E]/50 transition-all flex flex-col justify-between space-y-3 group"
+                  className="p-4 rounded-xl bg-[#201f20] border border-[#353436] hover:border-[#dbfcff]/50 transition-all flex flex-col justify-between space-y-3 group"
                 >
                   <div className="space-y-1">
-                    <span className="text-[10px] font-mono text-[#3ECF8E] uppercase">
+                    <span className="text-[10px] font-mono text-[#dbfcff] uppercase">
                       {rel.category}
                     </span>
-                    <h4 className="text-sm font-bold font-display text-white group-hover:text-[#3ECF8E] transition-colors line-clamp-2">
+                    <h4 className="text-sm font-bold font-display text-white group-hover:text-[#dbfcff] transition-colors line-clamp-2">
                       {rel.title}
                     </h4>
                   </div>
-                  <div className="flex items-center justify-between text-[11px] font-mono text-[#71717A] pt-2 border-t border-[#27272A]">
+                  <div className="flex items-center justify-between text-[11px] font-mono text-[#71717A] pt-2 border-t border-[#353436]">
                     <span>{rel.readTime}</span>
-                    <span className="text-[#3ECF8E] flex items-center gap-0.5">
+                    <span className="text-[#dbfcff] flex items-center gap-0.5">
                       Read <ChevronRight className="w-3 h-3" />
                     </span>
                   </div>

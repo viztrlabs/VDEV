@@ -13,9 +13,9 @@ interface LetterItem {
 const LETTERS: LetterItem[] = [
   { char: 'V', word: 'VISUALIZE', accent: '#00F0FF' },
   { char: 'I', word: 'IMMERSE', accent: '#33F3FF' },
-  { char: 'Z', word: 'ZERO-LATENCY', accent: '#42CF8B' },
+  { char: 'Z', word: 'ZERO-LATENCY', accent: '#54de99' },
   { char: 'T', word: 'TRANSFORM', accent: '#00F0FF' },
-  { char: 'R', word: 'REAL-TIME', accent: '#42CF8B' },
+  { char: 'R', word: 'REAL-TIME', accent: '#54de99' },
 ];
 
 export interface ViztrIntroOverlayProps {
@@ -101,7 +101,7 @@ export default function ViztrIntroOverlay({
             filter: 'blur(16px)',
             transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] }
           }}
-          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center overflow-hidden bg-[#0A0A0B] text-white select-none pointer-events-auto"
+          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center overflow-hidden bg-[#131314] text-white select-none pointer-events-auto"
           role="dialog"
           aria-label={isIntroMode ? 'VizTR Welcome Animation' : 'VizTR Page Loading'}
         >
@@ -118,10 +118,10 @@ export default function ViztrIntroOverlay({
                     }
                   : {}
               }
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-radial from-[#00F0FF]/15 via-[#42CF8B]/5 to-transparent blur-3xl"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-radial from-[#00F0FF]/15 via-[#54de99]/5 to-transparent blur-3xl"
             />
             <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#00F0FF]/10 blur-3xl" />
-            <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-[#42CF8B]/10 blur-3xl" />
+            <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-[#54de99]/10 blur-3xl" />
 
             {/* Subtle architectural perspective grid overlay */}
             <div
@@ -212,7 +212,7 @@ export default function ViztrIntroOverlay({
                     <span
                       className={`text-6xl sm:text-8xl md:text-9xl lg:text-[10.5rem] font-black font-sans tracking-tight leading-none drop-shadow-[0_0_35px_rgba(0,240,255,0.35)] transition-all duration-300 ${
                         complete
-                          ? 'text-transparent bg-clip-text bg-gradient-to-br from-white via-[#E5E2E3] to-[#00F0FF]'
+                          ? 'text-transparent bg-clip-text bg-gradient-to-br from-white via-[#353436] to-[#00F0FF]'
                           : 'text-white'
                       }`}
                     >
@@ -270,9 +270,9 @@ export default function ViztrIntroOverlay({
               </div>
 
               {/* Master Tagline */}
-              <p className="text-sm sm:text-base md:text-lg font-medium tracking-[0.3em] uppercase text-[#E5E2E3]">
+              <p className="text-sm sm:text-base md:text-lg font-medium tracking-[0.3em] uppercase text-[#e5e2e3]">
                 Visualize <span className="text-[#00F0FF]">✦</span> Experience{' '}
-                <span className="text-[#42CF8B]">✦</span> Transform
+                <span className="text-[#54de99]">✦</span> Transform
               </p>
 
               {/* Architecture Studio Subtext */}
@@ -295,7 +295,7 @@ export default function ViztrIntroOverlay({
                 initial={{ width: '0%' }}
                 animate={{ width: '100%' }}
                 transition={{ duration: 5.0, ease: 'linear' }}
-                className="h-full bg-gradient-to-r from-[#00F0FF] via-[#42CF8B] to-[#00F0FF] shadow-[0_0_12px_#00F0FF]"
+                className="h-full bg-gradient-to-r from-[#00F0FF] via-[#54de99] to-[#00F0FF] shadow-[0_0_12px_#00F0FF]"
               />
             ) : (
               /* Infinite continuous scanning beam for loading mode (NO time limitation) */

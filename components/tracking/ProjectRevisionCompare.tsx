@@ -381,26 +381,26 @@ export default function ProjectRevisionCompare({
       id={`project-revision-compare-${projectId}`}
       ref={containerRef}
       aria-label={`Compare Render Revisions for ${projectName}`}
-      className={`p-6 rounded-2xl bg-[#141416] border border-[#27272A] space-y-6 shadow-2xl relative overflow-hidden ${
-        isFullscreen ? 'p-8 bg-[#09090B] h-screen overflow-y-auto' : ''
+      className={`p-6 rounded-2xl bg-[#131314] border border-[#353436] space-y-6 shadow-2xl relative overflow-hidden ${
+        isFullscreen ? 'p-8 bg-[#131314] h-screen overflow-y-auto' : ''
       } ${className}`}
     >
       {/* HEADER SECTION */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#27272A] pb-5">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#353436] pb-5">
         <div className="space-y-1">
           <div className="flex flex-wrap items-center gap-2">
             <span
               role="status"
               aria-label="Component category: Interactive Revision Diff & Overlay Tool"
-              className="px-2.5 py-0.5 rounded-md bg-[#09090B] border border-[#3ECF8E]/40 text-[10px] font-mono font-bold uppercase text-[#3ECF8E] flex items-center gap-1.5"
+              className="px-2.5 py-0.5 rounded-md bg-[#131314] border border-[#dbfcff]/40 text-[10px] font-mono font-bold uppercase text-[#dbfcff] flex items-center gap-1.5"
             >
-              <ArrowLeftRight className="w-3 h-3 text-[#3ECF8E]" />
+              <ArrowLeftRight className="w-3 h-3 text-[#dbfcff]" />
               <span>Compare Render Revisions & Shader Iterations</span>
             </span>
             <span
               role="status"
               aria-label={`Available archived iterations: ${revisionsList.length} revision versions`}
-              className="px-2 py-0.5 rounded bg-[#1C1C1F] border border-[#27272A] text-[10px] font-mono text-[#A1A1AA]"
+              className="px-2 py-0.5 rounded bg-[#1C1C1F] border border-[#353436] text-[10px] font-mono text-[#A1A1AA]"
             >
               {revisionsList.length} Revisions Available
             </span>
@@ -416,7 +416,7 @@ export default function ProjectRevisionCompare({
 
         {/* COMPARISON VIEW MODE SELECTOR */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center p-1 rounded-xl bg-[#09090B] border border-[#27272A] text-xs font-mono">
+          <div className="flex items-center p-1 rounded-xl bg-[#131314] border border-[#353436] text-xs font-mono">
             <button
               type="button"
               onClick={() => setViewMode('slider')}
@@ -424,7 +424,7 @@ export default function ProjectRevisionCompare({
               aria-pressed={viewMode === 'slider'}
               className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
                 viewMode === 'slider'
-                  ? 'bg-[#3ECF8E] text-black shadow-md'
+                  ? 'bg-[#dbfcff] text-black shadow-md'
                   : 'text-[#A1A1AA] hover:text-white'
               }`}
             >
@@ -439,7 +439,7 @@ export default function ProjectRevisionCompare({
               aria-pressed={viewMode === 'side-by-side'}
               className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
                 viewMode === 'side-by-side'
-                  ? 'bg-[#3ECF8E] text-black shadow-md'
+                  ? 'bg-[#dbfcff] text-black shadow-md'
                   : 'text-[#A1A1AA] hover:text-white'
               }`}
             >
@@ -454,7 +454,7 @@ export default function ProjectRevisionCompare({
               aria-pressed={viewMode === 'opacity'}
               className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
                 viewMode === 'opacity'
-                  ? 'bg-[#3ECF8E] text-black shadow-md'
+                  ? 'bg-[#dbfcff] text-black shadow-md'
                   : 'text-[#A1A1AA] hover:text-white'
               }`}
             >
@@ -468,7 +468,7 @@ export default function ProjectRevisionCompare({
             onClick={toggleFullscreen}
             aria-label={isFullscreen ? 'Exit fullscreen comparison mode' : 'Enter fullscreen comparison mode'}
             aria-pressed={isFullscreen}
-            className="p-2 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-zinc-300 hover:text-white transition-colors cursor-pointer"
+            className="p-2 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-zinc-300 hover:text-white transition-colors cursor-pointer"
             title="Toggle fullscreen"
           >
             {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -479,9 +479,9 @@ export default function ProjectRevisionCompare({
       {/* VERSION SELECTION TOOLBAR */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
         {/* VERSION A SELECTOR (LEFT / BASELINE) */}
-        <div className="md:col-span-5 p-3 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
+        <div className="md:col-span-5 p-3 rounded-xl bg-[#131314] border border-[#353436] space-y-2">
           <div className="flex items-center justify-between text-xs font-mono">
-            <span className="text-[#3ECF8E] font-bold uppercase text-[11px] flex items-center gap-1">
+            <span className="text-[#dbfcff] font-bold uppercase text-[11px] flex items-center gap-1">
               <span>● Version A (Baseline / Before)</span>
             </span>
             <span className="text-[10px] text-[#71717A]">{versionA.displayDate}</span>
@@ -491,7 +491,7 @@ export default function ProjectRevisionCompare({
             value={versionAId}
             onChange={(e) => setVersionAId(e.target.value)}
             aria-label="Select Version A baseline render version"
-            className="w-full px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-white text-xs font-mono focus:outline-none focus:border-[#3ECF8E] cursor-pointer"
+            className="w-full px-3 py-2 rounded-lg bg-[#201f20] border border-[#353436] text-white text-xs font-mono focus:outline-none focus:border-[#dbfcff] cursor-pointer"
           >
             {revisionsList.map((rev) => (
               <option key={`opt-a-${rev.id}`} value={rev.id}>
@@ -512,7 +512,7 @@ export default function ProjectRevisionCompare({
             type="button"
             onClick={handleSwapVersions}
             aria-label="Swap Version A and Version B positions"
-            className="p-2.5 rounded-xl bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E] text-zinc-300 hover:text-[#3ECF8E] transition-all shadow-md cursor-pointer group"
+            className="p-2.5 rounded-xl bg-[#201f20] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff] text-zinc-300 hover:text-[#dbfcff] transition-all shadow-md cursor-pointer group"
             title="Swap Version A and B"
           >
             <ArrowLeftRight className="w-4 h-4 transition-transform group-hover:scale-110" />
@@ -520,7 +520,7 @@ export default function ProjectRevisionCompare({
         </div>
 
         {/* VERSION B SELECTOR (RIGHT / MODIFIED) */}
-        <div className="md:col-span-5 p-3 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
+        <div className="md:col-span-5 p-3 rounded-xl bg-[#131314] border border-[#353436] space-y-2">
           <div className="flex items-center justify-between text-xs font-mono">
             <span className="text-[#26A69A] font-bold uppercase text-[11px] flex items-center gap-1">
               <span>● Version B (Target / After)</span>
@@ -532,7 +532,7 @@ export default function ProjectRevisionCompare({
             value={versionBId}
             onChange={(e) => setVersionBId(e.target.value)}
             aria-label="Select Version B target render version"
-            className="w-full px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-white text-xs font-mono focus:outline-none focus:border-[#3ECF8E] cursor-pointer"
+            className="w-full px-3 py-2 rounded-lg bg-[#201f20] border border-[#353436] text-white text-xs font-mono focus:outline-none focus:border-[#dbfcff] cursor-pointer"
           >
             {revisionsList.map((rev) => (
               <option key={`opt-b-${rev.id}`} value={rev.id}>
@@ -543,7 +543,7 @@ export default function ProjectRevisionCompare({
 
           <div className="flex items-center justify-between text-[10px] font-mono text-[#A1A1AA]">
             <span>{versionB.resolution}</span>
-            <span className="text-[#3ECF8E] font-bold">{versionB.status}</span>
+            <span className="text-[#dbfcff] font-bold">{versionB.status}</span>
           </div>
         </div>
       </div>
@@ -562,7 +562,7 @@ export default function ProjectRevisionCompare({
               showToast('Loaded preset: Initial Clay Blockout vs Final 8K Master', 'info');
             }}
             aria-label="Load preset: Clay vs Final 8K Master"
-            className="px-2.5 py-1 rounded-md bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-zinc-300 hover:text-white text-[11px] transition-colors cursor-pointer"
+            className="px-2.5 py-1 rounded-md bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-zinc-300 hover:text-white text-[11px] transition-colors cursor-pointer"
           >
             Clay vs Final 8K
           </button>
@@ -579,7 +579,7 @@ export default function ProjectRevisionCompare({
               showToast('Loaded preset: Daylight Staging vs Client Twilight Markup', 'info');
             }}
             aria-label="Load preset: Daylight vs Twilight Pass"
-            className="px-2.5 py-1 rounded-md bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-zinc-300 hover:text-white text-[11px] transition-colors cursor-pointer"
+            className="px-2.5 py-1 rounded-md bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-zinc-300 hover:text-white text-[11px] transition-colors cursor-pointer"
           >
             Daylight vs Twilight Pass
           </button>
@@ -592,7 +592,7 @@ export default function ProjectRevisionCompare({
             onClick={() => setZoomLevel((prev) => Math.max(0.75, prev - 0.25))}
             aria-label="Zoom out render view"
             disabled={zoomLevel <= 0.75}
-            className="p-1 rounded bg-[#18181B] border border-[#27272A] text-zinc-400 hover:text-white disabled:opacity-30 cursor-pointer"
+            className="p-1 rounded bg-[#201f20] border border-[#353436] text-zinc-400 hover:text-white disabled:opacity-30 cursor-pointer"
             title="Zoom out"
           >
             <ZoomOut className="w-3.5 h-3.5" />
@@ -603,7 +603,7 @@ export default function ProjectRevisionCompare({
             onClick={() => setZoomLevel((prev) => Math.min(2, prev + 0.25))}
             aria-label="Zoom in render view"
             disabled={zoomLevel >= 2}
-            className="p-1 rounded bg-[#18181B] border border-[#27272A] text-zinc-400 hover:text-white disabled:opacity-30 cursor-pointer"
+            className="p-1 rounded bg-[#201f20] border border-[#353436] text-zinc-400 hover:text-white disabled:opacity-30 cursor-pointer"
             title="Zoom in"
           >
             <ZoomIn className="w-3.5 h-3.5" />
@@ -612,7 +612,7 @@ export default function ProjectRevisionCompare({
             type="button"
             onClick={() => setZoomLevel(1)}
             aria-label="Reset zoom level to 100%"
-            className="p-1 rounded bg-[#18181B] border border-[#27272A] text-zinc-400 hover:text-white cursor-pointer"
+            className="p-1 rounded bg-[#201f20] border border-[#353436] text-zinc-400 hover:text-white cursor-pointer"
             title="Reset zoom"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -624,7 +624,7 @@ export default function ProjectRevisionCompare({
       <div
         id="revision-comparison-stage"
         ref={sliderFrameRef}
-        className="relative rounded-2xl overflow-hidden bg-black border border-[#27272A] aspect-[16/9] sm:aspect-[21/9] select-none shadow-2xl group"
+        className="relative rounded-2xl overflow-hidden bg-black border border-[#353436] aspect-[16/9] sm:aspect-[21/9] select-none shadow-2xl group"
         onMouseDown={viewMode === 'slider' ? handleMouseDown : undefined}
         onTouchMove={viewMode === 'slider' ? handleTouchMove : undefined}
       >
@@ -680,9 +680,9 @@ export default function ProjectRevisionCompare({
                 aria-valuemin={0}
                 aria-valuemax={100}
                 aria-valuetext={`${splitPosition}% Version A, ${100 - splitPosition}% Version B`}
-                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-black/90 border-2 border-white shadow-2xl flex items-center justify-center text-white pointer-events-auto cursor-ew-resize focus:outline-none focus:ring-2 focus:ring-[#3ECF8E]"
+                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-black/90 border-2 border-white shadow-2xl flex items-center justify-center text-white pointer-events-auto cursor-ew-resize focus:outline-none focus:ring-2 focus:ring-[#dbfcff]"
               >
-                <ArrowLeftRight className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                <ArrowLeftRight className="w-3.5 h-3.5 text-[#dbfcff]" />
               </div>
             </div>
 
@@ -693,7 +693,7 @@ export default function ProjectRevisionCompare({
                 aria-label={`Left frame version: ${versionA.versionLabel}`}
                 className="px-3 py-1 rounded-md bg-black/80 backdrop-blur-md border border-white/10 text-xs font-mono font-bold text-white shadow-lg flex items-center gap-2"
               >
-                <span className="w-2 h-2 rounded-full bg-[#3ECF8E]" />
+                <span className="w-2 h-2 rounded-full bg-[#dbfcff]" />
                 <span>{versionA.versionLabel}</span>
               </span>
             </div>
@@ -724,7 +724,7 @@ export default function ProjectRevisionCompare({
 
         {/* VIEW MODE 2: SIDE-BY-SIDE DUAL VIEW */}
         {viewMode === 'side-by-side' && (
-          <div className="grid grid-cols-2 h-full w-full gap-0.5 bg-[#27272A]">
+          <div className="grid grid-cols-2 h-full w-full gap-0.5 bg-[#353436]">
             {/* LEFT FRAME (VERSION A) */}
             <div className="relative h-full overflow-hidden bg-black">
               <div
@@ -745,7 +745,7 @@ export default function ProjectRevisionCompare({
                   aria-label={`Baseline version: ${versionA.versionLabel}`}
                   className="px-2.5 py-1 rounded-md bg-black/80 backdrop-blur-md border border-white/10 text-xs font-mono font-bold text-white flex items-center gap-1.5"
                 >
-                  <span className="w-2 h-2 rounded-full bg-[#3ECF8E]" />
+                  <span className="w-2 h-2 rounded-full bg-[#dbfcff]" />
                   <span>{versionA.versionLabel}</span>
                 </span>
               </div>
@@ -833,20 +833,20 @@ export default function ProjectRevisionCompare({
                 aria-valuenow={blendOpacity}
                 aria-valuemin={0}
                 aria-valuemax={100}
-                className="w-full accent-[#3ECF8E] cursor-pointer"
+                className="w-full accent-[#dbfcff] cursor-pointer"
               />
-              <span className="text-[10px] text-[#3ECF8E] font-bold">B ({blendOpacity}%)</span>
+              <span className="text-[10px] text-[#dbfcff] font-bold">B ({blendOpacity}%)</span>
             </div>
           </div>
         )}
       </div>
 
       {/* REVISION DIFFERENCE MATRIX & ARCHITECTURAL CHANGELOG TABLE */}
-      <div className="p-5 rounded-xl bg-[#09090B] border border-[#27272A] space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#27272A] pb-3">
+      <div className="p-5 rounded-xl bg-[#131314] border border-[#353436] space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#353436] pb-3">
           <div className="space-y-0.5">
             <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white flex items-center gap-2">
-              <FileText className="w-4 h-4 text-[#3ECF8E]" />
+              <FileText className="w-4 h-4 text-[#dbfcff]" />
               <span>Architectural Parameter Diff Breakdown</span>
             </h4>
             <p className="text-xs text-[#A1A1AA]">
@@ -858,7 +858,7 @@ export default function ProjectRevisionCompare({
             type="button"
             onClick={handleExportDiffReport}
             aria-label="Export revision comparison and parameter diff summary"
-            className="px-3 py-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E] text-xs font-mono text-[#3ECF8E] font-bold flex items-center gap-1.5 transition-colors cursor-pointer self-start sm:self-auto"
+            className="px-3 py-1.5 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff] text-xs font-mono text-[#dbfcff] font-bold flex items-center gap-1.5 transition-colors cursor-pointer self-start sm:self-auto"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Export Diff Summary</span>
@@ -868,13 +868,13 @@ export default function ProjectRevisionCompare({
         {/* COMPARISON METRIC GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
           {/* VERSION A SPECS */}
-          <div className="p-3.5 rounded-xl bg-[#141416] border border-[#27272A] space-y-2.5">
-            <div className="flex items-center justify-between border-b border-[#27272A] pb-2">
-              <span className="text-[#3ECF8E] font-bold text-xs">{versionA.versionLabel}</span>
+          <div className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] space-y-2.5">
+            <div className="flex items-center justify-between border-b border-[#353436] pb-2">
+              <span className="text-[#dbfcff] font-bold text-xs">{versionA.versionLabel}</span>
               <span
                 role="status"
                 aria-label={`Status: ${versionA.status}`}
-                className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#1C1C1F] text-zinc-300 border border-[#27272A]"
+                className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#1C1C1F] text-zinc-300 border border-[#353436]"
               >
                 {versionA.status}
               </span>
@@ -901,8 +901,8 @@ export default function ProjectRevisionCompare({
           </div>
 
           {/* VERSION B SPECS */}
-          <div className="p-3.5 rounded-xl bg-[#141416] border border-[#27272A] space-y-2.5">
-            <div className="flex items-center justify-between border-b border-[#27272A] pb-2">
+          <div className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] space-y-2.5">
+            <div className="flex items-center justify-between border-b border-[#353436] pb-2">
               <span className="text-[#26A69A] font-bold text-xs">{versionB.versionLabel}</span>
               <span
                 role="status"
@@ -943,9 +943,9 @@ export default function ProjectRevisionCompare({
             {versionB.keyDifferences.map((diff, idx) => (
               <div
                 key={idx}
-                className="p-2.5 rounded-lg bg-[#141416] border border-[#27272A] text-xs font-mono text-zinc-300 flex items-start gap-2"
+                className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-zinc-300 flex items-start gap-2"
               >
-                <span className="text-[#3ECF8E] font-bold mt-0.5">•</span>
+                <span className="text-[#dbfcff] font-bold mt-0.5">•</span>
                 <span className="text-[11px] leading-snug">{diff}</span>
               </div>
             ))}

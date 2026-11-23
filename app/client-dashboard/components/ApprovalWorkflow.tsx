@@ -56,10 +56,10 @@ export default function ApprovalWorkflow() {
 
   return (
     <section className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#27272A]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#353436]">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-[#3ECF8E]" />
+            <ShieldCheck className="w-5 h-5 text-[#dbfcff]" />
             <span>Formal Milestone Sign-Off & Approval Workflow</span>
           </h2>
           <p className="text-xs text-[#A1A1AA] mt-0.5">
@@ -70,11 +70,11 @@ export default function ApprovalWorkflow() {
 
       <div className="space-y-4">
         {stages.map((stg) => (
-          <div key={stg.id} className="p-4 sm:p-5 rounded-xl bg-[#18181B] border border-[#27272A] space-y-3">
+          <div key={stg.id} className="p-4 sm:p-5 rounded-xl bg-[#201f20] border border-[#353436] space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2.5">
                 {stg.status === 'approved' ? (
-                  <CheckCircle2 className="w-5 h-5 text-[#3ECF8E] shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-[#dbfcff] shrink-0" />
                 ) : stg.status === 'pending_signature' ? (
                   <Clock className="w-5 h-5 text-amber-400 shrink-0 animate-pulse" />
                 ) : (
@@ -101,7 +101,7 @@ export default function ApprovalWorkflow() {
                 {stg.status === 'pending_signature' && (
                   <button
                     onClick={() => handleApprove(stg.id)}
-                    className="px-3.5 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-semibold text-xs transition-colors cursor-pointer"
+                    className="px-3.5 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-semibold text-xs transition-colors cursor-pointer"
                   >
                     Authorize Sign-Off
                   </button>
@@ -110,7 +110,7 @@ export default function ApprovalWorkflow() {
             </div>
 
             {stg.signedBy && (
-              <div className="pt-2 border-t border-[#27272A] flex items-center justify-between text-[11px] font-mono text-[#71717A]">
+              <div className="pt-2 border-t border-[#353436] flex items-center justify-between text-[11px] font-mono text-[#71717A]">
                 <span>Digitally Signed by: {stg.signedBy}</span>
                 <span>Timestamp: {stg.date}</span>
               </div>

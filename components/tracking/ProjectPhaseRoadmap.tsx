@@ -125,7 +125,7 @@ export default function ProjectPhaseRoadmap({
       case 'pending':
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono text-[#71717A] bg-[#09090B] border border-[#27272A]">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono text-[#71717A] bg-[#131314] border border-[#353436]">
             <Circle className="w-2.5 h-2.5 text-[#52525B]" />
             <span>Upcoming Phase</span>
           </span>
@@ -136,20 +136,20 @@ export default function ProjectPhaseRoadmap({
   return (
     <div
       id={`project-phase-roadmap-${projectId}`}
-      className={`rounded-2xl bg-[#18181B] border border-[#27272A] overflow-hidden ${className}`}
+      className={`rounded-2xl bg-[#201f20] border border-[#353436] overflow-hidden ${className}`}
     >
       {/* HEADER BAR */}
-      <div className="p-5 border-b border-[#27272A] bg-[#18181B] space-y-4">
+      <div className="p-5 border-b border-[#353436] bg-[#201f20] space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-center text-[#3ECF8E]">
+              <div className="w-7 h-7 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-center text-[#dbfcff]">
                 <Layers className="w-4 h-4" />
               </div>
               <h3 className="text-sm font-bold font-display text-white">
                 Project Phase Roadmap
               </h3>
-              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#09090B] border border-[#27272A] text-[#3ECF8E]">
+              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#131314] border border-[#353436] text-[#dbfcff]">
                 7-Stage Architectural Pipeline
               </span>
             </div>
@@ -159,7 +159,7 @@ export default function ProjectPhaseRoadmap({
           </div>
 
           {/* OVERALL PROGRESS CHIP */}
-          <div className="flex items-center gap-3 p-2.5 rounded-xl bg-[#09090B] border border-[#27272A] shrink-0">
+          <div className="flex items-center gap-3 p-2.5 rounded-xl bg-[#131314] border border-[#353436] shrink-0">
             <div className="space-y-0.5 text-right">
               <div className="text-[10px] font-mono uppercase text-[#71717A]">
                 Stage {currentStageNumber} of 7
@@ -168,7 +168,7 @@ export default function ProjectPhaseRoadmap({
                 {overallProgress}% Pipeline Velocity
               </div>
             </div>
-            <div className="w-9 h-9 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-center font-mono font-bold text-xs text-[#3ECF8E]">
+            <div className="w-9 h-9 rounded-lg bg-[#201f20] border border-[#353436] flex items-center justify-center font-mono font-bold text-xs text-[#dbfcff]">
               {completedCount}/7
             </div>
           </div>
@@ -176,12 +176,12 @@ export default function ProjectPhaseRoadmap({
 
         {/* ROADMAP FILTER CONTROLS */}
         <div className="flex items-center justify-between gap-2 pt-1">
-          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#09090B] border border-[#27272A] overflow-x-auto text-xs font-mono">
+          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#131314] border border-[#353436] overflow-x-auto text-xs font-mono">
             <button
               onClick={() => setFilterType('all')}
               className={`px-3 py-1 rounded-lg transition-colors cursor-pointer whitespace-nowrap ${
                 filterType === 'all'
-                  ? 'bg-[#18181B] text-white font-bold border border-[#3ECF8E]/40 text-[#3ECF8E]'
+                  ? 'bg-[#201f20] text-white font-bold border border-[#dbfcff]/40 text-[#dbfcff]'
                   : 'text-[#71717A] hover:text-white'
               }`}
             >
@@ -191,7 +191,7 @@ export default function ProjectPhaseRoadmap({
               onClick={() => setFilterType('active')}
               className={`px-3 py-1 rounded-lg transition-colors cursor-pointer whitespace-nowrap ${
                 filterType === 'active'
-                  ? 'bg-[#18181B] text-amber-400 font-bold border border-amber-800'
+                  ? 'bg-[#201f20] text-amber-400 font-bold border border-amber-800'
                   : 'text-[#71717A] hover:text-amber-300'
               }`}
             >
@@ -201,7 +201,7 @@ export default function ProjectPhaseRoadmap({
               onClick={() => setFilterType('completed')}
               className={`px-3 py-1 rounded-lg transition-colors cursor-pointer whitespace-nowrap ${
                 filterType === 'completed'
-                  ? 'bg-[#18181B] text-emerald-400 font-bold border border-emerald-800'
+                  ? 'bg-[#201f20] text-emerald-400 font-bold border border-emerald-800'
                   : 'text-[#71717A] hover:text-emerald-300'
               }`}
             >
@@ -211,7 +211,7 @@ export default function ProjectPhaseRoadmap({
               onClick={() => setFilterType('deliverables')}
               className={`px-3 py-1 rounded-lg transition-colors cursor-pointer whitespace-nowrap ${
                 filterType === 'deliverables'
-                  ? 'bg-[#18181B] text-[#3ECF8E] font-bold border border-[#3ECF8E]/40'
+                  ? 'bg-[#201f20] text-[#dbfcff] font-bold border border-[#dbfcff]/40'
                   : 'text-[#71717A] hover:text-white'
               }`}
             >
@@ -232,7 +232,7 @@ export default function ProjectPhaseRoadmap({
       <div className="p-5 space-y-3">
         <div className="relative pl-6 sm:pl-8 space-y-4">
           {/* CONTINUOUS VERTICAL STEPPER CONNECTOR LINE */}
-          <div className="absolute left-[17px] sm:left-[21px] top-4 bottom-4 w-0.5 bg-[#27272A]" />
+          <div className="absolute left-[17px] sm:left-[21px] top-4 bottom-4 w-0.5 bg-[#353436]" />
 
           {filteredStages.map((stageItem) => {
             const isExpanded = expandedStage === stageItem.stage;
@@ -253,7 +253,7 @@ export default function ProjectPhaseRoadmap({
                       ? 'bg-emerald-950 border-emerald-500 text-emerald-400 shadow-sm'
                       : isInProgress
                       ? 'bg-amber-950 border-amber-500 text-amber-300 ring-4 ring-amber-500/20'
-                      : 'bg-[#18181B] border-[#27272A] text-[#71717A]'
+                      : 'bg-[#201f20] border-[#353436] text-[#71717A]'
                   }`}
                 >
                   {isCompleted ? (
@@ -269,10 +269,10 @@ export default function ProjectPhaseRoadmap({
                 <div
                   className={`rounded-xl border transition-all duration-200 overflow-hidden ${
                     isInProgress
-                      ? 'bg-[#09090B] border-amber-800/70 shadow-lg'
+                      ? 'bg-[#131314] border-amber-800/70 shadow-lg'
                       : isCompleted
-                      ? 'bg-[#09090B] border-[#27272A] hover:border-emerald-900/60'
-                      : 'bg-[#09090B]/60 border-[#27272A]/70 hover:border-[#27272A]'
+                      ? 'bg-[#131314] border-[#353436] hover:border-emerald-900/60'
+                      : 'bg-[#131314]/60 border-[#353436]/70 hover:border-[#353436]'
                   }`}
                 >
                   {/* STAGE HEADER (CLICKABLE ACCORDION) */}
@@ -288,7 +288,7 @@ export default function ProjectPhaseRoadmap({
                       }
                     }}
                     onClick={() => toggleExpand(stageItem.stage)}
-                    className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer hover:bg-white/[0.02] transition-colors focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]/50"
+                    className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer hover:bg-white/[0.02] transition-colors focus:outline-none focus:ring-1 focus:ring-[#dbfcff]/50"
                   >
                     <div className="space-y-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
@@ -317,7 +317,7 @@ export default function ProjectPhaseRoadmap({
                     <div className="flex items-center gap-3 shrink-0">
                       <div className="text-right space-y-0.5 hidden sm:block">
                         <div className="text-[11px] font-mono text-white flex items-center gap-1 justify-end">
-                          <Timer className="w-3 h-3 text-[#3ECF8E]" />
+                          <Timer className="w-3 h-3 text-[#dbfcff]" />
                           <span>{stageItem.expectedDuration}</span>
                         </div>
                         {stageItem.actualDate && (
@@ -328,7 +328,7 @@ export default function ProjectPhaseRoadmap({
                       </div>
 
                       <div
-                        className="p-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-[#A1A1AA] group-hover:text-white transition-colors"
+                        className="p-1.5 rounded-lg bg-[#201f20] border border-[#353436] text-[#A1A1AA] group-hover:text-white transition-colors"
                         aria-hidden="true"
                       >
                         {isExpanded ? (
@@ -348,7 +348,7 @@ export default function ProjectPhaseRoadmap({
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="border-t border-[#27272A] bg-[#18181B]/80 p-4 space-y-4 text-xs font-mono"
+                        className="border-t border-[#353436] bg-[#201f20]/80 p-4 space-y-4 text-xs font-mono"
                       >
                         {/* DESCRIPTION & PROTOCOL */}
                         <div className="space-y-1.5">
@@ -362,17 +362,17 @@ export default function ProjectPhaseRoadmap({
 
                         {/* METADATA GRID */}
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                          <div className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] space-y-1">
+                          <div className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] space-y-1">
                             <span className="text-[10px] text-[#71717A] uppercase flex items-center gap-1">
-                              <Timer className="w-3 h-3 text-[#3ECF8E]" />
+                              <Timer className="w-3 h-3 text-[#dbfcff]" />
                               <span>Expected Turnaround</span>
                             </span>
                             <div className="text-white font-bold">{stageItem.expectedDuration}</div>
                           </div>
 
-                          <div className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] space-y-1">
+                          <div className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] space-y-1">
                             <span className="text-[10px] text-[#71717A] uppercase flex items-center gap-1">
-                              <Calendar className="w-3 h-3 text-[#3ECF8E]" />
+                              <Calendar className="w-3 h-3 text-[#dbfcff]" />
                               <span>Recorded Timestamp</span>
                             </span>
                             <div className="text-white font-bold">
@@ -380,9 +380,9 @@ export default function ProjectPhaseRoadmap({
                             </div>
                           </div>
 
-                          <div className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] space-y-1">
+                          <div className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] space-y-1">
                             <span className="text-[10px] text-[#71717A] uppercase flex items-center gap-1">
-                              <ShieldCheck className="w-3 h-3 text-[#3ECF8E]" />
+                              <ShieldCheck className="w-3 h-3 text-[#dbfcff]" />
                               <span>Lead CGI Supervisor</span>
                             </span>
                             <div className="text-white font-bold truncate">
@@ -393,8 +393,8 @@ export default function ProjectPhaseRoadmap({
 
                         {/* KEY MILESTONE NOTES */}
                         {stageItem.keyMilestoneNotes && (
-                          <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] flex items-start gap-2.5">
-                            <AlertCircle className="w-4 h-4 text-[#3ECF8E] shrink-0 mt-0.5" />
+                          <div className="p-3 rounded-lg bg-[#131314] border border-[#353436] flex items-start gap-2.5">
+                            <AlertCircle className="w-4 h-4 text-[#dbfcff] shrink-0 mt-0.5" />
                             <div className="space-y-0.5">
                               <div className="text-[10px] font-bold uppercase text-white">
                                 Milestone Signoff Note
@@ -410,13 +410,13 @@ export default function ProjectPhaseRoadmap({
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] uppercase text-[#71717A] font-bold tracking-wider flex items-center gap-1.5">
-                              <FileText className="w-3 h-3 text-[#3ECF8E]" />
+                              <FileText className="w-3 h-3 text-[#dbfcff]" />
                               <span>
                                 Stage Deliverables & Assets ({stageItem.deliverables?.length || 0})
                               </span>
                             </span>
                             {stageItem.deliverables && stageItem.deliverables.length > 0 && (
-                              <span className="text-[10px] text-[#3ECF8E]">
+                              <span className="text-[10px] text-[#dbfcff]">
                                 {stageItem.deliverables.filter((d) => d.isAvailable).length} Ready for Download
                               </span>
                             )}
@@ -430,12 +430,12 @@ export default function ProjectPhaseRoadmap({
                                   id={`stage-deliv-${deliv.id}`}
                                   className={`p-3 rounded-lg border flex items-center justify-between gap-2.5 transition-all ${
                                     deliv.isAvailable
-                                      ? 'bg-[#09090B] border-[#27272A] hover:border-[#3ECF8E]/50'
-                                      : 'bg-[#09090B]/50 border-[#27272A]/50 opacity-60'
+                                      ? 'bg-[#131314] border-[#353436] hover:border-[#dbfcff]/50'
+                                      : 'bg-[#131314]/50 border-[#353436]/50 opacity-60'
                                   }`}
                                 >
                                   <div className="flex items-center gap-2.5 min-w-0">
-                                    <div className="w-8 h-8 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-center shrink-0 font-bold text-[10px] text-[#3ECF8E]">
+                                    <div className="w-8 h-8 rounded-lg bg-[#201f20] border border-[#353436] flex items-center justify-center shrink-0 font-bold text-[10px] text-[#dbfcff]">
                                       {deliv.type}
                                     </div>
                                     <div className="min-w-0 space-y-0.5">
@@ -454,10 +454,10 @@ export default function ProjectPhaseRoadmap({
                                         type="button"
                                         onClick={() => handleDeliverableAction(deliv)}
                                         aria-label={`Preview ${deliv.name} in 8K Lightbox`}
-                                        className="p-1.5 rounded bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                                        className="p-1.5 rounded bg-[#201f20] hover:bg-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
                                         title="Preview in 8K Lightbox"
                                       >
-                                        <Eye className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                                        <Eye className="w-3.5 h-3.5 text-[#dbfcff]" />
                                       </button>
                                     )}
 
@@ -468,7 +468,7 @@ export default function ProjectPhaseRoadmap({
                                       aria-label={deliv.isAvailable ? `Download ${deliv.name} (${deliv.size})` : `${deliv.name} locked pending stage signoff`}
                                       className={`p-1.5 rounded transition-all ${
                                         deliv.isAvailable
-                                          ? 'bg-[#3ECF8E]/10 hover:bg-[#3ECF8E] text-[#3ECF8E] hover:text-black border border-[#3ECF8E]/30 cursor-pointer'
+                                          ? 'bg-[#dbfcff]/10 hover:bg-[#dbfcff] text-[#dbfcff] hover:text-black border border-[#dbfcff]/30 cursor-pointer'
                                           : 'bg-transparent text-[#52525B] cursor-not-allowed'
                                       }`}
                                       title={deliv.isAvailable ? 'Download Asset' : 'Locked'}
@@ -480,7 +480,7 @@ export default function ProjectPhaseRoadmap({
                               ))}
                             </div>
                           ) : (
-                            <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] text-center text-[#71717A] text-[11px]">
+                            <div className="p-3 rounded-lg bg-[#131314] border border-[#353436] text-center text-[#71717A] text-[11px]">
                               Internal calibration milestone — master assets bundle compiled in Stage 06 & 07.
                             </div>
                           )}
@@ -496,9 +496,9 @@ export default function ProjectPhaseRoadmap({
       </div>
 
       {/* FOOTER PIPELINE NOTE */}
-      <div className="p-3 bg-[#09090B] border-t border-[#27272A] flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] font-mono text-[#71717A]">
+      <div className="p-3 bg-[#131314] border-t border-[#353436] flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] font-mono text-[#71717A]">
         <div className="flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5 text-[#3ECF8E]" />
+          <Sparkles className="w-3.5 h-3.5 text-[#dbfcff]" />
           <span>Stage completion notifications are dispatched to your registered email & desktop alerts automatically.</span>
         </div>
         <div className="text-[#A1A1AA]">

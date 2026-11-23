@@ -125,14 +125,14 @@ export default function RichTextToolbar({ onCommand }: RichTextToolbarProps) {
       role="toolbar"
       aria-label="Rich text formatting"
       style={{ position: 'fixed', top: position.top, left: position.left, zIndex: 60 }}
-      className="flex items-center gap-1 rounded-lg border border-[#27272A] bg-[#131314] px-1.5 py-1 shadow-xl"
+      className="flex items-center gap-1 rounded-lg border border-[#353436] bg-[#131314] px-1.5 py-1 shadow-xl"
     >
       <button
         type="button"
         aria-label="Bold"
         onMouseDown={(event) => event.preventDefault()}
         onClick={handleBold}
-        className="rounded px-2 py-1 text-xs font-bold text-zinc-200 hover:bg-[#27272A] hover:text-white"
+        className="rounded px-2 py-1 text-xs font-bold text-zinc-200 hover:bg-[#353436] hover:text-white"
       >
         B
       </button>
@@ -141,7 +141,7 @@ export default function RichTextToolbar({ onCommand }: RichTextToolbarProps) {
         aria-label="Italic"
         onMouseDown={(event) => event.preventDefault()}
         onClick={handleItalic}
-        className="rounded px-2 py-1 text-xs italic text-zinc-200 hover:bg-[#27272A] hover:text-white"
+        className="rounded px-2 py-1 text-xs italic text-zinc-200 hover:bg-[#353436] hover:text-white"
       >
         I
       </button>
@@ -150,7 +150,7 @@ export default function RichTextToolbar({ onCommand }: RichTextToolbarProps) {
         aria-label="Link"
         onMouseDown={(event) => event.preventDefault()}
         onClick={handleLink}
-        className="rounded px-2 py-1 text-xs text-zinc-200 hover:bg-[#27272A] hover:text-white"
+        className="rounded px-2 py-1 text-xs text-zinc-200 hover:bg-[#353436] hover:text-white"
       >
         Link
       </button>
@@ -159,7 +159,7 @@ export default function RichTextToolbar({ onCommand }: RichTextToolbarProps) {
         aria-label="Clear formatting"
         onMouseDown={(event) => event.preventDefault()}
         onClick={handleClear}
-        className="rounded px-2 py-1 text-xs text-zinc-400 hover:bg-[#27272A] hover:text-white"
+        className="rounded px-2 py-1 text-xs text-zinc-400 hover:bg-[#353436] hover:text-white"
       >
         Clear
       </button>

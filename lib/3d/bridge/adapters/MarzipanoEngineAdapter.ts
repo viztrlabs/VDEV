@@ -288,7 +288,7 @@ export class MarzipanoEngineAdapter implements EngineAdapter {
     el.style.width = '32px';
     el.style.height = '32px';
     el.style.borderRadius = '50%';
-    el.style.backgroundColor = data.color || '#3ecf8e';
+    el.style.backgroundColor = data.color || '#dbfcff';
     el.style.border = '2px solid white';
     el.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
     el.title = data.title;

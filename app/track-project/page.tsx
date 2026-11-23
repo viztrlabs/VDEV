@@ -11,13 +11,13 @@ export default function TrackProjectPage() {
       {/* 1. HERO PRESENTATION AREA (Full Landing Page Presentation Aspect Ratio) */}
       <section
         id="hero-section"
-        className="relative w-full h-screen min-h-[680px] flex flex-col justify-between items-center overflow-hidden text-white select-none transition-colors duration-300 bg-[#09090B]"
+        className="relative w-full h-screen min-h-[680px] flex flex-col justify-between items-center overflow-hidden text-white select-none transition-colors duration-300 bg-[#131314]"
       >
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#f43f5e_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none z-0" />
 
         {/* TOP AREA: Clears floating header & hosts Eyebrow Badge */}
         <div className="relative z-20 w-full pt-16 sm:pt-20 shrink-0 flex justify-center px-2 sm:px-4">
-          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#0A0A0B] shadow-2xl transition-all border border-[#1E293B] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
+          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#131314] shadow-2xl transition-all border border-[#3b494b] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
             <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
             <span className="font-bold text-emerald-400 tracking-wider uppercase shrink-0">Live Milestone Synchronization</span>
           </div>
@@ -26,7 +26,7 @@ export default function TrackProjectPage() {
         {/* BOTTOM HERO CONTENT */}
         <div className="relative z-20 w-full container-ultrawide text-center flex flex-col items-center justify-end mt-auto px-4 sm:px-6 pb-6 sm:pb-8">
           <div className="flex justify-center mb-4">
-            <div className="p-3 rounded-2xl bg-[#0A0A0B] border border-[#1E293B] shadow-xl">
+            <div className="p-3 rounded-2xl bg-[#131314] border border-[#3b494b] shadow-xl">
               <ViztrLogoMark className="w-12 h-12" />
             </div>
           </div>
@@ -35,7 +35,7 @@ export default function TrackProjectPage() {
             Client Production Portal
           </h1>
 
-          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]">
+          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#e5e2e3]">
             Track your 7-stage architectural visualization pipeline in real time. Review whitecard clay previews, provide feedback, and download signed master deliverables.
           </p>
         </div>

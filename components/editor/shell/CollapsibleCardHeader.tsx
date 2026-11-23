@@ -28,7 +28,7 @@ export function CollapsibleCardHeader({
           onToggle();
         }
       }}
-      className={`text-[10px] font-mono uppercase tracking-wider flex items-center justify-between gap-1.5 cursor-pointer select-none ${className ?? 'text-[#3ECF8E]'}`}
+      className={`text-[10px] font-mono uppercase tracking-wider flex items-center justify-between gap-1.5 cursor-pointer select-none ${className ?? 'text-[#dbfcff]'}`}
     >
       <span className="flex items-center gap-1.5">{children}</span>
       <span aria-label="Collapse indicator" data-collapsed={collapsed ? 'true' : 'false'}>

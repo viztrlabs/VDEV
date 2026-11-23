@@ -25,8 +25,8 @@ export function ServiceEditorShell({
   }
 
   return (
-    <div className="min-h-screen bg-[#09090B] text-white">
-      <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-[#27272A]">
+    <div className="min-h-screen bg-[#131314] text-white">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-[#353436]">
         <div className="flex items-center gap-3">
           <Link
             href={`/admin/projects/${projectId}/editor-dashboard`}

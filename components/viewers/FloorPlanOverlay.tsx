@@ -25,14 +25,14 @@ export default function FloorPlanOverlay({
       {/* TOP-BAR FLOOR PLAN NAVIGATOR WITH LIVE LOCATION DOT */}
       {preferences.showFloorPlan && preferences.floorPlanImageUrl && (
         <div className="flex items-center gap-2.5">
-          <div className="relative w-20 h-20 sm:w-28 sm:h-28 rounded-xl overflow-hidden border-2 border-[#3ECF8E] bg-[#09090B]">
+          <div className="relative w-20 h-20 sm:w-28 sm:h-28 rounded-xl overflow-hidden border-2 border-[#dbfcff] bg-[#131314]">
             <img
               src={preferences.floorPlanImageUrl}
               alt="Floor Plan"
               className="w-full h-full object-cover"
             />
             <div
-              className="absolute rounded-full bg-[#3ECF8E] shadow-[0_0_8px_rgba(62,207,142,0.8)] animate-pulse"
+              className="absolute rounded-full bg-[#dbfcff] shadow-[0_0_8px_rgba(62,207,142,0.8)] animate-pulse"
               style={{
                 width: '10px',
                 height: '10px',
@@ -41,7 +41,7 @@ export default function FloorPlanOverlay({
               }}
             />
           </div>
-          <label className="cursor-pointer p-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#71717A] hover:text-white transition-colors">
+          <label className="cursor-pointer p-1 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#71717A] hover:text-white transition-colors">
             <input
               type="file"
               accept="image/*"

@@ -23,18 +23,18 @@ export default function PolygonStylePanel({ style, onChangeStyle }: PolygonStyle
         <div className="flex items-center gap-1.5">
           <input
             type="color"
-            value={style.backgroundColor || '#18181B'}
+            value={style.backgroundColor || '#201f20'}
             onChange={(e) => set({ backgroundColor: e.target.value })}
-            className="w-10 h-8 bg-transparent border border-[#27272A] rounded"
+            className="w-10 h-8 bg-transparent border border-[#353436] rounded"
           />
           <input
             value={style.backgroundColor || ''}
             onChange={(e) => set({ backgroundColor: e.target.value })}
-            placeholder="#18181B"
-            className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+            placeholder="#201f20"
+            className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
           />
         </div>
-        <p className="text-[9px] text-[#71717A] mt-0.5">Supports hex + alpha (e.g. #18181B50)</p>
+        <p className="text-[9px] text-[#71717A] mt-0.5">Supports hex + alpha (e.g. #201f2050)</p>
       </div>
 
       <div>
@@ -44,15 +44,15 @@ export default function PolygonStylePanel({ style, onChangeStyle }: PolygonStyle
         <div className="flex items-center gap-1.5">
           <input
             type="color"
-            value={style.borderColor || '#27272A'}
+            value={style.borderColor || '#353436'}
             onChange={(e) => set({ borderColor: e.target.value })}
-            className="w-10 h-8 bg-transparent border border-[#27272A] rounded"
+            className="w-10 h-8 bg-transparent border border-[#353436] rounded"
           />
           <input
             value={style.borderColor || ''}
             onChange={(e) => set({ borderColor: e.target.value })}
-            placeholder="#27272A"
-            className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+            placeholder="#353436"
+            className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
           />
         </div>
         <p className="text-[9px] text-[#71717A] mt-0.5">Supports hex + alpha</p>
@@ -66,7 +66,7 @@ export default function PolygonStylePanel({ style, onChangeStyle }: PolygonStyle
           <select
             value={style.borderWidth ?? 1}
             onChange={(e) => set({ borderWidth: Number(e.target.value) })}
-            className="w-24 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+            className="w-24 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
           >
             <option value={0}>0 (no border)</option>
             <option value={1}>1</option>
@@ -85,15 +85,15 @@ export default function PolygonStylePanel({ style, onChangeStyle }: PolygonStyle
         <div className="flex items-center gap-1.5">
           <input
             type="color"
-            value={style.backgroundHoverColor || '#18181B'}
+            value={style.backgroundHoverColor || '#201f20'}
             onChange={(e) => set({ backgroundHoverColor: e.target.value })}
-            className="w-10 h-8 bg-transparent border border-[#27272A] rounded"
+            className="w-10 h-8 bg-transparent border border-[#353436] rounded"
           />
           <input
             value={style.backgroundHoverColor || ''}
             onChange={(e) => set({ backgroundHoverColor: e.target.value })}
-            placeholder="#18181B"
-            className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+            placeholder="#201f20"
+            className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
           />
         </div>
       </div>
@@ -105,15 +105,15 @@ export default function PolygonStylePanel({ style, onChangeStyle }: PolygonStyle
         <div className="flex items-center gap-1.5">
           <input
             type="color"
-            value={style.borderHoverColor || '#27272A'}
+            value={style.borderHoverColor || '#353436'}
             onChange={(e) => set({ borderHoverColor: e.target.value })}
-            className="w-10 h-8 bg-transparent border border-[#27272A] rounded"
+            className="w-10 h-8 bg-transparent border border-[#353436] rounded"
           />
           <input
             value={style.borderHoverColor || ''}
             onChange={(e) => set({ borderHoverColor: e.target.value })}
-            placeholder="#27272A"
-            className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+            placeholder="#353436"
+            className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
           />
         </div>
       </div>

@@ -284,7 +284,7 @@ export function PanoramaViewport({
 
   if (engine.error) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-[#09090B]">
+      <div className="w-full h-full flex items-center justify-center bg-[#131314]">
         <div className="text-center">
           <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto mb-3" />
           <p className="text-sm font-mono text-[#71717A]">{engine.error}</p>
@@ -295,7 +295,7 @@ export function PanoramaViewport({
 
   if (!room?.url) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-[#09090B]">
+      <div className="w-full h-full flex items-center justify-center bg-[#131314]">
         <div className="text-center">
           <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto mb-3" />
           <p className="text-sm font-mono text-[#71717A]">No panorama image URL set</p>
@@ -316,8 +316,8 @@ export function PanoramaViewport({
       />
 
       {engine.loading && (
-        <div className="absolute inset-0 bg-[#09090B] flex items-center justify-center">
-          <div className="text-xs font-mono text-[#3ECF8E] animate-pulse">Loading panorama…</div>
+        <div className="absolute inset-0 bg-[#131314] flex items-center justify-center">
+          <div className="text-xs font-mono text-[#dbfcff] animate-pulse">Loading panorama…</div>
         </div>
       )}
 
@@ -391,25 +391,25 @@ export function PanoramaViewport({
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center shadow-lg ${
                   isSelected
-                    ? 'bg-[#3ECF8E] text-black'
+                    ? 'bg-[#dbfcff] text-black'
                     : hs.type === 'link' || hs.type === 'navigation'
                     ? 'bg-amber-500 text-white'
-                    : 'bg-white/90 text-[#09090B]'
+                    : 'bg-white/90 text-[#131314]'
                 }`}
                 style={{ transform: `rotate(${drag && drag.id === hs.id ? drag.preview : hs.rotation ?? 0}deg)` }}
               >
                 <Icon className="w-4 h-4" />
               </div>
-              <span className="absolute left-full top-1/2 -translate-y-1/2 ml-1 px-1.5 py-0.5 rounded bg-[#18181B] border border-[#27272A] text-[9px] font-mono text-white whitespace-nowrap">
+              <span className="absolute left-full top-1/2 -translate-y-1/2 ml-1 px-1.5 py-0.5 rounded bg-[#201f20] border border-[#353436] text-[9px] font-mono text-white whitespace-nowrap">
                 {String(idx + 1).padStart(2, '0')}
               </span>
               {isSelected && (
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 px-2 py-0.5 rounded bg-[#09090B] text-[9px] font-mono text-white whitespace-nowrap">
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 px-2 py-0.5 rounded bg-[#131314] text-[9px] font-mono text-white whitespace-nowrap">
                   {hs.title || hs.type}
                 </div>
               )}
               {rotateModeId === hs.id && (
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-6 px-2 py-0.5 rounded bg-[#3ECF8E] text-[9px] font-mono text-black whitespace-nowrap">
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-6 px-2 py-0.5 rounded bg-[#dbfcff] text-[9px] font-mono text-black whitespace-nowrap">
                   {Math.round(drag && drag.id === hs.id ? drag.preview : hs.rotation ?? 0)}°
                 </div>
               )}
@@ -463,42 +463,42 @@ export function PanoramaViewport({
       <div className="absolute top-3 left-3 flex flex-col gap-1">
         <button
           onClick={handleZoomIn}
-          className="w-8 h-8 rounded bg-[#09090B]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#27272A] transition-colors cursor-pointer"
+          className="w-8 h-8 rounded bg-[#131314]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#353436] transition-colors cursor-pointer"
           title="Zoom In"
         >
           <ZoomIn className="w-4 h-4 text-white" />
         </button>
         <button
           onClick={handleZoomOut}
-          className="w-8 h-8 rounded bg-[#09090B]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#27272A] transition-colors cursor-pointer"
+          className="w-8 h-8 rounded bg-[#131314]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#353436] transition-colors cursor-pointer"
           title="Zoom Out"
         >
           <ZoomOut className="w-4 h-4 text-white" />
         </button>
         <button
           onClick={handleSetStartView}
-          className="w-8 h-8 rounded bg-[#09090B]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#27272A] transition-colors cursor-pointer"
+          className="w-8 h-8 rounded bg-[#131314]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#353436] transition-colors cursor-pointer"
           title="Set Start View (S)"
         >
           <Eye className="w-4 h-4 text-white" />
         </button>
         <button
           onClick={handleResetView}
-          className="w-8 h-8 rounded bg-[#09090B]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#27272A] transition-colors cursor-pointer"
+          className="w-8 h-8 rounded bg-[#131314]/80 backdrop-blur-sm flex items-center justify-center hover:bg-[#353436] transition-colors cursor-pointer"
           title="Reset View"
         >
           <RotateCcw className="w-4 h-4 text-white" />
         </button>
       </div>
 
-      <div className="absolute bottom-3 left-3 bg-[#09090B]/80 backdrop-blur-sm rounded px-2 py-1 text-[10px] font-mono text-[#71717A]">
+      <div className="absolute bottom-3 left-3 bg-[#131314]/80 backdrop-blur-sm rounded px-2 py-1 text-[10px] font-mono text-[#71717A]">
         Yaw: {((currentYaw * 180) / Math.PI).toFixed(1)}° | Pitch:{' '}
         {((currentPitch * 180) / Math.PI).toFixed(1)}° | FOV:{' '}
         {((currentFov * 180) / Math.PI).toFixed(1)}°
       </div>
 
       {TOOL_TYPES[activeTool] && (
-        <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-[#3ECF8E]/20 backdrop-blur-sm rounded px-3 py-1.5 text-xs font-mono text-[#3ECF8E]">
+        <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-[#dbfcff]/20 backdrop-blur-sm rounded px-3 py-1.5 text-xs font-mono text-[#dbfcff]">
           Click to place {TOOL_TYPES[activeTool]} hotspot
         </div>
       )}
@@ -510,7 +510,7 @@ export function PanoramaViewport({
       )}
 
       {room && (
-        <div className="absolute top-3 right-3 bg-[#09090B]/80 backdrop-blur-sm rounded px-2 py-1 text-[10px] font-mono text-[#71717A]">
+        <div className="absolute top-3 right-3 bg-[#131314]/80 backdrop-blur-sm rounded px-2 py-1 text-[10px] font-mono text-[#71717A]">
           {room.name || 'Untitled Room'}
         </div>
       )}

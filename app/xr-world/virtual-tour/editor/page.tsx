@@ -415,7 +415,7 @@ export default function TourEditorPage() {
         live: bundle.live !== false,
         publicUrl: bundle.publicUrl || `/virtual-tour/${data?.slug || ''}`,
         theme: {
-          accentColor: '#3ECF8E',
+          accentColor: '#dbfcff',
           logoUrl: '',
           title: 'VizTR Virtual Tour',
           ...(bundle.theme || {}),
@@ -506,9 +506,9 @@ export default function TourEditorPage() {
       return (
         <div className="flex-1 overflow-y-auto p-6">
           <div className="max-w-xl mx-auto space-y-4">
-            <h2 className="text-sm font-mono font-bold text-[#3ECF8E]">Model — 3D Embed</h2>
+            <h2 className="text-sm font-mono font-bold text-[#dbfcff]">Model — 3D Embed</h2>
             {selected ? (
-              <div className="rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3 space-y-2">
+              <div className="rounded-lg border border-[#353436] bg-[#201f20] p-3 space-y-2">
                 <div className="text-[10px] font-mono text-[#A1A1AA]">
                   Scene: <span className="text-white">{selected.name}</span>
                 </div>
@@ -519,14 +519,14 @@ export default function TourEditorPage() {
                   value={selected.modelUrl || ''}
                   onChange={(e) => setRoomField('modelUrl', e.target.value)}
                   placeholder="https://…/model.glb"
-                  className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-white"
+                  className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-white"
                 />
                 <p className="text-[10px] font-mono text-[#71717A]">
                   The viewer overlays the model on the panorama. Saved as part of the room.
                 </p>
               </div>
             ) : (
-              <div className="rounded-lg border border-dashed border-[#27272A] bg-[#0c0c0f] p-6 text-center text-xs font-mono text-[#71717A]">
+              <div className="rounded-lg border border-dashed border-[#353436] bg-[#201f20] p-6 text-center text-xs font-mono text-[#71717A]">
                 Select a scene to attach a 3D model.
               </div>
             )}
@@ -538,38 +538,38 @@ export default function TourEditorPage() {
     return (
       <div className="flex-1 overflow-y-auto p-6">
         <div className="max-w-xl mx-auto space-y-4">
-          <h2 className="text-sm font-mono font-bold text-[#3ECF8E]">Settings — Publish</h2>
+          <h2 className="text-sm font-mono font-bold text-[#dbfcff]">Settings — Publish</h2>
           {settings && (
             <>
-              <div className="flex items-center justify-between rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3">
+              <div className="flex items-center justify-between rounded-lg border border-[#353436] bg-[#201f20] p-3">
                 <span className="text-xs font-mono text-white">Tour is {settings.live ? 'LIVE' : 'OFFLINE'}</span>
                 <button
                   onClick={() => persistSettings({ ...settings, live: !settings.live })}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold font-mono ${settings.live ? 'bg-rose-500/20 text-rose-300' : 'bg-[#3ECF8E] text-black'}`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold font-mono ${settings.live ? 'bg-rose-500/20 text-rose-300' : 'bg-[#dbfcff] text-black'}`}
                 >
                   {settings.live ? 'Take Offline' : 'Go Live'}
                 </button>
               </div>
-              <div className="flex items-center justify-between rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3">
+              <div className="flex items-center justify-between rounded-lg border border-[#353436] bg-[#201f20] p-3">
                 <span className="text-xs font-mono text-white">Access: {settings.accessLevel}</span>
                 <button
                   onClick={() => persistSettings({ ...settings, accessLevel: settings.accessLevel === 'private' ? 'public' : 'private' })}
-                  className="px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-xs font-mono text-white"
+                  className="px-3 py-1.5 rounded-lg bg-[#201f20] border border-[#353436] text-xs font-mono text-white"
                 >
                   Toggle {settings.accessLevel === 'private' ? 'Public' : 'Private'}
                 </button>
               </div>
               <button
                 onClick={() => persistSettings({ ...settings, version: (settings.version || 1) + 1 })}
-                className="px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-xs font-mono text-white"
+                className="px-3 py-1.5 rounded-lg bg-[#201f20] border border-[#353436] text-xs font-mono text-white"
               >
                 Clear Cache (v{settings.version || 1})
               </button>
             </>
           )}
 
-          <h2 className="text-sm font-mono font-bold text-[#3ECF8E] pt-4">Tour Viewer</h2>
-          <div className="rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3 space-y-3">
+          <h2 className="text-sm font-mono font-bold text-[#dbfcff] pt-4">Tour Viewer</h2>
+          <div className="rounded-lg border border-[#353436] bg-[#201f20] p-3 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-mono text-white">Mouse view mode</span>
               <select
@@ -580,7 +580,7 @@ export default function TourEditorPage() {
                     mouseViewMode: e.target.value as 'drag' | 'qtvr',
                   }))
                 }
-                className="bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs font-mono text-white"
+                className="bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs font-mono text-white"
               >
                 <option value="drag">Drag (click and look)</option>
                 <option value="qtvr">QTVR</option>
@@ -595,8 +595,8 @@ export default function TourEditorPage() {
                 }
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold font-mono ${
                   viewerSettings.autorotateEnabled
-                    ? 'bg-[#3ECF8E] text-black'
-                    : 'bg-[#18181B] border border-[#27272A] text-[#A1A1AA]'
+                    ? 'bg-[#dbfcff] text-black'
+                    : 'bg-[#201f20] border border-[#353436] text-[#A1A1AA]'
                 }`}
               >
                 {viewerSettings.autorotateEnabled ? 'On' : 'Off'}
@@ -611,8 +611,8 @@ export default function TourEditorPage() {
                 }
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold font-mono ${
                   viewerSettings.fullscreenButton
-                    ? 'bg-[#3ECF8E] text-black'
-                    : 'bg-[#18181B] border border-[#27272A] text-[#A1A1AA]'
+                    ? 'bg-[#dbfcff] text-black'
+                    : 'bg-[#201f20] border border-[#353436] text-[#A1A1AA]'
                 }`}
               >
                 {viewerSettings.fullscreenButton ? 'On' : 'Off'}
@@ -627,8 +627,8 @@ export default function TourEditorPage() {
                 }
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold font-mono ${
                   viewerSettings.viewControlButtons
-                    ? 'bg-[#3ECF8E] text-black'
-                    : 'bg-[#18181B] border border-[#27272A] text-[#A1A1AA]'
+                    ? 'bg-[#dbfcff] text-black'
+                    : 'bg-[#201f20] border border-[#353436] text-[#A1A1AA]'
                 }`}
               >
                 {viewerSettings.viewControlButtons ? 'On' : 'Off'}
@@ -641,8 +641,8 @@ export default function TourEditorPage() {
         </div>
 
         {/* Public Link */}
-        <h2 className="text-sm font-mono font-bold text-[#3ECF8E] pt-4">Public Link</h2>
-        <div className="rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3 space-y-3">
+        <h2 className="text-sm font-mono font-bold text-[#dbfcff] pt-4">Public Link</h2>
+        <div className="rounded-lg border border-[#353436] bg-[#201f20] p-3 space-y-3">
           {(() => {
             const url = new URL(typeof window !== 'undefined' ? window.location.href : 'http://localhost/');
             const tourSlug = settings?.publicUrl?.replace('/virtual-tour/', '') || settings?.slug || url.searchParams.get('tour') || '';
@@ -662,7 +662,7 @@ export default function TourEditorPage() {
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <label className="text-xs font-mono text-[#A1A1AA] flex-1 truncate">Public URL</label>
-                  <span className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-[#A1A1AA] truncate" title={fullPublicUrl}>
+                  <span className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-[#A1A1AA] truncate" title={fullPublicUrl}>
                     {fullPublicUrl}
                   </span>
                   <button
@@ -671,7 +671,7 @@ export default function TourEditorPage() {
                       navigator.clipboard.writeText(fullPublicUrl);
                       showToast('Public URL copied to clipboard', 'success');
                     }}
-                    className="px-2 py-1 rounded bg-[#18181B] border border-[#27272A] text-[#A1A1AA] hover:text-white hover:bg-[#27272A] transition-colors"
+                    className="px-2 py-1 rounded bg-[#201f20] border border-[#353436] text-[#A1A1AA] hover:text-white hover:bg-[#353436] transition-colors"
                     title="Copy public URL"
                   >
                     <Copy className="w-4 h-4" />
@@ -679,7 +679,7 @@ export default function TourEditorPage() {
                   <button
                     type="button"
                     onClick={() => window.open(fullPublicUrl, '_blank')}
-                    className="px-2 py-1 rounded bg-[#18181B] border border-[#27272A] text-[#A1A1AA] hover:text-white hover:bg-[#27272A] transition-colors"
+                    className="px-2 py-1 rounded bg-[#201f20] border border-[#353436] text-[#A1A1AA] hover:text-white hover:bg-[#353436] transition-colors"
                     title="Open in new tab"
                   >
                     <ExternalLink className="w-4 h-4" />
@@ -704,7 +704,7 @@ export default function TourEditorPage() {
                         showToast(e?.message || 'Failed to regenerate slug', 'error');
                       }
                     }}
-                    className="px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-xs font-mono text-white flex items-center gap-1.5 hover:bg-[#27272A]"
+                    className="px-3 py-1.5 rounded-lg bg-[#201f20] border border-[#353436] text-xs font-mono text-white flex items-center gap-1.5 hover:bg-[#353436]"
                     title="Regenerate slug (changes the public URL)"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
@@ -1320,14 +1320,14 @@ const handlePublish = async () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#09090B] text-white flex items-center justify-center gap-2">
-        <Loader2 className="w-5 h-5 animate-spin text-[#3ECF8E]" /> Loading tour editor…
+      <div className="min-h-screen bg-[#131314] text-white flex items-center justify-center gap-2">
+        <Loader2 className="w-5 h-5 animate-spin text-[#dbfcff]" /> Loading tour editor…
       </div>
     );
   }
 
   return (
-    <div className="h-screen flex flex-col bg-[#09090B] text-white overflow-hidden">
+    <div className="h-screen flex flex-col bg-[#131314] text-white overflow-hidden">
       <EditorHeader
         roomsCount={rooms.length}
         hotspotsCount={rooms.reduce((a, r) => a + r.defaultHotspots.length, 0)}
@@ -1398,7 +1398,7 @@ const handlePublish = async () => {
       )}
 
       {settingsLoading && settings === null && sectionTab !== 'editor' && sectionTab !== 'model' && (
-        <div className="px-4 py-2 border-b border-[#27272A] bg-[#0c0c0f] text-[#A1A1AA] text-xs font-mono flex items-center gap-2">
+        <div className="px-4 py-2 border-b border-[#353436] bg-[#201f20] text-[#A1A1AA] text-xs font-mono flex items-center gap-2">
           <Loader2 className="w-3 h-3 animate-spin" />
           Loading settings…
         </div>
@@ -1444,7 +1444,7 @@ const handlePublish = async () => {
           className={
             leftOpen
               ? 'shrink-0 overflow-hidden transition-[width] duration-200'
-              : 'w-0 shrink-0 overflow-hidden border-r border-[#27272A] transition-[width] duration-200'
+              : 'w-0 shrink-0 overflow-hidden border-r border-[#353436] transition-[width] duration-200'
           }
         >
           <NodeListSidebar
@@ -1476,7 +1476,7 @@ const handlePublish = async () => {
             aria-label="Expand nodes panel"
             aria-pressed="true"
             title="Expand nodes panel"
-            className="w-6 shrink-0 border-r border-[#27272A] flex items-center justify-center text-[#71717A] hover:text-white hover:bg-[#18181B]"
+            className="w-6 shrink-0 border-r border-[#353436] flex items-center justify-center text-[#71717A] hover:text-white hover:bg-[#201f20]"
           >
             <PanelLeftOpen className="w-3.5 h-3.5" />
           </button>
@@ -1545,7 +1545,7 @@ const handlePublish = async () => {
                   <button
                     type="button"
                     onClick={() => setGalaxyOpen(true)}
-                    className="absolute bottom-3 right-3 z-40 px-3 py-1.5 rounded-lg bg-[#18181B]/95 border border-[#27272A] text-xs font-mono text-[#A1A1AA] hover:text-white hover:border-[#3ECF8E] shadow-xl backdrop-blur"
+                    className="absolute bottom-3 right-3 z-40 px-3 py-1.5 rounded-lg bg-[#201f20]/95 border border-[#353436] text-xs font-mono text-[#A1A1AA] hover:text-white hover:border-[#dbfcff] shadow-xl backdrop-blur"
                   >
                     Map
                   </button>
@@ -1667,12 +1667,12 @@ const handlePublish = async () => {
 
                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2">
                   {addMode && addHotspotKind === 'room_link' && (
-                    <div className="flex items-center gap-1.5 px-2 py-1.5 rounded-full bg-[#18181B]/95 border border-[#27272A] shadow-xl backdrop-blur">
+                    <div className="flex items-center gap-1.5 px-2 py-1.5 rounded-full bg-[#201f20]/95 border border-[#353436] shadow-xl backdrop-blur">
                       <span className="text-[10px] font-mono text-[#A1A1AA]">Target:</span>
                       <select
                         value={linkTargetId}
                         onChange={(e) => setLinkTargetId(e.target.value)}
-                        className="bg-[#09090B] border border-[#27272A] rounded px-1.5 py-0.5 text-[10px] font-mono text-white max-w-[180px]"
+                        className="bg-[#131314] border border-[#353436] rounded px-1.5 py-0.5 text-[10px] font-mono text-white max-w-[180px]"
                       >
                         <option value="">Select scene…</option>
                         {rooms
@@ -1685,7 +1685,7 @@ const handlePublish = async () => {
                       </select>
                     </div>
                   )}
-                  <div className="flex items-center gap-1.5 px-1.5 py-1.5 rounded-full bg-[#18181B]/95 border border-[#27272A] shadow-xl backdrop-blur">
+                  <div className="flex items-center gap-1.5 px-1.5 py-1.5 rounded-full bg-[#201f20]/95 border border-[#353436] shadow-xl backdrop-blur">
                     <button
                       type="button"
                       onClick={() => {
@@ -1756,7 +1756,7 @@ const handlePublish = async () => {
                     )}
                   </div>
                   {addMode && (
-                    <div className="px-3 py-1 rounded-full bg-[#3ECF8E] text-black text-[10px] font-mono font-bold animate-pulse shadow-xl">
+                    <div className="px-3 py-1 rounded-full bg-[#dbfcff] text-black text-[10px] font-mono font-bold animate-pulse shadow-xl">
                       Click on the panorama to place a{' '}
                       {addHotspotKind === 'room_link' ? 'link' : addHotspotKind} hotspot
                     </div>
@@ -1766,8 +1766,8 @@ const handlePublish = async () => {
             </>
           ) : rooms.length === 0 ? (
             <div className="flex-1 flex items-center justify-center p-6">
-              <div className="max-w-md w-full text-center space-y-4 rounded-xl border border-[#27272A] bg-[#0c0c0f] p-6">
-                <Compass className="w-10 h-10 text-[#3ECF8E] mx-auto" />
+              <div className="max-w-md w-full text-center space-y-4 rounded-xl border border-[#353436] bg-[#201f20] p-6">
+                <Compass className="w-10 h-10 text-[#dbfcff] mx-auto" />
                 <h2 className="text-sm font-mono font-bold text-white">
                   Create your first virtual tour
                 </h2>
@@ -1776,7 +1776,7 @@ const handlePublish = async () => {
                   set initial views, and connect scenes with link hotspots.
                 </p>
                 <div className="flex items-center justify-center gap-2 pt-2">
-                  <label className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono cursor-pointer">
+                  <label className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b876] text-black text-xs font-bold font-mono cursor-pointer">
                     <Upload className="w-3.5 h-3.5" />
                     Upload panoramas
                     <input
@@ -1790,7 +1790,7 @@ const handlePublish = async () => {
                   <button
                     type="button"
                     onClick={openFilePicker}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#27272A] bg-[#18181B] text-[#A1A1AA] hover:text-white text-xs font-mono font-bold"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#353436] bg-[#201f20] text-[#A1A1AA] hover:text-white text-xs font-mono font-bold"
                   >
                     <FolderUp className="w-3.5 h-3.5" />
                     Import ZIP
@@ -1810,7 +1810,7 @@ const handlePublish = async () => {
 
         {/* Right panel: validation or hotspot inspector */}
         {validationOpen && rightOpen && (
-          <div className="w-72 shrink-0 border-l border-[#27272A] h-full">
+          <div className="w-72 shrink-0 border-l border-[#353436] h-full">
             <EditorValidationPanel
               rooms={rooms}
               onSelectRoom={(id) => {
@@ -1863,7 +1863,7 @@ const handlePublish = async () => {
             aria-label="Expand inspector panel"
             aria-pressed="true"
             title="Expand inspector panel"
-            className="w-6 shrink-0 border-l border-[#27272A] flex items-center justify-center text-[#71717A] hover:text-white hover:bg-[#18181B]"
+            className="w-6 shrink-0 border-l border-[#353436] flex items-center justify-center text-[#71717A] hover:text-white hover:bg-[#201f20]"
           >
             <PanelRightOpen className="w-3.5 h-3.5" />
           </button>
@@ -1878,7 +1878,7 @@ const handlePublish = async () => {
                 (settings as any).vted?.design || {
                   preset: 'default',
                   primaryColor: settings.theme.accentColor,
-                  textColor: '#FAFAFA',
+                  textColor: '#e5e2e3',
                   primaryFont: 'Inter',
                   secondaryFont: 'Inter',
                 }
@@ -1905,7 +1905,7 @@ const handlePublish = async () => {
                 (settings as any).vted?.formStyle || {
                   layout: 'dialog',
                   position: 'right',
-                  backgroundColor: '#18181B',
+                  backgroundColor: '#201f20',
                   overlayColor: '#00000080',
                 }
               }
@@ -1913,15 +1913,15 @@ const handlePublish = async () => {
                 (settings as any).vted?.polygonStyle || {
                   backgroundColor: '#FFFFFF20',
                   backgroundHoverColor: '#FFFFFF50',
-                  borderColor: '#3ECF8E',
-                  borderHoverColor: '#3ECF8E',
+                  borderColor: '#dbfcff',
+                  borderHoverColor: '#dbfcff',
                   borderWidth: 2,
                 }
               }
               popup={
                 (settings as any).vted?.popupStyle || {
-                  backgroundColor: '#18181B',
-                  textColor: '#FAFAFA',
+                  backgroundColor: '#201f20',
+                  textColor: '#e5e2e3',
                 }
               }
               onChangeForm={(formStyle) => {
@@ -2088,9 +2088,9 @@ const handlePublish = async () => {
               />
 
               <div className="max-w-3xl mx-auto px-4 pb-4 space-y-3">
-                <h2 className="text-sm font-mono font-bold text-[#3ECF8E]">All Hotspots</h2>
+                <h2 className="text-sm font-mono font-bold text-[#dbfcff]">All Hotspots</h2>
                 {rooms.map((r) => (
-                  <div key={r.id} className="rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3">
+                  <div key={r.id} className="rounded-lg border border-[#353436] bg-[#201f20] p-3">
                     <div className="text-xs font-mono text-white mb-1">{r.name}</div>
                     {r.defaultHotspots.length === 0 ? (
                       <div className="text-[10px] font-mono text-[#71717A]">No hotspots</div>
@@ -2218,8 +2218,8 @@ function SettingsUnavailable({
 }) {
   return (
     <div className="flex-1 flex items-center justify-center p-6">
-      <div className="max-w-sm w-full text-center space-y-3 rounded-xl border border-[#27272A] bg-[#0c0c0f] p-6">
-        <div className="text-[#3ECF8E] text-sm font-mono font-bold">
+      <div className="max-w-sm w-full text-center space-y-3 rounded-xl border border-[#353436] bg-[#201f20] p-6">
+        <div className="text-[#dbfcff] text-sm font-mono font-bold">
           {loading ? 'Loading settings…' : 'Settings unavailable'}
         </div>
         <p className="text-[10px] font-mono text-[#A1A1AA]">
@@ -2231,7 +2231,7 @@ function SettingsUnavailable({
           <button
             type="button"
             onClick={onRetry}
-            className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
+            className="px-3 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
           >
             Retry
           </button>

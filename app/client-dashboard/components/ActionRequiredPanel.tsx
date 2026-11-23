@@ -27,7 +27,7 @@ export default function ActionRequiredPanel() {
 
   return (
     <section className="space-y-4">
-      <div className="flex items-center justify-between pb-2 border-b border-[#27272A]">
+      <div className="flex items-center justify-between pb-2 border-b border-[#353436]">
         <div className="flex items-center gap-2">
           <div className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
           <h3 className="text-sm font-bold uppercase tracking-wider text-white font-mono flex items-center gap-2">
@@ -41,7 +41,7 @@ export default function ActionRequiredPanel() {
         {actions.map((act) => (
           <div
             key={act.id}
-            className="p-5 rounded-xl bg-[#18181B] border border-amber-500/30 hover:border-amber-500/60 transition-all flex flex-col justify-between space-y-4 shadow-lg shadow-amber-950/10"
+            className="p-5 rounded-xl bg-[#201f20] border border-amber-500/30 hover:border-amber-500/60 transition-all flex flex-col justify-between space-y-4 shadow-lg shadow-amber-950/10"
           >
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -60,10 +60,10 @@ export default function ActionRequiredPanel() {
               <p className="text-xs text-[#A1A1AA] leading-relaxed">{act.description}</p>
             </div>
 
-            <div className="pt-3 border-t border-[#27272A] flex items-center justify-end">
+            <div className="pt-3 border-t border-[#353436] flex items-center justify-end">
               <button
                 type="button"
-                className="px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center gap-2 transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center gap-2 transition-colors cursor-pointer"
               >
                 <span>{act.actionText}</span>
                 <ArrowRight className="w-3.5 h-3.5" />

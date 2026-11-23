@@ -58,7 +58,7 @@ export function ImageInput({ onUpdate }: { onUpdate: (patch: Partial<TourHotspot
       <button
         onClick={() => inputRef.current?.click()}
         disabled={busy}
-        className="w-full px-2 py-1.5 rounded bg-[#27272A] text-[10px] font-mono text-[#A1A1AA] hover:bg-[#3F3F46] disabled:opacity-50 cursor-pointer"
+        className="w-full px-2 py-1.5 rounded bg-[#353436] text-[10px] font-mono text-[#A1A1AA] hover:bg-[#3F3F46] disabled:opacity-50 cursor-pointer"
       >
         {busy ? 'Uploading…' : 'Upload Image'}
       </button>
@@ -94,7 +94,7 @@ export function ModelInput({ onUpdate }: { onUpdate: (patch: Partial<TourHotspot
       <button
         onClick={() => inputRef.current?.click()}
         disabled={busy}
-        className="w-full px-2 py-1.5 rounded bg-[#27272A] text-[10px] font-mono text-[#A1A1AA] hover:bg-[#3F3F46] disabled:opacity-50 cursor-pointer"
+        className="w-full px-2 py-1.5 rounded bg-[#353436] text-[10px] font-mono text-[#A1A1AA] hover:bg-[#3F3F46] disabled:opacity-50 cursor-pointer"
       >
         {busy ? 'Uploading…' : 'Upload Model'}
       </button>
@@ -126,7 +126,7 @@ export function Section({ title, icon: Icon, defaultOpen = true, children }: {
 }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-[#27272A]">
+    <div className="border-b border-[#353436]">
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center gap-2 px-3 py-2 text-[10px] font-mono font-bold text-[#71717A] hover:bg-white/5"
@@ -161,7 +161,7 @@ export function TextInput({ value, onChange, placeholder, type = 'text' }: {
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-white placeholder:text-[#71717A]"
+      className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-white placeholder:text-[#71717A]"
     />
   );
 }
@@ -183,7 +183,7 @@ export function NumberInput({ value, onChange, min, max, step = 1, unit }: {
         min={min}
         max={max}
         step={step}
-        className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-white"
+        className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-white"
       />
       {unit && <span className="text-[10px] font-mono text-[#71717A]">{unit}</span>}
     </div>
@@ -201,7 +201,7 @@ export function Toggle({ label, value, onChange }: {
       <button
         onClick={() => onChange(!value)}
         className={`w-8 h-4 rounded-full transition-colors ${
-          value ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+          value ? 'bg-[#dbfcff]' : 'bg-[#353436]'
         }`}
       >
         <div
@@ -223,7 +223,7 @@ export function SelectInput({ value, onChange, options }: {
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-white"
+      className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-white"
     >
       {options.map((opt) => (
         <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -248,7 +248,7 @@ export function TypeSpecificFields({ hotspot, scenes, roomId, onUpdate }: {
             <select
               value={hotspot.targetSceneId || ''}
               onChange={(e) => onUpdate({ targetSceneId: e.target.value })}
-              className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-white"
+              className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-white"
             >
               <option value="">Select room...</option>
               {scenes
@@ -291,7 +291,7 @@ export function TypeSpecificFields({ hotspot, scenes, roomId, onUpdate }: {
             <textarea
               value={hotspot.description}
               onChange={(e) => onUpdate({ description: e.target.value })}
-              className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-white h-20 resize-none"
+              className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-white h-20 resize-none"
               placeholder="Info popup content..."
             />
           </Field>
@@ -347,7 +347,7 @@ export function TypeSpecificFields({ hotspot, scenes, roomId, onUpdate }: {
           ))}
           <button
             onClick={() => onUpdate({ images: [...(hotspot.images || []), ''] })}
-            className="w-full px-2 py-1.5 rounded bg-[#27272A] text-[10px] font-mono text-[#A1A1AA] hover:bg-[#3F3F46]"
+            className="w-full px-2 py-1.5 rounded bg-[#353436] text-[10px] font-mono text-[#A1A1AA] hover:bg-[#3F3F46]"
           >
             + Add Image
           </button>
@@ -526,7 +526,7 @@ export function TypeSpecificFields({ hotspot, scenes, roomId, onUpdate }: {
             <textarea
               value={hotspot.description}
               onChange={(e) => onUpdate({ description: e.target.value })}
-              className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-white h-20 resize-none"
+              className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-white h-20 resize-none"
               placeholder="Custom content..."
             />
           </Field>

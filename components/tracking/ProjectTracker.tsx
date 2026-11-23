@@ -143,14 +143,14 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
   return (
     <div id="project-tracker-component" className="w-full max-w-5xl mx-auto space-y-6">
       {/* SEARCH / AUTHENTICATION CARD */}
-      <div className="p-6 sm:p-8 rounded-[2rem] bg-[#131314] border border-[#1E293B] shadow-xl">
-        <div className="flex items-center justify-between pb-5 mb-5 border-b border-[#1E293B]">
+      <div className="p-6 sm:p-8 rounded-[2rem] bg-[#131314] border border-[#3b494b] shadow-xl">
+        <div className="flex items-center justify-between pb-5 mb-5 border-b border-[#3b494b]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#0A0A0B] border border-[#1E293B] text-[#00F0FF] flex items-center justify-center shadow-inner">
+            <div className="w-10 h-10 rounded-full bg-[#131314] border border-[#3b494b] text-[#00F0FF] flex items-center justify-center shadow-inner">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-[#FAFAFA] font-display">
+              <h3 className="text-base font-bold text-[#e5e2e3] font-display">
                 Project Pipeline Authenticator
               </h3>
               <p className="text-xs text-[#B9CACB]">
@@ -161,8 +161,8 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
           <div className="hidden sm:flex items-center gap-2 text-[11px] font-mono text-[#71717A]">
             <span>NODE: NYC-CL-01</span>
             <span>•</span>
-            <span className="text-[#42CF8B] flex items-center gap-1.5 font-bold">
-              <span className="w-2 h-2 rounded-full bg-[#42CF8B] animate-pulse" />
+            <span className="text-[#54de99] flex items-center gap-1.5 font-bold">
+              <span className="w-2 h-2 rounded-full bg-[#54de99] animate-pulse" />
               TLS 1.3 SECURE
             </span>
           </div>
@@ -181,7 +181,7 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
                 placeholder="e.g. VZ-9021"
                 value={projectIdInput}
                 onChange={(e) => setProjectIdInput(e.target.value)}
-                className="w-full px-5 py-3 rounded-full bg-[#0A0A0B] border border-[#1E293B] text-xs font-mono text-[#FAFAFA] focus:outline-none focus:border-[#00F0FF] transition-all shadow-inner"
+                className="w-full px-5 py-3 rounded-full bg-[#131314] border border-[#3b494b] text-xs font-mono text-[#e5e2e3] focus:outline-none focus:border-[#00F0FF] transition-all shadow-inner"
               />
             </div>
             <div>
@@ -195,7 +195,7 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
                 placeholder="e.g. ALPHA-99"
                 value={accessCodeInput}
                 onChange={(e) => setAccessCodeInput(e.target.value)}
-                className="w-full px-5 py-3 rounded-full bg-[#0A0A0B] border border-[#1E293B] text-xs font-mono text-[#FAFAFA] focus:outline-none focus:border-[#00F0FF] transition-all shadow-inner"
+                className="w-full px-5 py-3 rounded-full bg-[#131314] border border-[#3b494b] text-xs font-mono text-[#e5e2e3] focus:outline-none focus:border-[#00F0FF] transition-all shadow-inner"
               />
             </div>
           </div>
@@ -226,7 +226,7 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
         </form>
 
         {/* Demo Quick-Click Badges */}
-        <div className="mt-5 pt-4 border-t border-[#1E293B] flex flex-wrap items-center justify-between gap-2.5">
+        <div className="mt-5 pt-4 border-t border-[#3b494b] flex flex-wrap items-center justify-between gap-2.5">
           <span className="text-[11px] font-mono text-[#71717A] flex items-center gap-1.5 font-bold">
             <Sparkles className="w-3.5 h-3.5 text-[#00F0FF]" />
             PRESET DEMO TOKENS:
@@ -242,21 +242,21 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
             <button
               type="button"
               onClick={() => loadSampleCredentials('VZ-9021', 'ALPHA-99')}
-              className="px-3.5 py-1.5 rounded-full bg-[#0A0A0B] hover:border-[#00F0FF] text-[#B9CACB] hover:text-[#00F0FF] text-[10px] font-mono border border-[#1E293B] transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 rounded-full bg-[#131314] hover:border-[#00F0FF] text-[#B9CACB] hover:text-[#00F0FF] text-[10px] font-mono border border-[#3b494b] transition-colors cursor-pointer"
             >
               VZ-9021 (Stage 5 Revisions)
             </button>
             <button
               type="button"
               onClick={() => loadSampleCredentials('VZ-8410', 'VIP-2026')}
-              className="px-3.5 py-1.5 rounded-full bg-[#0A0A0B] hover:border-[#42CF8B] text-[#B9CACB] hover:text-[#42CF8B] text-[10px] font-mono border border-[#1E293B] transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 rounded-full bg-[#131314] hover:border-[#54de99] text-[#B9CACB] hover:text-[#54de99] text-[10px] font-mono border border-[#3b494b] transition-colors cursor-pointer"
             >
               VZ-8410 (Stage 7 Completed)
             </button>
             <button
               type="button"
               onClick={() => loadSampleCredentials('VZ-7732', 'SKY-404')}
-              className="px-3.5 py-1.5 rounded-full bg-[#0A0A0B] hover:border-[#00F0FF] text-[#B9CACB] hover:text-[#00F0FF] text-[10px] font-mono border border-[#1E293B] transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 rounded-full bg-[#131314] hover:border-[#00F0FF] text-[#B9CACB] hover:text-[#00F0FF] text-[10px] font-mono border border-[#3b494b] transition-colors cursor-pointer"
             >
               VZ-7732 (Stage 3 WebXR)
             </button>
@@ -276,11 +276,11 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
             className="space-y-4"
           >
             {/* Status Header Card */}
-            <div className="p-6 sm:p-8 rounded-[2rem] bg-[#131314] text-white border border-[#1E293B] shadow-xl space-y-5">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-[#1E293B]">
+            <div className="p-6 sm:p-8 rounded-[2rem] bg-[#131314] text-white border border-[#3b494b] shadow-xl space-y-5">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-[#3b494b]">
                 <div>
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className="px-3 py-1 rounded-full bg-[#0A0A0B] border border-[#00F0FF]/40 text-[#00F0FF] text-[10px] font-mono font-bold">
+                    <span className="px-3 py-1 rounded-full bg-[#131314] border border-[#00F0FF]/40 text-[#00F0FF] text-[10px] font-mono font-bold">
                       {activeProject.id}
                     </span>
 
@@ -294,7 +294,7 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
                         transition={{ duration: 0.25 }}
                         className={`text-[10px] font-mono px-3 py-1 rounded-full border font-bold flex items-center gap-1.5 ${
                           activeProject.status === 'Completed'
-                            ? 'bg-[#42CF8B]/15 text-[#42CF8B] border-[#42CF8B]/40'
+                            ? 'bg-[#54de99]/15 text-[#54de99] border-[#54de99]/40'
                             : activeProject.status === 'Revisions'
                             ? 'bg-amber-500/15 text-amber-400 border-amber-500/30'
                             : activeProject.status === 'Client Review'
@@ -305,7 +305,7 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
                         <motion.span
                           className={`w-2 h-2 rounded-full ${
                             activeProject.status === 'Completed'
-                              ? 'bg-[#42CF8B]'
+                              ? 'bg-[#54de99]'
                               : activeProject.status === 'Revisions'
                               ? 'bg-amber-400 animate-pulse'
                               : activeProject.status === 'Client Review'
@@ -322,7 +322,7 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
                     </span>
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl font-bold text-[#FAFAFA] font-display">
+                  <h3 className="text-xl sm:text-2xl font-bold text-[#e5e2e3] font-display">
                     {activeProject.name}
                   </h3>
                   <p className="text-xs text-[#B9CACB] mt-1 flex items-center gap-2 flex-wrap">
@@ -333,7 +333,7 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
                 </div>
 
                 {/* Overall Progress Gauge */}
-                <div className="flex items-center gap-3 bg-[#0A0A0B] p-3.5 rounded-2xl border border-[#1E293B] shrink-0 self-start md:self-auto shadow-inner">
+                <div className="flex items-center gap-3 bg-[#131314] p-3.5 rounded-2xl border border-[#3b494b] shrink-0 self-start md:self-auto shadow-inner">
                   <div className="text-right">
                     <div className="text-[9px] font-mono uppercase tracking-wider text-[#71717A]">
                       OVERALL PROGRESS
@@ -357,7 +357,7 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
                     initial={{ scale: 0.8 }}
                     animate={{ scale: 1 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                    className="w-12 h-12 rounded-xl bg-[#131314] border border-[#1E293B] flex flex-col items-center justify-center font-bold font-mono text-[#00F0FF]"
+                    className="w-12 h-12 rounded-xl bg-[#131314] border border-[#3b494b] flex flex-col items-center justify-center font-bold font-mono text-[#00F0FF]"
                   >
                     <span className="text-[9px] text-[#71717A] leading-none">STAGE</span>
                     <span className="text-sm leading-tight">{activeProject.currentStage}/7</span>
@@ -377,9 +377,9 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
                   </span>
                 </div>
 
-                <div className="w-full bg-[#0A0A0B] h-3 rounded-full overflow-hidden border border-[#1E293B] relative">
+                <div className="w-full bg-[#131314] h-3 rounded-full overflow-hidden border border-[#3b494b] relative">
                   <motion.div
-                    className="bg-gradient-to-r from-[#00F0FF] via-[#42CF8B] to-[#00F0FF] h-full rounded-full relative"
+                    className="bg-gradient-to-r from-[#00F0FF] via-[#54de99] to-[#00F0FF] h-full rounded-full relative"
                     initial={{ width: 0 }}
                     animate={{ width: `${activeProject.progressPercentage}%` }}
                     transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
@@ -391,7 +391,7 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
               </div>
 
               {/* Interactive Stage Stepper Controls for smooth milestone previewing */}
-              <div className="pt-4 border-t border-[#1E293B] flex flex-wrap items-center justify-between gap-2.5">
+              <div className="pt-4 border-t border-[#3b494b] flex flex-wrap items-center justify-between gap-2.5">
                 <span className="text-[10px] font-mono text-[#71717A] font-bold">
                   SIMULATE STAGE PROGRESSION:
                 </span>
@@ -404,8 +404,8 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
                         activeProject.currentStage === s.stage
                           ? 'bg-[#00F0FF] text-black font-extrabold shadow-[0_0_12px_rgba(0,240,255,0.4)]'
                           : s.stage < activeProject.currentStage
-                          ? 'bg-[#0A0A0B] text-[#42CF8B] border border-[#42CF8B]/40 hover:border-[#42CF8B]'
-                          : 'bg-[#0A0A0B] text-[#71717A] border border-[#1E293B] hover:text-[#FAFAFA]'
+                          ? 'bg-[#131314] text-[#54de99] border border-[#54de99]/40 hover:border-[#54de99]'
+                          : 'bg-[#131314] text-[#71717A] border border-[#3b494b] hover:text-[#e5e2e3]'
                       }`}
                       title={`Jump to Stage ${s.stage}: ${s.name}`}
                     >
@@ -417,18 +417,18 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
             </div>
 
             {/* 7-STAGE INTERACTIVE TIMELINE WITH STAGGERED MOTION */}
-            <div className="p-6 sm:p-8 rounded-[2rem] bg-[#131314] border border-[#1E293B] space-y-5 shadow-xl">
+            <div className="p-6 sm:p-8 rounded-[2rem] bg-[#131314] border border-[#3b494b] space-y-5 shadow-xl">
               <div className="flex items-center justify-between">
-                <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-[#FAFAFA] flex items-center gap-2">
+                <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-[#e5e2e3] flex items-center gap-2">
                   <span>Production Pipeline Milestones</span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-[#0A0A0B] border border-[#1E293B] text-[#00F0FF] text-[10px]">
+                  <span className="px-2.5 py-0.5 rounded-full bg-[#131314] border border-[#3b494b] text-[#00F0FF] text-[10px]">
                     7 STAGES TOTAL
                   </span>
                 </h4>
                 <span className="text-[10px] font-mono text-[#71717A]">REAL-TIME AUDIT LOG</span>
               </div>
 
-              <div className="relative pl-7 space-y-4 before:absolute before:left-3 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#1E293B]">
+              <div className="relative pl-7 space-y-4 before:absolute before:left-3 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#3b494b]">
                 {ALL_STAGES.map((stg, idx) => {
                   const stageData = activeProject.stages.find((s) => s.stage === stg.stage);
                   const isCompleted = stageData?.status === 'completed';
@@ -459,10 +459,10 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
                         }
                         className={`absolute -left-7 top-1.5 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-mono font-bold transition-all shadow-md ${
                           isCompleted
-                            ? 'bg-[#42CF8B] text-black shadow-[#42CF8B]/25'
+                            ? 'bg-[#54de99] text-black shadow-[#54de99]/25'
                             : isInProgress
                             ? 'bg-[#00F0FF] text-black ring-4 ring-[#00F0FF]/25 shadow-[#00F0FF]/40'
-                            : 'bg-[#1E293B] text-[#71717A]'
+                            : 'bg-[#3b494b] text-[#71717A]'
                         }`}
                       >
                         {isCompleted ? (
@@ -475,15 +475,15 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
                       <div
                         className={`p-5 rounded-2xl border transition-all duration-300 ${
                           isInProgress
-                            ? 'bg-[#0A0A0B] border-[#00F0FF]/60 shadow-lg shadow-[#00F0FF]/10'
+                            ? 'bg-[#131314] border-[#00F0FF]/60 shadow-lg shadow-[#00F0FF]/10'
                             : isCompleted
-                            ? 'bg-[#0A0A0B] border-[#1E293B]'
-                            : 'bg-[#0A0A0B]/60 border-[#1E293B]/60 opacity-75'
+                            ? 'bg-[#131314] border-[#3b494b]'
+                            : 'bg-[#131314]/60 border-[#3b494b]/60 opacity-75'
                         }`}
                       >
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-1.5">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h5 className="text-xs sm:text-sm font-bold text-[#FAFAFA]">
+                            <h5 className="text-xs sm:text-sm font-bold text-[#e5e2e3]">
                               Stage {stg.stage}: {stg.name}
                             </h5>
                             {isInProgress && (
@@ -497,7 +497,7 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
                               </motion.span>
                             )}
                             {isCompleted && (
-                              <span className="text-[9px] font-mono uppercase font-bold px-2.5 py-0.5 rounded-full bg-[#42CF8B]/15 text-[#42CF8B] border border-[#42CF8B]/30">
+                              <span className="text-[9px] font-mono uppercase font-bold px-2.5 py-0.5 rounded-full bg-[#54de99]/15 text-[#54de99] border border-[#54de99]/30">
                                 Verified
                               </span>
                             )}
@@ -519,7 +519,7 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
                           <motion.div
                             initial={{ opacity: 0, y: 4 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="mt-4 pt-3.5 border-t border-[#1E293B] space-y-2.5"
+                            className="mt-4 pt-3.5 border-t border-[#3b494b] space-y-2.5"
                           >
                             <div className="text-[9px] font-mono font-bold text-[#71717A] uppercase tracking-wider flex items-center gap-1.5">
                               <FileText className="w-3 h-3 text-[#00F0FF]" />
@@ -529,11 +529,11 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
                               {stageData.deliverables.map((deliv, dIdx) => (
                                 <div
                                   key={dIdx}
-                                  className="flex items-center justify-between p-3 rounded-xl bg-[#131314] border border-[#1E293B] text-xs hover:border-[#00F0FF]/40 transition-colors"
+                                  className="flex items-center justify-between p-3 rounded-xl bg-[#131314] border border-[#3b494b] text-xs hover:border-[#00F0FF]/40 transition-colors"
                                 >
                                   <div className="flex items-center gap-2 truncate">
                                     <FileText className="w-3.5 h-3.5 text-[#00F0FF] shrink-0" />
-                                    <span className="truncate text-[#FAFAFA] font-medium text-xs">
+                                    <span className="truncate text-[#e5e2e3] font-medium text-xs">
                                       {deliv.name}
                                     </span>
                                     <span className="text-[9px] text-[#71717A] font-mono">
@@ -546,7 +546,7 @@ export default function ProjectTracker({ initialProjectId }: ProjectTrackerProps
                                         onClick={() =>
                                           openLightbox([{ url: deliv.previewUrl!, title: deliv.name, type: 'image' }])
                                         }
-                                        className="p-1.5 rounded-full bg-[#1E293B] hover:bg-[#00F0FF] hover:text-black transition-colors cursor-pointer text-[#FAFAFA]"
+                                        className="p-1.5 rounded-full bg-[#3b494b] hover:bg-[#00F0FF] hover:text-black transition-colors cursor-pointer text-[#e5e2e3]"
                                         title="Quick View Proof"
                                       >
                                         <Eye className="w-3.5 h-3.5" />

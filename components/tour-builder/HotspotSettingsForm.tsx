@@ -38,8 +38,8 @@ export function HotspotSettingsForm({ roomId, hotspot, onUpdate }: HotspotSettin
                 onClick={() => onUpdate({ type: t.type })}
                 className={`flex items-center gap-2 px-2 py-1.5 rounded text-left transition-colors ${
                   isActive
-                    ? 'bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E]'
-                    : 'bg-[#18181B] border border-[#27272A] text-[#A1A1AA] hover:bg-[#27272A]'
+                    ? 'bg-[#dbfcff]/10 border border-[#dbfcff]/30 text-[#dbfcff]'
+                    : 'bg-[#201f20] border border-[#353436] text-[#A1A1AA] hover:bg-[#353436]'
                 }`}
                 title={t.description}
               >
@@ -61,7 +61,7 @@ export function HotspotSettingsForm({ roomId, hotspot, onUpdate }: HotspotSettin
           <textarea
             value={hotspot.description}
             onChange={(e) => onUpdate({ description: e.target.value })}
-            className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-white h-20 resize-none"
+            className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-white h-20 resize-none"
             placeholder="Optional description..."
           />
         </Field>
@@ -92,7 +92,7 @@ export function HotspotSettingsForm({ roomId, hotspot, onUpdate }: HotspotSettin
         </div>
         <button
           onClick={() => onUpdate({ yaw: 0, pitch: 0 })}
-          className="w-full px-2 py-1.5 rounded bg-[#27272A] text-[10px] font-mono text-[#A1A1AA] hover:bg-[#3F3F46] cursor-pointer"
+          className="w-full px-2 py-1.5 rounded bg-[#353436] text-[10px] font-mono text-[#A1A1AA] hover:bg-[#3F3F46] cursor-pointer"
         >
           Reset Position
         </button>
@@ -101,16 +101,16 @@ export function HotspotSettingsForm({ roomId, hotspot, onUpdate }: HotspotSettin
       <Section title="Appearance" icon={Sliders}>
         <Field label="Icon">
           <div className="flex items-center gap-2 relative">
-            <div className="w-8 h-8 rounded bg-[#18181B] border border-[#27272A] flex items-center justify-center">
+            <div className="w-8 h-8 rounded bg-[#201f20] border border-[#353436] flex items-center justify-center">
               {hotspot.icon ? (
-                <span className="text-xs text-[#3ECF8E]">{hotspot.icon}</span>
+                <span className="text-xs text-[#dbfcff]">{hotspot.icon}</span>
               ) : (
                 <span className="text-[10px] text-[#71717A]">None</span>
               )}
             </div>
             <button
               onClick={() => setIconPickerOpen(!iconPickerOpen)}
-              className="px-2 py-1 rounded bg-[#18181B] border border-[#27272A] text-[10px] font-mono text-[#A1A1AA] hover:text-white"
+              className="px-2 py-1 rounded bg-[#201f20] border border-[#353436] text-[10px] font-mono text-[#A1A1AA] hover:text-white"
             >
               Change
             </button>
@@ -147,7 +147,7 @@ export function HotspotSettingsForm({ roomId, hotspot, onUpdate }: HotspotSettin
         </Field>
         <Field label="Color">
           <TextInput
-            value={hotspot.color || '#3ECF8E'}
+            value={hotspot.color || '#dbfcff'}
             onChange={(v) => onUpdate({ color: v })}
             placeholder="#hex"
           />

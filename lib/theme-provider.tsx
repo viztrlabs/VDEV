@@ -142,7 +142,7 @@ export const AVAILABLE_THEMES: ThemeConfig[] = [
     name: 'Cyan Spark (Dark)',
     subtitle: 'Electric Cyan & Deep Midnight Shadow',
     category: 'Dark Mode',
-    description: 'Deep #0E0E0F foundation with electric cyan #00F0FF primary actions, fresh green #54DE99 accents, dark blue-gray #1E293B depth, and pill-shaped geometry. Material Design 3 compliant.',
+    description: 'Deep #0E0E0F foundation with electric cyan #00F0FF primary actions, fresh green #54DE99 accents, dark blue-gray #3b494b depth, and pill-shaped geometry. Material Design 3 compliant.',
     resolvedMode: 'dark',
     colors: {
       bg: darkTheme.background,

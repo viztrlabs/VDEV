@@ -56,7 +56,7 @@ export const DEFAULT_SETTINGS: TourSettings = {
     search: true,
   },
   theme: {
-    accentColor: '#3ECF8E',
+    accentColor: '#dbfcff',
     logoUrl: '',
     title: 'VizTR Virtual Tour',
   },

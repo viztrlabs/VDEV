@@ -202,7 +202,7 @@ export function ImmersiveSpikeClient() {
       addLog(`PanelUISystem: ${!!panelSys}, ScreenSpaceUISystem: ${!!ssSys}`);
       // Create a spatial panel with inline UIKitML markup
       const panelEntity = world.createTransformEntity().addComponent(PanelUI, {
-        markup: `<ui-kit><ui-panel style="padding:12px;background:#18181bcc;border-radius:8px"><ui-label style="font-size:28px;color:#3ECF8E">VizTR Spike</ui-label><ui-label style="font-size:20px;color:white">IWSDK spatial UI operational</ui-label></ui-panel></ui-kit>`,
+        markup: `<ui-kit><ui-panel style="padding:12px;background:#201f20cc;border-radius:8px"><ui-label style="font-size:28px;color:#dbfcff">VizTR Spike</ui-label><ui-label style="font-size:20px;color:white">IWSDK spatial UI operational</ui-label></ui-panel></ui-kit>`,
         maxHeight: 0.5,
         maxWidth: 0.8,
       });

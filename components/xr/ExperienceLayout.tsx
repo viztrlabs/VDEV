@@ -41,7 +41,7 @@ export function ExperienceLayout({ left, right }: ExperienceLayoutProps) {
   const hasRight = right != null;
 
   return (
-    <div ref={containerRef} className="relative w-full h-full flex bg-[#09090B]">
+    <div ref={containerRef} className="relative w-full h-full flex bg-[#131314]">
       {/* Left panel */}
       <div
         className="h-full overflow-hidden"
@@ -53,11 +53,11 @@ export function ExperienceLayout({ left, right }: ExperienceLayoutProps) {
       {/* Divider */}
       {hasRight && (
         <div
-          className="relative w-1 bg-[#27272A] cursor-col-resize hover:bg-[#3ECF8E] transition-colors shrink-0"
+          className="relative w-1 bg-[#353436] cursor-col-resize hover:bg-[#dbfcff] transition-colors shrink-0"
           onMouseDown={handleMouseDown}
         >
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-8 rounded bg-[#3ECF8E]/30 flex items-center justify-center">
-            <div className="w-0.5 h-4 bg-[#3ECF8E] rounded" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-8 rounded bg-[#dbfcff]/30 flex items-center justify-center">
+            <div className="w-0.5 h-4 bg-[#dbfcff] rounded" />
           </div>
         </div>
       )}

@@ -8,7 +8,7 @@ type SkeletonProps = {
 
 export function Skeleton({ className = '' }: SkeletonProps) {
   return (
-    <div className={`animate-pulse rounded bg-[#27272A] ${className}`} />
+    <div className={`animate-pulse rounded bg-[#353436] ${className}`} />
   );
 }
 
@@ -20,15 +20,15 @@ type TableSkeletonProps = {
 export function TableSkeleton({ rows = 5, columns = 4 }: TableSkeletonProps) {
   return (
     <div className="w-full">
-      <div className="flex items-center gap-2 border-b border-[#27272A] pb-2 mb-2">
+      <div className="flex items-center gap-2 border-b border-[#353436] pb-2 mb-2">
         {Array.from({ length: columns }).map((_, idx) => (
-          <div key={`header-${idx}`} className="h-3 flex-1 rounded bg-[#27272A]/60" />
+          <div key={`header-${idx}`} className="h-3 flex-1 rounded bg-[#353436]/60" />
         ))}
       </div>
       {Array.from({ length: rows }).map((_, rowIdx) => (
-        <div key={`row-${rowIdx}`} className="flex items-center gap-2 py-2 border-b border-[#27272A]/50">
+        <div key={`row-${rowIdx}`} className="flex items-center gap-2 py-2 border-b border-[#353436]/50">
           {Array.from({ length: columns }).map((_, colIdx) => (
-            <div key={`cell-${rowIdx}-${colIdx}`} className="h-3 flex-1 rounded bg-[#27272A]/40" />
+            <div key={`cell-${rowIdx}-${colIdx}`} className="h-3 flex-1 rounded bg-[#353436]/40" />
           ))}
         </div>
       ))}
@@ -42,10 +42,10 @@ type PanelSkeletonProps = {
 
 export function PanelSkeleton({ tabs = ['Experiences', 'Deliverables', 'Assets', 'Members'] }: PanelSkeletonProps) {
   return (
-    <div className="rounded border border-[#27272A] bg-[#0F0F11]">
-      <div className="flex items-center gap-1 border-b border-[#27272A] px-2 py-1.5">
+    <div className="rounded border border-[#353436] bg-[#131314]">
+      <div className="flex items-center gap-1 border-b border-[#353436] px-2 py-1.5">
         {tabs.map((tab) => (
-          <div key={tab} className="h-6 w-24 rounded bg-[#27272A]/60" />
+          <div key={tab} className="h-6 w-24 rounded bg-[#353436]/60" />
         ))}
       </div>
       <div className="p-4">

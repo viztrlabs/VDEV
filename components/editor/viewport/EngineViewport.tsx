@@ -91,7 +91,7 @@ export function EngineViewport({
         await adapter.init({
           container: containerRef.current!,
           antialias: true,
-          backgroundColor: '#09090b',
+          backgroundColor: '#131314',
         });
 
         if (cancelled) {
@@ -145,21 +145,21 @@ const tools: { id: ToolType; label: string; icon: React.ReactNode }[] = [
    ];
 
   return (
-    <div className={`relative w-full h-full bg-[#09090b] select-none overflow-hidden ${className}`}>
+    <div className={`relative w-full h-full bg-[#131314] select-none overflow-hidden ${className}`}>
       {/* 3D Canvas Mount Point */}
       <div ref={containerRef} className="absolute inset-0 w-full h-full" />
 
       {/* Loading Overlay */}
       {!isReady && !error && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#09090b]/80 backdrop-blur-sm z-30">
-          <Loader2 className="w-6 h-6 text-[#3ecf8e] animate-spin mb-2" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#131314]/80 backdrop-blur-sm z-30">
+          <Loader2 className="w-6 h-6 text-[#dbfcff] animate-spin mb-2" />
           <p className="text-xs font-mono text-[#a1a1aa]">Initializing {engineType === 'playcanvas' ? 'VizTR Engine' : engineType.toUpperCase()}…</p>
         </div>
       )}
 
 {/* Error Overlay */}
        {error && (
-         <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#09090b]/90 p-6 z-40">
+         <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#131314]/90 p-6 z-40">
            <AlertCircle className="w-8 h-8 text-rose-500 mb-2" />
            <h3 className="text-sm font-mono font-bold text-white mb-1">Engine Initialization Error</h3>
            <p className="text-xs font-mono text-rose-300 max-w-md text-center mb-4">{error}</p>
@@ -168,7 +168,7 @@ const tools: { id: ToolType; label: string; icon: React.ReactNode }[] = [
                setError(null);
                setIsReady(false);
              }}
-             className="px-4 py-2 rounded-lg bg-[#3ecf8e] text-black text-xs font-mono font-semibold hover:bg-[#34b27b] transition shadow-lg shadow-[#3ecf8e]/20"
+             className="px-4 py-2 rounded-lg bg-[#dbfcff] text-black text-xs font-mono font-semibold hover:bg-[#34b27b] transition shadow-lg shadow-[#dbfcff]/20"
            >
              ⟳ Retry Initialization
            </button>
@@ -178,9 +178,9 @@ const tools: { id: ToolType; label: string; icon: React.ReactNode }[] = [
       {/* Top Floating HUD Bar */}
       <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-20">
         {/* Left: Engine & Telemetry Stats */}
-        <div className="flex items-center gap-2 bg-[#121216]/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-[#27272a] pointer-events-auto">
-          <span className="flex items-center gap-1.5 text-[11px] font-mono font-semibold text-[#3ecf8e]">
-            <span className="w-2 h-2 rounded-full bg-[#3ecf8e] animate-pulse" />
+        <div className="flex items-center gap-2 bg-[#131314]/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-[#353436] pointer-events-auto">
+          <span className="flex items-center gap-1.5 text-[11px] font-mono font-semibold text-[#dbfcff]">
+            <span className="w-2 h-2 rounded-full bg-[#dbfcff] animate-pulse" />
             {engineType.toUpperCase()}
           </span>
           <span className="text-[#3f3f46]">|</span>
@@ -199,13 +199,13 @@ const tools: { id: ToolType; label: string; icon: React.ReactNode }[] = [
         {/* Right: Save & History Status */}
         <div className="flex items-center gap-2 pointer-events-auto">
           {/* Undo / Redo */}
-          <div className="flex items-center bg-[#121216]/80 backdrop-blur-md rounded-lg border border-[#27272a] p-1 gap-1">
+          <div className="flex items-center bg-[#131314]/80 backdrop-blur-md rounded-lg border border-[#353436] p-1 gap-1">
             <button
               onClick={undo}
               disabled={undoStack.length === 0}
               className={`p-1 rounded text-xs transition ${
                 undoStack.length > 0
-                  ? 'text-white hover:bg-[#27272a]'
+                  ? 'text-white hover:bg-[#353436]'
                   : 'text-[#3f3f46] cursor-not-allowed'
               }`}
               title="Undo (Ctrl+Z)"
@@ -217,7 +217,7 @@ const tools: { id: ToolType; label: string; icon: React.ReactNode }[] = [
               disabled={redoStack.length === 0}
               className={`p-1 rounded text-xs transition ${
                 redoStack.length > 0
-                  ? 'text-white hover:bg-[#27272a]'
+                  ? 'text-white hover:bg-[#353436]'
                   : 'text-[#3f3f46] cursor-not-allowed'
               }`}
               title="Redo (Ctrl+Y)"
@@ -231,8 +231,8 @@ const tools: { id: ToolType; label: string; icon: React.ReactNode }[] = [
             onClick={() => setGridVisible(!gridVisible)}
             className={`p-2 rounded-lg border text-xs transition flex items-center gap-1.5 ${
               gridVisible
-                ? 'bg-[#121216]/80 text-[#3ecf8e] border-[#3ecf8e]/40'
-                : 'bg-[#121216]/80 text-[#71717a] border-[#27272a] hover:text-white'
+                ? 'bg-[#131314]/80 text-[#dbfcff] border-[#dbfcff]/40'
+                : 'bg-[#131314]/80 text-[#71717a] border-[#353436] hover:text-white'
             }`}
             title="Toggle Grid"
           >
@@ -242,7 +242,7 @@ const tools: { id: ToolType; label: string; icon: React.ReactNode }[] = [
           {/* Reset View */}
           <button
             onClick={() => engineBridge.dispatch({ type: 'RESET_VIEW' })}
-            className="p-2 rounded-lg border border-[#27272a] bg-[#121216]/80 text-[#a1a1aa] hover:text-white text-xs transition"
+            className="p-2 rounded-lg border border-[#353436] bg-[#131314]/80 text-[#a1a1aa] hover:text-white text-xs transition"
             title="Reset Camera View"
           >
             <Eye className="w-3.5 h-3.5" />
@@ -254,10 +254,10 @@ const tools: { id: ToolType; label: string; icon: React.ReactNode }[] = [
             disabled={isSaving || !isDirty}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-mono font-medium transition ${
               isSaving
-                ? 'bg-[#121216] text-[#71717a] border-[#27272a]'
+                ? 'bg-[#131314] text-[#71717a] border-[#353436]'
                 : isDirty
-                ? 'bg-[#3ecf8e] text-black border-[#3ecf8e] hover:bg-[#34b27b] shadow-lg shadow-[#3ecf8e]/20'
-                : 'bg-[#121216]/80 text-[#a1a1aa] border-[#27272a]'
+                ? 'bg-[#dbfcff] text-black border-[#dbfcff] hover:bg-[#34b27b] shadow-lg shadow-[#dbfcff]/20'
+                : 'bg-[#131314]/80 text-[#a1a1aa] border-[#353436]'
             }`}
           >
             {isSaving ? (
@@ -272,7 +272,7 @@ const tools: { id: ToolType; label: string; icon: React.ReactNode }[] = [
               </>
             ) : (
               <>
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#3ecf8e]" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#dbfcff]" />
                 <span>Saved</span>
               </>
             )}
@@ -281,7 +281,7 @@ const tools: { id: ToolType; label: string; icon: React.ReactNode }[] = [
       </div>
 
       {/* Floating Toolbar (Left Side) */}
-      <div className="absolute left-3 top-1/2 -translate-y-1/2 flex flex-col gap-1 bg-[#121216]/85 backdrop-blur-md p-1.5 rounded-xl border border-[#27272a] z-20 shadow-xl">
+      <div className="absolute left-3 top-1/2 -translate-y-1/2 flex flex-col gap-1 bg-[#131314]/85 backdrop-blur-md p-1.5 rounded-xl border border-[#353436] z-20 shadow-xl">
         {tools.map((tool) => (
           <button
             key={tool.id}
@@ -289,8 +289,8 @@ const tools: { id: ToolType; label: string; icon: React.ReactNode }[] = [
             title={tool.label}
             className={`p-2 rounded-lg text-xs transition flex items-center justify-center ${
               activeTool === tool.id
-                ? 'bg-[#3ecf8e] text-black shadow-md shadow-[#3ecf8e]/25'
-                : 'text-[#a1a1aa] hover:text-white hover:bg-[#27272a]'
+                ? 'bg-[#dbfcff] text-black shadow-md shadow-[#dbfcff]/25'
+                : 'text-[#a1a1aa] hover:text-white hover:bg-[#353436]'
             }`}
           >
             {tool.icon}

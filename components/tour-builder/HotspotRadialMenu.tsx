@@ -5,7 +5,7 @@ import { DoorOpen, RotateCw, Trash2, Pencil } from 'lucide-react';
 import type { TourHotspot } from '@/lib/tourClientStore';
 
 const BTN =
-  'absolute w-7 h-7 rounded-full bg-[#18181B]/95 border border-[#27272A] text-white flex items-center justify-center shadow-lg hover:bg-[#27272A] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
+  'absolute w-7 h-7 rounded-full bg-[#201f20]/95 border border-[#353436] text-white flex items-center justify-center shadow-lg hover:bg-[#353436] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
 
 interface HotspotRadialMenuProps {
   x: number;

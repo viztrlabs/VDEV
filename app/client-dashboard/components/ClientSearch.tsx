@@ -19,10 +19,10 @@ export default function ClientSearch() {
 
   return (
     <section className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#27272A]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#353436]">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <Search className="w-5 h-5 text-[#3ECF8E]" />
+            <Search className="w-5 h-5 text-[#dbfcff]" />
             <span>Unified Commission Asset Search</span>
           </h2>
           <p className="text-xs text-[#A1A1AA] mt-0.5">
@@ -38,21 +38,21 @@ export default function ClientSearch() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by file name, asset type, camera angle, or approval state..."
-          className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#18181B] border border-[#27272A] text-sm text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+          className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#201f20] border border-[#353436] text-sm text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
         />
       </div>
 
       <div className="space-y-2">
         {results.map((item, idx) => (
-          <div key={idx} className="p-3.5 rounded-xl bg-[#18181B] border border-[#27272A] flex items-center justify-between">
+          <div key={idx} className="p-3.5 rounded-xl bg-[#201f20] border border-[#353436] flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[#3ECF8E] shrink-0">
+              <div className="p-2 rounded-lg bg-[#131314] border border-[#353436] text-[#dbfcff] shrink-0">
                 <FileText className="w-4 h-4" />
               </div>
               <div>
                 <div className="text-xs font-bold text-white">{item.title}</div>
                 <div className="text-[10px] font-mono text-[#71717A] flex items-center gap-2 mt-0.5">
-                  <span className="text-[#3ECF8E]">{item.category}</span>
+                  <span className="text-[#dbfcff]">{item.category}</span>
                   <span>•</span>
                   <span>{item.type}</span>
                   <span>•</span>

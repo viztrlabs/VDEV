@@ -150,11 +150,11 @@ export default function ThreadedComments({ projectId, deliverableId, currentUser
     return (
       <div
         key={comment.id}
-        className={`${isReply ? 'ml-12 mt-3' : 'mb-4'} p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-3`}
+        className={`${isReply ? 'ml-12 mt-3' : 'mb-4'} p-4 rounded-xl bg-[#201f20] border border-[#353436] space-y-3`}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-[#27272A] flex items-center justify-center text-xs font-bold text-[#3ECF8E]">
+            <div className="w-8 h-8 rounded-full bg-[#353436] flex items-center justify-center text-xs font-bold text-[#dbfcff]">
               {comment.authorName.split(' ').map(n => n[0]).join('').slice(0, 2)}
             </div>
             <div>
@@ -173,16 +173,16 @@ export default function ThreadedComments({ projectId, deliverableId, currentUser
         <div className="text-xs text-white leading-relaxed whitespace-pre-wrap">{comment.content}</div>
 
         {comment.mentions.length > 0 && (
-          <div className="text-[10px] font-mono text-[#3ECF8E]">
+          <div className="text-[10px] font-mono text-[#dbfcff]">
             Mentioned: {comment.mentions.join(', ')}
           </div>
         )}
 
-        <div className="flex items-center gap-2 pt-2 border-t border-[#27272A]">
+        <div className="flex items-center gap-2 pt-2 border-t border-[#353436]">
           {currentUserId !== comment.authorId && (
             <button
               onClick={() => setReplyTo(comment.id)}
-              className="text-[10px] font-mono text-[#71717A] hover:text-[#3ECF8E] flex items-center gap-1 transition-colors cursor-pointer"
+              className="text-[10px] font-mono text-[#71717A] hover:text-[#dbfcff] flex items-center gap-1 transition-colors cursor-pointer"
             >
               <Reply className="w-3 h-3" />
               Reply
@@ -209,25 +209,25 @@ export default function ThreadedComments({ projectId, deliverableId, currentUser
         </div>
 
         {replyTo === comment.id && (
-          <div className="mt-3 p-3 rounded-lg bg-[#09090B] border border-[#27272A] space-y-2">
+          <div className="mt-3 p-3 rounded-lg bg-[#131314] border border-[#353436] space-y-2">
             <textarea
               value={replyContent}
               onChange={(e) => setReplyContent(e.target.value)}
               placeholder="Write a reply..."
               rows={3}
-              className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] resize-none"
+              className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] resize-none"
             />
             <div className="flex items-center gap-2">
               <button
                 onClick={() => handleReply(comment.id)}
-                className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer"
               >
                 <Send className="w-3 h-3" />
                 Reply
               </button>
               <button
                 onClick={() => { setReplyTo(null); setReplyContent(''); }}
-                className="px-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] hover:text-white text-xs font-mono transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] hover:text-white text-xs font-mono transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -246,16 +246,16 @@ export default function ThreadedComments({ projectId, deliverableId, currentUser
 
   return (
     <div className="space-y-4">
-      <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+      <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <MessageSquare className="w-4 h-4 text-[#3ECF8E]" />
+            <MessageSquare className="w-4 h-4 text-[#dbfcff]" />
             <h3 className="text-sm font-bold text-white">Threaded Comments</h3>
           </div>
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="px-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+            className="px-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white focus:outline-none focus:border-[#dbfcff]"
           >
             <option value="all">All Statuses</option>
             <option value="open">Open</option>
@@ -277,7 +277,7 @@ export default function ThreadedComments({ projectId, deliverableId, currentUser
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="Add a comment..."
             rows={3}
-            className="w-full px-3 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] resize-none"
+            className="w-full px-3 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] resize-none"
           />
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono text-[#71717A]">
@@ -286,7 +286,7 @@ export default function ThreadedComments({ projectId, deliverableId, currentUser
             <button
               type="submit"
               disabled={!newComment.trim()}
-              className="px-4 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] disabled:opacity-40 text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] disabled:opacity-40 text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Send className="w-3 h-3" />
               Post Comment
@@ -297,10 +297,10 @@ export default function ThreadedComments({ projectId, deliverableId, currentUser
 
       {loading ? (
         <div className="flex items-center justify-center py-8">
-          <div className="w-8 h-8 border-4 border-[#3ECF8E]/30 border-t-[#3ECF8E] rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-[#dbfcff]/30 border-t-[#dbfcff] rounded-full animate-spin" />
         </div>
       ) : comments.length === 0 ? (
-        <div className="p-8 rounded-2xl bg-[#18181B] border border-[#27272A] text-center">
+        <div className="p-8 rounded-2xl bg-[#201f20] border border-[#353436] text-center">
           <MessageSquare className="w-8 h-8 text-[#71717A] mx-auto mb-2" />
           <h4 className="text-sm font-bold text-white">No comments yet</h4>
           <p className="text-xs text-[#A1A1AA] mt-1">Start the conversation by posting a comment above.</p>

@@ -17,7 +17,7 @@ function exportStamp(): string {
 }
 
 const buttonClass =
-  'flex items-center gap-1.5 rounded-lg border border-[#27272A] bg-[#18181B] px-2.5 py-1.5 text-[11px] font-mono uppercase tracking-widest text-[#A1A1AA] transition-colors hover:border-[#3ECF8E] hover:text-white';
+  'flex items-center gap-1.5 rounded-lg border border-[#353436] bg-[#201f20] px-2.5 py-1.5 text-[11px] font-mono uppercase tracking-widest text-[#A1A1AA] transition-colors hover:border-[#dbfcff] hover:text-white';
 
 export default function EditorToolbar({ onExit }: { onExit: () => void }) {
   const { editMode, setEditMode } = useEditMode();
@@ -59,7 +59,7 @@ export default function EditorToolbar({ onExit }: { onExit: () => void }) {
   return (
     <div
       data-testid="editor-toolbar"
-      className="flex flex-wrap items-center gap-2 border-b border-[#27272A] bg-[#09090B] px-3 py-2 text-white"
+      className="flex flex-wrap items-center gap-2 border-b border-[#353436] bg-[#131314] px-3 py-2 text-white"
     >
       <button type="button" onClick={onExit} className={buttonClass}>
         <ArrowLeft className="h-3.5 w-3.5" />
@@ -68,7 +68,7 @@ export default function EditorToolbar({ onExit }: { onExit: () => void }) {
 
       <label
         htmlFor="editor-edit-mode"
-        className="flex cursor-pointer items-center gap-2 rounded-lg border border-[#27272A] bg-[#18181B] px-2.5 py-1.5 text-[11px] font-mono uppercase tracking-widest text-[#A1A1AA]"
+        className="flex cursor-pointer items-center gap-2 rounded-lg border border-[#353436] bg-[#201f20] px-2.5 py-1.5 text-[11px] font-mono uppercase tracking-widest text-[#A1A1AA]"
       >
         <input
           id="editor-edit-mode"
@@ -76,7 +76,7 @@ export default function EditorToolbar({ onExit }: { onExit: () => void }) {
           aria-label="Edit mode"
           checked={editMode}
           onChange={(event) => setEditMode(event.target.checked)}
-          className="h-3.5 w-3.5 accent-[#3ECF8E]"
+          className="h-3.5 w-3.5 accent-[#dbfcff]"
         />
         {editMode ? 'Edit' : 'Preview'}
       </label>

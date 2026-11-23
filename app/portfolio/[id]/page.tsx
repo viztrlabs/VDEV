@@ -110,7 +110,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
       <section className="py-16 px-6 max-w-[1280px] mx-auto space-y-16">
         {/* CHALLENGE & SOLUTION SPLIT */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          <div className="p-8 rounded-3xl bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-sm">
+          <div className="p-8 rounded-3xl bg-white dark:bg-[#201f20] border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-sm">
             <span className="text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
               The Architectural Challenge
             </span>
@@ -122,7 +122,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
             </p>
           </div>
 
-          <div className="p-8 rounded-3xl bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-sm">
+          <div className="p-8 rounded-3xl bg-white dark:bg-[#201f20] border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-sm">
             <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
               The VizTR Solution
             </span>
@@ -225,7 +225,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
           </h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             {project.deliverables.map((del, idx) => (
-              <div key={idx} className="flex items-center gap-2 p-3 rounded-xl bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 text-xs text-zinc-700 dark:text-zinc-300">
+              <div key={idx} className="flex items-center gap-2 p-3 rounded-xl bg-white dark:bg-[#201f20] border border-zinc-200 dark:border-zinc-800 text-xs text-zinc-700 dark:text-zinc-300">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                 <span className="font-medium">{del}</span>
               </div>
@@ -234,7 +234,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
         </div>
 
         {/* INQUIRE ABOUT SIMILAR PROJECT */}
-        <div className="p-8 sm:p-12 rounded-3xl bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 shadow-xl max-w-3xl mx-auto space-y-6">
+        <div className="p-8 sm:p-12 rounded-3xl bg-white dark:bg-[#201f20] border border-zinc-200 dark:border-zinc-800 shadow-xl max-w-3xl mx-auto space-y-6">
           <div className="text-center space-y-1">
             <span className="text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
               Start a Dialogue
@@ -262,7 +262,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
                 <Link
                   key={rel.id}
                   href={`/portfolio/${rel.id}`}
-                  className="group p-5 rounded-2xl bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 hover:border-rose-500/50 shadow-md hover:shadow-xl transition-all flex items-center gap-4"
+                  className="group p-5 rounded-2xl bg-white dark:bg-[#201f20] border border-zinc-200 dark:border-zinc-800 hover:border-rose-500/50 shadow-md hover:shadow-xl transition-all flex items-center gap-4"
                 >
                   <div className="relative w-24 h-24 rounded-xl overflow-hidden shrink-0 bg-zinc-900">
                     <Image

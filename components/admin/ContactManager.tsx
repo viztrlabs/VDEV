@@ -175,9 +175,9 @@ export default function ContactManager() {
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
             <Mail className="w-4 h-4" />
             <span>INBOX</span>
           </div>
@@ -191,7 +191,7 @@ export default function ContactManager() {
         <button
           type="button"
           onClick={fetchContacts}
-          className="px-4 py-2.5 rounded-xl bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white flex items-center gap-2 transition-colors cursor-pointer shrink-0"
+          className="px-4 py-2.5 rounded-xl bg-[#131314] hover:bg-[#353436] border border-[#353436] text-xs font-mono text-white flex items-center gap-2 transition-colors cursor-pointer shrink-0"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           <span>Refresh</span>
@@ -207,7 +207,7 @@ export default function ContactManager() {
           { label: 'Responded', value: stats.byStatus.responded || 0, color: 'text-emerald-400' },
           { label: 'Archived', value: stats.byStatus.archived || 0, color: 'text-zinc-400' },
         ].map((stat) => (
-          <div key={stat.label} className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+          <div key={stat.label} className="p-4 rounded-xl bg-[#201f20] border border-[#353436] space-y-1">
             <div className="text-[10px] font-mono uppercase text-[#71717A] font-bold">{stat.label}</div>
             <div className={`text-xl font-bold font-mono ${stat.color}`}>{stat.value}</div>
           </div>
@@ -215,7 +215,7 @@ export default function ContactManager() {
       </div>
 
       {/* Filters */}
-      <div className="p-4 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3">
+      <div className="p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3">
         <div className="flex flex-col lg:flex-row lg:items-center gap-3">
           <div className="relative flex-1">
             <Search className="w-3.5 h-3.5 text-[#71717A] absolute left-3 top-1/2 -translate-y-1/2" />
@@ -225,14 +225,14 @@ export default function ContactManager() {
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && fetchContacts()}
               placeholder="Search by name, email, company, message..."
-              className="w-full pl-8 pr-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+              className="w-full pl-8 pr-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
             />
           </div>
           <div className="flex items-center gap-2">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+              className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white focus:outline-none focus:border-[#dbfcff]"
             >
               <option value="all">All Statuses</option>
               {CONTACT_STATUSES.map((s) => (
@@ -242,7 +242,7 @@ export default function ContactManager() {
             <select
               value={serviceFilter}
               onChange={(e) => setServiceFilter(e.target.value)}
-              className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+              className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white focus:outline-none focus:border-[#dbfcff]"
             >
               <option value="all">All Services</option>
               {SERVICE_INTERESTS.map((s) => (
@@ -253,18 +253,18 @@ export default function ContactManager() {
               type="date"
               value={dateFrom}
               onChange={(e) => setDateFrom(e.target.value)}
-              className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+              className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white focus:outline-none focus:border-[#dbfcff]"
             />
             <input
               type="date"
               value={dateTo}
               onChange={(e) => setDateTo(e.target.value)}
-              className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+              className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white focus:outline-none focus:border-[#dbfcff]"
             />
             <button
               type="button"
               onClick={fetchContacts}
-              className="px-3 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Filter className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Apply</span>
@@ -279,7 +279,7 @@ export default function ContactManager() {
                 setDateTo('');
                 fetchContacts();
               }}
-              className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] hover:text-white text-xs font-mono transition-colors cursor-pointer"
+              className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] hover:text-white text-xs font-mono transition-colors cursor-pointer"
             >
               Reset
             </button>
@@ -291,12 +291,12 @@ export default function ContactManager() {
       {loading && contacts.length === 0 ? (
         <div className="flex items-center justify-center min-h-[300px]">
           <div className="text-center space-y-3">
-            <div className="w-10 h-10 border-4 border-[#3ECF8E]/30 border-t-[#3ECF8E] rounded-full animate-spin mx-auto" />
+            <div className="w-10 h-10 border-4 border-[#dbfcff]/30 border-t-[#dbfcff] rounded-full animate-spin mx-auto" />
             <p className="text-xs font-mono text-[#71717A]">Loading submissions...</p>
           </div>
         </div>
       ) : filteredContacts.length === 0 ? (
-        <div className="p-8 rounded-2xl bg-[#18181B] border border-[#27272A] text-center">
+        <div className="p-8 rounded-2xl bg-[#201f20] border border-[#353436] text-center">
           <Mail className="w-8 h-8 text-[#71717A] mx-auto mb-2" />
           <h4 className="text-sm font-bold text-white">No contact submissions found</h4>
           <p className="text-xs text-[#A1A1AA] mt-1">Try adjusting your filters.</p>
@@ -317,13 +317,13 @@ export default function ContactManager() {
                   }}
                   className={`p-4 rounded-xl border transition-all cursor-pointer space-y-2.5 ${
                     isSelected
-                      ? 'bg-[#27272A] border-[#3ECF8E] shadow-md shadow-[#3ECF8E]/10'
-                      : 'bg-[#18181B] border-[#27272A] hover:border-[#3f3f46]'
+                      ? 'bg-[#353436] border-[#dbfcff] shadow-md shadow-[#dbfcff]/10'
+                      : 'bg-[#201f20] border-[#353436] hover:border-[#3f3f46]'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-mono text-[#3ECF8E] font-bold">{contact.id}</span>
+                      <span className="text-[10px] font-mono text-[#dbfcff] font-bold">{contact.id}</span>
                       <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase border ${statusStyle.bg} ${statusStyle.text} ${statusStyle.border}`}>
                         {contact.status}
                       </span>
@@ -346,11 +346,11 @@ export default function ContactManager() {
           {/* Detail Panel */}
           {selectedContact && showDetail && (
             <div className="lg:col-span-2">
-              <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#27272A]">
+              <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#353436]">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono font-bold text-[#3ECF8E]">{selectedContact.id}</span>
+                      <span className="text-xs font-mono font-bold text-[#dbfcff]">{selectedContact.id}</span>
                       <span className="text-[10px] font-mono text-[#71717A]">{formatDateTime(selectedContact.created_at)}</span>
                     </div>
                     <h3 className="text-xl font-bold text-white font-serif mt-1">{selectedContact.name}</h3>
@@ -363,7 +363,7 @@ export default function ContactManager() {
                     <select
                       value={selectedContact.status}
                       onChange={(e) => handleStatusChange(selectedContact.id, e.target.value)}
-                      className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+                      className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white focus:outline-none focus:border-[#dbfcff]"
                     >
                       {CONTACT_STATUSES.map((s) => (
                         <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
@@ -372,7 +372,7 @@ export default function ContactManager() {
                     <button
                       type="button"
                       onClick={handleReply}
-                      className="px-3 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                      className="px-3 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
                     >
                       <Reply className="w-3.5 h-3.5" />
                       <span>Reply</span>
@@ -380,7 +380,7 @@ export default function ContactManager() {
                     <button
                       type="button"
                       onClick={() => handleDelete(selectedContact.id)}
-                      className="p-2 rounded-lg bg-[#09090B] hover:bg-rose-950/40 border border-[#27272A] text-[#A1A1AA] hover:text-rose-400 transition-colors cursor-pointer"
+                      className="p-2 rounded-lg bg-[#131314] hover:bg-rose-950/40 border border-[#353436] text-[#A1A1AA] hover:text-rose-400 transition-colors cursor-pointer"
                       title="Delete"
                     >
                       <X className="w-4 h-4" />
@@ -390,14 +390,14 @@ export default function ContactManager() {
 
                 <div className="space-y-4 text-xs">
                   {selectedContact.service_interest && (
-                    <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
+                    <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-2">
                       <div className="text-[10px] font-mono uppercase text-[#71717A] font-bold">Service Interest</div>
                       <div className="text-white font-medium">{selectedContact.service_interest}</div>
                     </div>
                   )}
 
                   {selectedContact.message && (
-                    <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
+                    <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-2">
                       <div className="text-[10px] font-mono uppercase text-[#71717A] font-bold">Message</div>
                       <div className="text-white text-xs leading-relaxed whitespace-pre-wrap">{selectedContact.message}</div>
                     </div>
@@ -410,19 +410,19 @@ export default function ContactManager() {
                       onChange={(e) => setReplyDraft(e.target.value)}
                       placeholder="Write a quick reply..."
                       rows={3}
-                      className="w-full px-3 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] resize-none"
+                      className="w-full px-3 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] resize-none"
                     />
                     <button
                       type="button"
                       onClick={handleReply}
-                      className="px-4 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                      className="px-4 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
                       Open Email Client
                     </button>
                   </div>
 
-                  <div className="pt-3 border-t border-[#27272A] flex items-center justify-between text-[10px] font-mono text-[#71717A]">
+                  <div className="pt-3 border-t border-[#353436] flex items-center justify-between text-[10px] font-mono text-[#71717A]">
                     <span>Updated: {formatDateTime(selectedContact.updated_at)}</span>
                     <span>ID: {selectedContact.id}</span>
                   </div>

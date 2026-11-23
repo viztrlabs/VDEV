@@ -293,7 +293,7 @@ export default function GoogleMeetAdminManager({
   return (
     <div id="google-meet-admin-section" className="space-y-6">
       {/* SECTION HEADER & QUICK METRICS */}
-      <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5 shadow-xl">
+      <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5 shadow-xl">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-[#00897B]/10 border border-[#00897B]/30 flex items-center justify-center text-[#26A69A]">
@@ -343,7 +343,7 @@ export default function GoogleMeetAdminManager({
             {isSuperAdmin && (
               <button
                 onClick={() => setShowAddAccountModal(true)}
-                className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Add Host Email</span>
@@ -353,23 +353,23 @@ export default function GoogleMeetAdminManager({
         </div>
 
         {/* METRICS ROW */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-3 border-t border-[#27272A]">
-          <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A] space-y-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-3 border-t border-[#353436]">
+          <div className="p-3 rounded-xl bg-[#131314] border border-[#353436] space-y-1">
             <div className="text-[10px] font-mono text-[#71717A] uppercase">Total Connected Host Accounts</div>
             <div className="text-xl font-bold font-display text-white">{accounts.length} Email IDs</div>
             <div className="text-[10px] font-mono text-[#26A69A]">Active Multi-Fleet</div>
           </div>
 
-          <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A] space-y-1">
+          <div className="p-3 rounded-xl bg-[#131314] border border-[#353436] space-y-1">
             <div className="text-[10px] font-mono text-[#71717A] uppercase">Active Review Spaces</div>
-            <div className="text-xl font-bold font-display text-[#3ECF8E] flex items-center gap-2">
+            <div className="text-xl font-bold font-display text-[#dbfcff] flex items-center gap-2">
               <span>{rooms.length} Spaces</span>
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             </div>
             <div className="text-[10px] font-mono text-[#A1A1AA]">Google Meet v2 API</div>
           </div>
 
-          <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A] space-y-1">
+          <div className="p-3 rounded-xl bg-[#131314] border border-[#353436] space-y-1">
             <div className="text-[10px] font-mono text-[#71717A] uppercase">Primary Executive Room</div>
             <div className="text-sm font-bold font-mono text-white truncate">
               {accounts.find((a) => a.isPrimary)?.email || 'None set'}
@@ -377,10 +377,10 @@ export default function GoogleMeetAdminManager({
             <div className="text-[10px] font-mono text-purple-400">Default Client Routing</div>
           </div>
 
-          <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A] space-y-1">
+          <div className="p-3 rounded-xl bg-[#131314] border border-[#353436] space-y-1">
             <div className="text-[10px] font-mono text-[#71717A] uppercase">Security Policy</div>
             <div className="text-sm font-bold font-mono text-white flex items-center gap-1.5">
-              <Lock className="w-3.5 h-3.5 text-[#3ECF8E]" />
+              <Lock className="w-3.5 h-3.5 text-[#dbfcff]" />
               <span>Domain OAuth Guard</span>
             </div>
             <div className="text-[10px] font-mono text-emerald-400">Workspace Auth Active</div>
@@ -389,7 +389,7 @@ export default function GoogleMeetAdminManager({
       </div>
 
       {/* ACCOUNT FLEET TABLE */}
-      <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4 shadow-xl">
+      <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4 shadow-xl">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
             <h4 className="text-sm font-mono font-bold text-white uppercase tracking-wider flex items-center gap-2">
@@ -408,7 +408,7 @@ export default function GoogleMeetAdminManager({
               placeholder="Search email or host..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-white text-xs font-mono focus:outline-none focus:border-[#00897B]"
+              className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-white text-xs font-mono focus:outline-none focus:border-[#00897B]"
             />
           </div>
         </div>
@@ -421,8 +421,8 @@ export default function GoogleMeetAdminManager({
               onClick={() => setSelectedAccountId(account.id)}
               className={`p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
                 selectedAccountId === account.id
-                  ? 'bg-[#09090B] border-[#00897B] shadow-lg shadow-[#00897B]/10'
-                  : 'bg-[#09090B] border-[#27272A] hover:border-[#3ECF8E]/40'
+                  ? 'bg-[#131314] border-[#00897B] shadow-lg shadow-[#00897B]/10'
+                  : 'bg-[#131314] border-[#353436] hover:border-[#dbfcff]/40'
               }`}
             >
               <div className="space-y-2.5">
@@ -464,7 +464,7 @@ export default function GoogleMeetAdminManager({
                         e.stopPropagation();
                         handleSetPrimary(account.id);
                       }}
-                      className="text-[10px] font-mono text-[#71717A] hover:text-[#3ECF8E] transition-colors"
+                      className="text-[10px] font-mono text-[#71717A] hover:text-[#dbfcff] transition-colors"
                       title="Set as Primary Host"
                     >
                       Set Primary
@@ -472,21 +472,21 @@ export default function GoogleMeetAdminManager({
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 text-[10px] font-mono bg-[#18181B] p-2 rounded-lg">
+                <div className="grid grid-cols-2 gap-2 text-[10px] font-mono bg-[#201f20] p-2 rounded-lg">
                   <div>
                     <span className="text-[#71717A]">Access Policy:</span>
                     <div className="text-white font-bold">{account.defaultAccessType || 'TRUSTED'}</div>
                   </div>
                   <div>
                     <span className="text-[#71717A]">Assigned Projects:</span>
-                    <div className="text-[#3ECF8E] font-bold">{account.assignedProjects?.join(', ') || 'All'}</div>
+                    <div className="text-[#dbfcff] font-bold">{account.assignedProjects?.join(', ') || 'All'}</div>
                   </div>
                 </div>
               </div>
 
               {/* ADMIN CONTROLS */}
               {isSuperAdmin && (
-                <div className="flex items-center justify-between pt-2 border-t border-[#27272A]">
+                <div className="flex items-center justify-between pt-2 border-t border-[#353436]">
                   <span className="text-[10px] font-mono text-[#71717A]">
                     Role: <span className="text-purple-400">{account.accountRole}</span>
                   </span>
@@ -496,7 +496,7 @@ export default function GoogleMeetAdminManager({
                         e.stopPropagation();
                         setEditingAccount(account);
                       }}
-                      className="p-1.5 rounded-md bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors"
+                      className="p-1.5 rounded-md bg-[#201f20] hover:bg-[#353436] text-[#A1A1AA] hover:text-white transition-colors"
                       title="Edit Account Config"
                     >
                       <Edit2 className="w-3 h-3" />
@@ -506,7 +506,7 @@ export default function GoogleMeetAdminManager({
                         e.stopPropagation();
                         setAccountToDelete(account);
                       }}
-                      className="p-1.5 rounded-md bg-[#18181B] hover:bg-rose-950/40 text-[#A1A1AA] hover:text-rose-400 transition-colors"
+                      className="p-1.5 rounded-md bg-[#201f20] hover:bg-rose-950/40 text-[#A1A1AA] hover:text-rose-400 transition-colors"
                       title="Remove Account"
                     >
                       <Trash2 className="w-3 h-3" />
@@ -520,7 +520,7 @@ export default function GoogleMeetAdminManager({
       </div>
 
       {/* ACTIVE SPACES & LAUNCH ROOMS */}
-      <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4 shadow-xl">
+      <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4 shadow-xl">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
             <h4 className="text-sm font-mono font-bold text-white uppercase tracking-wider flex items-center gap-2">
@@ -547,14 +547,14 @@ export default function GoogleMeetAdminManager({
               key={room.name || idx}
               className={`p-4 rounded-xl border transition-all flex flex-col justify-between space-y-3 ${
                 room.isLive
-                  ? 'bg-[#09090B] border-[#00897B] shadow-lg shadow-[#00897B]/10'
-                  : 'bg-[#09090B] border-[#27272A] hover:border-[#00897B]/40'
+                  ? 'bg-[#131314] border-[#00897B] shadow-lg shadow-[#00897B]/10'
+                  : 'bg-[#131314] border-[#353436] hover:border-[#00897B]/40'
               }`}
             >
               <div className="space-y-2.5">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2 overflow-hidden">
-                    <div className={`p-2 rounded-lg shrink-0 ${room.isLive ? 'bg-[#00897B]/20 text-[#26A69A]' : 'bg-[#18181B] text-[#A1A1AA]'}`}>
+                    <div className={`p-2 rounded-lg shrink-0 ${room.isLive ? 'bg-[#00897B]/20 text-[#26A69A]' : 'bg-[#201f20] text-[#A1A1AA]'}`}>
                       <Video className="w-4 h-4" />
                     </div>
                     <div className="overflow-hidden">
@@ -562,7 +562,7 @@ export default function GoogleMeetAdminManager({
                         {room.title}
                       </div>
                       <div className="text-[10px] font-mono text-[#71717A]">
-                        Room Code: <span className="text-[#3ECF8E] font-bold">{room.meetingCode}</span>
+                        Room Code: <span className="text-[#dbfcff] font-bold">{room.meetingCode}</span>
                       </div>
                     </div>
                   </div>
@@ -592,7 +592,7 @@ export default function GoogleMeetAdminManager({
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 pt-2 border-t border-[#27272A]">
+              <div className="flex items-center gap-2 pt-2 border-t border-[#353436]">
                 <a
                   href={room.meetingUri}
                   target="_blank"
@@ -605,7 +605,7 @@ export default function GoogleMeetAdminManager({
 
                 <button
                   onClick={() => handleCopyCode(room.meetingUri)}
-                  className="p-2 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                  className="p-2 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
                   title="Copy Google Meet Link"
                 >
                   {copiedRoomCode === room.meetingUri ? (
@@ -628,16 +628,16 @@ export default function GoogleMeetAdminManager({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-md w-full p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4 shadow-2xl text-xs font-mono"
+              className="max-w-md w-full p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4 shadow-2xl text-xs font-mono"
             >
-              <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+              <div className="flex items-center justify-between border-b border-[#353436] pb-3">
                 <div className="flex items-center gap-2 text-white font-bold text-sm font-display">
                   <Edit2 className="w-4 h-4 text-[#26A69A]" />
                   <span>Edit Google Meet Account (Super Admin)</span>
                 </div>
                 <button
                   onClick={() => setEditingAccount(null)}
-                  className="p-1 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white"
+                  className="p-1 rounded hover:bg-[#353436] text-[#A1A1AA] hover:text-white"
                 >
                   ✕
                 </button>
@@ -653,7 +653,7 @@ export default function GoogleMeetAdminManager({
                     onChange={(e) =>
                       setEditingAccount({ ...editingAccount, displayName: e.target.value })
                     }
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B]"
                   />
                 </div>
 
@@ -666,7 +666,7 @@ export default function GoogleMeetAdminManager({
                     onChange={(e) =>
                       setEditingAccount({ ...editingAccount, email: e.target.value })
                     }
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B]"
                   />
                 </div>
 
@@ -681,7 +681,7 @@ export default function GoogleMeetAdminManager({
                           defaultAccessType: e.target.value as any,
                         })
                       }
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B]"
                     >
                       <option value="OPEN">Open Access</option>
                       <option value="TRUSTED">Trusted (Workspace)</option>
@@ -699,7 +699,7 @@ export default function GoogleMeetAdminManager({
                           accountRole: e.target.value as any,
                         })
                       }
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B]"
                     >
                       <option value="SUPER_ADMIN">Super Admin</option>
                       <option value="ADMIN">Studio Admin</option>
@@ -708,11 +708,11 @@ export default function GoogleMeetAdminManager({
                   </div>
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#27272A]">
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#353436]">
                   <button
                     type="button"
                     onClick={() => setEditingAccount(null)}
-                    className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA]"
+                    className="px-3 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA]"
                   >
                     Cancel
                   </button>
@@ -737,16 +737,16 @@ export default function GoogleMeetAdminManager({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-md w-full p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4 shadow-2xl text-xs font-mono"
+              className="max-w-md w-full p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4 shadow-2xl text-xs font-mono"
             >
-              <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+              <div className="flex items-center justify-between border-b border-[#353436] pb-3">
                 <div className="flex items-center gap-2 text-white font-bold text-sm font-display">
                   <Plus className="w-4 h-4 text-[#26A69A]" />
                   <span>Add Studio Google Meet Host</span>
                 </div>
                 <button
                   onClick={() => setShowAddAccountModal(false)}
-                  className="p-1 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white"
+                  className="p-1 rounded hover:bg-[#353436] text-[#A1A1AA] hover:text-white"
                 >
                   ✕
                 </button>
@@ -761,7 +761,7 @@ export default function GoogleMeetAdminManager({
                     placeholder="e.g. director.vr@viztr.com"
                     value={addEmail}
                     onChange={(e) => setAddEmail(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B]"
                   />
                 </div>
 
@@ -773,7 +773,7 @@ export default function GoogleMeetAdminManager({
                     placeholder="e.g. Lighting & Shading Supervisor"
                     value={addDisplayName}
                     onChange={(e) => setAddDisplayName(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B]"
                   />
                 </div>
 
@@ -783,7 +783,7 @@ export default function GoogleMeetAdminManager({
                     <select
                       value={addAccessType}
                       onChange={(e) => setAddAccessType(e.target.value as any)}
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B]"
                     >
                       <option value="OPEN">Open Access</option>
                       <option value="TRUSTED">Trusted (Workspace)</option>
@@ -796,7 +796,7 @@ export default function GoogleMeetAdminManager({
                     <select
                       value={addRole}
                       onChange={(e) => setAddRole(e.target.value as any)}
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B]"
                     >
                       <option value="ADMIN">Studio Admin</option>
                       <option value="SUPER_ADMIN">Super Admin</option>
@@ -804,11 +804,11 @@ export default function GoogleMeetAdminManager({
                   </div>
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#27272A]">
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#353436]">
                   <button
                     type="button"
                     onClick={() => setShowAddAccountModal(false)}
-                    className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA]"
+                    className="px-3 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA]"
                   >
                     Cancel
                   </button>
@@ -833,16 +833,16 @@ export default function GoogleMeetAdminManager({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-md w-full p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4 shadow-2xl text-xs font-mono"
+              className="max-w-md w-full p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4 shadow-2xl text-xs font-mono"
             >
-              <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+              <div className="flex items-center justify-between border-b border-[#353436] pb-3">
                 <div className="flex items-center gap-2 text-white font-bold text-sm font-display">
                   <Video className="w-4 h-4 text-[#26A69A]" />
                   <span>Create Google Meet Review Space</span>
                 </div>
                 <button
                   onClick={() => setShowCreateRoomModal(false)}
-                  className="p-1 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white"
+                  className="p-1 rounded hover:bg-[#353436] text-[#A1A1AA] hover:text-white"
                 >
                   ✕
                 </button>
@@ -856,7 +856,7 @@ export default function GoogleMeetAdminManager({
                     required
                     value={roomTitle}
                     onChange={(e) => setRoomTitle(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B]"
                   />
                 </div>
 
@@ -866,7 +866,7 @@ export default function GoogleMeetAdminManager({
                     <select
                       value={roomProject}
                       onChange={(e) => setRoomProject(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B]"
                     >
                       <option value="VIZTR-882">The Apex Tower (VIZTR-882)</option>
                       <option value="VIZTR-904">Nordic Monolith (VIZTR-904)</option>
@@ -879,7 +879,7 @@ export default function GoogleMeetAdminManager({
                     <select
                       value={roomCategory}
                       onChange={(e) => setRoomCategory(e.target.value as any)}
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B]"
                     >
                       <option value="milestone_review">Milestone Review</option>
                       <option value="vr_walkthrough">WebXR Spatial Review</option>
@@ -894,7 +894,7 @@ export default function GoogleMeetAdminManager({
                   <select
                     value={selectedAccountId}
                     onChange={(e) => setSelectedAccountId(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B]"
                   >
                     {accounts.map((acc) => (
                       <option key={acc.id} value={acc.id}>
@@ -904,11 +904,11 @@ export default function GoogleMeetAdminManager({
                   </select>
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#27272A]">
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#353436]">
                   <button
                     type="button"
                     onClick={() => setShowCreateRoomModal(false)}
-                    className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA]"
+                    className="px-3 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA]"
                   >
                     Cancel
                   </button>
@@ -933,7 +933,7 @@ export default function GoogleMeetAdminManager({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-sm w-full p-6 rounded-2xl bg-[#18181B] border border-rose-900/50 space-y-4 shadow-2xl text-xs font-mono"
+              className="max-w-sm w-full p-6 rounded-2xl bg-[#201f20] border border-rose-900/50 space-y-4 shadow-2xl text-xs font-mono"
             >
               <div className="flex items-center gap-2 text-rose-400 font-bold text-sm font-display">
                 <AlertCircle className="w-5 h-5" />
@@ -945,7 +945,7 @@ export default function GoogleMeetAdminManager({
               <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   onClick={() => setAccountToDelete(null)}
-                  className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-white"
+                  className="px-3 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-white"
                 >
                   Cancel
                 </button>

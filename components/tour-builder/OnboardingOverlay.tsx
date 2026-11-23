@@ -108,10 +108,10 @@ export function OnboardingOverlay({ onComplete }: OnboardingOverlayProps) {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="bg-[#09090B] border border-[#27272A] rounded-xl w-[420px] overflow-hidden shadow-2xl">
-        <div className="relative h-32 bg-gradient-to-br from-[#3ECF8E]/20 to-[#18181B] flex items-center justify-center">
-          <div className="w-16 h-16 rounded-full bg-[#3ECF8E]/20 flex items-center justify-center">
-            <Icon className="w-8 h-8 text-[#3ECF8E]" />
+      <div className="bg-[#131314] border border-[#353436] rounded-xl w-[420px] overflow-hidden shadow-2xl">
+        <div className="relative h-32 bg-gradient-to-br from-[#dbfcff]/20 to-[#201f20] flex items-center justify-center">
+          <div className="w-16 h-16 rounded-full bg-[#dbfcff]/20 flex items-center justify-center">
+            <Icon className="w-8 h-8 text-[#dbfcff]" />
           </div>
           <button
             onClick={handleComplete}
@@ -133,7 +133,7 @@ export function OnboardingOverlay({ onComplete }: OnboardingOverlayProps) {
                 <div
                   key={i}
                   className={`w-2 h-2 rounded-full transition-colors ${
-                    i === currentStep ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+                    i === currentStep ? 'bg-[#dbfcff]' : 'bg-[#353436]'
                   }`}
                 />
               ))}
@@ -143,7 +143,7 @@ export function OnboardingOverlay({ onComplete }: OnboardingOverlayProps) {
               {!isFirst && (
                 <button
                   onClick={handlePrev}
-                  className="px-4 py-2 rounded bg-[#27272A] hover:bg-[#3F3F46] text-xs font-mono text-white"
+                  className="px-4 py-2 rounded bg-[#353436] hover:bg-[#3F3F46] text-xs font-mono text-white"
                 >
                   <ChevronLeft className="w-4 h-4 inline mr-1" />
                   Back
@@ -151,7 +151,7 @@ export function OnboardingOverlay({ onComplete }: OnboardingOverlayProps) {
               )}
               <button
                 onClick={handleNext}
-                className="px-4 py-2 rounded bg-[#3ECF8E] hover:bg-[#34BF7D] text-xs font-mono text-black font-bold"
+                className="px-4 py-2 rounded bg-[#dbfcff] hover:bg-[#34BF7D] text-xs font-mono text-black font-bold"
               >
                 {isLast ? 'Get Started' : 'Next'}
                 {!isLast && <ChevronRight className="w-4 h-4 inline ml-1" />}

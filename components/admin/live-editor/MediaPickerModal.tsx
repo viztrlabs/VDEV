@@ -40,12 +40,12 @@ export default function MediaPickerModal({ open, onClose, filter, onPick }: Medi
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-2xl bg-[#131314] border border-[#27272A] p-5 space-y-4"
+        className="w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-2xl bg-[#131314] border border-[#353436] p-5 space-y-4"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold text-white flex items-center gap-2">
-            <ImageIcon className="w-4 h-4 text-[#3ECF8E]" />
+            <ImageIcon className="w-4 h-4 text-[#dbfcff]" />
             Select Media ({filter})
           </h3>
           <button onClick={onClose} aria-label="Close" className="text-zinc-400 hover:text-white cursor-pointer">
@@ -59,14 +59,14 @@ export default function MediaPickerModal({ open, onClose, filter, onPick }: Medi
             value={urlInput}
             onChange={(e) => setUrlInput(e.target.value)}
             placeholder="Paste image or video URL..."
-            className="flex-1 px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-xs text-white placeholder:text-zinc-500"
+            className="flex-1 px-3 py-2 rounded-lg bg-[#201f20] border border-[#353436] text-xs text-white placeholder:text-zinc-500"
           />
           <button
             onClick={() => {
               if (urlInput.trim()) onPick(urlInput.trim());
               setUrlInput('');
             }}
-            className="px-3 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+            className="px-3 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black text-xs font-bold flex items-center gap-1.5 cursor-pointer"
           >
             <LinkIcon className="w-3.5 h-3.5" />
             <span>Use URL</span>
@@ -81,7 +81,7 @@ export default function MediaPickerModal({ open, onClose, filter, onPick }: Medi
               <button
                 key={item.id}
                 onClick={() => onPick(item.url)}
-                className="group rounded-xl overflow-hidden border border-[#27272A] hover:border-[#3ECF8E] bg-[#18181B] cursor-pointer text-left"
+                className="group rounded-xl overflow-hidden border border-[#353436] hover:border-[#dbfcff] bg-[#201f20] cursor-pointer text-left"
               >
                 {item.type === 'image' ? (
                   // eslint-disable-next-line @next/next/no-img-element

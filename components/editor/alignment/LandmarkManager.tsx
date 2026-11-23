@@ -76,7 +76,7 @@ export default function LandmarkManager() {
         className={`w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded text-xs font-mono mb-3 ${
           isPlacing
             ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-            : 'bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA] border border-[#27272A]'
+            : 'bg-[#201f20] hover:bg-[#353436] text-[#A1A1AA] border border-[#353436]'
         }`}
       >
         <Crosshair size={12} />
@@ -93,7 +93,7 @@ export default function LandmarkManager() {
         {alignmentMarkers.map((marker, idx) => (
           <div
             key={marker.id}
-            className="flex items-center gap-2 px-2 py-1.5 rounded bg-[#18181B] border border-[#27272A]"
+            className="flex items-center gap-2 px-2 py-1.5 rounded bg-[#201f20] border border-[#353436]"
           >
             <span className="text-[10px] text-[#71717A] font-mono w-4">#{idx + 1}</span>
             <span className="text-xs text-[#A1A1AA] font-mono flex-1 truncate">
@@ -115,8 +115,8 @@ export default function LandmarkManager() {
         disabled={alignmentMarkers.length < 4 || calibrationStatus === 'solving'}
         className={`w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded text-xs font-mono ${
           alignmentMarkers.length >= 4
-            ? 'bg-[#3ECF8E]/10 text-[#3ECF8E] border border-[#3ECF8E]/30 hover:bg-[#3ECF8E]/20'
-            : 'bg-[#18181B] text-[#52525B] border border-[#27272A] cursor-not-allowed'
+            ? 'bg-[#dbfcff]/10 text-[#dbfcff] border border-[#dbfcff]/30 hover:bg-[#dbfcff]/20'
+            : 'bg-[#201f20] text-[#52525B] border border-[#353436] cursor-not-allowed'
         }`}
       >
         {calibrationStatus === 'solving' ? (

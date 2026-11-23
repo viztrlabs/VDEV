@@ -107,9 +107,9 @@ export default function SharedClientViewPage({ params }: { params: Promise<{ acc
 
   if (validationState === 'pending') {
     return (
-      <main className="min-h-screen bg-[#09090B] text-[#FAFAFA] flex items-center justify-center">
+      <main className="min-h-screen bg-[#131314] text-[#e5e2e3] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-7 h-7 text-[#3ECF8E] animate-spin" />
+          <Loader2 className="w-7 h-7 text-[#dbfcff] animate-spin" />
           <p className="text-xs font-mono text-[#A1A1AA] uppercase tracking-wider">Validating access token…</p>
         </div>
       </main>
@@ -118,8 +118,8 @@ export default function SharedClientViewPage({ params }: { params: Promise<{ acc
 
   if (validationState === 'invalid') {
     return (
-      <main className="min-h-screen bg-[#09090B] text-[#FAFAFA] flex items-center justify-center px-4">
-        <div className="max-w-md text-center space-y-4 p-8 rounded-2xl bg-[#18181B] border border-[#27272A]">
+      <main className="min-h-screen bg-[#131314] text-[#e5e2e3] flex items-center justify-center px-4">
+        <div className="max-w-md text-center space-y-4 p-8 rounded-2xl bg-[#201f20] border border-[#353436]">
           <Lock className="w-8 h-8 text-amber-400 mx-auto" />
           <h2 className="text-lg font-bold font-display text-white">Invalid Access Token</h2>
           <p className="text-xs text-[#A1A1AA]">
@@ -128,13 +128,13 @@ export default function SharedClientViewPage({ params }: { params: Promise<{ acc
           <div className="flex items-center justify-center gap-2 pt-2">
             <Link
               href="/client-access"
-              className="px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider"
+              className="px-4 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider"
             >
               Client Portal Login
             </Link>
             <Link
               href="/contact"
-              className="px-4 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-white font-mono text-xs"
+              className="px-4 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-white font-mono text-xs"
             >
               Contact Studio
             </Link>
@@ -147,18 +147,18 @@ export default function SharedClientViewPage({ params }: { params: Promise<{ acc
   const matchedStats: ProjectStatsData = DEFAULT_PROJECT_STATS[cleanCode] || DEFAULT_PROJECT_STATS['VIZTR-882'];
 
   return (
-    <main className="min-h-screen bg-[#09090B] text-[#FAFAFA] py-12 px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[#131314] text-[#e5e2e3] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto space-y-8">
         {/* TOP NOTICE */}
-        <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E]">
+        <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff]">
             <ShieldCheck className="w-4 h-4 shrink-0" />
             <span>Secure Public Read-Only Milestone & Stats View • Token: {accessCode}</span>
           </div>
 
           <Link
             href="/client-access"
-            className="text-xs font-mono text-[#FAFAFA] hover:text-[#3ECF8E] inline-flex items-center gap-1 transition-colors"
+            className="text-xs font-mono text-[#e5e2e3] hover:text-[#dbfcff] inline-flex items-center gap-1 transition-colors"
           >
             <span>Full Client Workspace Login</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -166,10 +166,10 @@ export default function SharedClientViewPage({ params }: { params: Promise<{ acc
         </div>
 
         {/* HERO CARD */}
-        <div className="p-6 sm:p-8 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-6 shadow-2xl">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#27272A] pb-6">
+        <div className="p-6 sm:p-8 rounded-2xl bg-[#201f20] border border-[#353436] space-y-6 shadow-2xl">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#353436] pb-6">
             <div className="space-y-1">
-              <span className="text-[10px] font-mono text-[#3ECF8E] uppercase tracking-wider font-bold">
+              <span className="text-[10px] font-mono text-[#dbfcff] uppercase tracking-wider font-bold">
                 Commercial High-Rise & WebXR Commission
               </span>
               <h1 className="text-2xl sm:text-3xl font-bold font-display text-white">
@@ -183,7 +183,7 @@ export default function SharedClientViewPage({ params }: { params: Promise<{ acc
             <div className="flex items-center gap-2">
               <button
                 onClick={() => openModelViewer('models/apex-tower-v3-draco.glb', 'The Apex Tower')}
-                className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#3ECF8E]/40 text-xs font-mono text-[#3ECF8E] flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#dbfcff]/40 text-xs font-mono text-[#dbfcff] flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <Box className="w-4 h-4" />
                 <span>3D WebXR Model</span>
@@ -191,7 +191,7 @@ export default function SharedClientViewPage({ params }: { params: Promise<{ acc
 
               <button
                 onClick={() => openPanorama('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2000&q=90', 'The Apex Tower')}
-                className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-xs font-mono text-white flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <Eye className="w-4 h-4" />
                 <span>360° Node</span>
@@ -210,43 +210,43 @@ export default function SharedClientViewPage({ params }: { params: Promise<{ acc
           </div>
 
           {/* PROJECT TIMELINE */}
-          <div className="space-y-4 pt-4 border-t border-[#27272A]">
+          <div className="space-y-4 pt-4 border-t border-[#353436]">
             <h2 className="text-sm font-mono font-bold uppercase tracking-wider text-white flex items-center gap-2">
-              <Clock className="w-4 h-4 text-[#3ECF8E]" />
+              <Clock className="w-4 h-4 text-[#dbfcff]" />
               <span>Production Pipeline Status (7 Stages)</span>
             </h2>
             <ProjectTracker initialProjectId={accessCode} />
           </div>
 
           {/* DELIVERABLE ASSETS PREVIEW */}
-          <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-3">
+          <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-3">
             <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-white flex items-center gap-2">
-              <Download className="w-4 h-4 text-[#3ECF8E]" />
+              <Download className="w-4 h-4 text-[#dbfcff]" />
               <span>Available Milestone Previews</span>
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
-              <div className="p-3 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-between">
+              <div className="p-3 rounded-lg bg-[#201f20] border border-[#353436] flex items-center justify-between">
                 <div>
                   <div className="text-white font-bold">Stage 4 Approval Proofs (Watermarked)</div>
                   <div className="text-[10px] text-[#71717A]">4 Stills · 3840x2160 JPEG</div>
                 </div>
                 <button
                   onClick={() => showToast('Opening proof bundle...', 'info')}
-                  className="px-2 py-1 rounded bg-[#27272A] text-[#3ECF8E] hover:bg-[#3F3F46]"
+                  className="px-2 py-1 rounded bg-[#353436] text-[#dbfcff] hover:bg-[#3F3F46]"
                 >
                   View
                 </button>
               </div>
 
-              <div className="p-3 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-between">
+              <div className="p-3 rounded-lg bg-[#201f20] border border-[#353436] flex items-center justify-between">
                 <div>
                   <div className="text-white font-bold">WebXR Geometry Preview Model</div>
                   <div className="text-[10px] text-[#71717A]">GLB Binary · 8.4 MB</div>
                 </div>
                 <button
                   onClick={() => openModelViewer('models/apex-tower-v3-draco.glb', 'The Apex Tower')}
-                  className="px-2 py-1 rounded bg-[#27272A] text-[#3ECF8E] hover:bg-[#3F3F46]"
+                  className="px-2 py-1 rounded bg-[#353436] text-[#dbfcff] hover:bg-[#3F3F46]"
                 >
                   Launch
                 </button>

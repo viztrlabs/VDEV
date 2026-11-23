@@ -43,17 +43,17 @@ export default function FinalCTASection() {
   return (
  <section
  id="final-cta-section"
- className="relative py-24 px-4 sm:px-6 bg-[#0A0A0B] border-t border-[#1E293B] text-white overflow-hidden"
+ className="relative py-24 px-4 sm:px-6 bg-[#131314] border-t border-[#3b494b] text-white overflow-hidden"
  >
  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#00F0FF]/10 rounded-full blur-3xl pointer-events-none"/>
 
  <div className="max-w-4xl mx-auto text-center relative z-10 space-y-6">
- <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#131314] border border-[#1E293B] text-xs text-[#00F0FF] font-bold uppercase tracking-widest shadow-sm">
- <span className="w-2 h-2 rounded-full bg-[#42CF8B] animate-pulse"/>
+ <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#131314] border border-[#3b494b] text-xs text-[#00F0FF] font-bold uppercase tracking-widest shadow-sm">
+ <span className="w-2 h-2 rounded-full bg-[#54de99] animate-pulse"/>
  <CmsText fieldId="badge" value={content.badge}/>
  </div>
 
- <CmsText fieldId="heading" value={content.heading} as="h2" className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold tracking-tight text-[#FAFAFA]"/>
+ <CmsText fieldId="heading" value={content.heading} as="h2" className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold tracking-tight text-[#e5e2e3]"/>
 
  <CmsText fieldId="description" value={content.description} as="p" rich className="text-xs sm:text-sm text-[#B9CACB] max-w-xl mx-auto leading-relaxed"/>
 
@@ -70,7 +70,7 @@ export default function FinalCTASection() {
  <Link
  href={content.secondaryHref}
  id="final-cta-consult-btn"
- className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#131314] hover:bg-[#1E293B] text-[#FAFAFA] font-bold text-xs uppercase tracking-wider border border-[#1E293B] hover:border-[#00F0FF]/50 transition-all duration-300 flex items-center justify-center gap-2 shadow-sm active:scale-95"
+ className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#131314] hover:bg-[#3b494b] text-[#e5e2e3] font-bold text-xs uppercase tracking-wider border border-[#3b494b] hover:border-[#00F0FF]/50 transition-all duration-300 flex items-center justify-center gap-2 shadow-sm active:scale-95"
  >
  <Calendar className="w-4 h-4 text-[#00F0FF]"/>
  <CmsText fieldId="secondaryLabel" value={content.secondaryLabel}/>

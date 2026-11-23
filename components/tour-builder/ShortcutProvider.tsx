@@ -236,7 +236,7 @@ export function ShortcutProvider({
 
       <button
         onClick={() => setShowHelp(true)}
-        className="fixed bottom-4 right-4 z-40 p-2 rounded-full bg-[#18181B] border border-[#27272A] hover:bg-[#27272A] transition-colors"
+        className="fixed bottom-4 right-4 z-40 p-2 rounded-full bg-[#201f20] border border-[#353436] hover:bg-[#353436] transition-colors"
         title="Keyboard Shortcuts (?)"
       >
         <Keyboard className="w-4 h-4 text-[#71717A]" />
@@ -244,8 +244,8 @@ export function ShortcutProvider({
 
       {showHelp && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-[#09090B] border border-[#27272A] rounded-lg w-[500px] max-h-[70vh] overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-[#27272A]">
+          <div className="bg-[#131314] border border-[#353436] rounded-lg w-[500px] max-h-[70vh] overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[#353436]">
               <h2 className="text-sm font-mono font-bold text-white">Keyboard Shortcuts</h2>
               <button
                 onClick={() => setShowHelp(false)}
@@ -264,11 +264,11 @@ export function ShortcutProvider({
                         <span className="text-xs font-mono text-[#A1A1AA]">{s.label}</span>
                         <div className="flex gap-1">
                           {s.modifiers?.map((m) => (
-                            <kbd key={m} className="px-1.5 py-0.5 rounded bg-[#18181B] border border-[#27272A] text-[10px] font-mono text-[#71717A]">
+                            <kbd key={m} className="px-1.5 py-0.5 rounded bg-[#201f20] border border-[#353436] text-[10px] font-mono text-[#71717A]">
                               {m}
                             </kbd>
                           ))}
-                          <kbd className="px-1.5 py-0.5 rounded bg-[#18181B] border border-[#27272A] text-[10px] font-mono text-white">
+                          <kbd className="px-1.5 py-0.5 rounded bg-[#201f20] border border-[#353436] text-[10px] font-mono text-white">
                             {s.key}
                           </kbd>
                         </div>

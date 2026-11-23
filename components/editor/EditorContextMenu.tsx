@@ -50,12 +50,12 @@ export default function EditorContextMenu({ x, y, items, onClose }: EditorContex
   return (
     <div
       ref={ref}
-      className="fixed z-[9999] min-w-[180px] rounded-lg border border-[#27272A] bg-[#09090B] shadow-2xl py-1"
+      className="fixed z-[9999] min-w-[180px] rounded-lg border border-[#353436] bg-[#131314] shadow-2xl py-1"
       style={{ left: x, top: y }}
     >
       {items.map((item, i) => {
         if (item.label === '---') {
-          return <div key={i} className="my-1 border-t border-[#27272A]" />;
+          return <div key={i} className="my-1 border-t border-[#353436]" />;
         }
         return (
           <button
@@ -71,7 +71,7 @@ export default function EditorContextMenu({ x, y, items, onClose }: EditorContex
                 ? 'text-rose-400 hover:bg-rose-500/10'
                 : item.disabled
                   ? 'text-[#52525B] cursor-not-allowed'
-                  : 'text-[#A1A1AA] hover:bg-[#18181B] hover:text-white'
+                  : 'text-[#A1A1AA] hover:bg-[#201f20] hover:text-white'
             }`}
           >
             <span className="shrink-0 w-4 h-4 flex items-center justify-center">{item.icon}</span>

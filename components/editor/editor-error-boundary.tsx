@@ -29,7 +29,7 @@ export class EditorErrorBoundary extends React.Component<EditorErrorBoundaryProp
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-[#09090B] text-white flex items-center justify-center">
+        <div className="min-h-screen bg-[#131314] text-white flex items-center justify-center">
           <div className="max-w-md rounded-xl border border-rose-500/40 bg-rose-500/10 p-6 space-y-3">
             <h2 className="text-sm font-mono font-bold text-rose-300">Editor Error</h2>
             <p className="text-[11px] font-mono text-rose-200/80">

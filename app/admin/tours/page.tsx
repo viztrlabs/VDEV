@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export default function AdminToursPage() {
   return (
-    <div className="min-h-screen bg-[#09090B] text-white p-6">
+    <div className="min-h-screen bg-[#131314] text-white p-6">
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-4">
           <Link
@@ -15,7 +15,7 @@ export default function AdminToursPage() {
           >
             <ArrowLeft className="w-4 h-4" /> Dashboard
           </Link>
-          <div className="text-sm font-mono font-bold text-[#3ECF8E]">VizTR · Tour Manager</div>
+          <div className="text-sm font-mono font-bold text-[#dbfcff]">VizTR · Tour Manager</div>
         </div>
         <TourManager />
         <p className="mt-4 text-[10px] font-mono text-[#555]">

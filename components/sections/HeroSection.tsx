@@ -100,16 +100,16 @@ export default function HeroSection() {
  })}
 
  {/* Ambient atmospheric dark gradient overlays for cinematic depth and high text contrast */}
- <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/40 to-[#0A0A0B]/65 pointer-events-none z-20"/>
- <div className="absolute inset-0 bg-radial from-transparent via-[#0A0A0B]/25 to-[#0A0A0B]/80 pointer-events-none z-20"/>
+ <div className="absolute inset-0 bg-gradient-to-t from-[#131314] via-[#131314]/40 to-[#131314]/65 pointer-events-none z-20"/>
+ <div className="absolute inset-0 bg-radial from-transparent via-[#131314]/25 to-[#131314]/80 pointer-events-none z-20"/>
  </div>
 
  {/* 2. TOP AREA: Clears floating header & hosts top Eyebrow Badge */}
  <div className="relative z-20 w-full pt-16 sm:pt-20 shrink-0 flex justify-center px-2 sm:px-4">
  {/* Eyebrow Badge Pill - Cleanly positioned below header */}
- <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full shadow-2xl transition-all border border-[#1E293B] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
- <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#42CF8B] animate-pulse shrink-0"/>
- <CmsText fieldId="eyebrowPrimary" value={hero.eyebrowPrimary} className="font-bold text-[#42CF8B] tracking-wider uppercase shrink-0"/>
+ <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full shadow-2xl transition-all border border-[#3b494b] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
+ <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#54de99] animate-pulse shrink-0"/>
+ <CmsText fieldId="eyebrowPrimary" value={hero.eyebrowPrimary} className="font-bold text-[#54de99] tracking-wider uppercase shrink-0"/>
  <span className="opacity-40 shrink-0">|</span>
  <CmsText fieldId="eyebrowSecondary" value={hero.eyebrowSecondary} className="opacity-80 shrink-0"/>
  </div>
@@ -124,7 +124,7 @@ export default function HeroSection() {
  <CmsText fieldId="subheadline" value={hero.subheadline} as="p" className="hero-subheadline text-fluid-sub font-medium tracking-wide mb-3 max-w-3xl"/>
 
  {/* Architectural Visualization Sub Heading */}
- <CmsText fieldId="description" value={hero.description} as="p" rich className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]"/>
+ <CmsText fieldId="description" value={hero.description} as="p" rich className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#e5e2e3]"/>
 
  {/* Pill-shaped Call-To-Action Buttons */}
  <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-md sm:max-w-none mb-6">
@@ -142,9 +142,9 @@ export default function HeroSection() {
  <Link
  href={hero.secondaryCTA.href}
  id="hero-secondary-cta"
- className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#1E293B]"
+ className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#3b494b]"
  >
- <Compass className="w-4 h-4 text-[#42CF8B]"/>
+ <Compass className="w-4 h-4 text-[#54de99]"/>
  <CmsText fieldId="secondaryCtaLabel" value={hero.secondaryCTA.label}/>
  </Link>
  </div>
@@ -177,7 +177,7 @@ export default function HeroSection() {
  e.preventDefault();
  window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
  }}
- className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-lg border border-[#1E293B]"
+ className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-lg border border-[#3b494b]"
  aria-label="Scroll down to explore page content"
  >
  <CmsText fieldId="scrollLabel" value={hero.scrollLabel}/>

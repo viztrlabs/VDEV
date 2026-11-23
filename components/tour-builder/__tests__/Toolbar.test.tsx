@@ -31,7 +31,7 @@ describe('Toolbar', () => {
 
   it('highlights the active tool', () => {
     render(<Toolbar activeTool="info" onSelectTool={jest.fn()} />);
-    expect(screen.getByTitle('Info Hotspot (F)').className).toContain('text-[#3ECF8E]');
+    expect(screen.getByTitle('Info Hotspot (F)').className).toContain('text-[#dbfcff]');
   });
 
   it('closes the flyout on Escape', () => {

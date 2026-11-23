@@ -54,8 +54,8 @@ export default function ImportPreviewModal({
         if (e.target === e.currentTarget) onCancel();
       }}
     >
-      <div className="w-full max-w-md mx-4 rounded-xl border border-[#27272A] bg-[#0c0c0f] shadow-2xl">
-        <div className="flex items-start justify-between px-5 pt-4 pb-3 border-b border-[#27272A]">
+      <div className="w-full max-w-md mx-4 rounded-xl border border-[#353436] bg-[#201f20] shadow-2xl">
+        <div className="flex items-start justify-between px-5 pt-4 pb-3 border-b border-[#353436]">
           <div>
             <h2
               id="import-preview-title"
@@ -82,7 +82,7 @@ export default function ImportPreviewModal({
             Found <span className="text-white font-bold">{totalScenes}</span> scene(s) and{' '}
             <span className="text-white font-bold">{hotspotCount}</span> hotspot(s).
           </p>
-          <div className="rounded-lg border border-[#27272A] bg-[#18181B] p-3 space-y-2">
+          <div className="rounded-lg border border-[#353436] bg-[#201f20] p-3 space-y-2">
             <div className="flex items-center gap-2 text-emerald-300">
               <CheckCircle2 className="w-4 h-4" />
               <span>
@@ -105,11 +105,11 @@ export default function ImportPreviewModal({
           )}
         </div>
 
-        <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-[#27272A]">
+        <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-[#353436]">
           <button
             type="button"
             onClick={onCancel}
-            className="px-3 py-1.5 rounded-lg border border-[#27272A] text-xs font-mono text-[#A1A1AA] hover:text-white"
+            className="px-3 py-1.5 rounded-lg border border-[#353436] text-xs font-mono text-[#A1A1AA] hover:text-white"
           >
             Cancel
           </button>
@@ -118,7 +118,7 @@ export default function ImportPreviewModal({
             type="button"
             onClick={onConfirm}
             disabled={importable === 0}
-            className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-3 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b876] text-black text-xs font-bold font-mono disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Import {importable} scene{importable === 1 ? '' : 's'}
           </button>

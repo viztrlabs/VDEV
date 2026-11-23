@@ -42,14 +42,14 @@ export function Timeline({ items, onChange, readOnly = false }: TimelineProps) {
   };
 
   return (
-    <div className="rounded border border-[#27272A] bg-[#0F0F11]">
-      <div className="flex items-center justify-between border-b border-[#27272A] px-3 py-2">
+    <div className="rounded border border-[#353436] bg-[#131314]">
+      <div className="flex items-center justify-between border-b border-[#353436] px-3 py-2">
         <div className="text-[11px] font-mono text-[#A1A1AA]">Timeline</div>
         {!readOnly && (
           <button
             type="button"
             onClick={handleAdd}
-            className="px-2 py-1 rounded border border-[#3ECF8E]/40 bg-[#3ECF8E]/15 text-[10px] font-mono text-[#3ECF8E] hover:bg-[#3ECF8E]/25"
+            className="px-2 py-1 rounded border border-[#dbfcff]/40 bg-[#dbfcff]/15 text-[10px] font-mono text-[#dbfcff] hover:bg-[#dbfcff]/25"
           >
             + Add clip
           </button>
@@ -69,7 +69,7 @@ export function Timeline({ items, onChange, readOnly = false }: TimelineProps) {
           </thead>
           <tbody>
             {items.map((item) => (
-              <tr key={item.id ?? `${item.title}-${item.start}`} className="border-t border-[#27272A]">
+              <tr key={item.id ?? `${item.title}-${item.start}`} className="border-t border-[#353436]">
                 <td className="px-3 py-2 text-white">{item.title}</td>
                 <td className="px-3 py-2">{item.start}s</td>
                 <td className="px-3 py-2">{item.duration}s</td>
@@ -80,7 +80,7 @@ export function Timeline({ items, onChange, readOnly = false }: TimelineProps) {
                       <button
                         type="button"
                         onClick={() => setSelectedId(item.id ?? null)}
-                        className="px-2 py-1 rounded border border-[#27272A] bg-[#09090B] text-[10px] font-mono text-[#A1A1AA] hover:text-white"
+                        className="px-2 py-1 rounded border border-[#353436] bg-[#131314] text-[10px] font-mono text-[#A1A1AA] hover:text-white"
                       >
                         Edit
                       </button>

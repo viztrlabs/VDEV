@@ -63,24 +63,24 @@ export default function InquiryForm({ projectTitle, projectId, onSuccess }: Inqu
 
   if (isSubmitted) {
     return (
-      <div className="p-6 rounded-2xl bg-[#18181B] border border-[#3ECF8E]/40 text-center space-y-4">
-        <div className="w-12 h-12 rounded-full bg-[#3ECF8E]/10 border border-[#3ECF8E]/40 flex items-center justify-center mx-auto text-[#3ECF8E]">
+      <div className="p-6 rounded-2xl bg-[#201f20] border border-[#dbfcff]/40 text-center space-y-4">
+        <div className="w-12 h-12 rounded-full bg-[#dbfcff]/10 border border-[#dbfcff]/40 flex items-center justify-center mx-auto text-[#dbfcff]">
           <CheckCircle2 className="w-6 h-6" />
         </div>
         <h4 className="text-lg font-bold font-display text-white">Project Inquiry Dispatched</h4>
         <p className="text-xs text-[#A1A1AA] leading-relaxed max-w-sm mx-auto">
-          Thank you, <span className="text-white font-semibold">{name}</span>. A studio partner has been assigned to your reference <span className="text-[#3ECF8E]">&ldquo;{projectTitle}&rdquo;</span>.
+          Thank you, <span className="text-white font-semibold">{name}</span>. A studio partner has been assigned to your reference <span className="text-[#dbfcff]">&ldquo;{projectTitle}&rdquo;</span>.
         </p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4 text-left">
+    <form onSubmit={handleSubmit} className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4 text-left">
       <div className="space-y-1">
         <h4 className="text-sm font-bold font-display text-white">Enquire About This Project Scope</h4>
         <p className="text-[11px] text-[#71717A] font-mono">
-          Referencing: <span className="text-[#FAFAFA] font-semibold">{projectTitle}</span>
+          Referencing: <span className="text-[#e5e2e3] font-semibold">{projectTitle}</span>
         </p>
       </div>
 
@@ -95,7 +95,7 @@ export default function InquiryForm({ projectTitle, projectId, onSuccess }: Inqu
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. David Lin, AIA"
-              className="w-full pl-9 pr-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+              className="w-full pl-9 pr-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
             />
           </div>
         </div>
@@ -110,7 +110,7 @@ export default function InquiryForm({ projectTitle, projectId, onSuccess }: Inqu
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="david@linarchitects.com"
-              className="w-full pl-9 pr-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+              className="w-full pl-9 pr-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
             />
           </div>
         </div>
@@ -120,7 +120,7 @@ export default function InquiryForm({ projectTitle, projectId, onSuccess }: Inqu
           <select
             value={serviceType}
             onChange={(e) => setServiceType(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+            className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white focus:outline-none focus:border-[#dbfcff]"
           >
             <option value="Exterior Visualization">Exterior Visualization (8K Stills)</option>
             <option value="Interior Staging & CGI">Interior Staging & CGI</option>
@@ -137,7 +137,7 @@ export default function InquiryForm({ projectTitle, projectId, onSuccess }: Inqu
             rows={3}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] resize-none"
+            className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] resize-none"
           />
         </div>
 
@@ -146,7 +146,7 @@ export default function InquiryForm({ projectTitle, projectId, onSuccess }: Inqu
             type="checkbox"
             checked={consent}
             onChange={(e) => setConsent(e.target.checked)}
-            className="mt-0.5 rounded bg-[#09090B] border-[#27272A] text-[#3ECF8E] focus:ring-0"
+            className="mt-0.5 rounded bg-[#131314] border-[#353436] text-[#dbfcff] focus:ring-0"
           />
           <span>I consent to VizTR Labs storing my contact details under NDA for this inquiry.</span>
         </label>
@@ -155,7 +155,7 @@ export default function InquiryForm({ projectTitle, projectId, onSuccess }: Inqu
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full py-2.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-lg disabled:opacity-50"
+        className="w-full py-2.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-lg disabled:opacity-50"
       >
         {isSubmitting ? (
           <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
@@ -168,7 +168,7 @@ export default function InquiryForm({ projectTitle, projectId, onSuccess }: Inqu
       </button>
 
       <div className="flex items-center justify-center gap-1.5 text-[10px] font-mono text-[#71717A]">
-        <ShieldCheck className="w-3 h-3 text-[#3ECF8E]" />
+        <ShieldCheck className="w-3 h-3 text-[#dbfcff]" />
         <span>Strict Non-Disclosure Guarantee (NDA)</span>
       </div>
     </form>

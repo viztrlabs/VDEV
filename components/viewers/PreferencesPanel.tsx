@@ -42,12 +42,12 @@ export default function PreferencesPanel({
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-display font-bold text-white flex items-center gap-2">
-                <Settings className="w-5 h-5 text-[#3ECF8E]" />
+                <Settings className="w-5 h-5 text-[#dbfcff]" />
                 Preferences
               </h3>
               <button
                 onClick={onClose || (() => updatePreferences({}))}
-                className="p-1.5 rounded-lg hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors"
+                className="p-1.5 rounded-lg hover:bg-[#353436] text-[#A1A1AA] hover:text-white transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -63,8 +63,8 @@ export default function PreferencesPanel({
                       onClick={() => updatePreferences({ motionIntensity: level })}
                       className={`flex-1 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
                         preferences.motionIntensity === level
-                          ? 'bg-[#3ECF8E] text-black font-bold'
-                          : 'bg-[#27272A] text-[#A1A1AA] hover:bg-[#3F3F46] hover:text-white'
+                          ? 'bg-[#dbfcff] text-black font-bold'
+                          : 'bg-[#353436] text-[#A1A1AA] hover:bg-[#3F3F46] hover:text-white'
                       }`}
                     >
                       {level.charAt(0).toUpperCase() + level.slice(1)}
@@ -82,7 +82,7 @@ export default function PreferencesPanel({
                   step="1"
                   value={preferences.autoRotateSpeed}
                   onChange={(e) => updatePreferences({ autoRotateSpeed: parseInt(e.target.value) })}
-                  className="w-full h-2 bg-[#27272A] rounded-full appearance-none cursor-pointer accent-[#3ECF8E]"
+                  className="w-full h-2 bg-[#353436] rounded-full appearance-none cursor-pointer accent-[#dbfcff]"
                 />
                 <div className="flex justify-between text-[10px] text-[#71717A] font-mono">
                   <span>Off</span>
@@ -100,7 +100,7 @@ export default function PreferencesPanel({
                   step="0.1"
                   value={preferences.defaultZoom}
                   onChange={(e) => updatePreferences({ defaultZoom: parseFloat(e.target.value) })}
-                  className="w-full h-2 bg-[#27272A] rounded-full appearance-none cursor-pointer accent-[#3ECF8E]"
+                  className="w-full h-2 bg-[#353436] rounded-full appearance-none cursor-pointer accent-[#dbfcff]"
                 />
                 <div className="flex justify-between text-[10px] text-[#71717A] font-mono">
                   <span>0.5x</span>
@@ -118,8 +118,8 @@ export default function PreferencesPanel({
                       onClick={() => updatePreferences({ theme: t })}
                       className={`flex-1 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
                         preferences.theme === t
-                          ? 'bg-[#3ECF8E] text-black font-bold'
-                          : 'bg-[#27272A] text-[#A1A1AA] hover:bg-[#3F3F46] hover:text-white'
+                          ? 'bg-[#dbfcff] text-black font-bold'
+                          : 'bg-[#353436] text-[#A1A1AA] hover:bg-[#3F3F46] hover:text-white'
                       }`}
                     >
                       {t.charAt(0).toUpperCase() + t.slice(1)}
@@ -128,7 +128,7 @@ export default function PreferencesPanel({
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[#27272A] space-y-4">
+              <div className="pt-4 border-t border-[#353436] space-y-4">
                 <h4 className="text-xs font-bold text-[#71717A] uppercase tracking-wider">Layout & UI</h4>
                 <ToggleItem label="Show Hotspots" checked={preferences.showHotspots} onChange={(v) => updatePreferences({ showHotspots: v })} />
                 <ToggleItem label="Gyroscope" checked={preferences.gyroscopeEnabled} onChange={(v) => updatePreferences({ gyroscopeEnabled: v })} />
@@ -149,7 +149,7 @@ export default function PreferencesPanel({
                     step="1"
                     value={preferences.ctrlAxisRotationStep}
                     onChange={(e) => updatePreferences({ ctrlAxisRotationStep: parseInt(e.target.value) })}
-                    className="w-full h-2 bg-[#27272A] rounded-full appearance-none cursor-pointer accent-[#3ECF8E]"
+                    className="w-full h-2 bg-[#353436] rounded-full appearance-none cursor-pointer accent-[#dbfcff]"
                   />
                 </div>
 
@@ -164,12 +164,12 @@ export default function PreferencesPanel({
                     step="1"
                     value={preferences.scrollZoomStep}
                     onChange={(e) => updatePreferences({ scrollZoomStep: parseInt(e.target.value) })}
-                    className="w-full h-2 bg-[#27272A] rounded-full appearance-none cursor-pointer accent-[#3ECF8E]"
+                    className="w-full h-2 bg-[#353436] rounded-full appearance-none cursor-pointer accent-[#dbfcff]"
                   />
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[#27272A] space-y-4">
+              <div className="pt-4 border-t border-[#353436] space-y-4">
                 <h4 className="text-xs font-bold text-[#71717A] uppercase tracking-wider">Branding & Assets</h4>
 
                 <AssetUploadRow
@@ -228,18 +228,18 @@ export default function PreferencesPanel({
                     step="0.05"
                     value={preferences.musicVolume}
                     onChange={(e) => updatePreferences({ musicVolume: parseFloat(e.target.value) })}
-                    className="w-full h-1.5 bg-[#27272A] rounded-full appearance-none cursor-pointer accent-[#3ECF8E]"
+                    className="w-full h-1.5 bg-[#353436] rounded-full appearance-none cursor-pointer accent-[#dbfcff]"
                   />
                 </div>
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Bot className="w-4 h-4 text-[#3ECF8E]" />
+                    <Bot className="w-4 h-4 text-[#dbfcff]" />
                     <span className="text-xs text-white">AI Assistant</span>
                   </div>
                   <button
                     onClick={() => updatePreferences({ aiAssistantEnabled: !preferences.aiAssistantEnabled })}
-                    className={`relative w-10 h-5 rounded-full transition-colors ${preferences.aiAssistantEnabled ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'}`}
+                    className={`relative w-10 h-5 rounded-full transition-colors ${preferences.aiAssistantEnabled ? 'bg-[#dbfcff]' : 'bg-[#353436]'}`}
                     role="switch"
                     aria-checked={preferences.aiAssistantEnabled}
                   >
@@ -257,12 +257,12 @@ export default function PreferencesPanel({
                       placeholder="Folder ID"
                       value={preferences.googleDriveFolderId}
                       onChange={(e) => updatePreferences({ googleDriveFolderId: e.target.value })}
-                      className="flex-1 px-2 py-1 rounded bg-[#09090B] border border-[#27272A] text-xs text-white focus:outline-none focus:border-[#3ECF8E]"
+                      className="flex-1 px-2 py-1 rounded bg-[#131314] border border-[#353436] text-xs text-white focus:outline-none focus:border-[#dbfcff]"
                     />
                     <button
                       onClick={() => updatePreferences({ showGoogleDriveSection: !preferences.showGoogleDriveSection })}
                       className={`px-2 py-1 rounded text-[10px] font-bold transition-colors ${
-                        preferences.showGoogleDriveSection ? 'bg-[#3ECF8E] text-black' : 'bg-[#18181B] text-[#A1A1AA] hover:text-white'
+                        preferences.showGoogleDriveSection ? 'bg-[#dbfcff] text-black' : 'bg-[#201f20] text-[#A1A1AA] hover:text-white'
                       }`}
                     >
                       {preferences.showGoogleDriveSection ? 'Hide' : 'Load'}
@@ -274,7 +274,7 @@ export default function PreferencesPanel({
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[#27272A]">
+              <div className="pt-4 border-t border-[#353436]">
                 <div className="mb-3 text-center">
                   <span className="text-xs text-[#71717A]">Ctrl + Arrow keys → faster axis rotation ({preferences.ctrlAxisRotationStep}°)</span>
                 </div>
@@ -299,7 +299,7 @@ function ToggleItem({ label, checked, onChange }: { label: string; checked: bool
       <label className="text-sm font-medium text-white">{label}</label>
       <button
         onClick={() => onChange(!checked)}
-        className={`relative w-12 h-6 rounded-full transition-colors ${checked ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'}`}
+        className={`relative w-12 h-6 rounded-full transition-colors ${checked ? 'bg-[#dbfcff]' : 'bg-[#353436]'}`}
         role="switch"
         aria-checked={checked}
       >
@@ -329,7 +329,7 @@ function AssetUploadRow({
   return (
     <div className="flex items-center justify-between">
       <label className="text-sm font-medium text-white">{label}</label>
-      <label className="cursor-pointer p-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#71717A] hover:text-white transition-colors">
+      <label className="cursor-pointer p-1 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#71717A] hover:text-white transition-colors">
         <input
           type="file"
           accept={accept}
@@ -341,7 +341,7 @@ function AssetUploadRow({
         />
         {icon}
       </label>
-      {hasAsset && <span className="text-[9px] text-[#3ECF8E]">✓</span>}
+      {hasAsset && <span className="text-[9px] text-[#dbfcff]">✓</span>}
     </div>
   );
 }

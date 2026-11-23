@@ -69,7 +69,7 @@ export default function ShowreelSection() {
  return (
  <section
  id="showreel-section"
- className="relative w-full min-h-[65vh] flex items-center justify-center overflow-hidden bg-[#0A0A0B] text-[#FAFAFA] border-y border-[#1E293B]"
+ className="relative w-full min-h-[65vh] flex items-center justify-center overflow-hidden bg-[#131314] text-[#e5e2e3] border-y border-[#3b494b]"
  >
  {/* BACKGROUND VIDEO / POSTER */}
  <EditableMedia fieldId="videoUrl" mediaType="video">
@@ -88,16 +88,16 @@ export default function ShowreelSection() {
  </EditableMedia>
 
  {/* Dark Overlay */}
- <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/60 to-[#0A0A0B]/80 pointer-events-none"/>
+ <div className="absolute inset-0 bg-gradient-to-t from-[#131314] via-[#131314]/60 to-[#131314]/80 pointer-events-none"/>
 
  {/* Centered Controls & Title */}
  <div className="relative z-10 text-center max-w-2xl mx-auto px-4 sm:px-6 py-14 flex flex-col items-center">
- <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#131314] border border-[#1E293B] text-[10px] font-mono text-[#42CF8B] font-bold uppercase tracking-widest mb-4">
- <span className="w-1.5 h-1.5 rounded-full bg-[#42CF8B] animate-pulse"/>
+ <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#131314] border border-[#3b494b] text-[10px] font-mono text-[#54de99] font-bold uppercase tracking-widest mb-4">
+ <span className="w-1.5 h-1.5 rounded-full bg-[#54de99] animate-pulse"/>
  <CmsText fieldId="badge" value={showreel.badge}/>
  </div>
 
- <CmsText fieldId="title" value={showreel.title} as="h2" className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#FAFAFA] mb-2 font-display"/>
+ <CmsText fieldId="title" value={showreel.title} as="h2" className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#e5e2e3] mb-2 font-display"/>
 
  <CmsText fieldId="subtitle" value={showreel.subtitle} as="p" rich className="text-xs sm:text-sm text-[#B9CACB] mb-6 max-w-lg"/>
 
@@ -118,10 +118,10 @@ export default function ShowreelSection() {
  
  <button
  onClick={toggleMute}
- className="p-3 rounded-full bg-[#131314] hover:bg-[#1E293B] text-[#FAFAFA] border border-[#1E293B] transition-colors cursor-pointer"
+ className="p-3 rounded-full bg-[#131314] hover:bg-[#3b494b] text-[#e5e2e3] border border-[#3b494b] transition-colors cursor-pointer"
  title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
  >
- {isMuted ? <VolumeX className="w-4 h-4 text-[#00F0FF]"/> : <Volume2 className="w-4 h-4 text-[#FAFAFA]"/>}
+ {isMuted ? <VolumeX className="w-4 h-4 text-[#00F0FF]"/> : <Volume2 className="w-4 h-4 text-[#e5e2e3]"/>}
  </button>
  </div>
 

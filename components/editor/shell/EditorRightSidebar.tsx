@@ -66,7 +66,7 @@ export function EditorRightSidebar({
   return (
     <aside
       style={{ width }}
-      className="relative shrink-0 border-l border-[#27272A] overflow-y-auto overflow-x-hidden p-3 space-y-3 bg-[#09090B]"
+      className="relative shrink-0 border-l border-[#353436] overflow-y-auto overflow-x-hidden p-3 space-y-3 bg-[#131314]"
     >
       <button
         type="button"
@@ -85,7 +85,7 @@ export function EditorRightSidebar({
             aria-label="Collapse inspector panel"
             aria-pressed="false"
             title="Collapse panel"
-            className="p-1 rounded text-[#71717A] hover:text-white hover:bg-[#18181B]"
+            className="p-1 rounded text-[#71717A] hover:text-white hover:bg-[#201f20]"
           >
             <PanelRightClose className="w-3.5 h-3.5" />
           </button>

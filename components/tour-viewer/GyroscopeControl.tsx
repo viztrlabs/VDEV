@@ -12,9 +12,9 @@ import { Smartphone } from 'lucide-react';
 type MarzipanoAny = any;
 
 const BTN_CLASS =
-  'p-2 rounded-lg bg-[#18181B]/70 border border-[#27272A] text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-all cursor-pointer';
+  'p-2 rounded-lg bg-[#201f20]/70 border border-[#353436] text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-all cursor-pointer';
 const BTN_ACTIVE_CLASS =
-  'p-2 rounded-lg bg-[#3ECF8E]/20 border border-[#3ECF8E] text-[#3ECF8E] hover:bg-[#3ECF8E]/30 transition-all cursor-pointer';
+  'p-2 rounded-lg bg-[#dbfcff]/20 border border-[#dbfcff] text-[#dbfcff] hover:bg-[#dbfcff]/30 transition-all cursor-pointer';
 
 function rotateEuler(
   euler: { yaw: number; pitch: number; roll: number },
@@ -137,7 +137,7 @@ export function GyroscopeControl({ getMarzipano, getViewer }: GyroscopeControlPr
         <Smartphone className="w-4 h-4" />
       </button>
       {(state === 'unsupported' || state === 'denied') && (
-        <div className="absolute bottom-full right-0 mb-2 px-2 py-1 rounded bg-[#09090B] border border-[#27272A] text-[9px] font-mono text-amber-400 whitespace-nowrap">
+        <div className="absolute bottom-full right-0 mb-2 px-2 py-1 rounded bg-[#131314] border border-[#353436] text-[9px] font-mono text-amber-400 whitespace-nowrap">
           {state === 'unsupported' ? 'Gyroscope not supported' : 'Permission denied'}
         </div>
       )}

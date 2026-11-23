@@ -26,7 +26,7 @@ export default function FormStylePanel({ style, onChangeStyle }: FormStylePanelP
         <select
           value={style.layout || 'dialog'}
           onChange={(e) => set({ layout: e.target.value as 'dialog' | 'panel' })}
-          className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-white"
+          className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-white"
         >
           <option value="dialog">Dialog (modal centered)</option>
           <option value="panel">Panel (side sheet)</option>
@@ -40,7 +40,7 @@ export default function FormStylePanel({ style, onChangeStyle }: FormStylePanelP
         <select
           value={style.position || 'right'}
           onChange={(e) => set({ position: e.target.value as 'left' | 'right' })}
-          className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-white"
+          className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-white"
         >
           <option value="left">Left</option>
           <option value="right">Right</option>
@@ -54,18 +54,18 @@ export default function FormStylePanel({ style, onChangeStyle }: FormStylePanelP
         <div className="flex items-center gap-1.5">
           <input
             type="color"
-            value={style.backgroundColor || '#09090B'}
+            value={style.backgroundColor || '#131314'}
             onChange={(e) => set({ backgroundColor: e.target.value })}
-            className="w-10 h-8 bg-transparent border border-[#27272A] rounded"
+            className="w-10 h-8 bg-transparent border border-[#353436] rounded"
           />
           <input
             value={style.backgroundColor || ''}
             onChange={(e) => set({ backgroundColor: e.target.value })}
-            placeholder="#09090B"
-            className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+            placeholder="#131314"
+            className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
           />
         </div>
-        <p className="text-[9px] text-[#71717A] mt-0.5">Supports hex + alpha (e.g. #09090B50)</p>
+        <p className="text-[9px] text-[#71717A] mt-0.5">Supports hex + alpha (e.g. #13131450)</p>
       </div>
 
       <div>
@@ -77,50 +77,50 @@ export default function FormStylePanel({ style, onChangeStyle }: FormStylePanelP
             type="color"
             value={style.overlayColor || '#000000'}
             onChange={(e) => set({ overlayColor: e.target.value })}
-            className="w-10 h-8 bg-transparent border border-[#27272A] rounded"
+            className="w-10 h-8 bg-transparent border border-[#353436] rounded"
           />
           <input
             value={style.overlayColor || ''}
             onChange={(e) => set({ overlayColor: e.target.value })}
             placeholder="#000000"
-            className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+            className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
           />
         </div>
         <p className="text-[9px] text-[#71717A] mt-0.5">Supports hex + alpha (e.g. #00000080)</p>
       </div>
 
       {/* Live preview */}
-      <div className="mt-4 rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3">
+      <div className="mt-4 rounded-lg border border-[#353436] bg-[#201f20] p-3">
         <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A] mb-2">
           Form Preview (dialog)
         </div>
         <div
           className="rounded-md p-4 max-w-xs"
           style={{
-            backgroundColor: style.backgroundColor || '#09090B',
-            border: `1px solid ${style.backgroundColor || '#27272A'}`,
-            color: '#FAFAFA',
+            backgroundColor: style.backgroundColor || '#131314',
+            border: `1px solid ${style.backgroundColor || '#353436'}`,
+            color: '#e5e2e3',
           }}
         >
           <div className="text-[11px] font-bold mb-2">Contact Us</div>
           <input
             type="text"
             placeholder="Your name"
-            className="w-full mb-2 px-2 py-1 rounded bg-[#18181B] border border-[#27272A] text-white text-xs"
+            className="w-full mb-2 px-2 py-1 rounded bg-[#201f20] border border-[#353436] text-white text-xs"
           />
           <input
             type="email"
             placeholder="Email"
-            className="w-full mb-2 px-2 py-1 rounded bg-[#18181B] border border-[#27272A] text-white text-xs"
+            className="w-full mb-2 px-2 py-1 rounded bg-[#201f20] border border-[#353436] text-white text-xs"
           />
           <textarea
             placeholder="Message"
             rows={3}
-            className="w-full mb-2 px-2 py-1 rounded bg-[#18181B] border border-[#27272A] text-white text-xs"
+            className="w-full mb-2 px-2 py-1 rounded bg-[#201f20] border border-[#353436] text-white text-xs"
           />
           <button
             type="button"
-            className="w-full px-3 py-1.5 rounded bg-[#3ECF8E] text-black text-xs font-bold font-mono"
+            className="w-full px-3 py-1.5 rounded bg-[#dbfcff] text-black text-xs font-bold font-mono"
           >
             Submit
           </button>

@@ -117,8 +117,8 @@ export function ValidationPanel() {
   }, {});
 
   return (
-    <div className="h-full flex flex-col bg-[#09090B]">
-      <div className="flex items-center justify-between px-3 py-2 border-b border-[#27272A]">
+    <div className="h-full flex flex-col bg-[#131314]">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-[#353436]">
         <span className="text-xs font-mono font-bold text-white">VALIDATION</span>
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-mono text-red-500">{errors.length} errors</span>
@@ -126,23 +126,23 @@ export function ValidationPanel() {
         </div>
       </div>
 
-      <div className="px-3 py-2 border-b border-[#27272A]">
+      <div className="px-3 py-2 border-b border-[#353436]">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[10px] font-mono text-[#71717A]">Tour Health</span>
-          <span className={`text-[10px] font-mono font-bold ${health > 80 ? 'text-[#3ECF8E]' : health > 50 ? 'text-amber-500' : 'text-red-500'}`}>
+          <span className={`text-[10px] font-mono font-bold ${health > 80 ? 'text-[#dbfcff]' : health > 50 ? 'text-amber-500' : 'text-red-500'}`}>
             {health}%
           </span>
         </div>
-        <div className="w-full h-1.5 bg-[#18181B] rounded-full overflow-hidden">
-          <div className={`h-full rounded-full transition-all ${health > 80 ? 'bg-[#3ECF8E]' : health > 50 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${health}%` }} />
+        <div className="w-full h-1.5 bg-[#201f20] rounded-full overflow-hidden">
+          <div className={`h-full rounded-full transition-all ${health > 80 ? 'bg-[#dbfcff]' : health > 50 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${health}%` }} />
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto">
         {issues.length === 0 ? (
           <div className="p-4 text-center">
-            <CheckCircle className="w-8 h-8 text-[#3ECF8E] mx-auto mb-2" />
-            <p className="text-xs font-mono text-[#3ECF8E]">Tour is valid!</p>
+            <CheckCircle className="w-8 h-8 text-[#dbfcff] mx-auto mb-2" />
+            <p className="text-xs font-mono text-[#dbfcff]">Tour is valid!</p>
             <p className="text-[10px] font-mono text-[#71717A] mt-1">No issues found</p>
           </div>
         ) : (
@@ -173,7 +173,7 @@ export function ValidationPanel() {
                       {issue.roomId && (
                         <button
                           onClick={() => handleFix(issue)}
-                          className="flex items-center gap-1 text-[10px] font-mono text-[#3ECF8E] hover:underline mt-1"
+                          className="flex items-center gap-1 text-[10px] font-mono text-[#dbfcff] hover:underline mt-1"
                         >
                           <Wrench className="w-3 h-3" />
                           Fix
@@ -187,7 +187,7 @@ export function ValidationPanel() {
         )}
       </div>
 
-      <div className="border-t border-[#27272A] p-3">
+      <div className="border-t border-[#353436] p-3">
         <div className="flex items-center justify-between text-[10px] font-mono text-[#71717A]">
           <span>{scenes.length} rooms, {scenes.reduce((a, r) => a + (r.hotspots?.length || 0), 0)} hotspots</span>
         </div>

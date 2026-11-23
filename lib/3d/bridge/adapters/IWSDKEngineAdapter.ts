@@ -103,7 +103,7 @@ export class IWSDKEngineAdapter implements EngineAdapter {
 
     // 2. Create Three.js scene/renderer for IWSDK to render into
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(options.backgroundColor || '#09090b');
+    this.scene.background = new THREE.Color(options.backgroundColor || '#131314');
 
     this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
     this.camera.position.set(0, 1.6, 3);
@@ -304,7 +304,7 @@ export class IWSDKEngineAdapter implements EngineAdapter {
         const { PanelUI, Interactable } = this.iwSDKModule;
         const panel = this.world.createTransformEntity()
           .addComponent(PanelUI, {
-            markup: `<ui-kit><ui-panel style="padding:12px;background:#18181bcc;border-radius:8px"><ui-label style="font-size:28px;color:#3ECF8E">${command.payload.title || 'Hotspot'}</ui-label></ui-panel></ui-kit>`,
+            markup: `<ui-kit><ui-panel style="padding:12px;background:#201f20cc;border-radius:8px"><ui-label style="font-size:28px;color:#dbfcff">${command.payload.title || 'Hotspot'}</ui-label></ui-panel></ui-kit>`,
             maxHeight: 0.5,
             maxWidth: 0.8,
           })

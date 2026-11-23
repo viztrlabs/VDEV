@@ -11,17 +11,17 @@ function XRViewerBridgeContent() {
   const projectId = searchParams.get('project') || 'apex-tower';
 
   return (
-    <main className="min-h-screen bg-black text-[#FAFAFA] flex flex-col justify-between p-4 sm:p-6 space-y-4">
+    <main className="min-h-screen bg-black text-[#e5e2e3] flex flex-col justify-between p-4 sm:p-6 space-y-4">
       <div className="flex items-center justify-between">
         <Link
           href="/xr-world"
-          className="inline-flex items-center gap-2 text-xs font-mono text-[#A1A1AA] hover:text-[#3ECF8E] transition-colors"
+          className="inline-flex items-center gap-2 text-xs font-mono text-[#A1A1AA] hover:text-[#dbfcff] transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Exit to XR World Hub</span>
         </Link>
 
-        <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E]">
+        <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff]">
           <Box className="w-4 h-4" />
           <span>Autonomous Spatial Bridge • Project ID: {projectId}</span>
         </div>
@@ -40,7 +40,7 @@ function XRViewerBridgeContent() {
 
 export default function XRViewPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-black flex items-center justify-center text-xs font-mono text-[#3ECF8E]">Loading Spatial Scene Bridge...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-black flex items-center justify-center text-xs font-mono text-[#dbfcff]">Loading Spatial Scene Bridge...</div>}>
       <XRViewerBridgeContent />
     </Suspense>
   );

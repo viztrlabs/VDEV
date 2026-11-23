@@ -38,7 +38,7 @@ function HotspotInspectorItemBase({
   const [iconPickerOpen, setIconPickerOpen] = useState(false);
 
   return (
-    <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-3 space-y-2">
+    <div className="rounded-xl border border-[#353436] bg-[#201f20] p-3 space-y-2">
       <div className="flex items-center justify-between">
         <span className="text-[10px] font-mono text-[#71717A]">
           {hotspot.xPercent}% , {hotspot.yPercent}%
@@ -52,26 +52,26 @@ function HotspotInspectorItemBase({
         onCopy={onCopy}
       />
 
-      <div className="pt-2 mt-2 border-t border-[#27272A] space-y-2">
+      <div className="pt-2 mt-2 border-t border-[#353436] space-y-2">
         <input
           value={hotspot.title}
           onChange={(e) => onUpdate({ title: e.target.value })}
           placeholder="Title"
-          className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+          className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
         />
         <textarea
           value={hotspot.description}
           onChange={(e) => onUpdate({ description: e.target.value })}
           placeholder="Description"
           rows={2}
-          className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white resize-none"
+          className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white resize-none"
         />
 
         {(hotspot.type === 'room_link' || hotspot.type === 'navigation') && (
           <select
             value={hotspot.targetRoomId || ''}
             onChange={(e) => onSetPortalTarget(e.target.value)}
-            className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+            className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
           >
             {otherRooms.map((r) => (
               <option key={r.id} value={r.id}>
@@ -86,7 +86,7 @@ function HotspotInspectorItemBase({
             value={hotspot.linkedImageUrl || hotspot.images?.[0] || ''}
             onChange={(e) => onUpdate({ linkedImageUrl: e.target.value, images: [e.target.value] } as any)}
             placeholder="Image URL (https://…)"
-            className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+            className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
           />
         )}
         {(hotspot.type === 'video' || hotspot.type === 'gallery') && (
@@ -94,7 +94,7 @@ function HotspotInspectorItemBase({
             value={hotspot.linkedImageUrl || hotspot.videoUrl || ''}
             onChange={(e) => onUpdate({ linkedImageUrl: e.target.value, videoUrl: e.target.value } as any)}
             placeholder="Video URL (YouTube/Vimeo/mp4)"
-            className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+            className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
           />
         )}
         {hotspot.type === 'audio' && (
@@ -102,7 +102,7 @@ function HotspotInspectorItemBase({
             value={hotspot.audioUrl || ''}
             onChange={(e) => onUpdate({ audioUrl: e.target.value })}
             placeholder="Audio URL (https://…)"
-            className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+            className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
           />
         )}
         {hotspot.type === 'link' && (
@@ -110,7 +110,7 @@ function HotspotInspectorItemBase({
             value={hotspot.externalUrl || ''}
             onChange={(e) => onUpdate({ externalUrl: e.target.value })}
             placeholder="External URL (https://…)"
-            className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+            className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
           />
         )}
         {hotspot.type === 'model3d' && (
@@ -118,7 +118,7 @@ function HotspotInspectorItemBase({
             value={hotspot.modelUrl || ''}
             onChange={(e) => onUpdate({ modelUrl: e.target.value })}
             placeholder="3D Model URL (.glb/.gltf)"
-            className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+            className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
           />
         )}
         {hotspot.type === 'experience' && (
@@ -126,7 +126,7 @@ function HotspotInspectorItemBase({
             value={(hotspot as any).experienceId || ''}
             onChange={(e) => onUpdate({ experienceId: e.target.value } as any)}
             placeholder="Experience ID"
-            className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+            className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
           />
         )}
 
@@ -134,7 +134,7 @@ function HotspotInspectorItemBase({
           <select
             value={hotspot.category}
             onChange={(e) => onUpdate({ category: e.target.value as HotspotCategory })}
-            className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+            className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
           >
             {CATEGORY_OPTIONS.map((c) => (
               <option key={c} value={c}>{c}</option>
@@ -143,7 +143,7 @@ function HotspotInspectorItemBase({
           <select
             value={hotspot.color || 'emerald'}
             onChange={(e) => onUpdate({ color: e.target.value as HotspotColor })}
-            className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+            className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
           >
             {COLOR_OPTIONS.map((c) => (
               <option key={c} value={c}>{c}</option>
@@ -155,10 +155,10 @@ function HotspotInspectorItemBase({
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-mono text-[#71717A]">Icon</span>
           <div className="flex-1 flex items-center gap-2">
-            <span className="text-xs text-[#3ECF8E]">{hotspot.icon || 'default'}</span>
+            <span className="text-xs text-[#dbfcff]">{hotspot.icon || 'default'}</span>
             <button
               onClick={() => setIconPickerOpen(!iconPickerOpen)}
-              className="px-2 py-0.5 rounded bg-[#18181B] border border-[#27272A] text-[10px] font-mono text-[#A1A1AA] hover:text-white"
+              className="px-2 py-0.5 rounded bg-[#201f20] border border-[#353436] text-[10px] font-mono text-[#A1A1AA] hover:text-white"
             >
               Change
             </button>
@@ -183,7 +183,7 @@ function HotspotInspectorItemBase({
       </div>
 
       {/* Appearance Section */}
-      <div className="pt-2 mt-2 border-t border-[#27272A] space-y-2">
+      <div className="pt-2 mt-2 border-t border-[#353436] space-y-2">
         <span className="text-[10px] font-mono text-[#71717A]">Appearance</span>
 
         <div className="flex items-center gap-2">
@@ -203,20 +203,20 @@ function HotspotInspectorItemBase({
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-mono text-[#71717A] w-12">Label</span>
           <input value={(hotspot as any).label || ''} onChange={(e) => onUpdate({ label: e.target.value } as any)}
-            placeholder="Visible label" className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white" />
+            placeholder="Visible label" className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white" />
         </div>
 
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-mono text-[#71717A] w-12">Tooltip</span>
           <input value={(hotspot as any).tooltip || ''} onChange={(e) => onUpdate({ tooltip: e.target.value } as any)}
-            placeholder="Hover tooltip" className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white" />
+            placeholder="Hover tooltip" className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white" />
         </div>
 
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-mono text-[#71717A] w-12">Animate</span>
           <select value={(hotspot as any).animation || 'none'}
             onChange={(e) => onUpdate({ animation: e.target.value } as any)}
-            className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white">
+            className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white">
             <option value="none">None</option>
             <option value="pulse">Pulse</option>
             <option value="glow">Glow</option>
@@ -227,10 +227,10 @@ function HotspotInspectorItemBase({
 
       {/* Media Configuration */}
       {(hotspot.type === 'video' || hotspot.type === 'gallery') && (
-        <div className="pt-2 mt-2 border-t border-[#27272A] space-y-2">
+        <div className="pt-2 mt-2 border-t border-[#353436] space-y-2">
           <span className="text-[10px] font-mono text-[#71717A]">Video Settings</span>
           <input value={hotspot.posterUrl || ''} onChange={(e) => onUpdate({ posterUrl: e.target.value })}
-            placeholder="Poster/thumbnail URL" className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white" />
+            placeholder="Poster/thumbnail URL" className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white" />
           <div className="flex gap-4">
             <label className="flex items-center gap-1 text-[10px] font-mono text-[#A1A1AA]">
               <input type="checkbox" checked={hotspot.autoplay || false} onChange={(e) => onUpdate({ autoplay: e.target.checked })} />
@@ -248,7 +248,7 @@ function HotspotInspectorItemBase({
         </div>
       )}
       {hotspot.type === 'audio' && (
-        <div className="pt-2 mt-2 border-t border-[#27272A] space-y-2">
+        <div className="pt-2 mt-2 border-t border-[#353436] space-y-2">
           <span className="text-[10px] font-mono text-[#71717A]">Audio Settings</span>
           <div className="flex gap-4">
             <label className="flex items-center gap-1 text-[10px] font-mono text-[#A1A1AA]">
@@ -271,13 +271,13 @@ function HotspotInspectorItemBase({
 
       {/* Direction Section */}
       {(hotspot.type === 'room_link' || hotspot.type === 'navigation' || hotspot.type === 'floor') && (
-        <div className="pt-2 mt-2 border-t border-[#27272A] space-y-2">
+        <div className="pt-2 mt-2 border-t border-[#353436] space-y-2">
           <span className="text-[10px] font-mono text-[#71717A]">Direction</span>
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-mono text-[#71717A] w-16">Mode</span>
             <select value={(hotspot as any).directionMode || 'auto'}
               onChange={(e) => onUpdate({ directionMode: e.target.value } as any)}
-              className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white">
+              className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white">
               <option value="auto">Auto</option>
               <option value="manual">Manual</option>
               <option value="look_at">Look At</option>
@@ -290,13 +290,13 @@ function HotspotInspectorItemBase({
                 <span className="text-[10px] font-mono text-[#71717A] w-16">Yaw</span>
                 <input type="number" value={hotspot.directionYaw || hotspot.targetYaw || 0} min={-3.14} max={3.14} step={0.01}
                   onChange={(e) => onUpdate({ directionYaw: Number(e.target.value), targetYaw: Number(e.target.value) } as any)}
-                  className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white" />
+                  className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white" />
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-mono text-[#71717A] w-16">Pitch</span>
                 <input type="number" value={hotspot.directionPitch || hotspot.targetPitch || 0} min={-1.57} max={1.57} step={0.01}
                   onChange={(e) => onUpdate({ directionPitch: Number(e.target.value), targetPitch: Number(e.target.value) } as any)}
-                  className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white" />
+                  className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white" />
               </div>
             </>
           )}
@@ -321,7 +321,7 @@ function PhotoSetSection({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="pt-2 mt-2 border-t border-[#27272A] space-y-2">
+    <div className="pt-2 mt-2 border-t border-[#353436] space-y-2">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -334,7 +334,7 @@ function PhotoSetSection({
           {images.length > 0 && (
             <div className="grid grid-cols-3 gap-1.5">
               {images.map((url) => (
-                <div key={url} className="relative aspect-square rounded overflow-hidden border border-[#27272A]">
+                <div key={url} className="relative aspect-square rounded overflow-hidden border border-[#353436]">
                   <img src={url} alt="" className="w-full h-full object-cover" />
                   <button
                     type="button"
@@ -352,7 +352,7 @@ function PhotoSetSection({
             <button
               type="button"
               onClick={onAddPhotos}
-              className="w-full px-2 py-1 rounded bg-[#18181B] border border-dashed border-[#3F3F46] text-[10px] font-mono text-[#A1A1AA] hover:text-white hover:border-[#3ECF8E]"
+              className="w-full px-2 py-1 rounded bg-[#201f20] border border-dashed border-[#3F3F46] text-[10px] font-mono text-[#A1A1AA] hover:text-white hover:border-[#dbfcff]"
             >
               + Add photos from library
             </button>
@@ -392,7 +392,7 @@ export function HotspotInspector({
     .map((r) => ({ id: r.id, name: r.name }));
 
   return (
-    <aside className="w-80 shrink-0 border-l border-[#27272A] overflow-y-auto p-3 space-y-3">
+    <aside className="w-80 shrink-0 border-l border-[#353436] overflow-y-auto p-3 space-y-3">
       <CollapsibleCardHeader
         collapsed={collapsed}
         onToggle={() => setCollapsed((v) => !v)}

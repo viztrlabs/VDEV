@@ -164,7 +164,7 @@ export default function GA4CredentialsTab({
           <button
             onClick={onFetch}
             disabled={loading}
-            className="px-4 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-white text-xs font-mono font-bold hover:bg-[#27272A] cursor-pointer transition-colors"
+            className="px-4 py-2 rounded-lg bg-[#201f20] border border-[#353436] text-white text-xs font-mono font-bold hover:bg-[#353436] cursor-pointer transition-colors"
           >
             <Loader2 className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
             <span className="ml-1.5">Refresh</span>
@@ -195,8 +195,8 @@ export default function GA4CredentialsTab({
 
       {/* Credentials Card */}
       {!loading && !credentials && !error && (
-        <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] text-center">
-          <div className="w-16 h-16 rounded-full bg-[#27272A] flex items-center justify-center mx-auto mb-4">
+        <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] text-center">
+          <div className="w-16 h-16 rounded-full bg-[#353436] flex items-center justify-center mx-auto mb-4">
             <Key className="w-8 h-8 text-[#71717A]" />
           </div>
           <h3 className="text-lg font-bold font-display text-white mb-2">No GA4 Credentials Configured</h3>
@@ -216,7 +216,7 @@ export default function GA4CredentialsTab({
       {credentials && !loading && (
         <div className="space-y-4">
           {/* Status & Actions */}
-          <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A]">
+          <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436]">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
@@ -276,18 +276,18 @@ export default function GA4CredentialsTab({
           {/* Details Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Service Account */}
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3">
               <div className="flex items-center gap-2 text-xs font-mono text-[#A1A1AA]">
                 <Mail className="w-4 h-4" />
                 <span>Service Account Email</span>
               </div>
               <div className="flex items-center gap-2">
-                <code className="flex-1 text-xs text-white bg-[#09090B] px-3 py-2 rounded-lg border border-[#27272A] font-mono break-all">
+                <code className="flex-1 text-xs text-white bg-[#131314] px-3 py-2 rounded-lg border border-[#353436] font-mono break-all">
                   {credentials.serviceAccountEmail}
                 </code>
                 <button
                   onClick={() => copyToClipboard(credentials.serviceAccountEmail)}
-                  className="p-2 rounded-lg bg-[#27272A] hover:bg-[#3F3F46] text-[#A1A1AA] hover:text-white cursor-pointer transition-colors"
+                  className="p-2 rounded-lg bg-[#353436] hover:bg-[#3F3F46] text-[#A1A1AA] hover:text-white cursor-pointer transition-colors"
                   title="Copy to clipboard"
                 >
                   <Copy className="w-4 h-4" />
@@ -296,18 +296,18 @@ export default function GA4CredentialsTab({
             </div>
 
             {/* Property ID */}
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3">
               <div className="flex items-center gap-2 text-xs font-mono text-[#A1A1AA]">
                 <Database className="w-4 h-4" />
                 <span>GA4 Property ID</span>
               </div>
               <div className="flex items-center gap-2">
-                <code className="flex-1 text-xs text-white bg-[#09090B] px-3 py-2 rounded-lg border border-[#27272A] font-mono break-all">
+                <code className="flex-1 text-xs text-white bg-[#131314] px-3 py-2 rounded-lg border border-[#353436] font-mono break-all">
                   {credentials.propertyId}
                 </code>
                 <button
                   onClick={() => copyToClipboard(credentials.propertyId)}
-                  className="p-2 rounded-lg bg-[#27272A] hover:bg-[#3F3F46] text-[#A1A1AA] hover:text-white cursor-pointer transition-colors"
+                  className="p-2 rounded-lg bg-[#353436] hover:bg-[#3F3F46] text-[#A1A1AA] hover:text-white cursor-pointer transition-colors"
                   title="Copy to clipboard"
                 >
                   <Copy className="w-4 h-4" />
@@ -316,7 +316,7 @@ export default function GA4CredentialsTab({
             </div>
 
             {/* Private Key */}
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3 lg:col-span-2">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3 lg:col-span-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs font-mono text-[#A1A1AA]">
                   <Key className="w-4 h-4" />
@@ -324,27 +324,27 @@ export default function GA4CredentialsTab({
                 </div>
                 <button
                   onClick={() => setShowPrivateKey(!showPrivateKey)}
-                  className="px-3 py-1.5 rounded-lg bg-[#27272A] hover:bg-[#3F3F46] text-[#A1A1AA] hover:text-white text-xs font-mono cursor-pointer transition-colors"
+                  className="px-3 py-1.5 rounded-lg bg-[#353436] hover:bg-[#3F3F46] text-[#A1A1AA] hover:text-white text-xs font-mono cursor-pointer transition-colors"
                 >
                   {showPrivateKey ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                   <span className="ml-1.5">{showPrivateKey ? 'Hide' : 'Show'}</span>
                 </button>
               </div>
               <div className="flex items-center gap-2">
-                <code className="flex-1 text-[10px] text-white bg-[#09090B] px-3 py-2 rounded-lg border border-[#27272A] font-mono break-all max-h-24 overflow-y-auto whitespace-pre-wrap">
+                <code className="flex-1 text-[10px] text-white bg-[#131314] px-3 py-2 rounded-lg border border-[#353436] font-mono break-all max-h-24 overflow-y-auto whitespace-pre-wrap">
                   {showPrivateKey ? credentials.privateKey : formatPrivateKey(credentials.privateKey)}
                 </code>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => copyToClipboard(credentials.privateKey)}
-                    className="p-2 rounded-lg bg-[#27272A] hover:bg-[#3F3F46] text-[#A1A1AA] hover:text-white cursor-pointer transition-colors"
+                    className="p-2 rounded-lg bg-[#353436] hover:bg-[#3F3F46] text-[#A1A1AA] hover:text-white cursor-pointer transition-colors"
                     title="Copy full private key"
                   >
                     <Copy className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => window.open(`https://console.cloud.google.com/iam-admin/serviceaccounts/details/${encodeURIComponent(credentials.serviceAccountEmail)}`, '_blank')}
-                    className="p-2 rounded-lg bg-[#27272A] hover:bg-[#3F3F46] text-[#A1A1AA] hover:text-white cursor-pointer transition-colors"
+                    className="p-2 rounded-lg bg-[#353436] hover:bg-[#3F3F46] text-[#A1A1AA] hover:text-white cursor-pointer transition-colors"
                     title="Open in Google Cloud Console"
                   >
                     <Link2 className="w-4 h-4" />
@@ -354,7 +354,7 @@ export default function GA4CredentialsTab({
             </div>
 
             {/* Metadata */}
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3 lg:col-span-2">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3 lg:col-span-2">
               <h4 className="text-xs font-mono text-[#A1A1AA] uppercase tracking-wider">Metadata</h4>
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div>
@@ -380,7 +380,7 @@ export default function GA4CredentialsTab({
           </div>
 
           {/* Quick Links */}
-          <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A]">
+          <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436]">
             <h4 className="text-xs font-mono text-[#A1A1AA] uppercase tracking-wider mb-3">Quick Links</h4>
             <div className="flex flex-wrap gap-3">
               <a
@@ -405,7 +405,7 @@ export default function GA4CredentialsTab({
                 href="https://developers.google.com/analytics/devguides/reporting/data/v1"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#27272A] text-white border border-[#3F3F46] hover:bg-[#3F3F46] text-xs font-mono cursor-pointer transition-colors"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#353436] text-white border border-[#3F3F46] hover:bg-[#3F3F46] text-xs font-mono cursor-pointer transition-colors"
               >
                 <Link2 className="w-3.5 h-3.5" />
                 GA4 Data API Docs
@@ -418,8 +418,8 @@ export default function GA4CredentialsTab({
       {/* Add/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-[#18181B] border border-[#27272A] shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#27272A] p-5">
+          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-[#201f20] border border-[#353436] shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#353436] p-5">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center">
                   <Key className="w-4 h-4" />
@@ -448,8 +448,8 @@ export default function GA4CredentialsTab({
                   placeholder="e.g. 123456789"
                   value={formData.propertyId}
                   onChange={(e) => setFormData({ ...formData, propertyId: e.target.value })}
-                  className={`w-full px-3 py-2 rounded-lg bg-[#09090B] border ${
-                    formErrors.propertyId ? 'border-red-500' : 'border-[#27272A]'
+                  className={`w-full px-3 py-2 rounded-lg bg-[#131314] border ${
+                    formErrors.propertyId ? 'border-red-500' : 'border-[#353436]'
                   } text-white focus:outline-none focus:border-purple-500 ${submitting ? 'cursor-wait' : ''}`}
                 />
                 {formErrors.propertyId && (
@@ -471,8 +471,8 @@ export default function GA4CredentialsTab({
                   placeholder="viztr-ga4@my-project.iam.gserviceaccount.com"
                   value={formData.serviceAccountEmail}
                   onChange={(e) => setFormData({ ...formData, serviceAccountEmail: e.target.value })}
-                  className={`w-full px-3 py-2 rounded-lg bg-[#09090B] border ${
-                    formErrors.serviceAccountEmail ? 'border-red-500' : 'border-[#27272A]'
+                  className={`w-full px-3 py-2 rounded-lg bg-[#131314] border ${
+                    formErrors.serviceAccountEmail ? 'border-red-500' : 'border-[#353436]'
                   } text-white focus:outline-none focus:border-purple-500 ${submitting ? 'cursor-wait' : ''}`}
                 />
                 {formErrors.serviceAccountEmail && (
@@ -491,8 +491,8 @@ export default function GA4CredentialsTab({
                   placeholder="-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC...\n-----END PRIVATE KEY-----\n"
                   value={formData.privateKey}
                   onChange={(e) => setFormData({ ...formData, privateKey: e.target.value })}
-                  className={`w-full px-3 py-2 rounded-lg bg-[#09090B] border ${
-                    formErrors.privateKey ? 'border-red-500' : 'border-[#27272A]'
+                  className={`w-full px-3 py-2 rounded-lg bg-[#131314] border ${
+                    formErrors.privateKey ? 'border-red-500' : 'border-[#353436]'
                   } text-white focus:outline-none focus:border-purple-500 font-mono text-[10px] ${submitting ? 'cursor-wait' : ''}`}
                 />
                 {formErrors.privateKey && (
@@ -519,11 +519,11 @@ export default function GA4CredentialsTab({
                 </div>
               )}
 
-              <div className="flex items-center justify-end gap-2 pt-4 border-t border-[#27272A]">
+              <div className="flex items-center justify-end gap-2 pt-4 border-t border-[#353436]">
                 <button
                   type="button"
                   onClick={() => { setShowModal(false); resetForm(); }}
-                  className="px-4 py-2 rounded-lg bg-[#27272A] hover:bg-[#3F3F46] text-white font-mono text-xs cursor-pointer"
+                  className="px-4 py-2 rounded-lg bg-[#353436] hover:bg-[#3F3F46] text-white font-mono text-xs cursor-pointer"
                 >
                   Cancel
                 </button>

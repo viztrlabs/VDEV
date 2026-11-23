@@ -289,8 +289,8 @@ export default function SuperAdminPanel({
         );
       case 'admin':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#3ECF8E]/10 text-[#3ECF8E] border border-[#3ECF8E]/30">
-            <Zap className="w-3 h-3 text-[#3ECF8E]" />
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#dbfcff]/10 text-[#dbfcff] border border-[#dbfcff]/30">
+            <Zap className="w-3 h-3 text-[#dbfcff]" />
             STUDIO ADMIN
           </span>
         );
@@ -346,9 +346,9 @@ export default function SuperAdminPanel({
   return (
     <div className="space-y-6" id="super-admin-panel-root">
       {/* 1. TOP SUPER ADMIN HEADER & ROLE PREVIEW SWITCHBOARD */}
-      <div className="p-5 rounded-2xl bg-gradient-to-r from-[#18181B] via-[#14151C] to-[#101014] border border-[#27272A] shadow-2xl relative overflow-hidden">
+      <div className="p-5 rounded-2xl bg-gradient-to-r from-[#201f20] via-[#14151C] to-[#101014] border border-[#353436] shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-purple-600/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-[#3ECF8E]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-[#dbfcff]/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative z-10">
           <div className="space-y-1.5">
@@ -371,7 +371,7 @@ export default function SuperAdminPanel({
           {/* Global Actions & Role-Specific View Switcher */}
           <div className="flex items-center gap-3 flex-wrap">
             {/* Role View Switcher */}
-            <div className="flex items-center gap-2 p-1 rounded-xl bg-[#09090B] border border-[#27272A]">
+            <div className="flex items-center gap-2 p-1 rounded-xl bg-[#131314] border border-[#353436]">
               <span className="text-[10px] font-mono font-bold text-[#71717A] px-2 uppercase">
                 Active View:
               </span>
@@ -385,7 +385,7 @@ export default function SuperAdminPanel({
                   className={`px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold transition-all cursor-pointer ${
                     currentRoleView === r
                       ? 'bg-purple-600 text-white shadow-sm'
-                      : 'text-[#A1A1AA] hover:text-white hover:bg-[#27272A]'
+                      : 'text-[#A1A1AA] hover:text-white hover:bg-[#353436]'
                   }`}
                 >
                   {r === 'super_admin'
@@ -412,7 +412,7 @@ export default function SuperAdminPanel({
               className={`px-3 py-1.5 rounded-xl border text-xs font-mono font-semibold flex items-center gap-2 transition-all cursor-pointer ${
                 superAdmin.isLiveSimulationActive
                   ? 'bg-emerald-950/60 border-emerald-800 text-emerald-400'
-                  : 'bg-[#27272A]/70 border-[#3F3F46] text-zinc-400'
+                  : 'bg-[#353436]/70 border-[#3F3F46] text-zinc-400'
               }`}
               title="Toggle simulated telemetry data feed"
             >
@@ -428,7 +428,7 @@ export default function SuperAdminPanel({
       </div>
 
       {/* 2. SUB-NAVIGATION TABS */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-[#27272A] scrollbar-thin">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-[#353436] scrollbar-thin">
         {[
           { id: 'users', label: 'Admins & Users', icon: Users, count: superAdmin.users.length },
           { id: 'analytics', label: 'System Analytics', icon: BarChart3 },
@@ -450,7 +450,7 @@ export default function SuperAdminPanel({
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-mono font-bold transition-all shrink-0 cursor-pointer ${
                 isActive
                   ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-500/20'
-                  : 'bg-[#18181B] text-[#A1A1AA] hover:text-white hover:bg-[#27272A] border border-[#27272A]'
+                  : 'bg-[#201f20] text-[#A1A1AA] hover:text-white hover:bg-[#353436] border border-[#353436]'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -458,7 +458,7 @@ export default function SuperAdminPanel({
               {typeof tab.count === 'number' && (
                 <span
                   className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-[#27272A] text-[#A1A1AA]'
+                    isActive ? 'bg-white/20 text-white' : 'bg-[#353436] text-[#A1A1AA]'
                   }`}
                 >
                   {tab.count}
@@ -477,7 +477,7 @@ export default function SuperAdminPanel({
       {activeTab === 'users' && (
         <div className="space-y-6" id="super-admin-users-tab">
           {/* Top Filter and Action Bar */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-[#201f20] border border-[#353436]">
             <div className="flex items-center gap-2.5 flex-1 max-w-md">
               <div className="relative w-full">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717A]" />
@@ -486,7 +486,7 @@ export default function SuperAdminPanel({
                   placeholder="Search users by name, email, department, company..."
                   value={userSearch}
                   onChange={(e) => setUserSearch(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-purple-500 font-mono"
+                  className="w-full pl-9 pr-4 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-purple-500 font-mono"
                 />
                 {userSearch && (
                   <button
@@ -504,7 +504,7 @@ export default function SuperAdminPanel({
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
-                className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs text-zinc-300 font-mono focus:outline-none focus:border-purple-500 cursor-pointer"
+                className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs text-zinc-300 font-mono focus:outline-none focus:border-purple-500 cursor-pointer"
               >
                 <option value="ALL">All Roles ({superAdmin.users.length})</option>
                 <option value="SUPER_ADMIN">Super Admins</option>
@@ -517,7 +517,7 @@ export default function SuperAdminPanel({
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs text-zinc-300 font-mono focus:outline-none focus:border-purple-500 cursor-pointer"
+                className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs text-zinc-300 font-mono focus:outline-none focus:border-purple-500 cursor-pointer"
               >
                 <option value="ALL">All Statuses</option>
                 <option value="active">Active</option>
@@ -537,11 +537,11 @@ export default function SuperAdminPanel({
           </div>
 
           {/* User Table */}
-          <div className="rounded-xl bg-[#18181B] border border-[#27272A] overflow-hidden shadow-xl">
+          <div className="rounded-xl bg-[#201f20] border border-[#353436] overflow-hidden shadow-xl">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="border-b border-[#27272A] bg-[#121214] text-[#A1A1AA] font-mono text-[11px] uppercase tracking-wider">
+                  <tr className="border-b border-[#353436] bg-[#131314] text-[#A1A1AA] font-mono text-[11px] uppercase tracking-wider">
                     <th className="py-3 px-4 font-bold">User Identity</th>
                     <th className="py-3 px-4 font-bold">Role & Authority</th>
                     <th className="py-3 px-4 font-bold">Status</th>
@@ -552,7 +552,7 @@ export default function SuperAdminPanel({
                     <th className="py-3 px-4 font-bold text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#27272A]/60">
+                <tbody className="divide-y divide-[#353436]/60">
                   {filteredUsers.length === 0 ? (
                     <tr>
                       <td colSpan={8} className="py-8 text-center text-[#71717A] font-mono">
@@ -563,7 +563,7 @@ export default function SuperAdminPanel({
                     filteredUsers.map((user) => (
                       <tr
                         key={user.id}
-                        className="hover:bg-[#27272A]/40 transition-colors group"
+                        className="hover:bg-[#353436]/40 transition-colors group"
                       >
                         {/* User Identity */}
                         <td className="py-3.5 px-4">
@@ -607,7 +607,7 @@ export default function SuperAdminPanel({
                               <select
                                 value={user.role}
                                 onChange={(e) => handleRoleQuickChange(user.id, e.target.value as UserRole)}
-                                className="text-[10px] font-mono bg-[#09090B] border border-[#27272A] rounded px-1.5 py-0.5 text-zinc-300 focus:outline-none focus:border-purple-500 cursor-pointer"
+                                className="text-[10px] font-mono bg-[#131314] border border-[#353436] rounded px-1.5 py-0.5 text-zinc-300 focus:outline-none focus:border-purple-500 cursor-pointer"
                                 title="Change User Role"
                               >
                                 <option value="super_admin">Promote: SUPER_ADMIN</option>
@@ -649,7 +649,7 @@ export default function SuperAdminPanel({
 
                         {/* Assigned Projects */}
                         <td className="py-3.5 px-4 font-mono text-zinc-300">
-                          <span className="px-2 py-0.5 rounded bg-[#27272A] text-white font-bold">
+                          <span className="px-2 py-0.5 rounded bg-[#353436] text-white font-bold">
                             {user.assignedProjectsCount} projects
                           </span>
                         </td>
@@ -667,7 +667,7 @@ export default function SuperAdminPanel({
                                 setUserToEdit({ ...user });
                                 setIsEditUserModalOpen(true);
                               }}
-                              className="p-1.5 rounded-lg bg-[#27272A]/70 hover:bg-[#27272A] border border-[#3F3F46] text-zinc-300 hover:text-white transition-colors cursor-pointer"
+                              className="p-1.5 rounded-lg bg-[#353436]/70 hover:bg-[#353436] border border-[#3F3F46] text-zinc-300 hover:text-white transition-colors cursor-pointer"
                               title="Edit User Profile & Permissions"
                             >
                               <Edit3 className="w-3.5 h-3.5" />
@@ -714,7 +714,7 @@ export default function SuperAdminPanel({
             </div>
 
             {/* Table Footer Count */}
-            <div className="p-3.5 bg-[#121214] border-t border-[#27272A] flex items-center justify-between text-xs font-mono text-[#A1A1AA]">
+            <div className="p-3.5 bg-[#131314] border-t border-[#353436] flex items-center justify-between text-xs font-mono text-[#A1A1AA]">
               <div>
                 Showing {filteredUsers.length} of {superAdmin.users.length} registered accounts
               </div>
@@ -724,7 +724,7 @@ export default function SuperAdminPanel({
                   Super Admins: {superAdmin.users.filter((u) => u.role === 'super_admin').length}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#3ECF8E]" />
+                  <span className="w-2 h-2 rounded-full bg-[#dbfcff]" />
                   Admins: {superAdmin.users.filter((u) => u.role === 'admin').length}
                 </span>
                 <span className="flex items-center gap-1.5">
@@ -748,7 +748,7 @@ export default function SuperAdminPanel({
         <div className="space-y-6" id="super-admin-analytics-tab">
           {/* Top KPI Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-2">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-2">
               <div className="flex items-center justify-between text-[#A1A1AA]">
                 <span className="text-xs font-mono uppercase tracking-wider font-bold">Total Platform Users</span>
                 <Users className="w-4 h-4 text-purple-400" />
@@ -770,7 +770,7 @@ export default function SuperAdminPanel({
           </div>
 
 
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-2">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-2">
               <div className="flex items-center justify-between text-[#A1A1AA]">
                 <span className="text-xs font-mono uppercase tracking-wider font-bold">Experiences</span>
                 <Cpu className="w-4 h-4 text-sky-400" />
@@ -790,7 +790,7 @@ export default function SuperAdminPanel({
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-2">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-2">
               <div className="flex items-center justify-between text-[#A1A1AA]">
                 <span className="text-xs font-mono uppercase tracking-wider font-bold">Assets & Models</span>
                 <HardDrive className="w-4 h-4 text-amber-400" />
@@ -812,19 +812,19 @@ export default function SuperAdminPanel({
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Visualizer 1: Project Type Breakdown */}
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-bold font-display text-white">Project Category Distribution</h3>
                   <p className="text-xs text-[#A1A1AA]">Live commissions divided by spatial format</p>
                 </div>
-                <span className="text-xs font-mono text-[#3ECF8E] font-bold">Active 2025 Fleet</span>
+                <span className="text-xs font-mono text-[#dbfcff] font-bold">Active 2025 Fleet</span>
               </div>
 
               <div className="space-y-3 pt-2">
                 {[
                   { name: 'Unreal 5.4 Pixel Streaming Worlds', count: 78, pct: 36, color: 'bg-purple-500' },
-                  { name: '8K Photoreal ArchViz Renders & CGI', count: 64, pct: 30, color: 'bg-[#3ECF8E]' },
+                  { name: '8K Photoreal ArchViz Renders & CGI', count: 64, pct: 30, color: 'bg-[#dbfcff]' },
                   { name: 'WebXR 3D Spatial & Apple Vision Pro', count: 46, pct: 21, color: 'bg-sky-500' },
                   { name: '360 Panoramic Virtual Tours & Matterport', count: 28, pct: 13, color: 'bg-amber-500' },
                 ].map((item) => (
@@ -835,7 +835,7 @@ export default function SuperAdminPanel({
                         {item.count} projects ({item.pct}%)
                       </span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-[#27272A] overflow-hidden">
+                    <div className="w-full h-2 rounded-full bg-[#353436] overflow-hidden">
                       <div
                         className={`h-full ${item.color} rounded-full transition-all duration-500`}
                         style={{ width: `${item.pct}%` }}
@@ -847,7 +847,7 @@ export default function SuperAdminPanel({
             </div>
 
             {/* Visualizer 2: Average Turnaround & Velocity */}
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-bold font-display text-white">Studio Pipeline Velocity</h3>
@@ -857,25 +857,25 @@ export default function SuperAdminPanel({
               </div>
 
               <div className="grid grid-cols-2 gap-3 pt-2">
-                <div className="p-3.5 rounded-xl bg-[#121214] border border-[#27272A] space-y-1">
+                <div className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] space-y-1">
                   <div className="text-[10px] font-mono text-[#A1A1AA] uppercase">Average Turnaround</div>
                   <div className="text-xl font-bold font-display text-white">8.4 Days</div>
                   <div className="text-[10px] text-emerald-400 font-mono">-2.1 days vs 2024</div>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-[#121214] border border-[#27272A] space-y-1">
+                <div className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] space-y-1">
                   <div className="text-[10px] font-mono text-[#A1A1AA] uppercase">Milestone Approval Speed</div>
                   <div className="text-xl font-bold font-display text-white">4.2 Hours</div>
                   <div className="text-[10px] text-emerald-400 font-mono">Fast-tracked VIP portal</div>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-[#121214] border border-[#27272A] space-y-1">
+                <div className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] space-y-1">
                   <div className="text-[10px] font-mono text-[#A1A1AA] uppercase">Mesh Draco Compression</div>
                   <div className="text-xl font-bold font-display text-white">74.6% Avg</div>
                   <div className="text-[10px] text-sky-400 font-mono">1.2 GB saves daily</div>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-[#121214] border border-[#27272A] space-y-1">
+                <div className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] space-y-1">
                   <div className="text-[10px] font-mono text-[#A1A1AA] uppercase">Client Retention Rate</div>
                   <div className="text-xl font-bold font-display text-white">96.8%</div>
                   <div className="text-[10px] text-purple-400 font-mono">Enterprise repeat studio</div>
@@ -893,7 +893,7 @@ export default function SuperAdminPanel({
         <div className="space-y-6" id="super-admin-revenue-tab">
           {/* Top Revenue Summary */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-950/40 via-[#18181B] to-[#121214] border border-emerald-800/40 space-y-2">
+            <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-950/40 via-[#201f20] to-[#131314] border border-emerald-800/40 space-y-2">
               <div className="flex items-center justify-between text-[#A1A1AA]">
                 <span className="text-xs font-mono uppercase tracking-wider font-bold">Monthly Recurring (MRR)</span>
                 <DollarSign className="w-4 h-4 text-emerald-400" />
@@ -909,7 +909,7 @@ export default function SuperAdminPanel({
               <p className="text-[11px] text-[#71717A] font-mono">Retainer studios & GPU hosting</p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-gradient-to-br from-purple-950/40 via-[#18181B] to-[#121214] border border-purple-800/40 space-y-2">
+            <div className="p-5 rounded-2xl bg-gradient-to-br from-purple-950/40 via-[#201f20] to-[#131314] border border-purple-800/40 space-y-2">
               <div className="flex items-center justify-between text-[#A1A1AA]">
                 <span className="text-xs font-mono uppercase tracking-wider font-bold">Annual Run Rate (ARR)</span>
                 <TrendingUp className="w-4 h-4 text-purple-400" />
@@ -925,7 +925,7 @@ export default function SuperAdminPanel({
               <p className="text-[11px] text-[#71717A] font-mono">12-month forward projection</p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-2">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-2">
               <div className="flex items-center justify-between text-[#A1A1AA]">
                 <span className="text-xs font-mono uppercase tracking-wider font-bold">August Total Gross</span>
                 <BarChart3 className="w-4 h-4 text-sky-400" />
@@ -939,7 +939,7 @@ export default function SuperAdminPanel({
               <p className="text-[11px] text-[#71717A] font-mono">Commissions + Subscriptions</p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-2">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-2">
               <div className="flex items-center justify-between text-[#A1A1AA]">
                 <span className="text-xs font-mono uppercase tracking-wider font-bold">Net Operating Margin</span>
                 <Sparkles className="w-4 h-4 text-amber-400" />
@@ -955,7 +955,7 @@ export default function SuperAdminPanel({
           </div>
 
           {/* Interactive Historical Revenue Trend Chart (SVG / Bar) */}
-          <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+          <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
                 <h3 className="text-sm font-bold font-display text-white">Monthly Revenue & MRR Growth Trajectory</h3>
@@ -985,7 +985,7 @@ export default function SuperAdminPanel({
                 return (
                   <div
                     key={metric.month}
-                    className="p-3 rounded-xl bg-[#121214] border border-[#27272A] hover:border-purple-500/50 transition-all flex flex-col justify-between group"
+                    className="p-3 rounded-xl bg-[#131314] border border-[#353436] hover:border-purple-500/50 transition-all flex flex-col justify-between group"
                   >
                     <div className="text-center font-mono space-y-1">
                       <div className="text-xs font-bold text-white">{metric.month}</div>
@@ -993,9 +993,9 @@ export default function SuperAdminPanel({
                     </div>
 
                     {/* Bars */}
-                    <div className="h-40 flex items-end justify-center gap-1.5 py-2 border-b border-[#27272A]">
+                    <div className="h-40 flex items-end justify-center gap-1.5 py-2 border-b border-[#353436]">
                       {/* Total Bar */}
-                      <div className="w-4 bg-[#27272A] rounded-t relative h-full flex items-end">
+                      <div className="w-4 bg-[#353436] rounded-t relative h-full flex items-end">
                         <div
                           className="w-full bg-emerald-500 rounded-t group-hover:bg-emerald-400 transition-all"
                           style={{ height: `${totalHeightPct}%` }}
@@ -1004,7 +1004,7 @@ export default function SuperAdminPanel({
                       </div>
 
                       {/* MRR Bar */}
-                      <div className="w-4 bg-[#27272A] rounded-t relative h-full flex items-end">
+                      <div className="w-4 bg-[#353436] rounded-t relative h-full flex items-end">
                         <div
                           className="w-full bg-purple-500 rounded-t group-hover:bg-purple-400 transition-all"
                           style={{ height: `${mrrHeightPct}%` }}
@@ -1013,7 +1013,7 @@ export default function SuperAdminPanel({
                       </div>
 
                       {/* Expense Bar */}
-                      <div className="w-2.5 bg-[#27272A] rounded-t relative h-full flex items-end">
+                      <div className="w-2.5 bg-[#353436] rounded-t relative h-full flex items-end">
                         <div
                           className="w-full bg-rose-500/80 rounded-t group-hover:bg-rose-400 transition-all"
                           style={{ height: `${expenseHeightPct}%` }}
@@ -1033,8 +1033,8 @@ export default function SuperAdminPanel({
           </div>
 
           {/* Recent Invoices Ledger */}
-          <div className="rounded-xl bg-[#18181B] border border-[#27272A] overflow-hidden">
-            <div className="p-4 bg-[#121214] border-b border-[#27272A] flex items-center justify-between">
+          <div className="rounded-xl bg-[#201f20] border border-[#353436] overflow-hidden">
+            <div className="p-4 bg-[#131314] border-b border-[#353436] flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <DollarSign className="w-4 h-4 text-emerald-400" />
                 <h4 className="text-xs font-mono font-bold uppercase text-white tracking-wider">
@@ -1047,7 +1047,7 @@ export default function SuperAdminPanel({
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs font-mono">
                 <thead>
-                  <tr className="border-b border-[#27272A] bg-[#09090B] text-[#71717A] text-[10px] uppercase">
+                  <tr className="border-b border-[#353436] bg-[#131314] text-[#71717A] text-[10px] uppercase">
                     <th className="py-2.5 px-4">Invoice #</th>
                     <th className="py-2.5 px-4">Client Organization</th>
                     <th className="py-2.5 px-4">Project / Milestone</th>
@@ -1056,14 +1056,14 @@ export default function SuperAdminPanel({
                     <th className="py-2.5 px-4 text-right">Receipt</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#27272A]/50">
+                <tbody className="divide-y divide-[#353436]/50">
                   {[
                     { id: 'INV-2025-0891', client: 'Vance Luxury Towers LLC (Dubai)', project: 'The Apex Tower (Stage 4)', amount: '$28,500.00', status: 'PAID', date: 'Aug 26, 2025' },
                     { id: 'INV-2025-0890', client: 'Nordic Monolith Architects (Stockholm)', project: 'Nordic Monolith (Retainer)', amount: '$14,200.00', status: 'PAID', date: 'Aug 24, 2025' },
                     { id: 'INV-2025-0889', client: 'Solarium Holdings (London)', project: 'VR Penthouse Experience', amount: '$36,000.00', status: 'PENDING', date: 'Aug 22, 2025' },
                     { id: 'INV-2025-0888', client: 'Tokyo Waterfront Urban Development', project: 'Unreal Pixel Streaming GPU Node Fleet', amount: '$18,500.00', status: 'PAID', date: 'Aug 19, 2025' },
                   ].map((inv) => (
-                    <tr key={inv.id} className="hover:bg-[#27272A]/30">
+                    <tr key={inv.id} className="hover:bg-[#353436]/30">
                       <td className="py-3 px-4 font-bold text-purple-400">{inv.id}</td>
                       <td className="py-3 px-4 text-white font-sans font-medium">{inv.client}</td>
                       <td className="py-3 px-4 text-[#A1A1AA]">{inv.project}</td>
@@ -1080,7 +1080,7 @@ export default function SuperAdminPanel({
                       <td className="py-3 px-4 text-right">
                         <button
                           onClick={() => showToast(`Generated PDF receipt for ${inv.id}`, 'success')}
-                          className="px-2.5 py-1 rounded bg-[#27272A] hover:bg-[#3F3F46] text-white text-[11px] font-mono transition-colors cursor-pointer"
+                          className="px-2.5 py-1 rounded bg-[#353436] hover:bg-[#3F3F46] text-white text-[11px] font-mono transition-colors cursor-pointer"
                         >
                           PDF Receipt
                         </button>
@@ -1100,7 +1100,7 @@ export default function SuperAdminPanel({
       {activeTab === 'gpu-monitoring' && (
         <div className="space-y-6" id="super-admin-gpu-tab">
           {/* Header & Global GPU Control Bar */}
-          <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436] flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
                 <Server className="w-4 h-4 text-purple-400" />
@@ -1114,10 +1114,10 @@ export default function SuperAdminPanel({
             </div>
 
             {/* Global WebRTC Stream Tuning Controls */}
-            <div className="flex items-center gap-4 flex-wrap bg-[#121214] p-2.5 rounded-lg border border-[#27272A]">
+            <div className="flex items-center gap-4 flex-wrap bg-[#131314] p-2.5 rounded-lg border border-[#353436]">
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-mono text-[#A1A1AA] uppercase">Bitrate Limit:</span>
-                <span className="text-xs font-mono font-bold text-[#3ECF8E]">{globalBitrateMbps} Mbps</span>
+                <span className="text-xs font-mono font-bold text-[#dbfcff]">{globalBitrateMbps} Mbps</span>
                 <input
                   type="range"
                   min="5"
@@ -1128,11 +1128,11 @@ export default function SuperAdminPanel({
                     setGlobalBitrateMbps(Number(e.target.value));
                     showToast(`Updated global WebRTC bitrate ceiling to ${e.target.value} Mbps`, 'info');
                   }}
-                  className="w-20 accent-[#3ECF8E] cursor-pointer"
+                  className="w-20 accent-[#dbfcff] cursor-pointer"
                 />
               </div>
 
-              <div className="h-4 w-px bg-[#27272A]" />
+              <div className="h-4 w-px bg-[#353436]" />
 
               <div className="flex items-center gap-1.5">
                 <span className="text-[10px] font-mono text-[#A1A1AA] uppercase">Max Res:</span>
@@ -1145,8 +1145,8 @@ export default function SuperAdminPanel({
                     }}
                     className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold transition-all cursor-pointer ${
                       resolutionPreset === res
-                        ? 'bg-[#3ECF8E] text-black font-bold'
-                        : 'bg-[#27272A] text-[#A1A1AA] hover:text-white'
+                        ? 'bg-[#dbfcff] text-black font-bold'
+                        : 'bg-[#353436] text-[#A1A1AA] hover:text-white'
                     }`}
                   >
                     {res}
@@ -1168,10 +1168,10 @@ export default function SuperAdminPanel({
                   key={node.id}
                   className={`p-5 rounded-2xl border transition-all space-y-4 relative overflow-hidden ${
                     isMaint
-                      ? 'bg-[#141416] border-zinc-700/60 opacity-80'
+                      ? 'bg-[#131314] border-zinc-700/60 opacity-80'
                       : isHighLoad
-                      ? 'bg-gradient-to-br from-amber-950/20 via-[#18181B] to-[#121214] border-amber-800/60'
-                      : 'bg-gradient-to-br from-[#18181B] via-[#14151C] to-[#121214] border-[#27272A] hover:border-purple-500/50'
+                      ? 'bg-gradient-to-br from-amber-950/20 via-[#201f20] to-[#131314] border-amber-800/60'
+                      : 'bg-gradient-to-br from-[#201f20] via-[#14151C] to-[#131314] border-[#353436] hover:border-purple-500/50'
                   }`}
                 >
                   {/* Region Header */}
@@ -1198,7 +1198,7 @@ export default function SuperAdminPanel({
                   </div>
 
                   {/* GPU Specs */}
-                  <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A] space-y-1 text-xs font-mono">
+                  <div className="p-3 rounded-xl bg-[#131314] border border-[#353436] space-y-1 text-xs font-mono">
                     <div className="text-purple-400 font-bold flex items-center gap-1.5">
                       <Cpu className="w-3.5 h-3.5" />
                       <span>{node.gpuModel}</span>
@@ -1218,7 +1218,7 @@ export default function SuperAdminPanel({
                         {isMaint ? '0%' : `${node.loadPercentage}%`}
                       </span>
                     </div>
-                    <div className="w-full h-2.5 rounded-full bg-[#09090B] border border-[#27272A] overflow-hidden">
+                    <div className="w-full h-2.5 rounded-full bg-[#131314] border border-[#353436] overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-500 ${
                           isMaint
@@ -1227,7 +1227,7 @@ export default function SuperAdminPanel({
                             ? 'bg-gradient-to-r from-amber-500 to-rose-500'
                             : isMedLoad
                             ? 'bg-gradient-to-r from-sky-500 to-purple-500'
-                            : 'bg-gradient-to-r from-emerald-500 to-[#3ECF8E]'
+                            : 'bg-gradient-to-r from-emerald-500 to-[#dbfcff]'
                         }`}
                         style={{ width: `${isMaint ? 0 : node.loadPercentage}%` }}
                       />
@@ -1236,21 +1236,21 @@ export default function SuperAdminPanel({
 
                   {/* Metrics 4-Grid */}
                   <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-                    <div className="p-2 rounded-lg bg-[#121214] border border-[#27272A]/80 space-y-0.5">
+                    <div className="p-2 rounded-lg bg-[#131314] border border-[#353436]/80 space-y-0.5">
                       <div className="text-[10px] text-[#71717A] uppercase">Active Sessions</div>
                       <div className="font-bold text-white">
                         {node.activeSessions} / {node.maxSessions}
                       </div>
                     </div>
 
-                    <div className="p-2 rounded-lg bg-[#121214] border border-[#27272A]/80 space-y-0.5">
+                    <div className="p-2 rounded-lg bg-[#131314] border border-[#353436]/80 space-y-0.5">
                       <div className="text-[10px] text-[#71717A] uppercase">VRAM Allocation</div>
                       <div className="font-bold text-sky-400">
                         {node.vramUsedGB} / {node.vramTotalGB} GB
                       </div>
                     </div>
 
-                    <div className="p-2 rounded-lg bg-[#121214] border border-[#27272A]/80 space-y-0.5">
+                    <div className="p-2 rounded-lg bg-[#131314] border border-[#353436]/80 space-y-0.5">
                       <div className="text-[10px] text-[#71717A] uppercase">Ping / Latency</div>
                       <div className="font-bold text-emerald-400 flex items-center gap-1">
                         <Wifi className="w-3 h-3" />
@@ -1258,7 +1258,7 @@ export default function SuperAdminPanel({
                       </div>
                     </div>
 
-                    <div className="p-2 rounded-lg bg-[#121214] border border-[#27272A]/80 space-y-0.5">
+                    <div className="p-2 rounded-lg bg-[#131314] border border-[#353436]/80 space-y-0.5">
                       <div className="text-[10px] text-[#71717A] uppercase">Avg FPS / Temp</div>
                       <div className="font-bold text-white flex items-center gap-1">
                         <span>{node.avgFps} FPS</span>
@@ -1268,12 +1268,12 @@ export default function SuperAdminPanel({
                   </div>
 
                   {/* Actions & Scaler Bar */}
-                  <div className="pt-2 border-t border-[#27272A] flex items-center justify-between gap-2">
+                  <div className="pt-2 border-t border-[#353436] flex items-center justify-between gap-2">
                     <div className="flex items-center gap-1.5">
                       <span className="text-[10px] font-mono text-[#71717A]">Scale:</span>
                       <button
                         onClick={() => superAdmin.scaleRegionNodes(node.id, -1)}
-                        className="w-6 h-6 rounded bg-[#27272A] hover:bg-[#3F3F46] text-white flex items-center justify-center text-xs font-mono font-bold cursor-pointer"
+                        className="w-6 h-6 rounded bg-[#353436] hover:bg-[#3F3F46] text-white flex items-center justify-center text-xs font-mono font-bold cursor-pointer"
                         title="Reduce GPU Nodes"
                       >
                         -
@@ -1283,7 +1283,7 @@ export default function SuperAdminPanel({
                       </span>
                       <button
                         onClick={() => superAdmin.scaleRegionNodes(node.id, 1)}
-                        className="w-6 h-6 rounded bg-[#27272A] hover:bg-[#3F3F46] text-white flex items-center justify-center text-xs font-mono font-bold cursor-pointer"
+                        className="w-6 h-6 rounded bg-[#353436] hover:bg-[#3F3F46] text-white flex items-center justify-center text-xs font-mono font-bold cursor-pointer"
                         title="Add GPU Node"
                       >
                         +
@@ -1332,7 +1332,7 @@ export default function SuperAdminPanel({
       {activeTab === 'feature-toggles' && (
         <div className="space-y-6" id="super-admin-toggles-tab">
           {/* Top Filter and Info Bar */}
-          <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436] flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div className="flex items-center gap-2.5 flex-1 max-w-md">
               <div className="relative w-full">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717A]" />
@@ -1341,7 +1341,7 @@ export default function SuperAdminPanel({
                   placeholder="Filter feature flags & kill-switches..."
                   value={featureSearch}
                   onChange={(e) => setFeatureSearch(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-purple-500 font-mono"
+                  className="w-full pl-9 pr-4 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-purple-500 font-mono"
                 />
               </div>
             </div>
@@ -1350,7 +1350,7 @@ export default function SuperAdminPanel({
               <select
                 value={featureCategory}
                 onChange={(e) => setFeatureCategory(e.target.value)}
-                className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs text-zinc-300 font-mono focus:outline-none focus:border-purple-500 cursor-pointer"
+                className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs text-zinc-300 font-mono focus:outline-none focus:border-purple-500 cursor-pointer"
               >
                 <option value="ALL">All Categories</option>
                 <option value="xr">Spatial WebXR & AR</option>
@@ -1368,7 +1368,7 @@ export default function SuperAdminPanel({
                     showToast('Reset all feature toggles to factory state.', 'info');
                   }
                 }}
-                className="px-3 py-2 rounded-lg bg-[#27272A] hover:bg-[#3F3F46] text-zinc-300 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-2 rounded-lg bg-[#353436] hover:bg-[#3F3F46] text-zinc-300 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 <span>Reset Defaults</span>
@@ -1383,8 +1383,8 @@ export default function SuperAdminPanel({
                 key={toggle.key}
                 className={`p-5 rounded-2xl border transition-all space-y-3 flex flex-col justify-between ${
                   toggle.enabled
-                    ? 'bg-gradient-to-br from-[#18181B] via-[#14151C] to-[#121214] border-[#27272A] hover:border-purple-500/50'
-                    : 'bg-[#121214] border-zinc-800 opacity-70'
+                    ? 'bg-gradient-to-br from-[#201f20] via-[#14151C] to-[#131314] border-[#353436] hover:border-purple-500/50'
+                    : 'bg-[#131314] border-zinc-800 opacity-70'
                 }`}
               >
                 <div className="space-y-2">
@@ -1392,7 +1392,7 @@ export default function SuperAdminPanel({
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <h4 className="font-bold text-white text-sm font-display">{toggle.name}</h4>
-                        <span className="px-2 py-0.2 rounded text-[9px] font-mono uppercase bg-[#27272A] text-[#A1A1AA]">
+                        <span className="px-2 py-0.2 rounded text-[9px] font-mono uppercase bg-[#353436] text-[#A1A1AA]">
                           {toggle.category}
                         </span>
                       </div>
@@ -1409,7 +1409,7 @@ export default function SuperAdminPanel({
                         );
                       }}
                       className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                        toggle.enabled ? 'bg-purple-600' : 'bg-[#27272A]'
+                        toggle.enabled ? 'bg-purple-600' : 'bg-[#353436]'
                       }`}
                     >
                       <span
@@ -1420,13 +1420,13 @@ export default function SuperAdminPanel({
                     </button>
                   </div>
 
-                  <div className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] font-mono text-[10px] text-[#71717A] flex items-center justify-between">
+                  <div className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] font-mono text-[10px] text-[#71717A] flex items-center justify-between">
                     <span className="text-purple-400 font-bold">{toggle.key}</span>
                     <span>Env: {toggle.environment}</span>
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-[#27272A] flex items-center justify-between text-[10px] font-mono text-[#71717A]">
+                <div className="pt-2 border-t border-[#353436] flex items-center justify-between text-[10px] font-mono text-[#71717A]">
                   <div>Modified by {toggle.lastModifiedBy}</div>
                   <div>{new Date(toggle.lastModifiedAt).toLocaleDateString()}</div>
                 </div>
@@ -1451,7 +1451,7 @@ export default function SuperAdminPanel({
               { service: 'TURN Signaling', status: 'Operational', ping: '19ms', color: 'emerald' },
               { service: 'Gemini AI Vision', status: 'Operational', ping: '140ms', color: 'emerald' },
             ].map((sub) => (
-              <div key={sub.service} className="p-3.5 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1.5 font-mono">
+              <div key={sub.service} className="p-3.5 rounded-xl bg-[#201f20] border border-[#353436] space-y-1.5 font-mono">
                 <div className="flex items-center justify-between">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                   <span className="text-[10px] text-[#71717A]">{sub.ping}</span>
@@ -1463,9 +1463,9 @@ export default function SuperAdminPanel({
           </div>
 
           {/* Diagnostic Log Console */}
-          <div className="rounded-2xl bg-[#09090B] border border-[#27272A] overflow-hidden shadow-2xl space-y-0">
+          <div className="rounded-2xl bg-[#131314] border border-[#353436] overflow-hidden shadow-2xl space-y-0">
             {/* Terminal Header */}
-            <div className="p-4 bg-[#121214] border-b border-[#27272A] flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="p-4 bg-[#131314] border-b border-[#353436] flex flex-col md:flex-row md:items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
                 <Terminal className="w-4 h-4 text-purple-400" />
                 <h4 className="text-xs font-mono font-bold uppercase text-white tracking-wider">
@@ -1485,14 +1485,14 @@ export default function SuperAdminPanel({
                     placeholder="Search logs..."
                     value={logSearch}
                     onChange={(e) => setLogSearch(e.target.value)}
-                    className="pl-8 pr-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-purple-500 font-mono w-40"
+                    className="pl-8 pr-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-purple-500 font-mono w-40"
                   />
                 </div>
 
                 <select
                   value={logLevelFilter}
                   onChange={(e) => setLogLevelFilter(e.target.value)}
-                  className="px-2.5 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs text-zinc-300 font-mono focus:outline-none cursor-pointer"
+                  className="px-2.5 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-xs text-zinc-300 font-mono focus:outline-none cursor-pointer"
                 >
                   <option value="ALL">All Levels</option>
                   <option value="info">INFO</option>
@@ -1510,7 +1510,7 @@ export default function SuperAdminPanel({
                     });
                     showToast('Dispatched manual health check ping.', 'info');
                   }}
-                  className="px-2.5 py-1.5 rounded-lg bg-[#27272A] hover:bg-[#3F3F46] text-white text-xs font-mono transition-colors cursor-pointer"
+                  className="px-2.5 py-1.5 rounded-lg bg-[#353436] hover:bg-[#3F3F46] text-white text-xs font-mono transition-colors cursor-pointer"
                 >
                   Ping Diagnostic
                 </button>
@@ -1528,7 +1528,7 @@ export default function SuperAdminPanel({
             </div>
 
             {/* Log Stream Viewer */}
-            <div className="p-4 max-h-96 overflow-y-auto space-y-2 font-mono text-xs divide-y divide-[#27272A]/40 scrollbar-thin">
+            <div className="p-4 max-h-96 overflow-y-auto space-y-2 font-mono text-xs divide-y divide-[#353436]/40 scrollbar-thin">
               {filteredLogs.length === 0 ? (
                 <div className="py-8 text-center text-[#71717A]">
                   No log entries matching the current filter.
@@ -1586,7 +1586,7 @@ export default function SuperAdminPanel({
       {/* ============================================================ */}
       {activeTab === 'permissions-matrix' && (
         <div className="space-y-6" id="super-admin-matrix-tab">
-          <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+          <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436]">
             <div className="flex items-center gap-2">
               <Lock className="w-4 h-4 text-purple-400" />
               <h3 className="text-sm font-bold font-display text-white">
@@ -1598,19 +1598,19 @@ export default function SuperAdminPanel({
             </p>
           </div>
 
-          <div className="rounded-xl bg-[#18181B] border border-[#27272A] overflow-hidden">
+          <div className="rounded-xl bg-[#201f20] border border-[#353436] overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs font-mono">
                 <thead>
-                  <tr className="border-b border-[#27272A] bg-[#121214] text-[#A1A1AA] uppercase text-[11px]">
+                  <tr className="border-b border-[#353436] bg-[#131314] text-[#A1A1AA] uppercase text-[11px]">
                     <th className="py-3 px-4 font-bold">System Capability / Action</th>
                     <th className="py-3 px-4 font-bold text-center text-purple-400">Super Admin</th>
-                    <th className="py-3 px-4 font-bold text-center text-[#3ECF8E]">Studio Admin</th>
+                    <th className="py-3 px-4 font-bold text-center text-[#dbfcff]">Studio Admin</th>
                     <th className="py-3 px-4 font-bold text-center text-sky-400">3D Artist</th>
                     <th className="py-3 px-4 font-bold text-center text-amber-400">VIP Client</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#27272A]/60 text-zinc-300">
+                <tbody className="divide-y divide-[#353436]/60 text-zinc-300">
                   {[
                     { action: 'Manage Super Admins & Demote Roles', superAdmin: true, admin: false, artist: false, client: false },
                     { action: 'Configure Global Feature Toggles & Switchboard', superAdmin: true, admin: false, artist: false, client: false },
@@ -1623,7 +1623,7 @@ export default function SuperAdminPanel({
                     { action: 'View Assigned Project Pipelines & 360 Tours', superAdmin: true, admin: true, artist: true, client: true },
                     { action: 'Download Final 8K Master Deliverables & Invoices', superAdmin: true, admin: true, artist: true, client: true },
                   ].map((row, idx) => (
-                    <tr key={idx} className="hover:bg-[#27272A]/40 transition-colors">
+                    <tr key={idx} className="hover:bg-[#353436]/40 transition-colors">
                       <td className="py-3 px-4 font-sans font-medium text-white">{row.action}</td>
                       <td className="py-3 px-4 text-center">
                         {row.superAdmin ? (
@@ -1634,7 +1634,7 @@ export default function SuperAdminPanel({
                       </td>
                       <td className="py-3 px-4 text-center">
                         {row.admin ? (
-                          <Check className="w-4 h-4 text-[#3ECF8E] mx-auto" />
+                          <Check className="w-4 h-4 text-[#dbfcff] mx-auto" />
                         ) : (
                           <X className="w-4 h-4 text-[#71717A] mx-auto" />
                         )}
@@ -1706,8 +1706,8 @@ export default function SuperAdminPanel({
       {/* ============================================================ */}
       {isAddUserModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-2xl bg-[#18181B] border border-[#27272A] p-6 space-y-5 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+          <div className="w-full max-w-lg rounded-2xl bg-[#201f20] border border-[#353436] p-6 space-y-5 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#353436] pb-3">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center">
                   <Plus className="w-4 h-4" />
@@ -1733,7 +1733,7 @@ export default function SuperAdminPanel({
                   placeholder="e.g. Liam Sterling"
                   value={newUserForm.name}
                   onChange={(e) => setNewUserForm({ ...newUserForm, name: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-purple-500"
+                  className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-purple-500"
                 />
               </div>
 
@@ -1745,7 +1745,7 @@ export default function SuperAdminPanel({
                   placeholder="e.g. liam.sterling@viztr.studio"
                   value={newUserForm.email}
                   onChange={(e) => setNewUserForm({ ...newUserForm, email: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-purple-500"
+                  className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-purple-500"
                 />
               </div>
 
@@ -1755,7 +1755,7 @@ export default function SuperAdminPanel({
                   <select
                     value={newUserForm.role}
                     onChange={(e) => setNewUserForm({ ...newUserForm, role: e.target.value as UserRole })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-purple-500 cursor-pointer"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-purple-500 cursor-pointer"
                   >
                     <option value="super_admin">SUPER_ADMIN (Root Access)</option>
                     <option value="admin">ADMIN (Studio Operations)</option>
@@ -1769,7 +1769,7 @@ export default function SuperAdminPanel({
                   <select
                     value={newUserForm.status}
                     onChange={(e) => setNewUserForm({ ...newUserForm, status: e.target.value as UserStatus })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-purple-500 cursor-pointer"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-purple-500 cursor-pointer"
                   >
                     <option value="active">Active (Immediate Login)</option>
                     <option value="invited">Invited (Send Email Link)</option>
@@ -1785,7 +1785,7 @@ export default function SuperAdminPanel({
                     type="text"
                     value={newUserForm.department}
                     onChange={(e) => setNewUserForm({ ...newUserForm, department: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-purple-500"
                   />
                 </div>
                 <div>
@@ -1794,7 +1794,7 @@ export default function SuperAdminPanel({
                     type="text"
                     value={newUserForm.company}
                     onChange={(e) => setNewUserForm({ ...newUserForm, company: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-purple-500"
                   />
                 </div>
               </div>
@@ -1811,11 +1811,11 @@ export default function SuperAdminPanel({
                 </label>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-4 border-t border-[#27272A]">
+              <div className="flex items-center justify-end gap-2 pt-4 border-t border-[#353436]">
                 <button
                   type="button"
                   onClick={() => setIsAddUserModalOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-[#27272A] hover:bg-[#3F3F46] text-white font-mono text-xs cursor-pointer"
+                  className="px-4 py-2 rounded-lg bg-[#353436] hover:bg-[#3F3F46] text-white font-mono text-xs cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -1836,8 +1836,8 @@ export default function SuperAdminPanel({
       {/* ============================================================ */}
       {isEditUserModalOpen && userToEdit && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-2xl bg-[#18181B] border border-[#27272A] p-6 space-y-5 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+          <div className="w-full max-w-lg rounded-2xl bg-[#201f20] border border-[#353436] p-6 space-y-5 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#353436] pb-3">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center">
                   <Edit3 className="w-4 h-4" />
@@ -1862,7 +1862,7 @@ export default function SuperAdminPanel({
                   required
                   value={userToEdit.name}
                   onChange={(e) => setUserToEdit({ ...userToEdit, name: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-purple-500"
+                  className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-purple-500"
                 />
               </div>
 
@@ -1873,7 +1873,7 @@ export default function SuperAdminPanel({
                   required
                   value={userToEdit.email}
                   onChange={(e) => setUserToEdit({ ...userToEdit, email: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-purple-500"
+                  className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-purple-500"
                 />
               </div>
 
@@ -1883,7 +1883,7 @@ export default function SuperAdminPanel({
                   <select
                     value={userToEdit.role}
                     onChange={(e) => setUserToEdit({ ...userToEdit, role: e.target.value as UserRole })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-purple-500 cursor-pointer"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-purple-500 cursor-pointer"
                   >
                     <option value="super_admin">SUPER_ADMIN (Root Authority)</option>
                     <option value="admin">ADMIN (Studio Operations)</option>
@@ -1897,7 +1897,7 @@ export default function SuperAdminPanel({
                   <select
                     value={userToEdit.status}
                     onChange={(e) => setUserToEdit({ ...userToEdit, status: e.target.value as UserStatus })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-purple-500 cursor-pointer"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-purple-500 cursor-pointer"
                   >
                     <option value="active">Active</option>
                     <option value="invited">Invited</option>
@@ -1913,7 +1913,7 @@ export default function SuperAdminPanel({
                     type="text"
                     value={userToEdit.department}
                     onChange={(e) => setUserToEdit({ ...userToEdit, department: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-purple-500"
                   />
                 </div>
                 <div>
@@ -1922,7 +1922,7 @@ export default function SuperAdminPanel({
                     type="text"
                     value={userToEdit.company || ''}
                     onChange={(e) => setUserToEdit({ ...userToEdit, company: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-purple-500"
                   />
                 </div>
               </div>
@@ -1939,11 +1939,11 @@ export default function SuperAdminPanel({
                 </label>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-4 border-t border-[#27272A]">
+              <div className="flex items-center justify-end gap-2 pt-4 border-t border-[#353436]">
                 <button
                   type="button"
                   onClick={() => setIsEditUserModalOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-[#27272A] hover:bg-[#3F3F46] text-white font-mono text-xs cursor-pointer"
+                  className="px-4 py-2 rounded-lg bg-[#353436] hover:bg-[#3F3F46] text-white font-mono text-xs cursor-pointer"
                 >
                   Cancel
                 </button>

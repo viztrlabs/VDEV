@@ -50,14 +50,14 @@ export default function SplatShowcasePage() {
       {/* 1. HERO PRESENTATION AREA (Full Landing Page Presentation Aspect Ratio) */}
       <section
         id="hero-section"
-        className="relative w-full h-screen min-h-[680px] flex flex-col justify-between items-center overflow-hidden text-white select-none transition-colors duration-300 bg-[#09090B]"
+        className="relative w-full h-screen min-h-[680px] flex flex-col justify-between items-center overflow-hidden text-white select-none transition-colors duration-300 bg-[#131314]"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-rose-950/30 via-[#09090B] to-[#09090B] pointer-events-none z-0" />
+        <div className="absolute inset-0 bg-gradient-to-br from-rose-950/30 via-[#131314] to-[#131314] pointer-events-none z-0" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))_from-rose-500/10_via-transparent_to-transparent] pointer-events-none z-0" />
 
         {/* TOP AREA: Clears floating header & hosts Eyebrow Badge */}
         <div className="relative z-20 w-full pt-16 sm:pt-20 shrink-0 flex justify-center px-2 sm:px-4">
-          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#0A0A0B] shadow-2xl transition-all border border-[#1E293B] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
+          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#131314] shadow-2xl transition-all border border-[#3b494b] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
             <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-rose-500 animate-pulse shrink-0" />
             <span className="font-bold text-rose-400 tracking-wider uppercase shrink-0">Gaussian Splatting Engine</span>
           </div>
@@ -69,9 +69,9 @@ export default function SplatShowcasePage() {
             Real-Time <span className="text-rose-400">Gaussian Splat</span> Viewer
           </h1>
 
-          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]">
+          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#e5e2e3]">
             Interactive WebGL Gaussian Splatting renderer powered{' '}
-            <code className="font-mono text-[#3ECF8E] px-1.5 py-0.5 rounded bg-[#18181B] border border-[#27272A]">
+            <code className="font-mono text-[#dbfcff] px-1.5 py-0.5 rounded bg-[#201f20] border border-[#353436]">
               @mkkellogg/gaussian-splats-3d
             </code>{' '}
             . Switch between multiple scenes, toggle visibility, explore 3D Gaussian splats real-time zero install, runs any browser.
@@ -89,7 +89,7 @@ export default function SplatShowcasePage() {
 
             <Link
               href="/xr-world/super-splat"
-              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#1E293B] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer hover:scale-105 active:scale-95 border border-[#1E293B]"
+              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#3b494b] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer hover:scale-105 active:scale-95 border border-[#3b494b]"
             >
               <Sparkles className="w-4 h-4 text-rose-400" />
               <span>Open SuperSplat Editor</span>
@@ -100,7 +100,7 @@ export default function SplatShowcasePage() {
             <div className="sm:block">
               <Link
                 href="/xr-world"
-                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0A0A0B] text-[#FAFAFA] text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-sm hover:bg-[#131314] border border-[#1E293B]"
+                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#131314] text-[#e5e2e3] text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-sm hover:bg-[#131314] border border-[#3b494b]"
               >
                 <Globe className="w-3.5 h-3.5 text-rose-400" />
                 <span>Back World Hub</span>
@@ -116,8 +116,8 @@ export default function SplatShowcasePage() {
           {/* LEFT PANEL Scene Info Controls */}
           <div className="lg:col-span-1 space-y-6">
             {/* Scene Selector Card */}
-            <div className="bg-[#18181B] border border-[#27272A] rounded-2xl p-6 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+            <div className="bg-[#201f20] border border-[#353436] rounded-2xl p-6 space-y-4">
+              <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
                 <Box className="w-4 h-4" />
                 <span>Scene Library</span>
               </div>
@@ -125,14 +125,14 @@ export default function SplatShowcasePage() {
               <p className="text-sm text-[#71717A]">
                 Choose curated public Gaussian Splat samples hosted Hugging Face.
                 All scenes use{' '}
-                <code className="font-mono text-[#3ECF8E] px-1 py-0.5 rounded bg-[#09090B]">.splat</code> binary format.
+                <code className="font-mono text-[#dbfcff] px-1 py-0.5 rounded bg-[#131314]">.splat</code> binary format.
               </p>
 
-              <div className="space-y-2 pt-2 border-t border-[#27272A]">
+              <div className="space-y-2 pt-2 border-t border-[#353436]">
                 {SPLAT_SCENES.map((scene) => (
                   <div
                     key={scene.id}
-                    className="flex items-center gap-3 p-3 rounded-lg bg-[#09090B] border border-[#27272A] hover:border-[#3ECF8E]/50 transition-colors cursor-pointer group"
+                    className="flex items-center gap-3 p-3 rounded-lg bg-[#131314] border border-[#353436] hover:border-[#dbfcff]/50 transition-colors cursor-pointer group"
                   >
                     <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-rose-500/30 to-rose-600/30 flex items-center justify-center flex-shrink-0">
                       <Box className="w-5 h-5 text-rose-400" />
@@ -152,8 +152,8 @@ export default function SplatShowcasePage() {
             </div>
 
             {/* Technical Specs Card */}
-            <div className="bg-[#18181B] border border-[#27272A] rounded-2xl p-6 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+            <div className="bg-[#201f20] border border-[#353436] rounded-2xl p-6 space-y-4">
+              <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Engine Capabilities</span>
               </div>
@@ -168,7 +168,7 @@ export default function SplatShowcasePage() {
                   { icon: Download, label: 'Zero Install', desc: 'Runs any modern browser WebXR' },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-center flex-shrink-0">
                       <item.icon className="w-4 h-4 text-rose-400" />
                     </div>
                     <div>
@@ -181,7 +181,7 @@ export default function SplatShowcasePage() {
             </div>
 
             {/* CTA Card */}
-            <div className="bg-gradient-to-br from-rose-950/60 via-[#18181B] to-[#09090B] border border-rose-500/50 rounded-2xl p-6 space-y-4">
+            <div className="bg-gradient-to-br from-rose-950/60 via-[#201f20] to-[#131314] border border-rose-500/50 rounded-2xl p-6 space-y-4">
               <div className="flex items-center gap-2 text-xs font-mono text-rose-400 font-bold uppercase">
                 <Sparkles className="w-4 h-4" />
                 <span>XR Integration Ready</span>
@@ -208,16 +208,16 @@ export default function SplatShowcasePage() {
 
           {/* RIGHT PANEL Viewer */}
           <div className="lg:col-span-2">
-            <div className="bg-[#18181B] border border-[#27272A] rounded-2xl overflow-hidden">
+            <div className="bg-[#201f20] border border-[#353436] rounded-2xl overflow-hidden">
               {/* Viewer Header */}
-              <div className="px-4 py-3 border-b border-[#27272A] flex items-center justify-between">
+              <div className="px-4 py-3 border-b border-[#353436] flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Box className="w-5 h-5 text-rose-400" />
                   <span className="font-mono font-bold text-white">Gaussian Splat Viewer</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs font-mono text-[#71717A]">
-                  <span className="px-2 py-0.5 rounded bg-[#09090B] border border-[#27272A]">WebGL2</span>
-                  <span className="px-2 py-0.5 rounded bg-[#09090B] border border-[#27272A]">@mkkellogg/gaussian-splats-3d</span>
+                  <span className="px-2 py-0.5 rounded bg-[#131314] border border-[#353436]">WebGL2</span>
+                  <span className="px-2 py-0.5 rounded bg-[#131314] border border-[#353436]">@mkkellogg/gaussian-splats-3d</span>
                 </div>
               </div>
 
@@ -225,11 +225,11 @@ export default function SplatShowcasePage() {
               <div className="relative h-[600px] w-full">
                 <Suspense
                   fallback={
-                    <div className="absolute inset-0 flex items-center justify-center bg-[#09090B]">
+                    <div className="absolute inset-0 flex items-center justify-center bg-[#131314]">
                       <div className="text-center space-y-3">
                         <Loader2 className="w-8 h-8 text-rose-400 animate-spin mx-auto" />
                         <p className="text-sm font-mono text-[#71717A]">Initializing Gaussian Splat Engine...</p>
-                        <p className="text-[10px] text-[#3ECF8E]">Loading @mkkellogg/gaussian-splats-3d WASM module</p>
+                        <p className="text-[10px] text-[#dbfcff]">Loading @mkkellogg/gaussian-splats-3d WASM module</p>
                       </div>
                     </div>
                   }
@@ -247,7 +247,7 @@ export default function SplatShowcasePage() {
       </section>
 
       {/* FOOTER INFO */}
-      <section className="py-12 px-6 border-t border-[#27272A]">
+      <section className="py-12 px-6 border-t border-[#353436]">
         <div className="max-w-[1400px] mx-auto">
           <div className="grid md:grid-cols-3 gap-8 text-center md:text-left">
             <div className="space-y-2">
@@ -256,7 +256,7 @@ export default function SplatShowcasePage() {
               <p className="text-sm text-[#71717A] font-mono">Hugging Face: cakewalk/splat-data</p>
             </div>
             <div className="space-y-2">
-              <Sparkles className="w-10 h-10 text-[#3ECF8E] mx-auto md:mx-0" />
+              <Sparkles className="w-10 h-10 text-[#dbfcff] mx-auto md:mx-0" />
               <h4 className="font-bold text-white">Engine</h4>
               <p className="text-sm text-[#71717A] font-mono">@mkkellogg/gaussian-splats-3d v0.4.7</p>
             </div>

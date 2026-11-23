@@ -9,10 +9,10 @@ export default function CollabPresencePanel({ className = '' }: { className?: st
   const { collaborators, self, connected } = useCollab();
 
   return (
-    <div className={`absolute top-4 right-4 z-40 w-56 rounded-xl bg-[#18181B]/85 backdrop-blur-sm border border-[#27272A] p-3 space-y-2 ${className}`}>
+    <div className={`absolute top-4 right-4 z-40 w-56 rounded-xl bg-[#201f20]/85 backdrop-blur-sm border border-[#353436] p-3 space-y-2 ${className}`}>
       <div className="flex items-center justify-between">
         <span className="text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA]">Collaboration</span>
-        <span className={`inline-flex items-center gap-1 text-[10px] ${connected ? 'text-[#3ECF8E]' : 'text-[#71717A]'}`}>
+        <span className={`inline-flex items-center gap-1 text-[10px] ${connected ? 'text-[#dbfcff]' : 'text-[#71717A]'}`}>
           {connected ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
           {connected ? 'live' : 'local'}
         </span>

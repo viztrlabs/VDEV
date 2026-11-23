@@ -221,14 +221,14 @@ export default function DiscoveryIntakeForm({
     <div
       className={
         isStandalone
-          ? 'min-h-screen bg-[#09090B] text-[#FAFAFA] flex flex-col w-full selection:bg-[#3ECF8E] selection:text-black'
+          ? 'min-h-screen bg-[#131314] text-[#e5e2e3] flex flex-col w-full selection:bg-[#dbfcff] selection:text-black'
           : 'w-full'
       }
     >
       {isStandalone && (
-        <section className="relative py-12 px-4 sm:px-8 border-b border-[#27272A] bg-gradient-to-b from-[#18181B] to-[#09090B] text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] text-xs font-mono font-bold uppercase tracking-wider">
-            <span className="w-2 h-2 rounded-full bg-[#3ECF8E] animate-pulse" />
+        <section className="relative py-12 px-4 sm:px-8 border-b border-[#353436] bg-gradient-to-b from-[#201f20] to-[#131314] text-center space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#dbfcff]/10 border border-[#dbfcff]/30 text-[#dbfcff] text-xs font-mono font-bold uppercase tracking-wider">
+            <span className="w-2 h-2 rounded-full bg-[#dbfcff] animate-pulse" />
             <span>Project Kickoff Blueprint</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-bold font-serif tracking-tight text-white max-w-3xl mx-auto">
@@ -242,7 +242,7 @@ export default function DiscoveryIntakeForm({
 
       {!isStandalone && (
         <div className="flex items-center justify-between gap-2 flex-wrap">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E]">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff]">
             <FileText className="w-4 h-4" />
             <span>Live Preview — Discovery Intake Form (embedded in Admin Dashboard)</span>
           </div>
@@ -250,7 +250,7 @@ export default function DiscoveryIntakeForm({
             <button
               type="button"
               onClick={fillSample}
-              className="px-2.5 py-1 rounded bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[10px] font-mono text-[#3ECF8E] flex items-center gap-1.5"
+              className="px-2.5 py-1 rounded bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[10px] font-mono text-[#dbfcff] flex items-center gap-1.5"
             >
               <Sparkles className="w-3 h-3" />
               Fill Sample
@@ -258,7 +258,7 @@ export default function DiscoveryIntakeForm({
             <button
               type="button"
               onClick={resetForm}
-              className="px-2.5 py-1 rounded bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[10px] font-mono text-[#A1A1AA]"
+              className="px-2.5 py-1 rounded bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[10px] font-mono text-[#A1A1AA]"
             >
               Reset
             </button>
@@ -275,14 +275,14 @@ export default function DiscoveryIntakeForm({
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="p-8 sm:p-12 rounded-2xl bg-[#18181B] border border-[#3ECF8E]/50 shadow-2xl text-center space-y-6"
+            className="p-8 sm:p-12 rounded-2xl bg-[#201f20] border border-[#dbfcff]/50 shadow-2xl text-center space-y-6"
           >
-            <div className="w-16 h-16 rounded-2xl bg-[#3ECF8E]/20 text-[#3ECF8E] flex items-center justify-center mx-auto border border-[#3ECF8E]/40">
+            <div className="w-16 h-16 rounded-2xl bg-[#dbfcff]/20 text-[#dbfcff] flex items-center justify-center mx-auto border border-[#dbfcff]/40">
               <CheckCircle2 className="w-8 h-8" />
             </div>
 
             <div className="space-y-2">
-              <span className="text-xs font-mono text-[#3ECF8E] uppercase tracking-wider font-bold">
+              <span className="text-xs font-mono text-[#dbfcff] uppercase tracking-wider font-bold">
                 Discovery Reference: {submissionId}
               </span>
               <h2 className="text-2xl sm:text-3xl font-bold font-serif text-white">
@@ -296,14 +296,14 @@ export default function DiscoveryIntakeForm({
               </p>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] max-w-md mx-auto text-left text-xs font-mono space-y-2">
+            <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] max-w-md mx-auto text-left text-xs font-mono space-y-2">
               <div className="flex justify-between text-[#71717A]">
                 <span>Client Reference:</span>
                 <span className="text-white">{formData.clientName}</span>
               </div>
               <div className="flex justify-between text-[#71717A]">
                 <span>Contact Email:</span>
-                <span className="text-[#3ECF8E]">{formData.contactEmail}</span>
+                <span className="text-[#dbfcff]">{formData.contactEmail}</span>
               </div>
               <div className="flex justify-between text-[#71717A]">
                 <span>Selected Scope:</span>
@@ -320,16 +320,16 @@ export default function DiscoveryIntakeForm({
                 <button
                   type="button"
                   onClick={() => window.print()}
-                  className="px-4 py-2.5 rounded-xl bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white flex items-center gap-2 transition-colors cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-[#131314] hover:bg-[#353436] border border-[#353436] text-xs font-mono text-white flex items-center gap-2 transition-colors cursor-pointer"
                 >
-                  <Printer className="w-4 h-4 text-[#3ECF8E]" />
+                  <Printer className="w-4 h-4 text-[#dbfcff]" />
                   <span>Print / Save PDF Brief</span>
                 </button>
               )}
               <button
                 type="button"
                 onClick={resetForm}
-                className="px-5 py-2.5 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#3ECF8E]/20"
+                className="px-5 py-2.5 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-lg shadow-[#dbfcff]/20"
               >
                 <span>Submit Another</span>
                 <ArrowRight className="w-4 h-4" />
@@ -339,9 +339,9 @@ export default function DiscoveryIntakeForm({
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* SECTION A */}
-            <section className="p-6 sm:p-8 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5">
-              <div className="flex items-center gap-3 pb-3 border-b border-[#27272A]">
-                <div className="p-2 rounded-lg bg-[#09090B] text-[#3ECF8E] border border-[#27272A]">
+            <section className="p-6 sm:p-8 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5">
+              <div className="flex items-center gap-3 pb-3 border-b border-[#353436]">
+                <div className="p-2 rounded-lg bg-[#131314] text-[#dbfcff] border border-[#353436]">
                   <Building2 className="w-5 h-5" />
                 </div>
                 <div>
@@ -409,7 +409,7 @@ export default function DiscoveryIntakeForm({
             </section>
 
             {/* SECTION B */}
-            <section className="p-6 sm:p-8 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5">
+            <section className="p-6 sm:p-8 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5">
               <SectionHeader
                 icon={<AlertTriangle className="w-5 h-5" />}
                 iconColor="text-amber-400"
@@ -462,7 +462,7 @@ export default function DiscoveryIntakeForm({
             </section>
 
             {/* SECTION C */}
-            <section className="p-6 sm:p-8 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5">
+            <section className="p-6 sm:p-8 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5">
               <SectionHeader
                 icon={<Target className="w-5 h-5" />}
                 iconColor="text-sky-400"
@@ -486,10 +486,10 @@ export default function DiscoveryIntakeForm({
             </section>
 
             {/* SECTION D */}
-            <section className="p-6 sm:p-8 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5">
+            <section className="p-6 sm:p-8 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5">
               <SectionHeader
                 icon={<Layers className="w-5 h-5" />}
-                iconColor="text-[#3ECF8E]"
+                iconColor="text-[#dbfcff]"
                 title="D. What Are You Looking For?"
                 subtitle="Select all delivery surfaces that apply to your roadmap"
               />
@@ -503,14 +503,14 @@ export default function DiscoveryIntakeForm({
                       onClick={() => toggleSolutionType(opt)}
                       className={`p-3.5 rounded-xl text-left border flex items-center justify-between transition-all cursor-pointer ${
                         isChecked
-                          ? 'bg-[#27272A] border-[#3ECF8E] text-white font-bold shadow-sm'
-                          : 'bg-[#09090B] border-[#27272A] text-[#A1A1AA] hover:text-white hover:border-[#71717A]'
+                          ? 'bg-[#353436] border-[#dbfcff] text-white font-bold shadow-sm'
+                          : 'bg-[#131314] border-[#353436] text-[#A1A1AA] hover:text-white hover:border-[#71717A]'
                       }`}
                     >
                       <span className="text-xs">{opt}</span>
                       <div
                         className={`w-4 h-4 rounded flex items-center justify-center border transition-all ${
-                          isChecked ? 'bg-[#3ECF8E] border-[#3ECF8E] text-black' : 'border-[#3f3f46] bg-transparent'
+                          isChecked ? 'bg-[#dbfcff] border-[#dbfcff] text-black' : 'border-[#3f3f46] bg-transparent'
                         }`}
                       >
                         {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
@@ -528,7 +528,7 @@ export default function DiscoveryIntakeForm({
             </section>
 
             {/* SECTION E */}
-            <section className="p-6 sm:p-8 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5">
+            <section className="p-6 sm:p-8 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5">
               <SectionHeader
                 icon={<FileCode className="w-5 h-5" />}
                 iconColor="text-purple-400"
@@ -573,7 +573,7 @@ export default function DiscoveryIntakeForm({
             </section>
 
             {/* SECTION F */}
-            <section className="p-6 sm:p-8 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5">
+            <section className="p-6 sm:p-8 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5">
               <SectionHeader
                 icon={<DollarSign className="w-5 h-5" />}
                 iconColor="text-emerald-400"
@@ -590,8 +590,8 @@ export default function DiscoveryIntakeForm({
                       onClick={() => handleInputChange('budgetRange', b)}
                       className={`p-3 rounded-xl text-left border text-xs transition-all cursor-pointer ${
                         formData.budgetRange === b
-                          ? 'bg-[#27272A] border-[#3ECF8E] text-[#3ECF8E] font-bold'
-                          : 'bg-[#09090B] border-[#27272A] text-[#A1A1AA] hover:text-white'
+                          ? 'bg-[#353436] border-[#dbfcff] text-[#dbfcff] font-bold'
+                          : 'bg-[#131314] border-[#353436] text-[#A1A1AA] hover:text-white'
                       }`}
                     >
                       {b}
@@ -628,7 +628,7 @@ export default function DiscoveryIntakeForm({
             </section>
 
             {/* SECTION G */}
-            <section className="p-6 sm:p-8 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5">
+            <section className="p-6 sm:p-8 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5">
               <SectionHeader
                 icon={<Compass className="w-5 h-5" />}
                 iconColor="text-rose-400"
@@ -652,16 +652,16 @@ export default function DiscoveryIntakeForm({
             </section>
 
             {/* SUBMIT */}
-            <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+            <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
               <div className="text-xs text-[#71717A] flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-[#3ECF8E]" />
+                <ShieldCheck className="w-4 h-4 text-[#dbfcff]" />
                 <span>Protected by AES-256 asset encryption & NDA guarantee</span>
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="px-8 py-3.5 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#3ECF8E]/25 disabled:opacity-50 cursor-pointer"
+                className="px-8 py-3.5 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#dbfcff]/25 disabled:opacity-50 cursor-pointer"
               >
                 {loading ? (
                   <span>Generating Proposal Queue...</span>
@@ -682,7 +682,7 @@ export default function DiscoveryIntakeForm({
 }
 
 const inputCls =
-  'w-full px-3.5 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-sm text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]';
+  'w-full px-3.5 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-sm text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]';
 
 function FieldLabel({ children, required }: { children: React.ReactNode; required?: boolean }) {
   return (
@@ -793,8 +793,8 @@ function SectionHeader({
   subtitle: string;
 }) {
   return (
-    <div className="flex items-center gap-3 pb-3 border-b border-[#27272A]">
-      <div className={`p-2 rounded-lg bg-[#09090B] ${iconColor} border border-[#27272A]`}>{icon}</div>
+    <div className="flex items-center gap-3 pb-3 border-b border-[#353436]">
+      <div className={`p-2 rounded-lg bg-[#131314] ${iconColor} border border-[#353436]`}>{icon}</div>
       <div>
         <h3 className="text-base sm:text-lg font-bold text-white font-serif">{title}</h3>
         <p className="text-xs text-[#A1A1AA]">{subtitle}</p>

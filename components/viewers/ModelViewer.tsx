@@ -302,7 +302,7 @@ export function ModelCanvas({
         </div>
       )}
       {url && status === 'loading' && (
-        <div className="absolute inset-0 flex items-center justify-center text-xs text-[#3ECF8E] font-mono animate-pulse">
+        <div className="absolute inset-0 flex items-center justify-center text-xs text-[#dbfcff] font-mono animate-pulse">
           Loading 3D model…
         </div>
       )}
@@ -390,17 +390,17 @@ export default function ModelViewer() {
     <div
       ref={containerRef}
       id="3d-webxr-model-viewer"
-      className="fixed inset-0 z-[999] bg-[#09090b] text-white flex flex-col justify-between select-none animate-in fade-in duration-200"
+      className="fixed inset-0 z-[999] bg-[#131314] text-white flex flex-col justify-between select-none animate-in fade-in duration-200"
       onMouseUp={handleMouseUp}
     >
       {/* TOP BAR */}
-      <div className="px-4 py-3 bg-[#09090B] border-b border-[#27272A] flex items-center justify-between z-30">
+      <div className="px-4 py-3 bg-[#131314] border-b border-[#353436] flex items-center justify-between z-30">
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-2.5 py-1 rounded bg-[#18181B] border border-[#27272A] text-[#3ECF8E] text-[10px] font-mono font-bold uppercase tracking-wider">
+          <div className="flex items-center gap-2 px-2.5 py-1 rounded bg-[#201f20] border border-[#353436] text-[#dbfcff] text-[10px] font-mono font-bold uppercase tracking-wider">
             <Box className="w-3.5 h-3.5" />
             <span>WEBXR 3D ORBIT ENGINE</span>
           </div>
-          <h2 className="text-xs font-mono font-semibold text-[#FAFAFA] hidden sm:inline">
+          <h2 className="text-xs font-mono font-semibold text-[#e5e2e3] hidden sm:inline">
             {activeModelTitle || 'Interactive WebXR Master Model'}
           </h2>
         </div>
@@ -408,25 +408,25 @@ export default function ModelViewer() {
         <div className="flex items-center gap-2">
           <button
             onClick={handleLaunchAR}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#18181B] hover:bg-[#27272A] text-[10px] font-mono text-[#FAFAFA] transition-colors border border-[#27272A] cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#201f20] hover:bg-[#353436] text-[10px] font-mono text-[#e5e2e3] transition-colors border border-[#353436] cursor-pointer"
             title="Launch WebAR mode"
           >
-            <Smartphone className="w-3 h-3 text-[#3ECF8E]" />
+            <Smartphone className="w-3 h-3 text-[#dbfcff]" />
             <span>{arSupported ? 'WebAR Active' : 'Simulate AR'}</span>
           </button>
 
           <button
             onClick={handleLaunchVR}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#18181B] hover:bg-[#27272A] text-[10px] font-mono text-[#FAFAFA] transition-colors border border-[#27272A] cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#201f20] hover:bg-[#353436] text-[10px] font-mono text-[#e5e2e3] transition-colors border border-[#353436] cursor-pointer"
             title="Launch VR mode"
           >
-            <Headset className="w-3 h-3 text-[#3ECF8E]" />
+            <Headset className="w-3 h-3 text-[#dbfcff]" />
             <span>{vrSupported ? 'VR Ready' : 'Simulate VR'}</span>
           </button>
 
           <button
             onClick={toggleFullscreen}
-            className="p-1.5 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#FAFAFA] transition-colors cursor-pointer"
+            className="p-1.5 rounded bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#e5e2e3] transition-colors cursor-pointer"
             title="Toggle Fullscreen"
           >
             {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
@@ -444,7 +444,7 @@ export default function ModelViewer() {
 
       {/* 3D INTERACTIVE VIEWPORT */}
       <div
-        className="relative flex-1 flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing bg-[#09090B]"
+        className="relative flex-1 flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing bg-[#131314]"
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onWheel={(e) => {
@@ -463,16 +463,16 @@ export default function ModelViewer() {
         />
 
         {/* Floating Controls HUD Sidebar */}
-        <div className="absolute top-4 left-4 z-20 flex flex-col gap-2 p-3 rounded-xl bg-[#09090B]/90 border border-[#27272A] backdrop-blur-md max-w-[210px]">
-          <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#3ECF8E] mb-1 flex items-center gap-1.5">
-            <Sliders className="w-3 h-3 text-[#3ECF8E]" />
+        <div className="absolute top-4 left-4 z-20 flex flex-col gap-2 p-3 rounded-xl bg-[#131314]/90 border border-[#353436] backdrop-blur-md max-w-[210px]">
+          <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#dbfcff] mb-1 flex items-center gap-1.5">
+            <Sliders className="w-3 h-3 text-[#dbfcff]" />
             <span>Shader Render Mode</span>
           </div>
-          <div className="grid grid-cols-3 gap-1 p-1 bg-[#18181B] border border-[#27272A] rounded">
+          <div className="grid grid-cols-3 gap-1 p-1 bg-[#201f20] border border-[#353436] rounded">
             <button
               onClick={() => setRenderMode('pbr')}
               className={`py-1 text-[10px] font-mono rounded font-medium transition-colors cursor-pointer ${
-                renderMode === 'pbr' ? 'bg-[#3ECF8E] text-black font-bold' : 'text-[#A1A1AA] hover:text-white'
+                renderMode === 'pbr' ? 'bg-[#dbfcff] text-black font-bold' : 'text-[#A1A1AA] hover:text-white'
               }`}
             >
               PBR
@@ -480,7 +480,7 @@ export default function ModelViewer() {
             <button
               onClick={() => setRenderMode('clay')}
               className={`py-1 text-[10px] font-mono rounded font-medium transition-colors cursor-pointer ${
-                renderMode === 'clay' ? 'bg-[#3ECF8E] text-black font-bold' : 'text-[#A1A1AA] hover:text-white'
+                renderMode === 'clay' ? 'bg-[#dbfcff] text-black font-bold' : 'text-[#A1A1AA] hover:text-white'
               }`}
             >
               Clay
@@ -488,18 +488,18 @@ export default function ModelViewer() {
             <button
               onClick={() => setRenderMode('wireframe')}
               className={`py-1 text-[10px] font-mono rounded font-medium transition-colors cursor-pointer ${
-                renderMode === 'wireframe' ? 'bg-[#3ECF8E] text-black font-bold' : 'text-[#A1A1AA] hover:text-white'
+                renderMode === 'wireframe' ? 'bg-[#dbfcff] text-black font-bold' : 'text-[#A1A1AA] hover:text-white'
               }`}
             >
               Wire
             </button>
           </div>
 
-          <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#3ECF8E] mt-2 mb-1 flex items-center gap-1.5">
+          <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#dbfcff] mt-2 mb-1 flex items-center gap-1.5">
             <Sun className="w-3 h-3 text-amber-400" />
             <span>Daylight Simulation</span>
           </div>
-          <div className="grid grid-cols-3 gap-1 p-1 bg-[#18181B] border border-[#27272A] rounded">
+          <div className="grid grid-cols-3 gap-1 p-1 bg-[#201f20] border border-[#353436] rounded">
             <button
               onClick={() => setLighting('noon')}
               className={`py-1 text-[10px] font-mono rounded font-medium transition-colors cursor-pointer ${
@@ -511,7 +511,7 @@ export default function ModelViewer() {
             <button
               onClick={() => setLighting('sunset')}
               className={`py-1 text-[10px] font-mono rounded font-medium transition-colors cursor-pointer ${
-                lighting === 'sunset' ? 'bg-[#3ECF8E] text-black font-bold' : 'text-[#A1A1AA] hover:text-white'
+                lighting === 'sunset' ? 'bg-[#dbfcff] text-black font-bold' : 'text-[#A1A1AA] hover:text-white'
               }`}
             >
               Sunset
@@ -526,12 +526,12 @@ export default function ModelViewer() {
             </button>
           </div>
 
-          <div className="flex items-center justify-between pt-2 border-t border-[#27272A] mt-1 text-xs">
+          <div className="flex items-center justify-between pt-2 border-t border-[#353436] mt-1 text-xs">
             <span className="text-[10px] font-mono text-[#A1A1AA]">Ground Grid</span>
             <button
               onClick={() => setShowGrid(!showGrid)}
               className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold cursor-pointer ${
-                showGrid ? 'bg-[#3ECF8E] text-black' : 'bg-[#18181B] text-[#71717A] border border-[#27272A]'
+                showGrid ? 'bg-[#dbfcff] text-black' : 'bg-[#201f20] text-[#71717A] border border-[#353436]'
               }`}
             >
               {showGrid ? 'ON' : 'OFF'}
@@ -540,9 +540,9 @@ export default function ModelViewer() {
         </div>
 
         {/* Telemetry Indicator */}
-        <div className="absolute bottom-4 right-4 z-20 flex items-center gap-3 p-2.5 rounded-lg bg-[#09090B]/90 border border-[#27272A] backdrop-blur-md text-[10px] font-mono text-[#A1A1AA]">
-          <div className="flex items-center gap-1.5 text-[#3ECF8E]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#3ECF8E] animate-pulse" />
+        <div className="absolute bottom-4 right-4 z-20 flex items-center gap-3 p-2.5 rounded-lg bg-[#131314]/90 border border-[#353436] backdrop-blur-md text-[10px] font-mono text-[#A1A1AA]">
+          <div className="flex items-center gap-1.5 text-[#dbfcff]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#dbfcff] animate-pulse" />
             <span>GLTF</span>
           </div>
           <div>Rot: {Math.round(rotY)}°</div>

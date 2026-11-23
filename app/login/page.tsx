@@ -92,10 +92,10 @@ function LoginContent() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[#09090B] text-white px-4 py-8">
-      <div className="w-full max-w-sm rounded-2xl border border-[#27272A] bg-[#0c0c0f] p-6 space-y-4 shadow-2xl">
+    <main className="min-h-screen flex items-center justify-center bg-[#131314] text-white px-4 py-8">
+      <div className="w-full max-w-sm rounded-2xl border border-[#353436] bg-[#201f20] p-6 space-y-4 shadow-2xl">
         <div className="text-center">
-          <div className="text-lg font-mono font-bold text-[#3ECF8E]">VizTR</div>
+          <div className="text-lg font-mono font-bold text-[#dbfcff]">VizTR</div>
           <div className="text-xs text-[#71717A] font-mono mt-1">Role-Based Access Portal</div>
         </div>
 
@@ -139,7 +139,7 @@ function LoginContent() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@studio.com"
-              className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-2 text-sm focus:border-[#3ECF8E] focus:outline-none"
+              className="w-full bg-[#201f20] border border-[#353436] rounded px-3 py-2 text-sm focus:border-[#dbfcff] focus:outline-none"
             />
           </div>
           <div>
@@ -150,13 +150,13 @@ function LoginContent() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-2 text-sm focus:border-[#3ECF8E] focus:outline-none"
+              className="w-full bg-[#201f20] border border-[#353436] rounded px-3 py-2 text-sm focus:border-[#dbfcff] focus:outline-none"
             />
           </div>
           <button
             type="submit"
             disabled={busy}
-            className="w-full bg-[#3ECF8E] hover:bg-[#34b876] text-black font-mono font-bold text-xs py-2.5 rounded disabled:opacity-50 transition-colors cursor-pointer"
+            className="w-full bg-[#dbfcff] hover:bg-[#34b876] text-black font-mono font-bold text-xs py-2.5 rounded disabled:opacity-50 transition-colors cursor-pointer"
           >
             {busy ? 'Authenticating…' : 'Sign In & Enter Dashboard'}
           </button>
@@ -164,7 +164,7 @@ function LoginContent() {
 
         <div className="text-center text-[11px] text-[#71717A] font-mono">
           No account?{' '}
-          <Link href="/signup" className="text-[#3ECF8E] hover:underline">
+          <Link href="/signup" className="text-[#dbfcff] hover:underline">
             Create one
           </Link>
         </div>
@@ -175,7 +175,7 @@ function LoginContent() {
 
 function LoginLoading() {
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[#09090B] text-white">
+    <main className="min-h-screen flex items-center justify-center bg-[#131314] text-white">
       <div className="text-xs font-mono text-[#71717A]">Loading…</div>
     </main>
   );

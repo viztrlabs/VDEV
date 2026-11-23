@@ -52,15 +52,15 @@ export default function PortfolioPage() {
               className="hero-bg-image object-cover object-center render-lighting-enhanced"
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/40 to-[#0A0A0B]/65 pointer-events-none z-20" />
-          <div className="absolute inset-0 bg-radial from-transparent via-[#0A0A0B]/25 to-[#0A0A0B]/80 pointer-events-none z-20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#131314] via-[#131314]/40 to-[#131314]/65 pointer-events-none z-20" />
+          <div className="absolute inset-0 bg-radial from-transparent via-[#131314]/25 to-[#131314]/80 pointer-events-none z-20" />
         </div>
 
         {/* TOP AREA: Clears floating header & hosts Eyebrow Badge (No directory breadcrumbs) */}
         <div className="relative z-20 w-full pt-16 sm:pt-20 shrink-0 flex justify-center px-2 sm:px-4">
-          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#0A0A0B] shadow-2xl transition-all border border-[#1E293B] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#42CF8B] animate-pulse shrink-0" />
-            <span className="font-bold text-[#42CF8B] tracking-wider uppercase shrink-0">ARCHITECTURAL ARCHIVE</span>
+          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#131314] shadow-2xl transition-all border border-[#3b494b] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#54de99] animate-pulse shrink-0" />
+            <span className="font-bold text-[#54de99] tracking-wider uppercase shrink-0">ARCHITECTURAL ARCHIVE</span>
             <span className="opacity-40 shrink-0">|</span>
             <span className="opacity-80 shrink-0">Selected Case Studies</span>
           </div>
@@ -76,7 +76,7 @@ export default function PortfolioPage() {
             Supertall Towers, Luxury Residences, WebXR Platforms & 360° Virtual Tours
           </p>
 
-          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]">
+          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#e5e2e3]">
             Explore our curated body of work across supertall towers, luxury residences, WebXR platforms, and 360° virtual tours.
           </p>
 
@@ -93,9 +93,9 @@ export default function PortfolioPage() {
             <Link
               href="/book-consultation"
               id="hero-secondary-cta"
-              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#1E293B] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#1E293B]"
+              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#3b494b] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#3b494b]"
             >
-              <Compass className="w-4 h-4 text-[#42CF8B]" />
+              <Compass className="w-4 h-4 text-[#54de99]" />
               <span>Commission A Project</span>
             </Link>
           </div>
@@ -111,7 +111,7 @@ export default function PortfolioPage() {
                   if (target) target.scrollIntoView({ behavior: 'smooth' });
                   else window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
                 }}
-                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0A0A0B] text-[#FAFAFA] text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-sm hover:bg-[#131314] border border-[#1E293B]"
+                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#131314] text-[#e5e2e3] text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-sm hover:bg-[#131314] border border-[#3b494b]"
                 aria-label="Scroll down to explore"
               >
                 <span>Scroll to explore</span>
@@ -123,7 +123,7 @@ export default function PortfolioPage() {
       </section>
 
       {/* FILTER & SEARCH BAR */}
-      <section id="portfolio-archive" className="sticky top-20 z-40 bg-[#0A0A0B] border-b border-[#1E293B] py-4 px-6">
+      <section id="portfolio-archive" className="sticky top-20 z-40 bg-[#131314] border-b border-[#3b494b] py-4 px-6">
         <div className="max-w-[1280px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Category Tabs */}
           <div className="flex flex-wrap items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
@@ -140,8 +140,8 @@ export default function PortfolioPage() {
                 onClick={() => setActiveCategory(cat.id)}
                 className={`px-3.5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
                   activeCategory === cat.id
-                    ? 'bg-[#0A0A0B] text-rose-500 border border-[#1E293B]'
-                    : 'bg-[#131314] text-[#B9CACB] border border-[#1E293B] hover:bg-[#1E293B]'
+                    ? 'bg-[#131314] text-rose-500 border border-[#3b494b]'
+                    : 'bg-[#131314] text-[#B9CACB] border border-[#3b494b] hover:bg-[#3b494b]'
                 }`}
               >
                 {cat.label}
@@ -157,7 +157,7 @@ export default function PortfolioPage() {
               placeholder="Search project, city, tag..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 rounded-xl bg-[#131314] border border-[#1E293B] text-xs text-[#FAFAFA] placeholder-[#B9CACB] focus:outline-none focus:border-rose-500"
+              className="w-full pl-9 pr-4 py-2 rounded-xl bg-[#131314] border border-[#3b494b] text-xs text-[#e5e2e3] placeholder-[#B9CACB] focus:outline-none focus:border-rose-500"
             />
           </div>
         </div>
@@ -185,7 +185,7 @@ export default function PortfolioPage() {
             {filteredProjects.map((project) => (
               <div
                 key={project.id}
-                className="group rounded-[2rem] overflow-hidden bg-[#131314] border border-[#1E293B] shadow-sm hover:shadow-[0_4px_24px_rgba(0,0,0,0.4)] transition-all flex flex-col justify-between"
+                className="group rounded-[2rem] overflow-hidden bg-[#131314] border border-[#3b494b] shadow-sm hover:shadow-[0_4px_24px_rgba(0,0,0,0.4)] transition-all flex flex-col justify-between"
               >
                 <div>
                   {/* Media Thumbnail */}
@@ -271,7 +271,7 @@ export default function PortfolioPage() {
                       <span>{project.location}</span>
                       <span className="font-mono">{project.year}</span>
                     </div>
-                    <h3 className="text-lg font-bold text-[#FAFAFA] font-display">
+                    <h3 className="text-lg font-bold text-[#e5e2e3] font-display">
                       <Link href={`/portfolio/${project.id}`} className="hover:text-rose-500 transition-colors">
                         {project.title}
                       </Link>
@@ -288,7 +288,7 @@ export default function PortfolioPage() {
                     {project.tags.slice(0, 3).map((tag, idx) => (
                       <span
                         key={idx}
-                        className="px-2 py-0.5 rounded-md bg-[#0A0A0B] border border-[#1E293B] text-[10px] text-[#B9CACB] font-medium"
+                        className="px-2 py-0.5 rounded-md bg-[#131314] border border-[#3b494b] text-[10px] text-[#B9CACB] font-medium"
                       >
                         {tag}
                       </span>
@@ -297,7 +297,7 @@ export default function PortfolioPage() {
 
                   <Link
                     href={`/portfolio/${project.id}`}
-                    className="w-full py-2.5 rounded-xl bg-[#0A0A0B] border border-[#1E293B] hover:bg-rose-600 hover:border-rose-600 hover:text-white text-rose-500 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"
+                    className="w-full py-2.5 rounded-xl bg-[#131314] border border-[#3b494b] hover:bg-rose-600 hover:border-rose-600 hover:text-white text-rose-500 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"
                   >
                     <span>Read Full Case Study</span>
                     <ArrowRight className="w-3.5 h-3.5" />

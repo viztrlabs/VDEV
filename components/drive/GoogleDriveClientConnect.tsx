@@ -187,11 +187,11 @@ export default function GoogleDriveClientConnect({
   });
 
   return (
-    <div id="google-drive-client-section" className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-6 shadow-xl">
+    <div id="google-drive-client-section" className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-6 shadow-xl">
       {/* HEADER & CONNECTION STATE */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#27272A] pb-5">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#353436] pb-5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 flex items-center justify-center text-[#3ECF8E]">
+          <div className="w-10 h-10 rounded-xl bg-[#dbfcff]/10 border border-[#dbfcff]/30 flex items-center justify-center text-[#dbfcff]">
             <HardDrive className="w-5 h-5" />
           </div>
           <div>
@@ -205,7 +205,7 @@ export default function GoogleDriveClientConnect({
                   Connected & Synced
                 </span>
               ) : (
-                <span className="px-2 py-0.5 rounded-full bg-[#27272A] text-[#A1A1AA] text-[10px] font-mono">
+                <span className="px-2 py-0.5 rounded-full bg-[#353436] text-[#A1A1AA] text-[10px] font-mono">
                   Not Linked
                 </span>
               )}
@@ -223,16 +223,16 @@ export default function GoogleDriveClientConnect({
               <button
                 id="gdrive-settings-btn"
                 onClick={() => setShowConfigModal(true)}
-                className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-xs font-mono text-white flex items-center gap-1.5 transition-colors cursor-pointer"
                 title="Integration Settings"
               >
-                <Settings className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                <Settings className="w-3.5 h-3.5 text-[#dbfcff]" />
                 <span>Configure</span>
               </button>
               <button
                 id="gdrive-disconnect-btn"
                 onClick={() => setShowConfirmDisconnect(true)}
-                className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-rose-950/40 border border-[#27272A] hover:border-rose-800 text-xs font-mono text-[#A1A1AA] hover:text-rose-400 flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-2 rounded-lg bg-[#131314] hover:bg-rose-950/40 border border-[#353436] hover:border-rose-800 text-xs font-mono text-[#A1A1AA] hover:text-rose-400 flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <LogOut className="w-3.5 h-3.5" />
                 <span>Disconnect</span>
@@ -269,8 +269,8 @@ export default function GoogleDriveClientConnect({
       {/* CONNECTED ACCOUNT PROFILE BADGE & STATUS METRICS */}
       {connectedAccount && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A] flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#3ECF8E]/20 border border-[#3ECF8E]/40 flex items-center justify-center font-mono font-bold text-[#3ECF8E] text-xs shrink-0 overflow-hidden">
+          <div className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[#dbfcff]/20 border border-[#dbfcff]/40 flex items-center justify-center font-mono font-bold text-[#dbfcff] text-xs shrink-0 overflow-hidden">
               {connectedAccount.photoURL ? (
                 <Image
                   src={connectedAccount.photoURL}
@@ -292,21 +292,21 @@ export default function GoogleDriveClientConnect({
               <div className="text-[11px] font-mono text-[#71717A] truncate">
                 {connectedAccount.email}
               </div>
-              <div className="text-[10px] font-mono text-[#3ECF8E]">
+              <div className="text-[10px] font-mono text-[#dbfcff]">
                 Active Project Target: {currentProjectId}
               </div>
             </div>
           </div>
 
           {/* STORAGE QUOTA METRIC */}
-          <div className="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A] space-y-1.5">
+          <div className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] space-y-1.5">
             <div className="flex items-center justify-between text-xs font-mono">
               <span className="text-[#A1A1AA]">Google Drive Storage</span>
               <span className="text-white font-bold">{quota?.usage} / {quota?.limit}</span>
             </div>
-            <div className="w-full h-1.5 rounded-full bg-[#18181B] overflow-hidden">
+            <div className="w-full h-1.5 rounded-full bg-[#201f20] overflow-hidden">
               <div
-                className="h-full bg-[#3ECF8E] transition-all"
+                className="h-full bg-[#dbfcff] transition-all"
                 style={{ width: `${quota?.usagePercentage || 28}%` }}
               />
             </div>
@@ -317,11 +317,11 @@ export default function GoogleDriveClientConnect({
           </div>
 
           {/* PROJECT FOLDER SYNC STATUS */}
-          <div className="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A] flex items-center justify-between">
+          <div className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] flex items-center justify-between">
             <div className="space-y-0.5">
               <div className="text-[10px] font-mono text-[#71717A] uppercase">Dedicated Project Vault</div>
               <div className="text-xs font-mono font-bold text-white flex items-center gap-1.5">
-                <Folder className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                <Folder className="w-3.5 h-3.5 text-[#dbfcff]" />
                 <span className="truncate max-w-[140px]">{projectFolderName}</span>
               </div>
               <div className="text-[10px] font-mono text-emerald-400">
@@ -332,10 +332,10 @@ export default function GoogleDriveClientConnect({
             <button
               onClick={() => loadFiles(connectedAccount.accessToken)}
               disabled={isLoadingFiles}
-              className="p-2 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+              className="p-2 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
               title="Refresh Drive Files"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isLoadingFiles ? 'animate-spin text-[#3ECF8E]' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${isLoadingFiles ? 'animate-spin text-[#dbfcff]' : ''}`} />
             </button>
           </div>
         </div>
@@ -343,8 +343,8 @@ export default function GoogleDriveClientConnect({
 
       {/* DISCONNECTED INTRO STATE */}
       {!connectedAccount && (
-        <div className="p-6 rounded-xl bg-[#09090B] border border-[#27272A] text-center space-y-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 flex items-center justify-center mx-auto text-[#3ECF8E]">
+        <div className="p-6 rounded-xl bg-[#131314] border border-[#353436] text-center space-y-4">
+          <div className="w-12 h-12 rounded-2xl bg-[#dbfcff]/10 border border-[#dbfcff]/30 flex items-center justify-center mx-auto text-[#dbfcff]">
             <UploadCloud className="w-6 h-6" />
           </div>
           <div className="max-w-md mx-auto space-y-1">
@@ -360,7 +360,7 @@ export default function GoogleDriveClientConnect({
             <button
               onClick={handleConnect}
               disabled={isConnecting}
-              className="px-5 py-2.5 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider transition-all shadow-lg cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider transition-all shadow-lg cursor-pointer"
             >
               {isConnecting ? 'Opening Google Auth...' : 'Connect Google Drive (1-Click)'}
             </button>
@@ -374,7 +374,7 @@ export default function GoogleDriveClientConnect({
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white flex items-center gap-2">
-                <FileCode className="w-4 h-4 text-[#3ECF8E]" />
+                <FileCode className="w-4 h-4 text-[#dbfcff]" />
                 <span>Google Drive Project Repository ({filteredFiles.length} files)</span>
               </h4>
             </div>
@@ -388,18 +388,18 @@ export default function GoogleDriveClientConnect({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Filter files..."
-                  className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                  className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
                 />
               </div>
 
-              <div className="flex items-center gap-1 bg-[#09090B] p-1 rounded-lg border border-[#27272A] text-[11px] font-mono">
+              <div className="flex items-center gap-1 bg-[#131314] p-1 rounded-lg border border-[#353436] text-[11px] font-mono">
                 {['all', 'model3d', 'blueprint', 'render', 'document'].map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
                     className={`px-2 py-1 rounded capitalize transition-colors cursor-pointer ${
                       selectedCategory === cat
-                        ? 'bg-[#3ECF8E] text-black font-bold'
+                        ? 'bg-[#dbfcff] text-black font-bold'
                         : 'text-[#A1A1AA] hover:text-white'
                     }`}
                   >
@@ -420,14 +420,14 @@ export default function GoogleDriveClientConnect({
                   whileHover={{ y: -2 }}
                   className={`p-3.5 rounded-xl border transition-all flex flex-col justify-between space-y-3 ${
                     isShared
-                      ? 'bg-[#18181B] border-[#3ECF8E]/60 shadow-lg shadow-[#3ECF8E]/5'
-                      : 'bg-[#09090B] border-[#27272A] hover:border-[#3ECF8E]/30'
+                      ? 'bg-[#201f20] border-[#dbfcff]/60 shadow-lg shadow-[#dbfcff]/5'
+                      : 'bg-[#131314] border-[#353436] hover:border-[#dbfcff]/30'
                   }`}
                 >
                   <div className="space-y-2">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-center gap-2 overflow-hidden">
-                        <div className={`p-2 rounded-lg shrink-0 ${isShared ? 'bg-[#3ECF8E]/10 text-[#3ECF8E]' : 'bg-[#18181B] text-[#A1A1AA]'}`}>
+                        <div className={`p-2 rounded-lg shrink-0 ${isShared ? 'bg-[#dbfcff]/10 text-[#dbfcff]' : 'bg-[#201f20] text-[#A1A1AA]'}`}>
                           {file.category === 'model3d' ? (
                             <Layers className="w-4 h-4" />
                           ) : file.category === 'blueprint' ? (
@@ -462,13 +462,13 @@ export default function GoogleDriveClientConnect({
                   </div>
 
                   {/* ACTION CONTROLS */}
-                  <div className="flex items-center justify-between pt-2 border-t border-[#27272A] gap-2">
+                  <div className="flex items-center justify-between pt-2 border-t border-[#353436] gap-2">
                     {file.webViewLink && (
                       <a
                         href={file.webViewLink}
                         target="_blank"
                         rel="noreferrer"
-                        className="p-1.5 rounded hover:bg-[#18181B] text-[#A1A1AA] hover:text-white transition-colors"
+                        className="p-1.5 rounded hover:bg-[#201f20] text-[#A1A1AA] hover:text-white transition-colors"
                         title="Open in Google Drive"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
@@ -480,7 +480,7 @@ export default function GoogleDriveClientConnect({
                       className={`flex-1 px-2.5 py-1.5 rounded-lg text-[10px] font-mono font-bold uppercase transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                         isShared
                           ? 'bg-rose-950/30 hover:bg-rose-950/60 border border-rose-900/60 text-rose-400'
-                          : 'bg-[#3ECF8E] hover:bg-[#34b27b] text-black shadow-md'
+                          : 'bg-[#dbfcff] hover:bg-[#34b27b] text-black shadow-md'
                       }`}
                     >
                       <Share2 className="w-3 h-3" />
@@ -493,7 +493,7 @@ export default function GoogleDriveClientConnect({
           </div>
 
           {filteredFiles.length === 0 && (
-            <div className="p-8 rounded-xl bg-[#09090B] border border-[#27272A] text-center text-xs font-mono text-[#71717A]">
+            <div className="p-8 rounded-xl bg-[#131314] border border-[#353436] text-center text-xs font-mono text-[#71717A]">
               No Google Drive files match your current search or category filter.
             </div>
           )}
@@ -508,16 +508,16 @@ export default function GoogleDriveClientConnect({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-md w-full p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5 shadow-2xl text-xs font-mono"
+              className="max-w-md w-full p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5 shadow-2xl text-xs font-mono"
             >
-              <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+              <div className="flex items-center justify-between border-b border-[#353436] pb-3">
                 <div className="flex items-center gap-2 text-white font-bold text-sm font-display">
-                  <Settings className="w-4 h-4 text-[#3ECF8E]" />
+                  <Settings className="w-4 h-4 text-[#dbfcff]" />
                   <span>Google Drive Client Settings</span>
                 </div>
                 <button
                   onClick={() => setShowConfigModal(false)}
-                  className="p-1 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white"
+                  className="p-1 rounded hover:bg-[#353436] text-[#A1A1AA] hover:text-white"
                 >
                   ✕
                 </button>
@@ -530,21 +530,21 @@ export default function GoogleDriveClientConnect({
                     type="text"
                     value={projectFolderName}
                     onChange={(e) => setProjectFolderName(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   />
                   <p className="text-[10px] text-[#71717A]">
                     Target folder where 8K master TIFF renders and WebXR archives will be automatically stored.
                   </p>
                 </div>
 
-                <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] space-y-3">
+                <div className="p-3 rounded-lg bg-[#131314] border border-[#353436] space-y-3">
                   <label className="flex items-center justify-between cursor-pointer">
                     <span className="text-white">Auto-sync milestone deliverables</span>
                     <input
                       type="checkbox"
                       checked={autoSyncDeliverables}
                       onChange={(e) => setAutoSyncDeliverables(e.target.checked)}
-                      className="accent-[#3ECF8E]"
+                      className="accent-[#dbfcff]"
                     />
                   </label>
                   <label className="flex items-center justify-between cursor-pointer">
@@ -553,22 +553,22 @@ export default function GoogleDriveClientConnect({
                       type="checkbox"
                       checked={shareFullProjectFolder}
                       onChange={(e) => setShareFullProjectFolder(e.target.checked)}
-                      className="accent-[#3ECF8E]"
+                      className="accent-[#dbfcff]"
                     />
                   </label>
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#27272A]">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#353436]">
                 <button
                   onClick={() => setShowConfigModal(false)}
-                  className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white"
+                  className="px-3 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleCreateProjectDriveFolder}
-                  className="px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold uppercase"
+                  className="px-4 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-bold uppercase"
                 >
                   Save & Map Folder
                 </button>
@@ -586,7 +586,7 @@ export default function GoogleDriveClientConnect({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-sm w-full p-6 rounded-2xl bg-[#18181B] border border-rose-900/50 space-y-4 shadow-2xl text-xs font-mono"
+              className="max-w-sm w-full p-6 rounded-2xl bg-[#201f20] border border-rose-900/50 space-y-4 shadow-2xl text-xs font-mono"
             >
               <div className="flex items-center gap-2 text-rose-400 font-bold text-sm font-display">
                 <AlertCircle className="w-5 h-5" />
@@ -598,7 +598,7 @@ export default function GoogleDriveClientConnect({
               <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   onClick={() => setShowConfirmDisconnect(false)}
-                  className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-white"
+                  className="px-3 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-white"
                 >
                   Cancel
                 </button>

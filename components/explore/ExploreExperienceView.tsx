@@ -57,7 +57,7 @@ const MODES: ModeOption[] = [
     label: 'AR',
     sublabel: 'Augmented Reality',
     icon: Smartphone,
-    color: '#42CF8B',
+    color: '#54de99',
     engine: 'WebXR Device API / QuickLook',
   },
   {
@@ -278,7 +278,7 @@ export default function ExploreExperienceView() {
             {/* FPS & Latency telemetry pill */}
             <div className="hidden lg:flex items-center gap-3 px-3.5 py-2 rounded-full bg-black/60 backdrop-blur-xl border border-white/10 text-xs font-mono">
               <div className="flex items-center gap-1.5">
-                <Activity className="w-3.5 h-3.5 text-[#42CF8B]" />
+                <Activity className="w-3.5 h-3.5 text-[#54de99]" />
                 <span className="text-zinc-300">{fps} FPS</span>
               </div>
               <span className="text-zinc-600">|</span>
@@ -287,7 +287,7 @@ export default function ExploreExperienceView() {
                 <span className="text-zinc-300">{latency} ms</span>
               </div>
               <span className="text-zinc-600">|</span>
-              <span className="text-[10px] text-[#42CF8B] font-bold tracking-widest uppercase">
+              <span className="text-[10px] text-[#54de99] font-bold tracking-widest uppercase">
                 4K HDR
               </span>
             </div>
@@ -431,7 +431,7 @@ export default function ExploreExperienceView() {
                 ))}
                 <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
                   <span className="text-zinc-300">Exit / Back</span>
-                  <kbd className="px-2 py-0.5 rounded bg-white/10 text-[#42CF8B] font-bold">
+                  <kbd className="px-2 py-0.5 rounded bg-white/10 text-[#54de99] font-bold">
                     [Esc] / [B]
                   </kbd>
                 </div>
@@ -714,7 +714,7 @@ function XRCanvasView() {
                   onClick={() => setLightingPreset(l)}
                   className={`py-1.5 px-2 rounded-lg text-center font-mono capitalize transition-all cursor-pointer ${
                     lightingPreset === l
-                      ? 'bg-[#42CF8B] text-black font-bold'
+                      ? 'bg-[#54de99] text-black font-bold'
                       : 'bg-white/5 text-zinc-300 hover:bg-white/10'
                   }`}
                 >
@@ -762,17 +762,17 @@ function ARSimulationView() {
         {/* Holographic Target Reticle */}
         <div className="relative w-72 h-72 sm:w-96 sm:h-96 flex items-center justify-center">
           {/* Outer pulsed rings */}
-          <div className="absolute inset-0 rounded-full border-2 border-dashed border-[#42CF8B]/40 animate-[spin_18s_linear_infinite]" />
-          <div className="absolute inset-6 rounded-full border border-[#42CF8B]/60 animate-pulse" />
+          <div className="absolute inset-0 rounded-full border-2 border-dashed border-[#54de99]/40 animate-[spin_18s_linear_infinite]" />
+          <div className="absolute inset-6 rounded-full border border-[#54de99]/60 animate-pulse" />
           <div className="absolute inset-16 rounded-full border border-dashed border-cyan-400/40 animate-[spin_10s_linear_infinite_reverse]" />
 
           {/* Center reticle crosshairs */}
-          <div className="w-16 h-16 border-2 border-[#42CF8B] rounded-lg flex items-center justify-center relative shadow-[0_0_20px_#42CF8B88]">
-            <div className="w-2 h-2 rounded-full bg-[#42CF8B] animate-ping" />
+          <div className="w-16 h-16 border-2 border-[#54de99] rounded-lg flex items-center justify-center relative shadow-[0_0_20px_#54de9988]">
+            <div className="w-2 h-2 rounded-full bg-[#54de99] animate-ping" />
           </div>
 
           {/* Real-time spatial dimension tags */}
-          <div className="absolute -top-6 px-3 py-1 rounded bg-[#42CF8B]/20 backdrop-blur-md border border-[#42CF8B]/40 text-[#42CF8B] font-mono text-xs shadow-lg">
+          <div className="absolute -top-6 px-3 py-1 rounded bg-[#54de99]/20 backdrop-blur-md border border-[#54de99]/40 text-[#54de99] font-mono text-xs shadow-lg">
             FLOOR PLANE LOCKED (Y: 0.00m)
           </div>
           <div className="absolute -bottom-6 px-3 py-1 rounded bg-black/70 backdrop-blur-md border border-white/20 text-white font-mono text-xs">
@@ -792,10 +792,10 @@ function ARSimulationView() {
         <div className="p-4 rounded-2xl bg-[#0C0C10]/85 backdrop-blur-2xl border border-white/10 shadow-2xl text-xs flex flex-col gap-3">
           <div className="flex items-center justify-between pb-2 border-b border-white/10">
             <span className="font-bold text-white uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-              <Scan className="w-3.5 h-3.5 text-[#42CF8B]" /> WebAR Session
+              <Scan className="w-3.5 h-3.5 text-[#54de99]" /> WebAR Session
             </span>
-            <span className="text-[10px] text-[#42CF8B] font-mono flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#42CF8B] animate-pulse" /> Tracking
+            <span className="text-[10px] text-[#54de99] font-mono flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#54de99] animate-pulse" /> Tracking
             </span>
           </div>
 
@@ -807,7 +807,7 @@ function ARSimulationView() {
                 onClick={() => setScaleMode('1:1')}
                 className={`py-2 px-3 rounded-lg font-mono text-xs transition-all cursor-pointer ${
                   scaleMode === '1:1'
-                    ? 'bg-[#42CF8B] text-black font-bold'
+                    ? 'bg-[#54de99] text-black font-bold'
                     : 'bg-white/5 text-zinc-300 hover:bg-white/10'
                 }`}
               >
@@ -817,7 +817,7 @@ function ARSimulationView() {
                 onClick={() => setScaleMode('1:10')}
                 className={`py-2 px-3 rounded-lg font-mono text-xs transition-all cursor-pointer ${
                   scaleMode === '1:10'
-                    ? 'bg-[#42CF8B] text-black font-bold'
+                    ? 'bg-[#54de99] text-black font-bold'
                     : 'bg-white/5 text-zinc-300 hover:bg-white/10'
                 }`}
               >
@@ -829,7 +829,7 @@ function ARSimulationView() {
           {/* Launch on Mobile Button */}
           <button
             onClick={() => setShowQrModal(true)}
-            className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#42CF8B] to-[#00F0FF] text-black font-bold text-xs flex items-center justify-center gap-2 hover:opacity-90 transition-opacity cursor-pointer shadow-lg"
+            className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#54de99] to-[#00F0FF] text-black font-bold text-xs flex items-center justify-center gap-2 hover:opacity-90 transition-opacity cursor-pointer shadow-lg"
           >
             <QrCode className="w-4 h-4" /> Open AR on Mobile Phone
           </button>

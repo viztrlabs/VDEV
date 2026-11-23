@@ -91,7 +91,7 @@ function StyleTab({
           value={style.icon || ''}
           onChange={(e) => onChange({ icon: e.target.value })}
           placeholder="fas fa-map-marker-alt"
-          className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+          className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
         />
       </div>
 
@@ -108,8 +108,8 @@ function StyleTab({
               onClick={() => onChange({ shape })}
               className={`flex items-center justify-center p-1.5 rounded border ${
                 style.shape === shape
-                  ? 'bg-[#3ECF8E]/15 border-[#3ECF8E]/40 text-[#3ECF8E]'
-                  : 'bg-[#18181B] border-[#27272A] text-[#A1A1AA] hover:text-white'
+                  ? 'bg-[#dbfcff]/15 border-[#dbfcff]/40 text-[#dbfcff]'
+                  : 'bg-[#201f20] border-[#353436] text-[#A1A1AA] hover:text-white'
               }`}
               title={shape}
             >
@@ -127,15 +127,15 @@ function StyleTab({
         <div className="flex items-center gap-1.5">
           <input
             type="color"
-            value={(style.backgroundColor || '#3ECF8E').slice(0, 7)}
+            value={(style.backgroundColor || '#dbfcff').slice(0, 7)}
             onChange={(e) => onChange({ backgroundColor: e.target.value })}
-            className="w-8 h-7 bg-transparent border border-[#27272A] rounded"
+            className="w-8 h-7 bg-transparent border border-[#353436] rounded"
           />
           <input
             value={style.backgroundColor || ''}
             onChange={(e) => onChange({ backgroundColor: e.target.value })}
-            placeholder="#3ECF8E"
-            className="flex-1 bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+            placeholder="#dbfcff"
+            className="flex-1 bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
           />
         </div>
       </div>
@@ -152,7 +152,7 @@ function StyleTab({
             max={64}
             value={style.size ?? 24}
             onChange={(e) => onChange({ size: Number(e.target.value) })}
-            className="w-full accent-[#3ECF8E]"
+            className="w-full accent-[#dbfcff]"
           />
         </div>
         <div>
@@ -165,7 +165,7 @@ function StyleTab({
             max={100}
             value={style.opacity ?? 100}
             onChange={(e) => onChange({ opacity: Number(e.target.value) })}
-            className="w-full accent-[#3ECF8E]"
+            className="w-full accent-[#dbfcff]"
           />
         </div>
       </div>
@@ -182,7 +182,7 @@ function StyleTab({
             max={360}
             value={style.rotate ?? 0}
             onChange={(e) => onChange({ rotate: Number(e.target.value) })}
-            className="w-full accent-[#3ECF8E]"
+            className="w-full accent-[#dbfcff]"
           />
         </div>
         <div>
@@ -190,7 +190,7 @@ function StyleTab({
           <select
             value={style.effect || 'normal'}
             onChange={(e) => onChange({ effect: e.target.value as VtedHotspotEffect })}
-            className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+            className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
           >
             <option value="normal">Normal</option>
             <option value="radar">Radar</option>
@@ -201,7 +201,7 @@ function StyleTab({
       </div>
 
       {/* Distort */}
-      <div className="flex items-center justify-between p-2 rounded bg-[#09090B] border border-[#27272A]">
+      <div className="flex items-center justify-between p-2 rounded bg-[#131314] border border-[#353436]">
         <div>
           <div className="text-[10px] font-mono uppercase text-[#A1A1AA]">Distorted</div>
           <div className="text-[9px] text-[#71717A]">Skew icon to follow panorama curve</div>
@@ -210,7 +210,7 @@ function StyleTab({
           type="button"
           onClick={() => onChange({ distort: !style.distort })}
           className={`w-9 h-5 rounded-full relative transition-colors ${
-            style.distort ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+            style.distort ? 'bg-[#dbfcff]' : 'bg-[#353436]'
           }`}
         >
           <span
@@ -239,7 +239,7 @@ function LabelTab({
           <select
             value={label.fontType || 'Inter'}
             onChange={(e) => onChange({ fontType: e.target.value })}
-            className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+            className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
           >
             <option>Inter</option>
             <option>Roboto</option>
@@ -258,7 +258,7 @@ function LabelTab({
             max={32}
             value={label.size ?? 12}
             onChange={(e) => onChange({ size: Number(e.target.value) })}
-            className="w-full accent-[#3ECF8E]"
+            className="w-full accent-[#dbfcff]"
           />
         </div>
       </div>
@@ -275,7 +275,7 @@ function LabelTab({
             step={100}
             value={label.weight ?? 500}
             onChange={(e) => onChange({ weight: Number(e.target.value) })}
-            className="w-full accent-[#3ECF8E]"
+            className="w-full accent-[#dbfcff]"
           />
         </div>
         <div>
@@ -288,7 +288,7 @@ function LabelTab({
             max={8}
             value={label.letterSpacing ?? 0}
             onChange={(e) => onChange({ letterSpacing: Number(e.target.value) })}
-            className="w-full accent-[#3ECF8E]"
+            className="w-full accent-[#dbfcff]"
           />
         </div>
       </div>
@@ -304,7 +304,7 @@ function LabelTab({
             max={24}
             value={label.paddingX ?? 6}
             onChange={(e) => onChange({ paddingX: Number(e.target.value) })}
-            className="w-full accent-[#3ECF8E]"
+            className="w-full accent-[#dbfcff]"
           />
         </div>
         <div>
@@ -317,7 +317,7 @@ function LabelTab({
             max={24}
             value={label.paddingY ?? 2}
             onChange={(e) => onChange({ paddingY: Number(e.target.value) })}
-            className="w-full accent-[#3ECF8E]"
+            className="w-full accent-[#dbfcff]"
           />
         </div>
       </div>
@@ -332,7 +332,7 @@ function LabelTab({
           max={24}
           value={label.borderRadius ?? 4}
           onChange={(e) => onChange({ borderRadius: Number(e.target.value) })}
-          className="w-full accent-[#3ECF8E]"
+          className="w-full accent-[#dbfcff]"
         />
       </div>
 
@@ -343,7 +343,7 @@ function LabelTab({
             type="color"
             value={(label.backgroundColor || '#000000').slice(0, 7)}
             onChange={(e) => onChange({ backgroundColor: e.target.value })}
-            className="w-full h-7 bg-transparent border border-[#27272A] rounded"
+            className="w-full h-7 bg-transparent border border-[#353436] rounded"
           />
         </div>
         <div>
@@ -352,7 +352,7 @@ function LabelTab({
             type="color"
             value={(label.textColor || '#ffffff').slice(0, 7)}
             onChange={(e) => onChange({ textColor: e.target.value })}
-            className="w-full h-7 bg-transparent border border-[#27272A] rounded"
+            className="w-full h-7 bg-transparent border border-[#353436] rounded"
           />
         </div>
       </div>
@@ -363,7 +363,7 @@ function LabelTab({
           value={label.textShadow || ''}
           onChange={(e) => onChange({ textShadow: e.target.value })}
           placeholder="0 1px 2px rgba(0,0,0,0.5)"
-          className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+          className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
         />
       </div>
 
@@ -430,7 +430,7 @@ function GlobalTab({
         <select
           value={global.popupSize || 'custom'}
           onChange={(e) => onChange({ popupSize: e.target.value as 'custom' | 'fixed' })}
-          className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+          className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
         >
           <option value="custom">Custom</option>
           <option value="fixed">Fixed</option>
@@ -444,7 +444,7 @@ function GlobalTab({
           value={global.popupLayout || ''}
           onChange={(e) => onChange({ popupLayout: e.target.value })}
           placeholder="default"
-          className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+          className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
         />
       </div>
     </div>
@@ -478,7 +478,7 @@ function PointSetupTab({
         <select
           value={setup.viewMode || '360flat'}
           onChange={(e) => onChange({ viewMode: e.target.value as VtedPointSetup['viewMode'] })}
-          className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+          className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
         >
           <option value="360flat">360 Flat</option>
           <option value="thumbnail">Thumbnail</option>
@@ -501,16 +501,16 @@ function ToggleRow({
   description?: string;
 }) {
   return (
-    <div className="flex items-center justify-between p-2 rounded bg-[#09090B] border border-[#27272A]">
+    <div className="flex items-center justify-between p-2 rounded bg-[#131314] border border-[#353436]">
       <div>
-        <div className="text-[10px] font-mono text-[#FAFAFA]">{label}</div>
+        <div className="text-[10px] font-mono text-[#e5e2e3]">{label}</div>
         {description && <div className="text-[9px] text-[#71717A]">{description}</div>}
       </div>
       <button
         type="button"
         onClick={() => onChange(!value)}
         className={`w-9 h-5 rounded-full relative transition-colors shrink-0 ${
-          value ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+          value ? 'bg-[#dbfcff]' : 'bg-[#353436]'
         }`}
       >
         <span
@@ -555,7 +555,7 @@ export default function HotspotStyleTabs({ hotspot, onChange, onDelete, onCopy }
       {/* Header: title + actions */}
       <div className="flex items-center justify-between">
         <span className="text-[10px] font-mono uppercase tracking-wider text-[#71717A] flex items-center gap-1.5">
-          <Sparkles className="w-3 h-3 text-[#3ECF8E]" />
+          <Sparkles className="w-3 h-3 text-[#dbfcff]" />
           Hotspot ({hotspot.type})
         </span>
         <div className="flex items-center gap-0.5">
@@ -595,7 +595,7 @@ export default function HotspotStyleTabs({ hotspot, onChange, onDelete, onCopy }
           <select
             value={hotspot.type}
             onChange={(e) => handleTypeChange(e.target.value)}
-            className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+            className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
           >
             {VTED_HOTSPOT_TYPES.map((t) => (
               <option key={t.id} value={t.id}>
@@ -609,21 +609,21 @@ export default function HotspotStyleTabs({ hotspot, onChange, onDelete, onCopy }
             Icon
           </label>
           <div className="flex items-center gap-1.5">
-            <span className="p-1.5 rounded bg-[#18181B] border border-[#27272A] text-[#3ECF8E]">
+            <span className="p-1.5 rounded bg-[#201f20] border border-[#353436] text-[#dbfcff]">
               {TYPE_ICONS[hotspot.type as VtedHotspotType] || <Info className="w-3.5 h-3.5" />}
             </span>
             <input
               value={style.icon || ''}
               onChange={(e) => patchStyle({ icon: e.target.value })}
               placeholder="fas fa-..."
-              className="flex-1 bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[10px] font-mono text-white"
+              className="flex-1 bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[10px] font-mono text-white"
             />
           </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div role="tablist" className="flex items-center gap-1 p-1 rounded-lg bg-[#09090B] border border-[#27272A]">
+      <div role="tablist" className="flex items-center gap-1 p-1 rounded-lg bg-[#131314] border border-[#353436]">
         <TabButton id="style" active={tab} setActive={setTab} icon={<Palette className="w-3 h-3" />}>
           Style
         </TabButton>
@@ -644,13 +644,13 @@ export default function HotspotStyleTabs({ hotspot, onChange, onDelete, onCopy }
       {tab === 'global' && <GlobalTab global={global} onChange={patchGlobal} />}
 
       {/* Per-type distortion toggles (compact) */}
-      <details className="rounded border border-[#27272A] bg-[#09090B]">
+      <details className="rounded border border-[#353436] bg-[#131314]">
         <summary className="cursor-pointer text-[10px] font-mono uppercase tracking-wider text-[#71717A] px-2 py-1.5 select-none">
           Per-type distortion
         </summary>
         <div className="grid grid-cols-2 gap-1.5 p-2">
           {VTED_DISTORTION_KEYS.map((t) => (
-            <div key={t} className="flex items-center justify-between p-1 rounded bg-[#0c0c0f] border border-[#1f1f23]">
+            <div key={t} className="flex items-center justify-between p-1 rounded bg-[#201f20] border border-[#1f1f23]">
               <span className="text-[9px] font-mono text-[#A1A1AA] uppercase">{t}</span>
               <span className="text-[8px] text-[#71717A]">{style.distort ? 'on' : 'off'}</span>
             </div>
@@ -682,7 +682,7 @@ function TabButton({
       onClick={() => setActive(id)}
       className={`flex-1 flex items-center justify-center gap-1 px-2 py-1 rounded text-[10px] font-mono transition-all ${
         active === id
-          ? 'bg-[#3ECF8E]/15 text-[#3ECF8E] border border-[#3ECF8E]/30'
+          ? 'bg-[#dbfcff]/15 text-[#dbfcff] border border-[#dbfcff]/30'
           : 'text-[#71717A] hover:text-white border border-transparent'
       }`}
     >

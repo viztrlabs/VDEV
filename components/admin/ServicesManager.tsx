@@ -137,7 +137,7 @@ export default function ServicesManager() {
           <select
             value={projectId}
             onChange={(e) => setProjectId(e.target.value)}
-            className="w-full appearance-none bg-[#18181B] border border-[#27272A] rounded-lg px-4 py-2.5 text-sm text-white pr-9"
+            className="w-full appearance-none bg-[#201f20] border border-[#353436] rounded-lg px-4 py-2.5 text-sm text-white pr-9"
           >
             {projects.length === 0 && <option value="">No projects available</option>}
             {projects.map((p) => (
@@ -150,7 +150,7 @@ export default function ServicesManager() {
         </div>
         <button
           onClick={() => load(projectId)}
-          className="p-2.5 rounded-lg border border-[#27272A] hover:bg-[#27272A] transition-colors"
+          className="p-2.5 rounded-lg border border-[#353436] hover:bg-[#353436] transition-colors"
           aria-label="Refresh"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -165,7 +165,7 @@ export default function ServicesManager() {
 
       {/* Services entitlements */}
       <section>
-        <h3 className="text-xs font-mono uppercase tracking-wider text-[#3ECF8E] font-bold mb-3">Project Services</h3>
+        <h3 className="text-xs font-mono uppercase tracking-wider text-[#dbfcff] font-bold mb-3">Project Services</h3>
         <div className="space-y-2">
           {services.length === 0 && !loading && (
             <p className="text-xs text-zinc-500">No services enabled on this project yet.</p>
@@ -173,7 +173,7 @@ export default function ServicesManager() {
           {services.map((row) => {
             const active = row.status === 'active';
             return (
-              <div key={row.id} className="flex items-center justify-between px-4 py-3 rounded-xl bg-[#111113] border border-[#27272A]">
+              <div key={row.id} className="flex items-center justify-between px-4 py-3 rounded-xl bg-[#111113] border border-[#353436]">
                 <div className="min-w-0">
                   <div className="text-sm text-white font-medium">{row.service?.name || row.service_id}</div>
                   <div className="text-[11px] text-zinc-500 font-mono">
@@ -185,7 +185,7 @@ export default function ServicesManager() {
                   disabled={busyId === row.id}
                   className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-mono uppercase border transition-colors ${
                     active
-                      ? 'bg-[#3ECF8E]/10 text-[#3ECF8E] border-[#3ECF8E]/40 hover:bg-[#3ECF8E]/20'
+                      ? 'bg-[#dbfcff]/10 text-[#dbfcff] border-[#dbfcff]/40 hover:bg-[#dbfcff]/20'
                       : 'bg-zinc-800/60 text-zinc-400 border-zinc-700 hover:bg-zinc-800'
                   }`}
                 >
@@ -200,13 +200,13 @@ export default function ServicesManager() {
 
       {/* Experience publishing */}
       <section>
-        <h3 className="text-xs font-mono uppercase tracking-wider text-[#3ECF8E] font-bold mb-3">Experience Publishing</h3>
+        <h3 className="text-xs font-mono uppercase tracking-wider text-[#dbfcff] font-bold mb-3">Experience Publishing</h3>
         <div className="space-y-2">
           {experiences.length === 0 && !loading && (
             <p className="text-xs text-zinc-500">No experiences created for this project yet.</p>
           )}
           {experiences.map((exp) => (
-            <div key={exp.id} className="flex items-center justify-between px-4 py-3 rounded-xl bg-[#111113] border border-[#27272A]">
+            <div key={exp.id} className="flex items-center justify-between px-4 py-3 rounded-xl bg-[#111113] border border-[#353436]">
               <div className="min-w-0">
                 <div className="text-sm text-white font-medium truncate">{exp.title}</div>
                 <div className="text-[11px] text-zinc-500 font-mono">

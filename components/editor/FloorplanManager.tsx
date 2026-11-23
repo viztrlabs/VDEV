@@ -44,13 +44,13 @@ function ColorField({
           type="color"
           value={(value || '#000000').slice(0, 7)}
           onChange={(e) => onChange(e.target.value + (value && value.length > 7 ? value.slice(7) : ''))}
-          className="w-10 h-7 bg-transparent border border-[#27272A] rounded"
+          className="w-10 h-7 bg-transparent border border-[#353436] rounded"
         />
         <input
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
           placeholder="#000000"
-          className="flex-1 bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[10px] font-mono text-white"
+          className="flex-1 bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[10px] font-mono text-white"
         />
       </div>
     </div>
@@ -246,13 +246,13 @@ export default function FloorplanManager({
   return (
     <div className="max-w-3xl mx-auto p-4 space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-mono font-bold text-[#3ECF8E] flex items-center gap-2">
+        <h2 className="text-sm font-mono font-bold text-[#dbfcff] flex items-center gap-2">
           <MapIcon className="w-4 h-4" />
           Floorplans
         </h2>
         <div className="flex items-center gap-2">
           {saved && (
-            <span className="flex items-center gap-1 text-[10px] font-mono text-[#3ECF8E]">
+            <span className="flex items-center gap-1 text-[10px] font-mono text-[#dbfcff]">
               <CheckCircle2 className="w-3.5 h-3.5" />
               Saved
             </span>
@@ -260,7 +260,7 @@ export default function FloorplanManager({
           <button
             type="button"
             onClick={() => setShowCreator(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#dbfcff] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
           >
             <Plus className="w-3.5 h-3.5" />
             New Floorplan
@@ -287,7 +287,7 @@ export default function FloorplanManager({
 
       {/* Creator modal */}
       {showCreator && (
-        <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-3 space-y-3">
+        <div className="rounded-xl border border-[#353436] bg-[#201f20] p-3 space-y-3">
           <div className="text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA]">
             New Floorplan
           </div>
@@ -295,7 +295,7 @@ export default function FloorplanManager({
             value={draft.name}
             onChange={(e) => setDraft({ ...draft, name: e.target.value })}
             placeholder="Floorplan name (e.g. Lobby Level)"
-            className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1.5 text-xs text-white"
+            className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1.5 text-xs text-white"
           />
           <div
             onDragOver={(e) => {
@@ -314,15 +314,15 @@ export default function FloorplanManager({
             }}
             className={`rounded-lg border-2 border-dashed p-4 text-center text-[10px] font-mono transition-colors ${
               draggingImage
-                ? 'border-[#3ECF8E] bg-[#3ECF8E]/10 text-[#3ECF8E]'
-                : 'border-[#27272A] text-[#71717A]'
+                ? 'border-[#dbfcff] bg-[#dbfcff]/10 text-[#dbfcff]'
+                : 'border-[#353436] text-[#71717A]'
             }`}
           >
             {draft.imageUrl ? (
               <div className="flex items-center gap-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={draft.imageUrl} alt="Preview" className="w-12 h-12 object-cover rounded border border-[#27272A]" />
-                <span className="text-[10px] font-mono text-[#3ECF8E] truncate flex-1">
+                <img src={draft.imageUrl} alt="Preview" className="w-12 h-12 object-cover rounded border border-[#353436]" />
+                <span className="text-[10px] font-mono text-[#dbfcff] truncate flex-1">
                   {draft.imageUrl.split('/').pop()}
                 </span>
                 <button
@@ -337,7 +337,7 @@ export default function FloorplanManager({
               'Drop floorplan image or click upload'
             )}
           </div>
-          <label className="flex items-center justify-center gap-1.5 w-full px-2 py-1.5 rounded bg-[#09090B] border border-[#27272A] hover:border-[#3ECF8E]/40 text-[10px] font-mono text-[#A1A1AA] cursor-pointer">
+          <label className="flex items-center justify-center gap-1.5 w-full px-2 py-1.5 rounded bg-[#131314] border border-[#353436] hover:border-[#dbfcff]/40 text-[10px] font-mono text-[#A1A1AA] cursor-pointer">
             <Upload className="w-3.5 h-3.5" />
             Upload image
             <input
@@ -357,7 +357,7 @@ export default function FloorplanManager({
             <button
               type="button"
               onClick={create}
-              className="flex-1 px-3 py-1.5 rounded bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
+              className="flex-1 px-3 py-1.5 rounded bg-[#dbfcff] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
             >
               Create
             </button>
@@ -367,7 +367,7 @@ export default function FloorplanManager({
                 setShowCreator(false);
                 setDraft({ name: '', imageUrl: '' });
               }}
-              className="px-3 py-1.5 rounded bg-[#27272A] hover:bg-[#3f3f46] text-white text-xs font-mono"
+              className="px-3 py-1.5 rounded bg-[#353436] hover:bg-[#3f3f46] text-white text-xs font-mono"
             >
               Cancel
             </button>
@@ -379,19 +379,19 @@ export default function FloorplanManager({
       {loading ? (
         <div className="text-xs font-mono text-[#71717A] text-center py-6">Loading…</div>
       ) : floorplans.length === 0 ? (
-        <div className="text-xs font-mono text-[#71717A] text-center py-6 border border-dashed border-[#27272A] rounded-lg">
+        <div className="text-xs font-mono text-[#71717A] text-center py-6 border border-dashed border-[#353436] rounded-lg">
           No floorplans yet. Click &quot;New Floorplan&quot; to create one.
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {floorplans.map((fp) => (
-            <div key={fp.id} className="rounded-lg border border-[#27272A] bg-[#0c0c0f] overflow-hidden">
+            <div key={fp.id} className="rounded-lg border border-[#353436] bg-[#201f20] overflow-hidden">
               {fp.imageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={fp.imageUrl} alt={fp.name} className="w-full h-32 object-cover" />
               ) : (
-                <div className="w-full h-32 bg-[#09090B] flex items-center justify-center">
-                  <MapIcon className="w-8 h-8 text-[#27272A]" />
+                <div className="w-full h-32 bg-[#131314] flex items-center justify-center">
+                  <MapIcon className="w-8 h-8 text-[#353436]" />
                 </div>
               )}
               <div className="p-2 space-y-1.5">
@@ -400,7 +400,7 @@ export default function FloorplanManager({
                   <span
                     className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
                       fp.status === 'published'
-                        ? 'bg-[#3ECF8E]/15 text-[#3ECF8E]'
+                        ? 'bg-[#dbfcff]/15 text-[#dbfcff]'
                         : 'bg-amber-500/15 text-amber-400'
                     }`}
                   >
@@ -411,7 +411,7 @@ export default function FloorplanManager({
                   <button
                     type="button"
                     onClick={() => togglePublish(fp)}
-                    className="flex-1 px-2 py-1 rounded bg-[#18181B] hover:bg-[#27272A] text-[10px] font-mono text-[#A1A1AA] hover:text-white flex items-center justify-center gap-1"
+                    className="flex-1 px-2 py-1 rounded bg-[#201f20] hover:bg-[#353436] text-[10px] font-mono text-[#A1A1AA] hover:text-white flex items-center justify-center gap-1"
                   >
                     {fp.status === 'published' ? (
                       <>
@@ -426,7 +426,7 @@ export default function FloorplanManager({
                   <button
                     type="button"
                     onClick={() => remove(fp.id)}
-                    className="px-2 py-1 rounded bg-[#18181B] hover:bg-rose-500/20 text-rose-400 text-[10px] font-mono"
+                    className="px-2 py-1 rounded bg-[#201f20] hover:bg-rose-500/20 text-rose-400 text-[10px] font-mono"
                   >
                     <Trash2 className="w-3 h-3" />
                   </button>
@@ -440,10 +440,10 @@ export default function FloorplanManager({
       {/* AI Wizard Modal */}
       {showAIWizard && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-[#0c0c0f] border border-[#27272A] rounded-xl w-full max-w-2xl mx-4 flex flex-col max-h-[90vh]">
-            <div className="flex items-center justify-between p-4 border-b border-[#27272A]">
+          <div className="bg-[#201f20] border border-[#353436] rounded-xl w-full max-w-2xl mx-4 flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between p-4 border-b border-[#353436]">
               <div>
-                <h3 className="text-sm font-mono font-bold text-[#3ECF8E]">AI Floorplan Generator</h3>
+                <h3 className="text-sm font-mono font-bold text-[#dbfcff]">AI Floorplan Generator</h3>
                 <p className="text-[10px] font-mono text-[#71717A]">
                   Step: {aiWizardStep === 'upload' ? 'Upload' : aiWizardStep === 'processing' ? 'Processing' : 'Preview'}
                 </p>
@@ -451,7 +451,7 @@ export default function FloorplanManager({
               <button
                 type="button"
                 onClick={closeAIWizard}
-                className="p-1 rounded hover:bg-[#27272A] text-[#71717A] hover:text-white"
+                className="p-1 rounded hover:bg-[#353436] text-[#71717A] hover:text-white"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -466,8 +466,8 @@ export default function FloorplanManager({
                   <div
                     className={`rounded-lg border-2 border-dashed p-6 text-center text-[10px] font-mono transition-colors cursor-pointer ${
                       aiFile
-                        ? 'border-[#3ECF8E] bg-[#3ECF8E]/5 text-[#3ECF8E]'
-                        : 'border-[#27272A] text-[#71717A] hover:border-[#3ECF8E]/50'
+                        ? 'border-[#dbfcff] bg-[#dbfcff]/5 text-[#dbfcff]'
+                        : 'border-[#353436] text-[#71717A] hover:border-[#dbfcff]/50'
                     }`}
                     onClick={() => document.getElementById('ai-upload-input')?.click()}
                   >
@@ -499,8 +499,8 @@ export default function FloorplanManager({
               {aiWizardStep === 'processing' && (
                 <div className="flex flex-col items-center justify-center py-8 gap-4">
                   <div className="relative">
-                    <div className="w-12 h-12 rounded-full border-2 border-[#27272A]"></div>
-                    <RotateCw className="absolute inset-0 m-auto w-5 h-5 text-[#3ECF8E] animate-spin" />
+                    <div className="w-12 h-12 rounded-full border-2 border-[#353436]"></div>
+                    <RotateCw className="absolute inset-0 m-auto w-5 h-5 text-[#dbfcff] animate-spin" />
                   </div>
                   <div className="text-sm font-mono text-white">Processing floorplan with AI…</div>
                   <div className="text-[10px] font-mono text-[#71717A]">
@@ -522,7 +522,7 @@ export default function FloorplanManager({
                     <label className="text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA]">Detected Rooms</label>
                     <div className="space-y-1 max-h-40 overflow-y-auto">
                       {aiResult.rooms.map((room) => (
-                        <div key={room.id} className="flex items-center justify-between px-2 py-1.5 rounded bg-[#18181B] border border-[#27272A]">
+                        <div key={room.id} className="flex items-center justify-between px-2 py-1.5 rounded bg-[#201f20] border border-[#353436]">
                           <span className="text-[10px] font-mono text-white">{room.name}</span>
                           <span className="text-[9px] font-mono text-[#71717A]">{room.type}</span>
                         </div>
@@ -537,7 +537,7 @@ export default function FloorplanManager({
               )}
             </div>
 
-            <div className="flex items-center justify-end gap-2 p-4 border-t border-[#27272A]">
+            <div className="flex items-center justify-end gap-2 p-4 border-t border-[#353436]">
               <button
                 type="button"
                 onClick={closeAIWizard}
@@ -559,7 +559,7 @@ export default function FloorplanManager({
                 <button
                   type="button"
                   onClick={saveAIResult}
-                  className="px-4 py-1.5 rounded bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-mono font-bold"
+                  className="px-4 py-1.5 rounded bg-[#dbfcff] hover:bg-[#34b876] text-black text-xs font-mono font-bold"
                 >
                   Save Floorplan
                 </button>
@@ -570,8 +570,8 @@ export default function FloorplanManager({
       )}
 
       {/* Display settings */}
-      <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-3 space-y-3">
-        <div className="text-[10px] font-mono uppercase tracking-wider text-[#3ECF8E]">
+      <div className="rounded-xl border border-[#353436] bg-[#201f20] p-3 space-y-3">
+        <div className="text-[10px] font-mono uppercase tracking-wider text-[#dbfcff]">
           Display Settings
         </div>
 
@@ -588,7 +588,7 @@ export default function FloorplanManager({
             <select
               value={display?.layout || 'box'}
               onChange={(e) => setD({ layout: e.target.value as 'box' | 'panel' })}
-              className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+              className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
             >
               <option value="box">Box</option>
               <option value="panel">Panel</option>
@@ -601,7 +601,7 @@ export default function FloorplanManager({
             <select
               value={display?.position || 'left'}
               onChange={(e) => setD({ position: e.target.value as 'left' | 'right' })}
-              className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+              className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
             >
               <option value="left">Left</option>
               <option value="right">Right</option>
@@ -611,12 +611,12 @@ export default function FloorplanManager({
 
         <ColorField label="Background" value={display?.backgroundColor} onChange={(v) => setD({ backgroundColor: v })} />
 
-        <div className="space-y-2 pt-2 border-t border-[#27272A]">
+        <div className="space-y-2 pt-2 border-t border-[#353436]">
           <ToggleRow
             label="Radar"
             value={!!display?.radar?.enabled}
             onChange={(v) =>
-              setD({ radar: { enabled: v, backgroundColor: display?.radar?.backgroundColor || '#3ECF8E20', borderColor: display?.radar?.borderColor || '#3ECF8E', borderWidth: display?.radar?.borderWidth || 2, width: display?.radar?.width || 80 } })
+              setD({ radar: { enabled: v, backgroundColor: display?.radar?.backgroundColor || '#dbfcff20', borderColor: display?.radar?.borderColor || '#dbfcff', borderWidth: display?.radar?.borderWidth || 2, width: display?.radar?.width || 80 } })
             }
           />
           {display?.radar?.enabled && (
@@ -633,14 +633,14 @@ export default function FloorplanManager({
                   max={6}
                   value={display.radar.borderWidth ?? 2}
                   onChange={(e) => setD({ radar: { ...display.radar!, borderWidth: Number(e.target.value) } })}
-                  className="w-full accent-[#3ECF8E]"
+                  className="w-full accent-[#dbfcff]"
                 />
               </div>
             </div>
           )}
         </div>
 
-        <div className="space-y-2 pt-2 border-t border-[#27272A]">
+        <div className="space-y-2 pt-2 border-t border-[#353436]">
           <div className="text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA]">Marker</div>
           <ColorField label="Marker BG" value={display?.marker?.backgroundColor} onChange={(v) => setD({ marker: { ...(display?.marker || {}), backgroundColor: v } })} />
           <ColorField label="Marker border" value={display?.marker?.borderColor} onChange={(v) => setD({ marker: { ...(display?.marker || {}), borderColor: v } })} />
@@ -649,7 +649,7 @@ export default function FloorplanManager({
         <button
           type="button"
           onClick={onSave}
-          className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
+          className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded bg-[#dbfcff] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
         >
           <Save className="w-3.5 h-3.5" />
           Save Display
@@ -664,21 +664,21 @@ function defaultDisplay(): VtedFloorplanDisplay {
     showOnStart: false,
     layout: 'box',
     position: 'left',
-    backgroundColor: '#18181B',
-    radar: { enabled: false, backgroundColor: '#3ECF8E20', borderColor: '#3ECF8E', borderWidth: 2, width: 80 },
-    marker: { backgroundColor: '#3ECF8E', borderColor: '#3ECF8E' },
+    backgroundColor: '#201f20',
+    radar: { enabled: false, backgroundColor: '#dbfcff20', borderColor: '#dbfcff', borderWidth: 2, width: 80 },
+    marker: { backgroundColor: '#dbfcff', borderColor: '#dbfcff' },
   };
 }
 
 function ToggleRow({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) {
   return (
-    <div className="flex items-center justify-between p-2 rounded bg-[#09090B] border border-[#27272A]">
-      <span className="text-[10px] font-mono text-[#FAFAFA]">{label}</span>
+    <div className="flex items-center justify-between p-2 rounded bg-[#131314] border border-[#353436]">
+      <span className="text-[10px] font-mono text-[#e5e2e3]">{label}</span>
       <button
         type="button"
         onClick={() => onChange(!value)}
         className={`w-9 h-5 rounded-full relative transition-colors ${
-          value ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+          value ? 'bg-[#dbfcff]' : 'bg-[#353436]'
         }`}
       >
         <span
@@ -693,7 +693,7 @@ function ToggleRow({ label, value, onChange }: { label: string; value: boolean; 
 
 function StatCard({ label, value, icon }: { label: string; value: number; icon: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-2 p-2 rounded bg-[#18181B] border border-[#27272A]">
+    <div className="flex items-center gap-2 p-2 rounded bg-[#201f20] border border-[#353436]">
       {icon}
       <div>
         <div className="text-xs font-mono text-white">{label}</div>

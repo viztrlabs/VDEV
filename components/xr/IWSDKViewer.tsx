@@ -7,9 +7,9 @@ import { EngineInitOptions } from '@/lib/3d/bridge/types';
 
 function IWSDKLoading() {
   return (
-    <div className="flex items-center justify-center h-full bg-[#0A0A0B]">
+    <div className="flex items-center justify-center h-full bg-[#131314]">
       <div className="text-center">
-        <div className="w-8 h-8 border-4 border-[#3ECF8E] border-t-transparent rounded-full animate-spin mb-3 mx-auto" />
+        <div className="w-8 h-8 border-4 border-[#dbfcff] border-t-transparent rounded-full animate-spin mb-3 mx-auto" />
         <p className="text-zinc-500 font-mono text-xs">Initializing IWSDK…</p>
       </div>
     </div>
@@ -51,7 +51,7 @@ export function IWSDKViewer({ experienceId, config, containerRef }: IWSDKViewerP
           container,
           antialias: true,
           pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
-          backgroundColor: '#09090b',
+          backgroundColor: '#131314',
         });
 
         if (!mounted) {

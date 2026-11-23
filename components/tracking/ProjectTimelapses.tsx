@@ -509,33 +509,33 @@ export default function ProjectTimelapses({
       onKeyDown={handleKeyDown}
       tabIndex={0}
       aria-label={`Project Timelapse Viewer for ${projectName}`}
-      className={`p-6 rounded-2xl bg-[#141416] border border-[#27272A] space-y-6 shadow-2xl relative overflow-hidden focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]/50 ${
-        isFullscreen ? 'p-8 bg-[#09090B] h-screen overflow-y-auto' : ''
+      className={`p-6 rounded-2xl bg-[#131314] border border-[#353436] space-y-6 shadow-2xl relative overflow-hidden focus:outline-none focus:ring-1 focus:ring-[#dbfcff]/50 ${
+        isFullscreen ? 'p-8 bg-[#131314] h-screen overflow-y-auto' : ''
       } ${className}`}
     >
       {/* HEADER SECTION */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#27272A] pb-5">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#353436] pb-5">
         <div className="space-y-1">
           <div className="flex flex-wrap items-center gap-2">
             <span
               role="status"
               aria-label="Component category: Chronological Production Timelapses"
-              className="px-2.5 py-0.5 rounded-md bg-[#09090B] border border-[#3ECF8E]/40 text-[10px] font-mono font-bold uppercase text-[#3ECF8E] flex items-center gap-1.5"
+              className="px-2.5 py-0.5 rounded-md bg-[#131314] border border-[#dbfcff]/40 text-[10px] font-mono font-bold uppercase text-[#dbfcff] flex items-center gap-1.5"
             >
-              <Film className="w-3 h-3 text-[#3ECF8E]" />
+              <Film className="w-3 h-3 text-[#dbfcff]" />
               <span>Project Timelapses & Render Progression</span>
             </span>
             <span
               role="status"
               aria-label={`Total pipeline duration: ${timelapseData.totalDurationDays} calendar days`}
-              className="px-2 py-0.5 rounded bg-[#1C1C1F] border border-[#27272A] text-[10px] font-mono text-[#A1A1AA]"
+              className="px-2 py-0.5 rounded bg-[#1C1C1F] border border-[#353436] text-[10px] font-mono text-[#A1A1AA]"
             >
               {timelapseData.totalDurationDays} Days Pipeline
             </span>
             <span
               role="status"
               aria-label={`GPU Compute: ${timelapseData.totalGpuHours} cloud hours`}
-              className="px-2 py-0.5 rounded bg-[#1C1C1F] border border-[#27272A] text-[10px] font-mono text-[#3ECF8E]"
+              className="px-2 py-0.5 rounded bg-[#1C1C1F] border border-[#353436] text-[10px] font-mono text-[#dbfcff]"
             >
               ⚡ {timelapseData.totalGpuHours} GPU Hours
             </span>
@@ -559,8 +559,8 @@ export default function ProjectTimelapses({
             aria-pressed={showTechnicalHUD}
             className={`px-3 py-1.5 rounded-lg border text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
               showTechnicalHUD
-                ? 'bg-[#18181B] border-[#3ECF8E]/40 text-[#3ECF8E]'
-                : 'bg-[#18181B] border-[#27272A] text-[#71717A] hover:text-white'
+                ? 'bg-[#201f20] border-[#dbfcff]/40 text-[#dbfcff]'
+                : 'bg-[#201f20] border-[#353436] text-[#71717A] hover:text-white'
             }`}
           >
             <Eye className="w-3.5 h-3.5" />
@@ -572,10 +572,10 @@ export default function ProjectTimelapses({
             type="button"
             onClick={handleDownloadSnapshot}
             aria-label={`Download snapshot of current frame: ${activeFrame.stageName}`}
-            className="p-2 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-zinc-300 hover:text-white transition-colors cursor-pointer"
+            className="p-2 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-zinc-300 hover:text-white transition-colors cursor-pointer"
             title="Download frame snapshot"
           >
-            <Download className="w-4 h-4 text-[#3ECF8E]" />
+            <Download className="w-4 h-4 text-[#dbfcff]" />
           </button>
 
           {/* FULLSCREEN TOGGLE */}
@@ -584,7 +584,7 @@ export default function ProjectTimelapses({
             onClick={toggleFullscreen}
             aria-label={isFullscreen ? 'Exit fullscreen timelapse mode' : 'Enter fullscreen timelapse mode'}
             aria-pressed={isFullscreen}
-            className="p-2 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-zinc-300 hover:text-white transition-colors cursor-pointer"
+            className="p-2 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-zinc-300 hover:text-white transition-colors cursor-pointer"
             title="Toggle fullscreen mode"
           >
             {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -595,7 +595,7 @@ export default function ProjectTimelapses({
       {/* MAIN TIMELAPSE SCREEN & CANVAS VIEWER */}
       <div
         id="timelapse-canvas-display"
-        className="relative rounded-2xl overflow-hidden bg-black border border-[#27272A] aspect-[16/9] sm:aspect-[21/9] shadow-2xl group"
+        className="relative rounded-2xl overflow-hidden bg-black border border-[#353436] aspect-[16/9] sm:aspect-[21/9] shadow-2xl group"
       >
         <AnimatePresence mode="wait">
           <motion.div
@@ -628,7 +628,7 @@ export default function ProjectTimelapses({
               aria-label={`Current milestone: Stage ${activeFrame.stageNumber} of ${frames.length}`}
               className="px-2.5 py-1 rounded-md bg-black/80 backdrop-blur-md border border-white/10 text-xs font-mono font-bold text-white shadow-md flex items-center gap-2"
             >
-              <span className="w-2 h-2 rounded-full bg-[#3ECF8E] animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[#dbfcff] animate-pulse" />
               <span>
                 STAGE 0{activeFrame.stageNumber} / 0{frames.length}
               </span>
@@ -647,7 +647,7 @@ export default function ProjectTimelapses({
             <span
               role="status"
               aria-label={`Resolution: ${activeFrame.resolution}`}
-              className="px-2 py-1 rounded-md bg-black/80 backdrop-blur-md border border-white/10 text-[11px] font-mono text-[#3ECF8E] font-bold"
+              className="px-2 py-1 rounded-md bg-black/80 backdrop-blur-md border border-white/10 text-[11px] font-mono text-[#dbfcff] font-bold"
             >
               {activeFrame.resolution}
             </span>
@@ -671,7 +671,7 @@ export default function ProjectTimelapses({
           >
             <div className="space-y-0.5">
               <div className="text-[10px] text-[#71717A] uppercase font-bold flex items-center gap-1">
-                <Cpu className="w-3 h-3 text-[#3ECF8E]" />
+                <Cpu className="w-3 h-3 text-[#dbfcff]" />
                 <span>Render Pipeline / Engine</span>
               </div>
               <div className="text-white font-bold truncate text-[11px]">{activeFrame.renderEngine}</div>
@@ -679,7 +679,7 @@ export default function ProjectTimelapses({
 
             <div className="space-y-0.5">
               <div className="text-[10px] text-[#71717A] uppercase font-bold flex items-center gap-1">
-                <Camera className="w-3 h-3 text-[#3ECF8E]" />
+                <Camera className="w-3 h-3 text-[#dbfcff]" />
                 <span>Lens Specification</span>
               </div>
               <div className="text-white font-bold truncate text-[11px]">{activeFrame.cameraLens}</div>
@@ -687,7 +687,7 @@ export default function ProjectTimelapses({
 
             <div className="space-y-0.5">
               <div className="text-[10px] text-[#71717A] uppercase font-bold flex items-center gap-1">
-                <Gauge className="w-3 h-3 text-[#3ECF8E]" />
+                <Gauge className="w-3 h-3 text-[#dbfcff]" />
                 <span>Sample Count & Precision</span>
               </div>
               <div className="text-white font-bold truncate text-[11px]">{activeFrame.sampleCount}</div>
@@ -695,7 +695,7 @@ export default function ProjectTimelapses({
 
             <div className="space-y-0.5">
               <div className="text-[10px] text-[#71717A] uppercase font-bold flex items-center gap-1">
-                <CheckCircle2 className="w-3 h-3 text-[#3ECF8E]" />
+                <CheckCircle2 className="w-3 h-3 text-[#dbfcff]" />
                 <span>Supervising Architect</span>
               </div>
               <div className="text-white font-bold truncate text-[11px]">{activeFrame.supervisor}</div>
@@ -726,7 +726,7 @@ export default function ProjectTimelapses({
       </div>
 
       {/* SCRUBBABLE TIMELINE SLIDER & PLAYBACK CONTROLLER */}
-      <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-4">
+      <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-4">
         {/* TIMELINE RANGE SLIDER */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs font-mono">
@@ -755,7 +755,7 @@ export default function ProjectTimelapses({
               aria-valuemin={1}
               aria-valuemax={frames.length}
               aria-valuetext={activeFrame.stageName}
-              className="w-full h-2 rounded-lg bg-[#18181B] accent-[#3ECF8E] cursor-pointer"
+              className="w-full h-2 rounded-lg bg-[#201f20] accent-[#dbfcff] cursor-pointer"
             />
           </div>
 
@@ -766,17 +766,17 @@ export default function ProjectTimelapses({
             aria-valuemin={0}
             aria-valuemax={100}
             aria-label={`Pipeline milestone completion: ${activeFrame.progressPercentage}%`}
-            className="w-full h-1 rounded-full bg-[#18181B] overflow-hidden"
+            className="w-full h-1 rounded-full bg-[#201f20] overflow-hidden"
           >
             <div
-              className="h-full bg-[#3ECF8E] transition-all duration-300"
+              className="h-full bg-[#dbfcff] transition-all duration-300"
               style={{ width: `${activeFrame.progressPercentage}%` }}
             />
           </div>
         </div>
 
         {/* PLAYBACK CONTROL BUTTONS BAR */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-1 border-t border-[#27272A]/70">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-1 border-t border-[#353436]/70">
           {/* PLAY / PAUSE / STEP CONTROLS */}
           <div className="flex items-center gap-2 w-full sm:w-auto justify-center">
             <button
@@ -784,7 +784,7 @@ export default function ProjectTimelapses({
               onClick={handleStepBackward}
               disabled={currentFrameIndex === 0}
               aria-label="Step to previous frame"
-              className="p-2 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-zinc-300 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="p-2 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-zinc-300 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
               title="Previous frame (Left Arrow)"
             >
               <SkipBack className="w-4 h-4" />
@@ -795,7 +795,7 @@ export default function ProjectTimelapses({
               onClick={handleTogglePlay}
               aria-label={isPlaying ? 'Pause timelapse playback' : 'Start timelapse auto-playback'}
               aria-pressed={isPlaying}
-              className="px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center gap-2 transition-all shadow-md cursor-pointer"
+              className="px-4 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center gap-2 transition-all shadow-md cursor-pointer"
             >
               {isPlaying ? <Pause className="w-4 h-4 fill-black" /> : <Play className="w-4 h-4 fill-black" />}
               <span>{isPlaying ? 'Pause' : 'Play Timelapse'}</span>
@@ -806,7 +806,7 @@ export default function ProjectTimelapses({
               onClick={handleStepForward}
               disabled={currentFrameIndex === frames.length - 1}
               aria-label="Step to next frame"
-              className="p-2 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-zinc-300 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="p-2 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-zinc-300 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
               title="Next frame (Right Arrow)"
             >
               <SkipForward className="w-4 h-4" />
@@ -820,7 +820,7 @@ export default function ProjectTimelapses({
                 showToast('Reset timelapse to Stage 01.', 'info');
               }}
               aria-label="Reset timelapse to initial stage"
-              className="p-2 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#71717A] hover:text-white transition-colors cursor-pointer"
+              className="p-2 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#71717A] hover:text-white transition-colors cursor-pointer"
               title="Reset to beginning"
             >
               <RotateCcw className="w-4 h-4" />
@@ -839,8 +839,8 @@ export default function ProjectTimelapses({
                 aria-pressed={playbackSpeed === spd}
                 className={`px-2.5 py-1 rounded-md text-[11px] font-bold border transition-colors cursor-pointer ${
                   playbackSpeed === spd
-                    ? 'bg-[#3ECF8E] text-black border-[#3ECF8E]'
-                    : 'bg-[#18181B] text-[#A1A1AA] border-[#27272A] hover:text-white'
+                    ? 'bg-[#dbfcff] text-black border-[#dbfcff]'
+                    : 'bg-[#201f20] text-[#A1A1AA] border-[#353436] hover:text-white'
                 }`}
               >
                 {spd}x
@@ -854,8 +854,8 @@ export default function ProjectTimelapses({
               aria-pressed={isLooping}
               className={`ml-2 px-2.5 py-1 rounded-md text-[11px] border font-bold transition-colors cursor-pointer ${
                 isLooping
-                  ? 'bg-[#18181B] border-[#3ECF8E]/40 text-[#3ECF8E]'
-                  : 'bg-[#18181B] border-[#27272A] text-[#71717A]'
+                  ? 'bg-[#201f20] border-[#dbfcff]/40 text-[#dbfcff]'
+                  : 'bg-[#201f20] border-[#353436] text-[#71717A]'
               }`}
             >
               Loop: {isLooping ? 'ON' : 'OFF'}
@@ -868,7 +868,7 @@ export default function ProjectTimelapses({
       <div className="space-y-2">
         <div className="flex items-center justify-between text-xs font-mono">
           <span className="text-[#A1A1AA] uppercase font-bold text-[11px] flex items-center gap-1.5">
-            <Layers className="w-3.5 h-3.5 text-[#3ECF8E]" />
+            <Layers className="w-3.5 h-3.5 text-[#dbfcff]" />
             <span>Milestone Capture Sequence ({frames.length} Stages)</span>
           </span>
           <span className="text-[10px] text-[#71717A]">Click any thumbnail to jump to that milestone</span>
@@ -889,8 +889,8 @@ export default function ProjectTimelapses({
                 aria-pressed={isSelected}
                 className={`p-2 rounded-xl border text-left transition-all flex flex-col justify-between space-y-2 cursor-pointer ${
                   isSelected
-                    ? 'bg-[#18181B] border-[#3ECF8E] ring-1 ring-[#3ECF8E] shadow-lg'
-                    : 'bg-[#141416] border-[#27272A] hover:border-[#3F3F46] opacity-80 hover:opacity-100'
+                    ? 'bg-[#201f20] border-[#dbfcff] ring-1 ring-[#dbfcff] shadow-lg'
+                    : 'bg-[#131314] border-[#353436] hover:border-[#3F3F46] opacity-80 hover:opacity-100'
                 }`}
               >
                 <div className="relative h-16 rounded-lg overflow-hidden bg-black">
@@ -905,7 +905,7 @@ export default function ProjectTimelapses({
                     0{frame.stageNumber}
                   </div>
                   {isSelected && (
-                    <div className="absolute inset-0 border-2 border-[#3ECF8E] rounded-lg pointer-events-none" />
+                    <div className="absolute inset-0 border-2 border-[#dbfcff] rounded-lg pointer-events-none" />
                   )}
                 </div>
 
@@ -924,12 +924,12 @@ export default function ProjectTimelapses({
       </div>
 
       {/* DETAILED ACTIVE STAGE NOTES & CHANGELOG CARD */}
-      <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#27272A] pb-3">
+      <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#353436] pb-3">
           <div className="space-y-0.5">
             <div className="text-xs font-mono font-bold text-white flex items-center gap-2">
               <span>{activeFrame.stageName}</span>
-              <span className="text-[#3ECF8E]">•</span>
+              <span className="text-[#dbfcff]">•</span>
               <span className="text-[#71717A] text-[11px]">{activeFrame.timestamp}</span>
             </div>
             <p className="text-xs text-[#A1A1AA]">{activeFrame.notes}</p>
@@ -955,9 +955,9 @@ export default function ProjectTimelapses({
             {activeFrame.keyChanges.map((change, cIdx) => (
               <div
                 key={cIdx}
-                className="p-2 rounded-lg bg-[#141416] border border-[#27272A] text-zinc-300 flex items-start gap-2"
+                className="p-2 rounded-lg bg-[#131314] border border-[#353436] text-zinc-300 flex items-start gap-2"
               >
-                <span className="text-[#3ECF8E] font-bold mt-0.5">•</span>
+                <span className="text-[#dbfcff] font-bold mt-0.5">•</span>
                 <span className="text-[11px] leading-snug">{change}</span>
               </div>
             ))}

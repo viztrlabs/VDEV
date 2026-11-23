@@ -205,7 +205,7 @@ export default function GaussianSplatViewer({
 
   if (error) {
     return (
-      <div className={`relative w-full h-full flex items-center justify-center bg-[#09090B] ${className}`}>
+      <div className={`relative w-full h-full flex items-center justify-center bg-[#131314] ${className}`}>
         <div className="text-center p-4">
           <Box className="w-6 h-6 text-rose-400 mx-auto mb-2" />
           <p className="text-xs text-rose-300">{error}</p>
@@ -216,14 +216,14 @@ export default function GaussianSplatViewer({
 
   return (
     <div className={`relative w-full h-full ${className}`}>
-      <div ref={containerRef} className="absolute inset-0" style={{ background: '#09090B' }} />
+      <div ref={containerRef} className="absolute inset-0" style={{ background: '#131314' }} />
 
       {isLoading && (
-        <div className="absolute inset-0 z-50 bg-[#09090B] flex flex-col items-center justify-center gap-3">
-          <Loader2 className="w-6 h-6 text-[#3ECF8E] animate-spin" />
-          <div className="text-xs font-mono text-[#3ECF8E]">Loading Gaussian Splat…</div>
-          <div className="w-48 h-1 bg-[#27272A] rounded-full overflow-hidden">
-            <div className="h-full bg-[#3ECF8E] transition-all duration-300" style={{ width: `${progress}%` }} />
+        <div className="absolute inset-0 z-50 bg-[#131314] flex flex-col items-center justify-center gap-3">
+          <Loader2 className="w-6 h-6 text-[#dbfcff] animate-spin" />
+          <div className="text-xs font-mono text-[#dbfcff]">Loading Gaussian Splat…</div>
+          <div className="w-48 h-1 bg-[#353436] rounded-full overflow-hidden">
+            <div className="h-full bg-[#dbfcff] transition-all duration-300" style={{ width: `${progress}%` }} />
           </div>
           <div className="text-[10px] text-[#71717A]">{progress}%</div>
         </div>
@@ -231,7 +231,7 @@ export default function GaussianSplatViewer({
 
       {/* Scene info overlay */}
       {!isLoading && (
-        <div className="absolute bottom-3 left-3 z-10 bg-[#09090B]/80 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-[#27272A]">
+        <div className="absolute bottom-3 left-3 z-10 bg-[#131314]/80 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-[#353436]">
           <div className="text-xs font-mono text-[#A1A1AA]">
             {activeScene.name} Gaussian Splat {activeScene.format?.toUpperCase() ?? 'SPLAT'}
           </div>
@@ -240,8 +240,8 @@ export default function GaussianSplatViewer({
 
       {/* Splat processing quality preset selector */}
       {!isLoading && (
-        <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 bg-[#09090B]/80 backdrop-blur-sm rounded-lg px-2.5 py-1.5 border border-[#27272A]">
-          <SlidersHorizontal className="w-3.5 h-3.5 text-[#3ECF8E]" />
+        <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 bg-[#131314]/80 backdrop-blur-sm rounded-lg px-2.5 py-1.5 border border-[#353436]">
+          <SlidersHorizontal className="w-3.5 h-3.5 text-[#dbfcff]" />
           <span className="text-[10px] font-mono text-[#A1A1AA]">QUALITY</span>
           <div className="flex gap-1">
             {presets.map((p) => (
@@ -250,8 +250,8 @@ export default function GaussianSplatViewer({
                 onClick={() => setPreset(p)}
                 className={`px-2 py-0.5 rounded text-[10px] font-mono transition-colors cursor-pointer border ${
                   preset.id === p.id
-                    ? 'bg-[#3ECF8E]/20 border-[#3ECF8E]/50 text-[#3ECF8E]'
-                    : 'bg-transparent border-[#27272A] text-[#71717A] hover:text-[#A1A1AA]'
+                    ? 'bg-[#dbfcff]/20 border-[#dbfcff]/50 text-[#dbfcff]'
+                    : 'bg-transparent border-[#353436] text-[#71717A] hover:text-[#A1A1AA]'
                 }`}
                 title={`${p.label} · max ${(p.maxSplats / 1e6).toFixed(1)}M splats`}
               >

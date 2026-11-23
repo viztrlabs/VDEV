@@ -72,7 +72,7 @@ export default function ViewSlugPage() {
   if (status.kind === 'loading') {
     return (
       <Shell>
-        <p className="text-xs font-mono text-[#3ECF8E]">Resolving spatial link…</p>
+        <p className="text-xs font-mono text-[#dbfcff]">Resolving spatial link…</p>
       </Shell>
     );
   }
@@ -100,9 +100,9 @@ export default function ViewSlugPage() {
     <Shell>
       {status.passwordProtected ? (
         <div className="flex-1 flex flex-col items-center justify-center gap-6 text-center">
-          <Lock className="w-8 h-8 text-[#3ECF8E]" />
+          <Lock className="w-8 h-8 text-[#dbfcff]" />
           <div>
-            <p className="text-sm font-bold text-[#FAFAFA]">This link is password protected</p>
+            <p className="text-sm font-bold text-[#e5e2e3]">This link is password protected</p>
             <p className="text-[11px] text-[#71717A] mt-1">Enter the access password to continue.</p>
           </div>
           <div className="flex gap-2">
@@ -112,12 +112,12 @@ export default function ViewSlugPage() {
               onChange={(e) => setPassword(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleUnlock()}
               placeholder="Access password"
-              className="px-3 py-2 rounded-lg bg-[#18181B] border border-[#3F3F46] text-sm text-white outline-none focus:border-[#3ECF8E]"
+              className="px-3 py-2 rounded-lg bg-[#201f20] border border-[#3F3F46] text-sm text-white outline-none focus:border-[#dbfcff]"
             />
             <button
               type="button"
               onClick={handleUnlock}
-              className="px-4 py-2 rounded-lg bg-[#3ECF8E] text-black text-sm font-bold hover:bg-[#2fbf7c] transition-colors"
+              className="px-4 py-2 rounded-lg bg-[#dbfcff] text-black text-sm font-bold hover:bg-[#2fbf7c] transition-colors"
             >
               Unlock
             </button>
@@ -133,13 +133,13 @@ export default function ViewSlugPage() {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <main className="min-h-screen bg-black text-[#FAFAFA] flex flex-col justify-between p-4 sm:p-6 space-y-4">
+    <main className="min-h-screen bg-black text-[#e5e2e3] flex flex-col justify-between p-4 sm:p-6 space-y-4">
       <div className="flex items-center justify-between">
-        <Link href="/xr-world" className="inline-flex items-center gap-2 text-xs font-mono text-[#A1A1AA] hover:text-[#3ECF8E] transition-colors">
+        <Link href="/xr-world" className="inline-flex items-center gap-2 text-xs font-mono text-[#A1A1AA] hover:text-[#dbfcff] transition-colors">
           <ArrowLeft className="w-4 h-4" />
           <span>Exit to XR World Hub</span>
         </Link>
-        <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E]">
+        <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff]">
           <Box className="w-4 h-4" />
           <span>Published Spatial Link</span>
         </div>
@@ -158,7 +158,7 @@ function Terminal({ state, title, detail }: { state: string; title: string; deta
         <p className="text-base font-bold text-white">{title}</p>
         <p className="text-xs text-[#71717A] mt-1">{detail}</p>
       </div>
-      <Link href="/xr-world" className="text-xs font-mono text-[#3ECF8E] hover:underline">
+      <Link href="/xr-world" className="text-xs font-mono text-[#dbfcff] hover:underline">
         Back to XR World Hub
       </Link>
     </div>

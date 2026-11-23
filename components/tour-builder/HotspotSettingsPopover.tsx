@@ -40,12 +40,12 @@ export function HotspotSettingsPopover({ x, y, badge, roomId, hotspot, viewport,
         onClick={onClose}
       />
       <div
-        className="absolute z-40 w-80 max-h-[70vh] overflow-y-auto bg-[#18181B] border border-[#27272A] rounded-lg shadow-2xl"
+        className="absolute z-40 w-80 max-h-[70vh] overflow-y-auto bg-[#201f20] border border-[#353436] rounded-lg shadow-2xl"
         style={{ left, top, width: CARD_WIDTH }}
       >
-        <div className="flex items-center justify-between px-3 py-2 border-b border-[#27272A] sticky top-0 bg-[#18181B]">
+        <div className="flex items-center justify-between px-3 py-2 border-b border-[#353436] sticky top-0 bg-[#201f20]">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="px-1.5 py-0.5 rounded bg-[#09090B] border border-[#27272A] text-[9px] font-mono text-white">
+            <span className="px-1.5 py-0.5 rounded bg-[#131314] border border-[#353436] text-[9px] font-mono text-white">
               {badge}
             </span>
             <span className="text-xs font-mono font-bold text-white truncate">

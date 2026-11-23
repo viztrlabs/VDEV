@@ -850,7 +850,7 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
   // Tour settings from API
   const [tourOffline, setTourOffline] = useState(false);
   const [tourTheme, setTourTheme] = useState<{ accentColor: string; logoUrl: string; title: string }>({
-    accentColor: '#3ECF8E', logoUrl: '', title: 'VizTR Virtual Tour'
+    accentColor: '#dbfcff', logoUrl: '', title: 'VizTR Virtual Tour'
   });
 
   // Marzipano panorama renderer
@@ -1107,7 +1107,7 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
     >
       {/* OFFLINE / UNPUBLISHED OVERLAY */}
       {tourOffline && (
-        <div className="absolute inset-0 z-[60] bg-[#09090B] flex flex-col items-center justify-center text-center px-6">
+        <div className="absolute inset-0 z-[60] bg-[#131314] flex flex-col items-center justify-center text-center px-6">
           <div className="w-14 h-14 rounded-full bg-rose-500/15 border border-rose-500/40 flex items-center justify-center mb-4">
             <span className="w-3 h-3 rounded-full bg-rose-500 animate-pulse" />
           </div>
@@ -1131,7 +1131,7 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
             className="absolute inset-0 z-50 bg-black/90 backdrop-blur-2xl flex flex-col items-center justify-center pointer-events-none"
           >
             <div className="w-16 h-16 rounded-full border-2 border-rose-500 border-t-transparent animate-spin mb-4" />
-            <div className="text-sm font-mono font-bold tracking-widest text-[#3ECF8E] uppercase">
+            <div className="text-sm font-mono font-bold tracking-widest text-[#dbfcff] uppercase">
               Teleporting to Room Node...
             </div>
           </motion.div>
@@ -1148,7 +1148,7 @@ export default function PanoramaViewer({ activePanoramaUrl: propActivePanoramaUr
         {isPanoramaLoading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/80">
             <div className="flex flex-col items-center gap-3 text-zinc-300">
-              <div className="w-10 h-10 rounded-full border-2 border-[#3ECF8E] border-t-transparent animate-spin" />
+              <div className="w-10 h-10 rounded-full border-2 border-[#dbfcff] border-t-transparent animate-spin" />
               <span className="text-xs font-mono">Loading 360° panorama...</span>
             </div>
           </div>

@@ -405,7 +405,7 @@ export default function FileVersioning({ projectId, fileId, initialHistory }: Fi
         .section-header {
           grid-column: 1 / -1;
           padding: 24px;
-          border-bottom: 1px solid #27272A;
+          border-bottom: 1px solid #353436;
         }
 
         .section-header h2 {
@@ -429,8 +429,8 @@ export default function FileVersioning({ projectId, fileId, initialHistory }: Fi
         }
 
         .version-history-sidebar {
-          background: #18181B;
-          border: 1px solid #27272A;
+          background: #201f20;
+          border: 1px solid #353436;
           border-radius: 12px;
           display: flex;
           flex-direction: column;
@@ -438,7 +438,7 @@ export default function FileVersioning({ projectId, fileId, initialHistory }: Fi
 
         .sidebar-header {
           padding: 16px;
-          border-bottom: 1px solid #27272A;
+          border-bottom: 1px solid #353436;
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -453,14 +453,14 @@ export default function FileVersioning({ projectId, fileId, initialHistory }: Fi
         .version-count {
           font-size: 12px;
           color: #A1A1AA;
-          background: #27272A;
+          background: #353436;
           padding: 4px 8px;
           border-radius: 4px;
         }
 
         .current-version-info {
           padding: 16px;
-          border-bottom: 1px solid #27272A;
+          border-bottom: 1px solid #353436;
           display: flex;
           align-items: center;
           gap: 12px;
@@ -511,12 +511,12 @@ export default function FileVersioning({ projectId, fileId, initialHistory }: Fi
         }
 
         .version-item:hover {
-          background: #27272A;
+          background: #353436;
         }
 
         .version-item.selected {
-          background: #3ECF8E20;
-          border-left: 3px solid #3ECF8E;
+          background: #dbfcff20;
+          border-left: 3px solid #dbfcff;
         }
 
         .version-info {
@@ -532,7 +532,7 @@ export default function FileVersioning({ projectId, fileId, initialHistory }: Fi
 
         .version-number {
           font-weight: 600;
-          color: #3ECF8E;
+          color: #dbfcff;
           font-size: 14px;
         }
 
@@ -574,7 +574,7 @@ export default function FileVersioning({ projectId, fileId, initialHistory }: Fi
 
         .sidebar-actions {
           padding: 16px;
-          border-top: 1px solid #27272A;
+          border-top: 1px solid #353436;
         }
 
         .upload-version-btn {
@@ -583,7 +583,7 @@ export default function FileVersioning({ projectId, fileId, initialHistory }: Fi
           gap: 8px;
           width: 100%;
           padding: 12px 16px;
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
           border: none;
           border-radius: 8px;
@@ -597,8 +597,8 @@ export default function FileVersioning({ projectId, fileId, initialHistory }: Fi
         }
 
         .version-details-panel {
-          background: #18181B;
-          border: 1px solid #27272A;
+          background: #201f20;
+          border: 1px solid #353436;
           border-radius: 12px;
           padding: 24px;
           overflow-y: auto;
@@ -633,8 +633,8 @@ export default function FileVersioning({ projectId, fileId, initialHistory }: Fi
         }
 
         .detail-preview {
-          background: #09090B;
-          border: 1px solid #27272A;
+          background: #131314;
+          border: 1px solid #353436;
           border-radius: 8px;
           padding: 40px;
           display: flex;
@@ -685,7 +685,7 @@ export default function FileVersioning({ projectId, fileId, initialHistory }: Fi
         }
 
         .action-btn.primary {
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
         }
 
@@ -694,12 +694,12 @@ export default function FileVersioning({ projectId, fileId, initialHistory }: Fi
         }
 
         .action-btn.secondary {
-          background: #27272A;
+          background: #353436;
           color: #FFFFFF;
         }
 
         .action-btn.secondary:hover {
-          background: #3a3a3d;
+          background: #3a393a;
         }
 
         .no-version-selected {
@@ -726,8 +726,8 @@ export default function FileVersioning({ projectId, fileId, initialHistory }: Fi
         }
 
         .upload-version-dialog {
-          background: #18181B;
-          border: 1px solid #27272A;
+          background: #201f20;
+          border: 1px solid #353436;
           border-radius: 16px;
           padding: 32px;
           width: 100%;
@@ -751,8 +751,8 @@ export default function FileVersioning({ projectId, fileId, initialHistory }: Fi
         .form-group textarea {
           width: 100%;
           padding: 12px 16px;
-          background: #09090B;
-          border: 1px solid #27272A;
+          background: #131314;
+          border: 1px solid #353436;
           border-radius: 8px;
           color: #FFFFFF;
           font-size: 14px;
@@ -763,7 +763,7 @@ export default function FileVersioning({ projectId, fileId, initialHistory }: Fi
 
         .form-group textarea:focus {
           outline: none;
-          border-color: #3ECF8E;
+          border-color: #dbfcff;
           box-shadow: 0 0 0 3px rgba(62, 207, 142, 0.1);
         }
 
@@ -784,17 +784,17 @@ export default function FileVersioning({ projectId, fileId, initialHistory }: Fi
         }
 
         .cancel-upload-btn {
-          background: #27272A;
+          background: #353436;
           color: #FFFFFF;
           flex: 1;
         }
 
         .cancel-upload-btn:hover {
-          background: #3a3a3d;
+          background: #3a393a;
         }
 
         .confirm-upload-btn {
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
         }
 

@@ -27,15 +27,15 @@ export default function AboutPage() {
               className="hero-bg-image object-cover object-center render-lighting-enhanced"
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/40 to-[#0A0A0B]/65 pointer-events-none z-20" />
-          <div className="absolute inset-0 bg-radial from-transparent via-[#0A0A0B]/25 to-[#0A0A0B]/80 pointer-events-none z-20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#131314] via-[#131314]/40 to-[#131314]/65 pointer-events-none z-20" />
+          <div className="absolute inset-0 bg-radial from-transparent via-[#131314]/25 to-[#131314]/80 pointer-events-none z-20" />
         </div>
 
         {/* TOP AREA: Clears floating header & hosts Eyebrow Badge */}
         <div className="relative z-20 w-full pt-16 sm:pt-20 shrink-0 flex justify-center px-2 sm:px-4">
-          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#0A0A0B] shadow-2xl transition-all border border-[#1E293B] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#42CF8B] animate-pulse shrink-0" />
-            <span className="font-bold text-[#42CF8B] tracking-wider uppercase shrink-0">STUDIO PHILOSOPHY</span>
+          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#131314] shadow-2xl transition-all border border-[#3b494b] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#54de99] animate-pulse shrink-0" />
+            <span className="font-bold text-[#54de99] tracking-wider uppercase shrink-0">STUDIO PHILOSOPHY</span>
             <span className="opacity-40 shrink-0">|</span>
             <span className="opacity-80 shrink-0">Architectural Vision &amp; Spatial Engineering</span>
           </div>
@@ -51,7 +51,7 @@ export default function AboutPage() {
             Where Raw Blueprint Meets Emotional Reality
           </p>
 
-          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]">
+          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#e5e2e3]">
             VizTR bridges the chasm between raw architectural blueprint and emotional reality through masterclass CGI rendering and real-time WebXR spatial computing.
           </p>
 
@@ -68,9 +68,9 @@ export default function AboutPage() {
             <Link
               href="/portfolio"
               id="hero-secondary-cta"
-              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#1E293B] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#1E293B]"
+              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#3b494b] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#3b494b]"
             >
-              <Sparkles className="w-4 h-4 text-[#42CF8B]" />
+              <Sparkles className="w-4 h-4 text-[#54de99]" />
               <span>Explore Selected Works</span>
             </Link>
           </div>
@@ -89,7 +89,7 @@ export default function AboutPage() {
                     window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
                   }
                 }}
-                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0A0A0B] text-[#FAFAFA] text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-sm hover:bg-[#131314] border border-[#1E293B]"
+                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#131314] text-[#e5e2e3] text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-sm hover:bg-[#131314] border border-[#3b494b]"
                 aria-label="Scroll down to explore pillars"
               >
                 <span>Scroll to explore</span>
@@ -103,11 +103,11 @@ export default function AboutPage() {
       {/* CORE PILLARS */}
       <section id="about-pillars" className="py-20 px-6 max-w-[1280px] mx-auto space-y-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="p-8 rounded-[2rem] bg-[#131314] border border-[#1E293B] shadow-sm space-y-4">
-            <div className="w-12 h-12 rounded-full bg-[#0A0A0B] border border-[#1E293B] text-rose-500 flex items-center justify-center">
+          <div className="p-8 rounded-[2rem] bg-[#131314] border border-[#3b494b] shadow-sm space-y-4">
+            <div className="w-12 h-12 rounded-full bg-[#131314] border border-[#3b494b] text-rose-500 flex items-center justify-center">
               <Award className="w-5 h-5" />
             </div>
-            <h3 className="text-xl font-bold text-[#FAFAFA] font-display">
+            <h3 className="text-xl font-bold text-[#e5e2e3] font-display">
               Uncompromising Artistry
             </h3>
             <p className="text-xs sm:text-sm text-[#B9CACB] leading-relaxed">
@@ -115,11 +115,11 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="p-8 rounded-[2rem] bg-[#131314] border border-[#1E293B] shadow-sm space-y-4">
-            <div className="w-12 h-12 rounded-full bg-[#0A0A0B] border border-[#1E293B] text-rose-500 flex items-center justify-center">
+          <div className="p-8 rounded-[2rem] bg-[#131314] border border-[#3b494b] shadow-sm space-y-4">
+            <div className="w-12 h-12 rounded-full bg-[#131314] border border-[#3b494b] text-rose-500 flex items-center justify-center">
               <Cpu className="w-5 h-5" />
             </div>
-            <h3 className="text-xl font-bold text-[#FAFAFA] font-display">
+            <h3 className="text-xl font-bold text-[#e5e2e3] font-display">
               XR Technological Leadership
             </h3>
             <p className="text-xs sm:text-sm text-[#B9CACB] leading-relaxed">
@@ -127,11 +127,11 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="p-8 rounded-[2rem] bg-[#131314] border border-[#1E293B] shadow-sm space-y-4">
-            <div className="w-12 h-12 rounded-full bg-[#0A0A0B] border border-[#1E293B] text-rose-500 flex items-center justify-center">
+          <div className="p-8 rounded-[2rem] bg-[#131314] border border-[#3b494b] shadow-sm space-y-4">
+            <div className="w-12 h-12 rounded-full bg-[#131314] border border-[#3b494b] text-rose-500 flex items-center justify-center">
               <Leaf className="w-5 h-5" />
             </div>
-            <h3 className="text-xl font-bold text-[#FAFAFA] font-display">
+            <h3 className="text-xl font-bold text-[#e5e2e3] font-display">
               Zero-Carbon Cloud Computing
             </h3>
             <p className="text-xs sm:text-sm text-[#B9CACB] leading-relaxed">
@@ -146,7 +146,7 @@ export default function AboutPage() {
             <span className="text-xs font-bold uppercase tracking-wider text-rose-500">
               Leadership
             </span>
-            <h2 className="text-3xl font-bold text-[#FAFAFA] font-display mt-1">
+            <h2 className="text-3xl font-bold text-[#e5e2e3] font-display mt-1">
               Architectural & Visual Directors
             </h2>
           </div>
@@ -180,7 +180,7 @@ export default function AboutPage() {
             ].map((leader, idx) => (
               <div
                 key={idx}
-                className="p-5 rounded-[2rem] bg-[#131314] border border-[#1E293B] shadow-sm space-y-4"
+                className="p-5 rounded-[2rem] bg-[#131314] border border-[#3b494b] shadow-sm space-y-4"
               >
                 <div className="relative w-full aspect-square rounded-[1.5rem] overflow-hidden bg-black">
                   {leader.image ? (
@@ -199,7 +199,7 @@ export default function AboutPage() {
                   )}
                 </div>
                 <div className="space-y-1">
-                  <h4 className="text-base font-bold text-[#FAFAFA] font-display">
+                  <h4 className="text-base font-bold text-[#e5e2e3] font-display">
                     {leader.name}
                   </h4>
                   <div className="text-xs font-semibold text-rose-500">{leader.role}</div>
@@ -213,7 +213,7 @@ export default function AboutPage() {
         </div>
 
         {/* GLOBAL PRESENCE */}
-        <div className="p-8 sm:p-12 rounded-[2rem] bg-[#131314] text-[#FAFAFA] border border-[#1E293B] space-y-8">
+        <div className="p-8 sm:p-12 rounded-[2rem] bg-[#131314] text-[#e5e2e3] border border-[#3b494b] space-y-8">
           <div className="text-center max-w-xl mx-auto space-y-2">
             <span className="text-xs font-bold uppercase tracking-wider text-rose-500">
               Global Operations
@@ -227,22 +227,22 @@ export default function AboutPage() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div className="p-4 rounded-2xl bg-[#0A0A0B] border border-[#1E293B] space-y-1">
+            <div className="p-4 rounded-2xl bg-[#131314] border border-[#3b494b] space-y-1">
               <div className="text-rose-500 text-sm font-bold">NEW YORK</div>
               <div className="text-xs text-[#B9CACB]">Americas Commercial Hub</div>
               <div className="text-[11px] text-zinc-500 font-mono">EST / UTC-5</div>
             </div>
-            <div className="p-4 rounded-2xl bg-[#0A0A0B] border border-[#1E293B] space-y-1">
+            <div className="p-4 rounded-2xl bg-[#131314] border border-[#3b494b] space-y-1">
               <div className="text-rose-500 text-sm font-bold">LONDON</div>
               <div className="text-xs text-[#B9CACB]">European Creative HQ</div>
               <div className="text-[11px] text-zinc-500 font-mono">GMT / UTC+0</div>
             </div>
-            <div className="p-4 rounded-2xl bg-[#0A0A0B] border border-[#1E293B] space-y-1">
+            <div className="p-4 rounded-2xl bg-[#131314] border border-[#3b494b] space-y-1">
               <div className="text-rose-500 text-sm font-bold">DUBAI</div>
               <div className="text-xs text-[#B9CACB]">Middle East Megaprojects</div>
               <div className="text-[11px] text-zinc-500 font-mono">GST / UTC+4</div>
             </div>
-            <div className="p-4 rounded-2xl bg-[#0A0A0B] border border-[#1E293B] space-y-1">
+            <div className="p-4 rounded-2xl bg-[#131314] border border-[#3b494b] space-y-1">
               <div className="text-rose-500 text-sm font-bold">TOKYO</div>
               <div className="text-xs text-[#B9CACB]">XR Spatial Research Lab</div>
               <div className="text-[11px] text-zinc-500 font-mono">JST / UTC+9</div>

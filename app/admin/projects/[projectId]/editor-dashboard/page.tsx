@@ -109,11 +109,11 @@ export default function EditorDashboardLauncherPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#09090B] text-white">
+    <div className="min-h-screen bg-[#131314] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div>
-            <h1 className="text-base font-mono font-bold text-[#3ECF8E]">Project Editor Dashboard</h1>
+            <h1 className="text-base font-mono font-bold text-[#dbfcff]">Project Editor Dashboard</h1>
             <p className="text-[10px] font-mono text-[#71717A]">
               {project ? `${project.name} • ${project.id.slice(-8)}` : 'Loading project…'}
             </p>
@@ -122,7 +122,7 @@ export default function EditorDashboardLauncherPage() {
             <button
               type="button"
               onClick={() => setView('grid')}
-              className={`p-1.5 rounded ${view === 'grid' ? 'bg-[#3ECF8E] text-black' : 'text-[#71717A] hover:text-white'}`}
+              className={`p-1.5 rounded ${view === 'grid' ? 'bg-[#dbfcff] text-black' : 'text-[#71717A] hover:text-white'}`}
               title="Grid view"
             >
               <Grid3X3 className="w-4 h-4" />
@@ -130,7 +130,7 @@ export default function EditorDashboardLauncherPage() {
             <button
               type="button"
               onClick={() => setView('list')}
-              className={`p-1.5 rounded ${view === 'list' ? 'bg-[#3ECF8E] text-black' : 'text-[#71717A] hover:text-white'}`}
+              className={`p-1.5 rounded ${view === 'list' ? 'bg-[#dbfcff] text-black' : 'text-[#71717A] hover:text-white'}`}
               title="List view"
             >
               <ListIcon className="w-4 h-4" />
@@ -141,7 +141,7 @@ export default function EditorDashboardLauncherPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search services…"
-                className="pl-7 pr-2 py-1.5 rounded bg-[#18181B] border border-[#27272A] text-xs font-mono text-white w-48"
+                className="pl-7 pr-2 py-1.5 rounded bg-[#201f20] border border-[#353436] text-xs font-mono text-white w-48"
               />
             </div>
           </div>
@@ -156,7 +156,7 @@ export default function EditorDashboardLauncherPage() {
         {loading ? (
           <div className="text-center text-xs font-mono text-[#71717A] py-12">Loading editor services…</div>
         ) : filtered.length === 0 ? (
-          <div className="text-center text-xs font-mono text-[#71717A] py-12 border border-dashed border-[#27272A] rounded-lg">
+          <div className="text-center text-xs font-mono text-[#71717A] py-12 border border-dashed border-[#353436] rounded-lg">
             No editor services available for this project yet.
           </div>
         ) : view === 'grid' ? (
@@ -167,12 +167,12 @@ export default function EditorDashboardLauncherPage() {
                 <Link
                   key={slug}
                   href={`/admin/projects/${projectId}/editor-dashboard/${slug}`}
-                  className="rounded-lg border border-[#27272A] bg-[#0c0c0f] p-4 hover:border-[#3ECF8E] transition-colors"
+                  className="rounded-lg border border-[#353436] bg-[#201f20] p-4 hover:border-[#dbfcff] transition-colors"
                 >
                   <div className="text-xl mb-2">{meta.icon}</div>
                   <div className="text-xs font-mono font-bold text-white">{meta.title}</div>
                   <div className="text-[10px] font-mono text-[#A1A1AA] mt-1">{meta.description}</div>
-                  <div className="mt-3 flex items-center gap-1 text-[10px] font-mono text-[#3ECF8E]">
+                  <div className="mt-3 flex items-center gap-1 text-[10px] font-mono text-[#dbfcff]">
                     <Edit3 className="w-3 h-3" />
                     Open editor
                   </div>
@@ -183,7 +183,7 @@ export default function EditorDashboardLauncherPage() {
         ) : (
           <table className="w-full text-xs font-mono">
             <thead>
-              <tr className="text-[#71717A] border-b border-[#27272A]">
+              <tr className="text-[#71717A] border-b border-[#353436]">
                 <th className="text-left p-2">Service</th>
                 <th className="text-left p-2">Category</th>
                 <th className="text-left p-2">Description</th>
@@ -194,19 +194,19 @@ export default function EditorDashboardLauncherPage() {
               {filtered.map((slug) => {
                 const meta = SERVICE_META[slug];
                 return (
-                  <tr key={slug} className="border-b border-[#18181B] hover:bg-[#0c0c0f]">
+                  <tr key={slug} className="border-b border-[#201f20] hover:bg-[#201f20]">
                     <td className="p-2 flex items-center gap-2">
                       <span className="text-base">{meta.icon}</span>
                       <span className="text-white">{meta.title}</span>
                     </td>
                     <td className="p-2 text-[#A1A1AA]">
-                      <span className="px-1.5 py-0.5 rounded bg-[#3ECF8E]/15 text-[#3ECF8E]">{meta.category}</span>
+                      <span className="px-1.5 py-0.5 rounded bg-[#dbfcff]/15 text-[#dbfcff]">{meta.category}</span>
                     </td>
                     <td className="p-2 text-[#A1A1AA]">{meta.description}</td>
                     <td className="p-2 text-right">
                       <Link
                         href={`/admin/projects/${projectId}/editor-dashboard/${slug}`}
-                        className="inline-flex items-center gap-1 px-2 py-1 rounded bg-[#18181B] border border-[#27272A] text-[#A1A1AA] hover:text-white hover:border-[#3ECF8E]"
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded bg-[#201f20] border border-[#353436] text-[#A1A1AA] hover:text-white hover:border-[#dbfcff]"
                       >
                         <Edit3 className="w-3 h-3" />
                         Open

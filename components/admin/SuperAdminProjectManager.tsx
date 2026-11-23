@@ -144,7 +144,7 @@ export default function SuperAdminProjectManager({
           hoursSpent: 12.0,
           hourlyRate: 175,
           disciplineBreakdown: [
-            { discipline: '3D Modeling & CAD', hours: 8.0, budgetHours: 35.0, color: '#3ECF8E' },
+            { discipline: '3D Modeling & CAD', hours: 8.0, budgetHours: 35.0, color: '#dbfcff' },
             { discipline: 'PBR Materials & Shaders', hours: 4.0, budgetHours: 35.0, color: '#06B6D4' },
             { discipline: 'Spatial Engine / Lighting', hours: 0, budgetHours: 30.0, color: '#8B5CF6' },
             { discipline: 'Client Review Prep', hours: 0, budgetHours: 20.0, color: '#F59E0B' },
@@ -213,9 +213,9 @@ export default function SuperAdminProjectManager({
   return (
     <div className="space-y-6">
       {/* SUPER ADMIN MASTER BAR */}
-      <div className="p-5 rounded-2xl bg-gradient-to-r from-[#18181B] to-[#121214] border border-[#27272A] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-2xl bg-gradient-to-r from-[#201f20] to-[#131314] border border-[#353436] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase tracking-wider">
             <Shield className="w-4 h-4" />
             <span>SuperAdmin Master Authority Console</span>
           </div>
@@ -231,7 +231,7 @@ export default function SuperAdminProjectManager({
           <button
             type="button"
             onClick={handleStartCreate}
-            className="px-4 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#3ECF8E]/90 text-black font-mono font-bold text-xs flex items-center gap-2 shadow-lg shadow-[#3ECF8E]/20 transition-all cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#dbfcff]/90 text-black font-mono font-bold text-xs flex items-center gap-2 shadow-lg shadow-[#dbfcff]/20 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>New Commission</span>
@@ -242,12 +242,12 @@ export default function SuperAdminProjectManager({
       {/* DUAL WORKSPACE: PROJECT LIST & MANAGEMENT INSPECTOR */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* LEFT COLUMN: ALL PROJECTS (5 cols) */}
-        <div className="lg:col-span-5 p-4 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+        <div className="lg:col-span-5 p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#A1A1AA]">
               Commissions Directory ({filteredProjects.length})
             </h3>
-            <span className="text-[10px] font-mono text-[#3ECF8E]">CRUD Enabled</span>
+            <span className="text-[10px] font-mono text-[#dbfcff]">CRUD Enabled</span>
           </div>
 
           <div className="relative">
@@ -257,7 +257,7 @@ export default function SuperAdminProjectManager({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by project, client, ID..."
-              className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+              className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
             />
           </div>
 
@@ -274,8 +274,8 @@ export default function SuperAdminProjectManager({
                   }}
                   className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-center justify-between gap-3 ${
                     isSelected
-                      ? 'bg-[#09090B] border-[#3ECF8E] ring-1 ring-[#3ECF8E]/40'
-                      : 'bg-[#09090B]/60 border-[#27272A] hover:border-[#71717A]'
+                      ? 'bg-[#131314] border-[#dbfcff] ring-1 ring-[#dbfcff]/40'
+                      : 'bg-[#131314]/60 border-[#353436] hover:border-[#71717A]'
                   }`}
                 >
 <div className="flex items-center gap-3 min-w-0">
@@ -297,8 +297,8 @@ export default function SuperAdminProjectManager({
                       </div>
                     <div className="min-w-0 space-y-0.5">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono font-bold text-[#3ECF8E]">{proj.id}</span>
-                        <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#27272A] font-mono text-[#A1A1AA]">
+                        <span className="text-xs font-mono font-bold text-[#dbfcff]">{proj.id}</span>
+                        <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#353436] font-mono text-[#A1A1AA]">
                           {proj.projectType}
                         </span>
                       </div>
@@ -321,7 +321,7 @@ export default function SuperAdminProjectManager({
                     >
                       {proj.status}
                     </span>
-                    <div className="text-[10px] font-mono text-[#3ECF8E] font-bold">
+                    <div className="text-[10px] font-mono text-[#dbfcff] font-bold">
                       {proj.progress}%
                     </div>
                   </div>
@@ -335,10 +335,10 @@ export default function SuperAdminProjectManager({
         <div className="lg:col-span-7 space-y-4">
           {isCreating || isEditing ? (
             /* EDIT / CREATE FORM */
-            <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5">
-              <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+            <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5">
+              <div className="flex items-center justify-between border-b border-[#353436] pb-3">
                 <div className="flex items-center gap-2">
-                  <Edit3 className="w-4 h-4 text-[#3ECF8E]" />
+                  <Edit3 className="w-4 h-4 text-[#dbfcff]" />
                   <h3 className="text-sm font-mono font-bold text-white uppercase tracking-wider">
                     {isCreating ? 'Initialize New Commission' : `Edit Commission ${formData.id}`}
                   </h3>
@@ -363,7 +363,7 @@ export default function SuperAdminProjectManager({
                       type="text"
                       value={formData.id}
                       onChange={(e) => setFormData({ ...formData, id: e.target.value })}
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                       required
                     />
                   </div>
@@ -373,7 +373,7 @@ export default function SuperAdminProjectManager({
                     <select
                       value={formData.projectType}
                       onChange={(e) => setFormData({ ...formData, projectType: e.target.value as any })}
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                     >
                       <option value="WebXR">WebXR Spatial Engine</option>
                       <option value="WebAR">WebAR QuickLook</option>
@@ -392,7 +392,7 @@ export default function SuperAdminProjectManager({
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="e.g. The Apex Tower - Master Tower Facade & XR World"
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                     required
                   />
                 </div>
@@ -405,7 +405,7 @@ export default function SuperAdminProjectManager({
                       value={formData.clientName}
                       onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
                       placeholder="e.g. Elena Rostova"
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                       required
                     />
                   </div>
@@ -417,7 +417,7 @@ export default function SuperAdminProjectManager({
                       value={formData.clientCompany}
                       onChange={(e) => setFormData({ ...formData, clientCompany: e.target.value })}
                       placeholder="e.g. Foster & Partners"
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                       required
                     />
                   </div>
@@ -429,7 +429,7 @@ export default function SuperAdminProjectManager({
                       value={formData.clientEmail}
                       onChange={(e) => setFormData({ ...formData, clientEmail: e.target.value })}
                       placeholder="client@fosterpartners.com"
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                     />
                   </div>
                 </div>
@@ -440,7 +440,7 @@ export default function SuperAdminProjectManager({
                     <select
                       value={formData.status}
                       onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                     >
                       <option value="Work in Progress">Work in Progress</option>
                       <option value="Client Review">Client Review</option>
@@ -455,7 +455,7 @@ export default function SuperAdminProjectManager({
                     <select
                       value={formData.paymentStatus}
                       onChange={(e) => setFormData({ ...formData, paymentStatus: e.target.value as any })}
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                     >
                       <option value="Paid">Paid (100%)</option>
                       <option value="Partial 50%">Partial 50%</option>
@@ -471,7 +471,7 @@ export default function SuperAdminProjectManager({
                       type="number"
                       value={formData.bookingAmount}
                       onChange={(e) => setFormData({ ...formData, bookingAmount: Number(e.target.value) })}
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                     />
                   </div>
                 </div>
@@ -485,7 +485,7 @@ export default function SuperAdminProjectManager({
                       max="100"
                       value={formData.progress}
                       onChange={(e) => setFormData({ ...formData, progress: Number(e.target.value) })}
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                     />
                   </div>
 
@@ -496,7 +496,7 @@ export default function SuperAdminProjectManager({
                       value={formData.leadArchitect}
                       onChange={(e) => setFormData({ ...formData, leadArchitect: e.target.value })}
                       placeholder="e.g. Elena Rostova, Foster & Partners"
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                     />
                   </div>
                 </div>
@@ -507,7 +507,7 @@ export default function SuperAdminProjectManager({
                     type="url"
                     value={formData.image}
                     onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   />
                 </div>
 
@@ -517,24 +517,24 @@ export default function SuperAdminProjectManager({
                     rows={3}
                     value={formData.notes}
                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E] resize-none"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff] resize-none"
                   />
                 </div>
 
-                <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#27272A]">
+                <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#353436]">
                   <button
                     type="button"
                     onClick={() => {
                       setIsCreating(false);
                       setIsEditing(false);
                     }}
-                    className="px-4 py-2 rounded-xl bg-[#27272A] hover:bg-[#3F3F46] text-white font-bold"
+                    className="px-4 py-2 rounded-xl bg-[#353436] hover:bg-[#3F3F46] text-white font-bold"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#3ECF8E]/90 text-black font-bold shadow-lg shadow-[#3ECF8E]/20 cursor-pointer"
+                    className="px-5 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#dbfcff]/90 text-black font-bold shadow-lg shadow-[#dbfcff]/20 cursor-pointer"
                   >
                     {isCreating ? 'Initialize Commission' : 'Save Changes'}
                   </button>
@@ -543,18 +543,18 @@ export default function SuperAdminProjectManager({
             </div>
           ) : selectedProject ? (
             /* PROJECT DETAILS VIEW WITH EDIT / DELETE / RAW JSON ACTIONS */
-            <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-6">
+            <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-6">
               {/* TOP ACTION HEADER */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#27272A] pb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#353436] pb-4">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-mono font-bold text-[#3ECF8E]">
+                    <span className="text-sm font-mono font-bold text-[#dbfcff]">
                       {selectedProject.id}
                     </span>
-                    <span className="px-2 py-0.5 rounded bg-[#27272A] text-[10px] font-mono text-white">
+                    <span className="px-2 py-0.5 rounded bg-[#353436] text-[10px] font-mono text-white">
                       {selectedProject.projectType}
                     </span>
-                    <span className="px-2 py-0.5 rounded bg-[#27272A] text-[10px] font-mono text-[#3ECF8E]" suppressHydrationWarning>
+                    <span className="px-2 py-0.5 rounded bg-[#353436] text-[10px] font-mono text-[#dbfcff]" suppressHydrationWarning>
                       ${selectedProject.bookingAmount.toLocaleString('en-US')}
                     </span>
                   </div>
@@ -567,7 +567,7 @@ export default function SuperAdminProjectManager({
                   <button
                     type="button"
                     onClick={() => setViewJsonModal(true)}
-                    className="p-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white"
+                    className="p-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white"
                     title="View Raw Telemetry JSON"
                   >
                     <FileText className="w-4 h-4" />
@@ -576,7 +576,7 @@ export default function SuperAdminProjectManager({
                   <button
                     type="button"
                     onClick={() => handleStartEdit(selectedProject)}
-                    className="px-3 py-1.5 rounded-lg bg-[#27272A] hover:bg-[#3ECF8E] hover:text-black text-white font-mono font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer"
+                    className="px-3 py-1.5 rounded-lg bg-[#353436] hover:bg-[#dbfcff] hover:text-black text-white font-mono font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer"
                   >
                     <Edit3 className="w-3.5 h-3.5" />
                     <span>Edit</span>
@@ -594,7 +594,7 @@ export default function SuperAdminProjectManager({
                       <button
                         type="button"
                         onClick={() => setDeleteConfirmId(null)}
-                        className="px-2 py-1.5 rounded-lg bg-[#27272A] text-[#A1A1AA] text-xs font-mono"
+                        className="px-2 py-1.5 rounded-lg bg-[#353436] text-[#A1A1AA] text-xs font-mono"
                       >
                         Cancel
                       </button>
@@ -603,7 +603,7 @@ export default function SuperAdminProjectManager({
                     <button
                       type="button"
                       onClick={() => setDeleteConfirmId(selectedProject.id)}
-                      className="p-2 rounded-lg bg-[#09090B] hover:bg-rose-950/80 border border-[#27272A] text-[#71717A] hover:text-rose-400 hover:border-rose-800 transition-colors"
+                      className="p-2 rounded-lg bg-[#131314] hover:bg-rose-950/80 border border-[#353436] text-[#71717A] hover:text-rose-400 hover:border-rose-800 transition-colors"
                       title="Delete Commission"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -614,24 +614,24 @@ export default function SuperAdminProjectManager({
 
               {/* STATS OVERVIEW GRID */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
-                <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A]">
+                <div className="p-3 rounded-xl bg-[#131314] border border-[#353436]">
                   <div className="text-[10px] text-[#71717A]">STATUS</div>
                   <div className="text-white font-bold mt-0.5">{selectedProject.status}</div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A]">
+                <div className="p-3 rounded-xl bg-[#131314] border border-[#353436]">
                   <div className="text-[10px] text-[#71717A]">PAYMENT</div>
-                  <div className="text-[#3ECF8E] font-bold mt-0.5">{selectedProject.paymentStatus}</div>
+                  <div className="text-[#dbfcff] font-bold mt-0.5">{selectedProject.paymentStatus}</div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A]">
+                <div className="p-3 rounded-xl bg-[#131314] border border-[#353436]">
                   <div className="text-[10px] text-[#71717A]">HOURS LOGGED</div>
                   <div className="text-white font-bold mt-0.5">
                     {selectedProject.hoursMonitoring.hoursSpent} / {selectedProject.hoursMonitoring.estimatedHours}h
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A]">
+                <div className="p-3 rounded-xl bg-[#131314] border border-[#353436]">
                   <div className="text-[10px] text-[#71717A]">PIPELINE STAGE</div>
                   <div className="text-white font-bold mt-0.5">
                     Stage {selectedProject.pipeline.currentStageIndex + 1} of {selectedProject.pipeline.stages.length}
@@ -640,7 +640,7 @@ export default function SuperAdminProjectManager({
               </div>
 
               {/* CLIENT & LEAD ARCHITECT INFO */}
-              <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2 text-xs font-mono">
+              <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-2 text-xs font-mono">
                 <h4 className="text-[10px] uppercase font-bold text-[#A1A1AA]">
                   Client Stakeholders & Practice
                 </h4>
@@ -664,7 +664,7 @@ export default function SuperAdminProjectManager({
                   <h4 className="text-[10px] uppercase font-bold text-[#A1A1AA]">
                     Pipeline Stages Checklist ({selectedProject.pipeline.stages.length} Stages)
                   </h4>
-                  <span className="text-[10px] text-[#3ECF8E]">
+                  <span className="text-[10px] text-[#dbfcff]">
                     {selectedProject.pipeline.pipelineType}
                   </span>
                 </div>
@@ -673,10 +673,10 @@ export default function SuperAdminProjectManager({
                   {selectedProject.pipeline.stages.map((st) => (
                     <div
                       key={st.stageNumber}
-                      className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-between"
+                      className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-between"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="w-5 h-5 rounded-full bg-[#27272A] text-white text-[10px] font-bold flex items-center justify-center">
+                        <span className="w-5 h-5 rounded-full bg-[#353436] text-white text-[10px] font-bold flex items-center justify-center">
                           {st.stageNumber}
                         </span>
                         <div>
@@ -690,7 +690,7 @@ export default function SuperAdminProjectManager({
                             ? 'bg-emerald-950/80 text-emerald-400'
                             : st.status === 'in_progress'
                             ? 'bg-sky-950/80 text-sky-400'
-                            : 'bg-[#18181B] text-[#71717A]'
+                            : 'bg-[#201f20] text-[#71717A]'
                         }`}
                       >
                         {st.status}
@@ -701,13 +701,13 @@ export default function SuperAdminProjectManager({
               </div>
             </div>
           ) : (
-            <div className="p-8 rounded-2xl bg-[#18181B] border border-[#27272A] text-center text-[#71717A] space-y-3 font-mono">
-              <Database className="w-8 h-8 mx-auto text-[#3ECF8E]" />
+            <div className="p-8 rounded-2xl bg-[#201f20] border border-[#353436] text-center text-[#71717A] space-y-3 font-mono">
+              <Database className="w-8 h-8 mx-auto text-[#dbfcff]" />
               <p className="text-sm">Select a commission from the directory to inspect or edit telemetry.</p>
               <button
                 type="button"
                 onClick={handleStartCreate}
-                className="px-4 py-2 rounded-xl bg-[#3ECF8E] text-black font-bold text-xs"
+                className="px-4 py-2 rounded-xl bg-[#dbfcff] text-black font-bold text-xs"
               >
                 + Create Commission
               </button>
@@ -719,10 +719,10 @@ export default function SuperAdminProjectManager({
       {/* RAW JSON TELEMETRY MODAL */}
       {viewJsonModal && selectedProject && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-2xl bg-[#18181B] border border-[#27272A] rounded-2xl p-5 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
-            <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+          <div className="w-full max-w-2xl bg-[#201f20] border border-[#353436] rounded-2xl p-5 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
+            <div className="flex items-center justify-between border-b border-[#353436] pb-3">
               <div className="flex items-center gap-2 font-mono text-sm text-white font-bold">
-                <FileText className="w-4 h-4 text-[#3ECF8E]" />
+                <FileText className="w-4 h-4 text-[#dbfcff]" />
                 <span>Raw Pipeline Telemetry JSON · {selectedProject.id}</span>
               </div>
               <button
@@ -734,11 +734,11 @@ export default function SuperAdminProjectManager({
               </button>
             </div>
 
-            <pre className="flex-1 overflow-y-auto p-4 rounded-xl bg-[#09090B] border border-[#27272A] text-[11px] font-mono text-[#3ECF8E] leading-relaxed select-all">
+            <pre className="flex-1 overflow-y-auto p-4 rounded-xl bg-[#131314] border border-[#353436] text-[11px] font-mono text-[#dbfcff] leading-relaxed select-all">
               {JSON.stringify(selectedProject, null, 2)}
             </pre>
 
-            <div className="flex items-center justify-between pt-2 border-t border-[#27272A]">
+            <div className="flex items-center justify-between pt-2 border-t border-[#353436]">
               <span className="text-[10px] font-mono text-[#71717A]">
                 Schema standard: VIZTR-BIM-XR-2026.1
               </span>
@@ -746,7 +746,7 @@ export default function SuperAdminProjectManager({
                 <button
                   type="button"
                   onClick={handleCopyJson}
-                  className="px-3 py-1.5 rounded-lg bg-[#27272A] hover:bg-[#3ECF8E] hover:text-black text-white font-mono text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-[#353436] hover:bg-[#dbfcff] hover:text-black text-white font-mono text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   {copiedJson ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedJson ? 'Copied' : 'Copy JSON'}</span>
@@ -754,7 +754,7 @@ export default function SuperAdminProjectManager({
                 <button
                   type="button"
                   onClick={() => setViewJsonModal(false)}
-                  className="px-4 py-1.5 rounded-lg bg-[#3ECF8E] text-black font-mono font-bold text-xs"
+                  className="px-4 py-1.5 rounded-lg bg-[#dbfcff] text-black font-mono font-bold text-xs"
                 >
                   Done
                 </button>

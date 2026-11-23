@@ -100,17 +100,17 @@ export function ContextMenuProvider({ children }: { children: React.ReactNode })
           <div className="fixed inset-0 z-[99]" />
           <div
             ref={menuRef}
-            className="fixed z-[100] bg-[#18181B] border border-[#27272A] rounded-lg shadow-2xl py-1 min-w-[200px] backdrop-blur-sm"
+            className="fixed z-[100] bg-[#201f20] border border-[#353436] rounded-lg shadow-2xl py-1 min-w-[200px] backdrop-blur-sm"
             style={{ left: state.x, top: state.y }}
           >
             {state.title && (
-              <div className="px-3 py-1.5 text-[10px] font-mono text-[#71717A] border-b border-[#27272A]">
+              <div className="px-3 py-1.5 text-[10px] font-mono text-[#71717A] border-b border-[#353436]">
                 {state.title}
               </div>
             )}
             {state.items.map((item, i) => {
               if (item.divider) {
-                return <div key={i} className="border-t border-[#27272A] my-1" />;
+                return <div key={i} className="border-t border-[#353436] my-1" />;
               }
               return (
                 <button

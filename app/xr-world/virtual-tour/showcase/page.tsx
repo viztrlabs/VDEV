@@ -42,16 +42,16 @@ export default function MarzipanoShowcasePage() {
       {/* 1. HERO PRESENTATION AREA (Full Landing Page Presentation Aspect Ratio) */}
       <section
         id="hero-section"
-        className="relative w-full h-screen min-h-[680px] flex flex-col justify-between items-center overflow-hidden text-white select-none transition-colors duration-300 bg-[#09090B]"
+        className="relative w-full h-screen min-h-[680px] flex flex-col justify-between items-center overflow-hidden text-white select-none transition-colors duration-300 bg-[#131314]"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-950/30 via-[#09090B] to-[#09090B] pointer-events-none z-0" />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-950/30 via-[#131314] to-[#131314] pointer-events-none z-0" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))_from-purple-500/10_via-transparent_to-transparent] pointer-events-none z-0" />
 
         {/* TOP AREA: Clears floating header & hosts Eyebrow Badge (No directory breadcrumbs) */}
         <div className="relative z-20 w-full pt-16 sm:pt-20 shrink-0 flex justify-center px-2 sm:px-4">
-          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#0A0A0B] shadow-2xl transition-all border border-[#1E293B] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#42CF8B] animate-pulse shrink-0" />
-            <span className="font-bold text-[#42CF8B] tracking-wider uppercase shrink-0">Marzipano Virtual Tours</span>
+          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#131314] shadow-2xl transition-all border border-[#3b494b] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#54de99] animate-pulse shrink-0" />
+            <span className="font-bold text-[#54de99] tracking-wider uppercase shrink-0">Marzipano Virtual Tours</span>
           </div>
         </div>
 
@@ -61,7 +61,7 @@ export default function MarzipanoShowcasePage() {
             Immersive  360o Tours with <span className="text-purple-400">Marzipano</span>
           </h1>
 
-          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]">
+          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#e5e2e3]">
             Explore real-world spaces with interactive 360o panoramas. Navigate through rooms, discover hotspots, and experience architecture in complete immersion.
           </p>
 
@@ -76,9 +76,9 @@ export default function MarzipanoShowcasePage() {
             <Link
               href="#how-it-works"
               id="hero-secondary-cta"
-              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#1E293B] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#1E293B]"
+              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#3b494b] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#3b494b]"
             >
-              <ExternalLink className="w-4 h-4 text-[#42CF8B]" /> <span>How It Works</span>
+              <ExternalLink className="w-4 h-4 text-[#54de99]" /> <span>How It Works</span>
             </Link>
           </div>
 
@@ -93,7 +93,7 @@ export default function MarzipanoShowcasePage() {
                   if (target) target.scrollIntoView({ behavior: 'smooth' });
                   else window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
                 }}
-                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0A0A0B] text-[#FAFAFA] text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-sm hover:bg-[#131314] border border-[#1E293B]"
+                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#131314] text-[#e5e2e3] text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-sm hover:bg-[#131314] border border-[#3b494b]"
                 aria-label="Scroll down to explore"
               >
                 <span>Scroll to explore</span>
@@ -108,13 +108,13 @@ export default function MarzipanoShowcasePage() {
       <section className="max-w-7xl mx-auto px-6 -mt-12 relative z-20">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Grand Salon */}
-          <div className="group relative rounded-xl bg-[#18181B] border border-[#27272A] overflow-hidden hover:border-purple-500/50 transition-all cursor-pointer" onClick={() => handleRoomSelect('room-grand-salon')}>            <div className="aspect-[4/3] relative overflow-hidden">
+          <div className="group relative rounded-xl bg-[#201f20] border border-[#353436] overflow-hidden hover:border-purple-500/50 transition-all cursor-pointer" onClick={() => handleRoomSelect('room-grand-salon')}>            <div className="aspect-[4/3] relative overflow-hidden">
               <img
                 src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80"
                 alt="Grand Salon"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#18181B] via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#201f20] via-transparent to-transparent" />
             </div>
             <div className="p-6">
               <div className="flex items-center justify-between mb-2">
@@ -130,13 +130,13 @@ export default function MarzipanoShowcasePage() {
           </div>
 
           {/* Terrace */}
-          <div className="group relative rounded-xl bg-[#18181B] border border-[#27272A] overflow-hidden hover:border-purple-500/50 transition-all cursor-pointer" onClick={() => handleRoomSelect('room-terrace')}>            <div className="aspect-[4/3] relative overflow-hidden">
+          <div className="group relative rounded-xl bg-[#201f20] border border-[#353436] overflow-hidden hover:border-purple-500/50 transition-all cursor-pointer" onClick={() => handleRoomSelect('room-terrace')}>            <div className="aspect-[4/3] relative overflow-hidden">
               <img
                 src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80"
                 alt="Terrace"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#18181B] via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#201f20] via-transparent to-transparent" />
             </div>
             <div className="p-6">
               <div className="flex items-center justify-between mb-2">
@@ -152,13 +152,13 @@ export default function MarzipanoShowcasePage() {
           </div>
 
           {/* Master Suite */}
-          <div className="group relative rounded-xl bg-[#18181B] border border-[#27272A] overflow-hidden hover:border-purple-500/50 transition-all cursor-pointer" onClick={() => handleRoomSelect('room-master-suite')}>            <div className="aspect-[4/3] relative overflow-hidden">
+          <div className="group relative rounded-xl bg-[#201f20] border border-[#353436] overflow-hidden hover:border-purple-500/50 transition-all cursor-pointer" onClick={() => handleRoomSelect('room-master-suite')}>            <div className="aspect-[4/3] relative overflow-hidden">
               <img
                 src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80"
                 alt="Master Suite"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#18181B] via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#201f20] via-transparent to-transparent" />
             </div>
             <div className="p-6">
               <div className="flex items-center justify-between mb-2">
@@ -216,12 +216,12 @@ export default function MarzipanoShowcasePage() {
             <div className="relative w-full h-full flex items-center justify-center p-4">
               <button
                 onClick={closeModal}
-                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-[#18181B] border border-[#27272A] text-white hover:text-purple-400 transition-colors flex items-center justify-center cursor-pointer"
+                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-[#201f20] border border-[#353436] text-white hover:text-purple-400 transition-colors flex items-center justify-center cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="w-full max-w-6xl h-[80vh] rounded-xl overflow-hidden bg-[#09090B] border border-[#27272A]">
+              <div className="w-full max-w-6xl h-[80vh] rounded-xl overflow-hidden bg-[#131314] border border-[#353436]">
                 <PanoramaViewer
                   activePanoramaUrl={getActivePanoramaUrl(selectedRoom)}
                   activePanoramaTitle={selectedRoom ?? undefined}

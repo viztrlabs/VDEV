@@ -241,7 +241,7 @@ export default function AIDashboardPanel() {
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
             <Brain className="w-4 h-4" />
             <span>PHASE 3 — AI PLATFORM</span>
           </div>
@@ -255,7 +255,7 @@ export default function AIDashboardPanel() {
         <button
           onClick={fetchAll}
           disabled={loading}
-          className="px-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-[#A1A1AA] hover:text-white hover:border-[#3ECF8E] transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+          className="px-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-[#A1A1AA] hover:text-white hover:border-[#dbfcff] transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           <span className="hidden sm:inline">Refresh</span>
@@ -268,7 +268,7 @@ export default function AIDashboardPanel() {
           {Object.entries(status.components).map(([key, val]) => (
             <div
               key={key}
-              className="p-3 rounded-xl bg-[#18181B] border border-[#27272A] flex items-center gap-2"
+              className="p-3 rounded-xl bg-[#201f20] border border-[#353436] flex items-center gap-2"
             >
               <span className={`w-2 h-2 rounded-full ${val === 'operational' ? 'bg-emerald-400' : 'bg-amber-400'}`} />
               <span className="text-[11px] font-mono text-[#A1A1AA] capitalize">
@@ -280,7 +280,7 @@ export default function AIDashboardPanel() {
       )}
 
       {/* TAB NAVIGATION */}
-      <div className="flex gap-1 overflow-x-auto pb-1 border-b border-[#27272A]">
+      <div className="flex gap-1 overflow-x-auto pb-1 border-b border-[#353436]">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -290,11 +290,11 @@ export default function AIDashboardPanel() {
               onClick={() => setActiveTab(tab.id)}
               className={`px-3 py-2 rounded-t-lg text-xs font-mono flex items-center gap-1.5 whitespace-nowrap transition-colors cursor-pointer ${
                 isActive
-                  ? 'bg-[#09090B] text-[#3ECF8E] border-t-2 border-l-2 border-r-2 border-[#3ECF8E]/40 font-bold'
-                  : 'text-[#71717A] hover:text-white hover:bg-[#09090B]/50'
+                  ? 'bg-[#131314] text-[#dbfcff] border-t-2 border-l-2 border-r-2 border-[#dbfcff]/40 font-bold'
+                  : 'text-[#71717A] hover:text-white hover:bg-[#131314]/50'
               }`}
             >
-              <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#3ECF8E]' : ''}`} />
+              <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#dbfcff]' : ''}`} />
               <span className="hidden md:inline">{tab.label}</span>
             </button>
           );
@@ -306,23 +306,23 @@ export default function AIDashboardPanel() {
         <div className="space-y-6">
           {/* KPI Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+            <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436] space-y-1">
               <div className="flex items-center justify-between text-[#A1A1AA] text-xs font-mono">
                 <span>DEPLOYED MODELS</span>
                 <Cpu className="w-4 h-4 text-purple-400" />
               </div>
               <div className="text-2xl font-bold text-white font-mono">{status?.models_deployed ?? 0}</div>
-              <div className="text-[10px] text-[#3ECF8E]">Production active</div>
+              <div className="text-[10px] text-[#dbfcff]">Production active</div>
             </div>
-            <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+            <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436] space-y-1">
               <div className="flex items-center justify-between text-[#A1A1AA] text-xs font-mono">
                 <span>ACTIVE RULES</span>
                 <Zap className="w-4 h-4 text-amber-400" />
               </div>
               <div className="text-2xl font-bold text-white font-mono">{status?.rules_active ?? 0}</div>
-              <div className="text-[10px] text-[#3ECF8E]">Automation engine</div>
+              <div className="text-[10px] text-[#dbfcff]">Automation engine</div>
             </div>
-            <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+            <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436] space-y-1">
               <div className="flex items-center justify-between text-[#A1A1AA] text-xs font-mono">
                 <span>GOVERNANCE POLICIES</span>
                 <Shield className="w-4 h-4 text-sky-400" />
@@ -330,10 +330,10 @@ export default function AIDashboardPanel() {
               <div className="text-2xl font-bold text-white font-mono">{status?.policies ?? 0}</div>
               <div className="text-[10px] text-sky-400">Active controls</div>
             </div>
-            <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+            <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436] space-y-1">
               <div className="flex items-center justify-between text-[#A1A1AA] text-xs font-mono">
                 <span>AUDIT ENTRIES</span>
-                <Eye className="w-4 h-4 text-[#3ECF8E]" />
+                <Eye className="w-4 h-4 text-[#dbfcff]" />
               </div>
               <div className="text-2xl font-bold text-white font-mono">{auditLog.length}</div>
               <div className="text-[10px] text-[#A1A1AA]">Last 30 actions</div>
@@ -341,17 +341,17 @@ export default function AIDashboardPanel() {
           </div>
 
           {/* Component Health Grid */}
-          <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+          <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold font-display text-white">Component Health</h3>
-              <span className="text-[10px] font-mono text-[#3ECF8E]">Real-time status</span>
+              <span className="text-[10px] font-mono text-[#dbfcff]">Real-time status</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {status &&
                 Object.entries(status.components).map(([key, val]) => (
                   <div
                     key={key}
-                    className="p-3 rounded-xl bg-[#121214] border border-[#27272A] flex items-center gap-3"
+                    className="p-3 rounded-xl bg-[#131314] border border-[#353436] flex items-center gap-3"
                   >
                     <span
                       className={`w-2.5 h-2.5 rounded-full ${val === 'operational' ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`}
@@ -368,12 +368,12 @@ export default function AIDashboardPanel() {
           </div>
 
           {/* Recent Audit Log */}
-          <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3">
+          <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold font-display text-white">Recent AI Audit Log</h3>
               <button
                 onClick={() => setActiveTab('governance')}
-                className="text-[10px] font-mono text-[#3ECF8E] hover:underline cursor-pointer"
+                className="text-[10px] font-mono text-[#dbfcff] hover:underline cursor-pointer"
               >
                 View all →
               </button>
@@ -385,7 +385,7 @@ export default function AIDashboardPanel() {
                 {auditLog.slice(-5).reverse().map((entry) => (
                   <div
                     key={entry.id}
-                    className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-between text-xs font-mono"
+                    className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-between text-xs font-mono"
                   >
                     <div className="flex items-center gap-3">
                       <span className={decisionColor(entry.decision)}>
@@ -421,15 +421,15 @@ export default function AIDashboardPanel() {
       {/* ===== TAB: PREDICTIVE ===== */}
       {activeTab === 'predictive' && (
         <div className="space-y-6">
-          <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+          <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold font-display text-white flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-[#3ECF8E]" />
+                <TrendingUp className="w-4 h-4 text-[#dbfcff]" />
                 User Churn Prediction (Heuristic Demo)
               </h3>
               <button
                 onClick={predictUser}
-                className="px-3 py-1.5 rounded-lg bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[11px] font-mono text-[#3ECF8E] hover:bg-[#3ECF8E]/20 cursor-pointer transition-colors"
+                className="px-3 py-1.5 rounded-lg bg-[#dbfcff]/10 border border-[#dbfcff]/30 text-[11px] font-mono text-[#dbfcff] hover:bg-[#dbfcff]/20 cursor-pointer transition-colors"
               >
                 Run Prediction
               </button>
@@ -440,7 +440,7 @@ export default function AIDashboardPanel() {
             </p>
 
             {predictionResult && (
-              <div className="p-4 rounded-xl bg-[#121214] border border-[#27272A] space-y-3">
+              <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-3">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <div>
                     <div className="text-[10px] font-mono text-[#71717A] uppercase">Churn Risk</div>
@@ -458,10 +458,10 @@ export default function AIDashboardPanel() {
                   </div>
                   <div>
                     <div className="text-[10px] font-mono text-[#71717A] uppercase">Next Active</div>
-                    <div className="text-lg font-bold font-mono text-[#3ECF8E]">~{predictionResult.nextActiveWindow?.start}m</div>
+                    <div className="text-lg font-bold font-mono text-[#dbfcff]">~{predictionResult.nextActiveWindow?.start}m</div>
                   </div>
                 </div>
-                <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
+                <div className="p-3 rounded-lg bg-[#131314] border border-[#353436]">
                   <div className="text-[10px] font-mono text-[#A1A1AA] uppercase mb-1">Recommended Action</div>
                   <p className="text-xs text-white">{predictionResult.recommendedAction}</p>
                 </div>
@@ -470,7 +470,7 @@ export default function AIDashboardPanel() {
           </div>
 
           {/* Project Risk Assessment */}
-          <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+          <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
             <h3 className="text-sm font-bold font-display text-white flex items-center gap-2">
               <Target className="w-4 h-4 text-amber-400" />
               Project Risk Assessment
@@ -480,19 +480,19 @@ export default function AIDashboardPanel() {
               to produce a risk score and actionable recommendations.
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] text-center">
+              <div className="p-3 rounded-lg bg-[#131314] border border-[#353436] text-center">
                 <div className="text-[10px] font-mono text-[#71717A] uppercase">Timeline</div>
                 <div className="text-sm font-bold text-white mt-1">✅ On Track</div>
               </div>
-              <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] text-center">
+              <div className="p-3 rounded-lg bg-[#131314] border border-[#353436] text-center">
                 <div className="text-[10px] font-mono text-[#71717A] uppercase">Budget</div>
                 <div className="text-sm font-bold text-amber-400 mt-1">⚠ 72% Used</div>
               </div>
-              <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] text-center">
+              <div className="p-3 rounded-lg bg-[#131314] border border-[#353436] text-center">
                 <div className="text-[10px] font-mono text-[#71717A] uppercase">Revisions</div>
                 <div className="text-sm font-bold text-white mt-1">3 / 20</div>
               </div>
-              <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] text-center">
+              <div className="p-3 rounded-lg bg-[#131314] border border-[#353436] text-center">
                 <div className="text-[10px] font-mono text-[#71717A] uppercase">Client Score</div>
                 <div className="text-sm font-bold text-emerald-400 mt-1">4.2 / 5</div>
               </div>
@@ -504,9 +504,9 @@ export default function AIDashboardPanel() {
       {/* ===== TAB: NLP ===== */}
       {activeTab === 'nlp' && (
         <div className="space-y-6">
-          <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+          <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
             <h3 className="text-sm font-bold font-display text-white flex items-center gap-2">
-              <FileText className="w-4 h-4 text-[#3ECF8E]" />
+              <FileText className="w-4 h-4 text-[#dbfcff]" />
               Natural Language Processing Engine
             </h3>
             <p className="text-xs text-[#A1A1AA]">
@@ -519,11 +519,11 @@ export default function AIDashboardPanel() {
                 onChange={(e) => setNlpInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && processNLP()}
                 placeholder='e.g. "Schedule a meeting with @john about #VIZTR-882 by tomorrow"'
-                className="flex-1 px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#52525B] focus:outline-none focus:border-[#3ECF8E]"
+                className="flex-1 px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#52525B] focus:outline-none focus:border-[#dbfcff]"
               />
               <button
                 onClick={processNLP}
-                className="px-4 py-2 rounded-lg bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-xs font-mono text-[#3ECF8E] hover:bg-[#3ECF8E]/20 cursor-pointer transition-colors"
+                className="px-4 py-2 rounded-lg bg-[#dbfcff]/10 border border-[#dbfcff]/30 text-xs font-mono text-[#dbfcff] hover:bg-[#dbfcff]/20 cursor-pointer transition-colors"
               >
                 Process
               </button>
@@ -543,7 +543,7 @@ export default function AIDashboardPanel() {
                     setNlpInput(example);
                     setTimeout(processNLP, 100);
                   }}
-                  className="px-2 py-1 rounded-lg bg-[#09090B] border border-[#27272A] text-[10px] font-mono text-[#71717A] hover:text-white hover:border-[#3ECF8E]/50 cursor-pointer transition-colors"
+                  className="px-2 py-1 rounded-lg bg-[#131314] border border-[#353436] text-[10px] font-mono text-[#71717A] hover:text-white hover:border-[#dbfcff]/50 cursor-pointer transition-colors"
                 >
                   {example.slice(0, 40)}...
                 </button>
@@ -552,11 +552,11 @@ export default function AIDashboardPanel() {
 
             {/* NLP Result */}
             {nlpResult && nlpResult.success && (
-              <div className="p-4 rounded-xl bg-[#121214] border border-[#27272A] space-y-3">
+              <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-3">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <div>
                     <div className="text-[10px] font-mono text-[#71717A] uppercase">Intent</div>
-                    <div className="text-sm font-bold text-[#3ECF8E] font-mono capitalize">
+                    <div className="text-sm font-bold text-[#dbfcff] font-mono capitalize">
                       {nlpResult.intent.replace(/_/g, ' ')}
                     </div>
                   </div>
@@ -586,9 +586,9 @@ export default function AIDashboardPanel() {
                       {nlpResult.entities.map((e: any, i: number) => (
                         <span
                           key={i}
-                          className="px-2 py-0.5 rounded bg-[#09090B] border border-[#27272A] text-[10px] font-mono text-[#A1A1AA]"
+                          className="px-2 py-0.5 rounded bg-[#131314] border border-[#353436] text-[10px] font-mono text-[#A1A1AA]"
                         >
-                          <span className="text-[#3ECF8E]">{e.type}:</span> {e.value}
+                          <span className="text-[#dbfcff]">{e.type}:</span> {e.value}
                         </span>
                       ))}
                     </div>
@@ -603,7 +603,7 @@ export default function AIDashboardPanel() {
       {/* ===== TAB: AUTOMATION ===== */}
       {activeTab === 'automation' && (
         <div className="space-y-6">
-          <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+          <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold font-display text-white flex items-center gap-2">
                 <Zap className="w-4 h-4 text-amber-400" />
@@ -621,7 +621,7 @@ export default function AIDashboardPanel() {
                 {rules.map((rule) => (
                   <div
                     key={rule.id}
-                    className="p-4 rounded-xl bg-[#121214] border border-[#27272A] flex items-start justify-between"
+                    className="p-4 rounded-xl bg-[#131314] border border-[#353436] flex items-start justify-between"
                   >
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
@@ -635,7 +635,7 @@ export default function AIDashboardPanel() {
                         <span>Actions: <span className="text-white">{rule.actionCount}</span></span>
                       </div>
                     </div>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${rule.enabled ? 'bg-emerald-950/60 text-emerald-400' : 'bg-[#27272A] text-[#71717A]'}`}>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${rule.enabled ? 'bg-emerald-950/60 text-emerald-400' : 'bg-[#353436] text-[#71717A]'}`}>
                       {rule.enabled ? 'ACTIVE' : 'DISABLED'}
                     </span>
                   </div>
@@ -649,7 +649,7 @@ export default function AIDashboardPanel() {
       {/* ===== TAB: ML PIPELINE ===== */}
       {activeTab === 'ml-pipeline' && (
         <div className="space-y-6">
-          <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+          <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold font-display text-white flex items-center gap-2">
                 <Cpu className="w-4 h-4 text-purple-400" />
@@ -665,7 +665,7 @@ export default function AIDashboardPanel() {
                 {models.map((model) => (
                   <div
                     key={model.id}
-                    className="p-4 rounded-xl bg-[#121214] border border-[#27272A] flex items-center justify-between"
+                    className="p-4 rounded-xl bg-[#131314] border border-[#353436] flex items-center justify-between"
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center">
@@ -686,7 +686,7 @@ export default function AIDashboardPanel() {
                           ? 'bg-emerald-950/60 text-emerald-400'
                           : model.status === 'trained'
                           ? 'bg-sky-950/60 text-sky-400'
-                          : 'bg-[#27272A] text-[#71717A]'
+                          : 'bg-[#353436] text-[#71717A]'
                       }`}
                     >
                       {model.status.toUpperCase()}
@@ -703,7 +703,7 @@ export default function AIDashboardPanel() {
       {activeTab === 'governance' && (
         <div className="space-y-6">
           {/* Policies */}
-          <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+          <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold font-display text-white flex items-center gap-2">
                 <Shield className="w-4 h-4 text-sky-400" />
@@ -715,7 +715,7 @@ export default function AIDashboardPanel() {
               {policies.map((policy) => (
                 <div
                   key={policy.id}
-                  className="p-3 rounded-xl bg-[#121214] border border-[#27272A] flex items-center justify-between"
+                  className="p-3 rounded-xl bg-[#131314] border border-[#353436] flex items-center justify-between"
                 >
                   <div className="space-y-1">
                     <div className="text-sm font-bold text-white">{policy.name}</div>
@@ -733,9 +733,9 @@ export default function AIDashboardPanel() {
           </div>
 
           {/* Full Audit Log */}
-          <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3">
+          <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3">
             <h3 className="text-sm font-bold font-display text-white flex items-center gap-2">
-              <Eye className="w-4 h-4 text-[#3ECF8E]" />
+              <Eye className="w-4 h-4 text-[#dbfcff]" />
               Full Audit Log
             </h3>
             {auditLog.length === 0 ? (
@@ -745,7 +745,7 @@ export default function AIDashboardPanel() {
                 {[...auditLog].reverse().map((entry) => (
                   <div
                     key={entry.id}
-                    className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-between text-xs font-mono"
+                    className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-between text-xs font-mono"
                   >
                     <div className="flex items-center gap-3">
                       <span className={decisionColor(entry.decision)}>
@@ -779,7 +779,7 @@ export default function AIDashboardPanel() {
               { label: 'Comments', value: collabMetrics?.totalComments ?? 0, color: 'text-violet-400' },
               { label: 'Open Tasks', value: collabMetrics?.openTasks ?? 0, color: 'text-amber-400' },
             ].map((m) => (
-              <div key={m.label} className="p-3 rounded-xl bg-[#18181B] border border-[#27272A]">
+              <div key={m.label} className="p-3 rounded-xl bg-[#201f20] border border-[#353436]">
                 <div className={`text-xl font-bold font-display ${m.color}`}>{m.value}</div>
                 <div className="text-[10px] font-mono text-[#71717A] uppercase">{m.label}</div>
               </div>
@@ -787,7 +787,7 @@ export default function AIDashboardPanel() {
           </div>
 
           {/* AI Agents */}
-          <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3">
+          <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold font-display text-white flex items-center gap-2">
                 <Users className="w-4 h-4 text-sky-400" />
@@ -802,7 +802,7 @@ export default function AIDashboardPanel() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {(collabAgents || []).map((agent: { id: string; name: string; role: string; persona: string; isActive: boolean }) => (
-                <div key={agent.id} className="p-3 rounded-xl bg-[#121214] border border-[#27272A]">
+                <div key={agent.id} className="p-3 rounded-xl bg-[#131314] border border-[#353436]">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm font-bold text-white">{agent.name}</span>
                     <span className={`w-2 h-2 rounded-full ${agent.isActive ? 'bg-emerald-400' : 'bg-[#52525B]'}`} />
@@ -810,7 +810,7 @@ export default function AIDashboardPanel() {
                   <p className="text-[10px] text-[#71717A] mb-2">{agent.persona}</p>
                   <div className="flex flex-wrap gap-1">
                     {agent.expertise?.map((tag: string) => (
-                      <span key={tag} className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-[#27272A] text-[#A1A1AA]">{tag}</span>
+                      <span key={tag} className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-[#353436] text-[#A1A1AA]">{tag}</span>
                     )) || null}
                   </div>
                 </div>
@@ -819,7 +819,7 @@ export default function AIDashboardPanel() {
           </div>
 
           {/* Create session */}
-          <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3">
+          <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3">
             <h3 className="text-sm font-bold font-display text-white flex items-center gap-2">
               <Users className="w-4 h-4 text-sky-400" />
               Start Collaboration Session
@@ -830,7 +830,7 @@ export default function AIDashboardPanel() {
                 placeholder="Session name..."
                 value={collabSessionName}
                 onChange={(e) => setCollabSessionName(e.target.value)}
-                className="flex-1 bg-[#121214] border border-[#27272A] rounded-lg px-3 py-2 text-sm text-white placeholder-[#52525B] focus:outline-none focus:border-sky-500"
+                className="flex-1 bg-[#131314] border border-[#353436] rounded-lg px-3 py-2 text-sm text-white placeholder-[#52525B] focus:outline-none focus:border-sky-500"
               />
               <button
                 onClick={handleCreateSession}
@@ -843,15 +843,15 @@ export default function AIDashboardPanel() {
 
           {/* Current session */}
           {currentSession && (
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold font-display text-white">Active Session: {currentSession.name}</h3>
-                <span className="text-[10px] font-mono text-[#3ECF8E]">{currentSession.users.length} user(s)</span>
+                <span className="text-[10px] font-mono text-[#dbfcff]">{currentSession.users.length} user(s)</span>
               </div>
               {/* Participants */}
               <div className="flex flex-wrap gap-2">
                 {currentSession.users.map((u: { id: string; name: string; role: string; isOnline: boolean }) => (
-                  <span key={u.id} className="text-xs px-2 py-1 rounded-full bg-[#27272A] text-[#A1A1AA] border border-[#3A3A3D]">
+                  <span key={u.id} className="text-xs px-2 py-1 rounded-full bg-[#353436] text-[#A1A1AA] border border-[#3a393a]">
                     {u.name} <span className="text-[#52525B]">({u.role})</span>
                     <span className={`ml-1 inline-block w-1.5 h-1.5 rounded-full ${u.isOnline ? 'bg-emerald-400' : 'bg-[#52525B]'}`} />
                   </span>
@@ -859,15 +859,15 @@ export default function AIDashboardPanel() {
               </div>
               {/* Tasks summary */}
               <div className="grid grid-cols-3 gap-2">
-                <div className="p-2 rounded bg-[#121214] text-center">
+                <div className="p-2 rounded bg-[#131314] text-center">
                   <div className="text-sm font-bold text-white">{currentSession.tasks?.filter((t: { status: string }) => t.status === 'open').length ?? 0}</div>
                   <div className="text-[9px] font-mono text-[#71717A]">Open</div>
                 </div>
-                <div className="p-2 rounded bg-[#121214] text-center">
+                <div className="p-2 rounded bg-[#131314] text-center">
                   <div className="text-sm font-bold text-white">{currentSession.tasks?.filter((t: { status: string }) => t.status === 'in_progress').length ?? 0}</div>
                   <div className="text-[9px] font-mono text-[#71717A]">In Progress</div>
                 </div>
-                <div className="p-2 rounded bg-[#121214] text-center">
+                <div className="p-2 rounded bg-[#131314] text-center">
                   <div className="text-sm font-bold text-white">{currentSession.tasks?.filter((t: { status: string }) => t.status === 'completed').length ?? 0}</div>
                   <div className="text-[9px] font-mono text-[#71717A]">Done</div>
                 </div>
@@ -878,7 +878,7 @@ export default function AIDashboardPanel() {
       )}
 
       {/* FOOTER */}
-      <div className="text-[10px] font-mono text-[#52525B] flex items-center justify-between border-t border-[#27272A] pt-3">
+      <div className="text-[10px] font-mono text-[#52525B] flex items-center justify-between border-t border-[#353436] pt-3">
         <span>Phase 3 AI Platform v1.0.0 — Heuristic ML engine (swap to real models in production)</span>
         <span>Last refresh: {lastRefresh.toLocaleTimeString()}</span>
       </div>

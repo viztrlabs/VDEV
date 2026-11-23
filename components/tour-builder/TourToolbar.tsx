@@ -261,12 +261,12 @@ export function TourToolbar({
 
   return (
     <>
-      <div className="h-12 border-b border-[#27272A] flex items-center justify-between px-4 bg-[#09090B]">
+      <div className="h-12 border-b border-[#353436] flex items-center justify-between px-4 bg-[#131314]">
         <div className="flex items-center gap-2">
           <button onClick={onToggleLeft} className="p-1.5 rounded hover:bg-white/5" title="Toggle Left Panel">
             <PanelLeftOpen className="w-4 h-4" />
           </button>
-          <div className="h-4 w-px bg-[#27272A]" />
+          <div className="h-4 w-px bg-[#353436]" />
           <button onClick={handleLoad} className="p-1.5 rounded hover:bg-white/5" title="Load Saved Tour">
             <Download className="w-4 h-4" />
           </button>
@@ -291,16 +291,16 @@ export function TourToolbar({
           </button>
           <button
             onClick={onToggleValidation}
-            className={`p-1.5 rounded hover:bg-white/5 ${validationOpen ? 'text-[#3ECF8E]' : ''}`}
+            className={`p-1.5 rounded hover:bg-white/5 ${validationOpen ? 'text-[#dbfcff]' : ''}`}
             title="Validate"
           >
             <CheckCircle className="w-4 h-4" />
           </button>
-          <div className="h-4 w-px bg-[#27272A]" />
+          <div className="h-4 w-px bg-[#353436]" />
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#27272A] hover:bg-[#3F3F46] text-xs font-mono"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#353436] hover:bg-[#3F3F46] text-xs font-mono"
           >
             {saving ? 'Saving...' : saved ? 'Saved' : 'Save'}
             {dirty && !saved && <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />}
@@ -308,7 +308,7 @@ export function TourToolbar({
           </button>
           <button
             onClick={handleImportFromDirectory}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#27272A] hover:bg-[#3F3F46] text-xs font-mono"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#353436] hover:bg-[#3F3F46] text-xs font-mono"
             title="Import 360 Images"
           >
             <FolderOpen className="w-3.5 h-3.5" /> Import
@@ -323,7 +323,7 @@ export function TourToolbar({
           />
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#27272A] hover:bg-[#3F3F46] text-xs font-mono"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#353436] hover:bg-[#3F3F46] text-xs font-mono"
             title="Upload Images"
           >
             <Upload className="w-3.5 h-3.5" /> Upload
@@ -331,7 +331,7 @@ export function TourToolbar({
           <button
             onClick={handlePublish}
             disabled={publishing}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-black text-xs font-mono font-bold ${publishing ? 'bg-[#34BF7D] cursor-wait' : published ? 'bg-[#22C55E]' : 'bg-[#3ECF8E] hover:bg-[#34BF7D]'}`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-black text-xs font-mono font-bold ${publishing ? 'bg-[#34BF7D] cursor-wait' : published ? 'bg-[#22C55E]' : 'bg-[#dbfcff] hover:bg-[#34BF7D]'}`}
           >
             {publishing ? 'Publishing...' : published ? 'Published ✓' : 'Publish'}
           </button>
@@ -340,7 +340,7 @@ export function TourToolbar({
               href={publishUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[10px] font-mono text-[#3ECF8E] underline hover:text-[#34BF7D]"
+              className="text-[10px] font-mono text-[#dbfcff] underline hover:text-[#34BF7D]"
             >
               View Live
             </a>

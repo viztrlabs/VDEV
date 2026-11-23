@@ -94,7 +94,7 @@ export default function EditableMedia({
           <button
             type="button"
             onClick={openPicker}
-            className="flex min-h-[120px] w-full items-center justify-center rounded-lg border border-dashed border-white/30 bg-white/5 px-4 py-6 text-[11px] font-mono tracking-widest text-white/50 transition hover:border-[#3ECF8E] hover:text-white/80"
+            className="flex min-h-[120px] w-full items-center justify-center rounded-lg border border-dashed border-white/30 bg-white/5 px-4 py-6 text-[11px] font-mono tracking-widest text-white/50 transition hover:border-[#dbfcff] hover:text-white/80"
           >
             Upload / Select Media
           </button>
@@ -104,7 +104,7 @@ export default function EditableMedia({
             <button
               type="button"
               onClick={openPicker}
-              className="absolute right-2 top-2 z-20 rounded-full border border-white/20 bg-black/70 px-2.5 py-1 text-[10px] font-bold text-white backdrop-blur transition hover:border-[#3ECF8E] hover:bg-[#3ECF8E] hover:text-black"
+              className="absolute right-2 top-2 z-20 rounded-full border border-white/20 bg-black/70 px-2.5 py-1 text-[10px] font-bold text-white backdrop-blur transition hover:border-[#dbfcff] hover:bg-[#dbfcff] hover:text-black"
             >
               Replace
             </button>

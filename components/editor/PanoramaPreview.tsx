@@ -402,7 +402,7 @@ export default function PanoramaPreview({
 
       {/* Loading overlay */}
       {loading && (
-        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-2 bg-black/70 text-[#3ECF8E]">
+        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-2 bg-black/70 text-[#dbfcff]">
           <Loader2 className="w-6 h-6 animate-spin" />
           <div className="text-xs font-mono">Initializing 360° viewer…</div>
         </div>
@@ -432,7 +432,7 @@ export default function PanoramaPreview({
             >
               <span
                 className={`flex items-center justify-center w-5 h-5 rounded-full text-white shadow-lg ${
-                  hotspot.type === 'room_link' ? 'bg-[#3ECF8E]' : 'bg-[#ec4899]'
+                  hotspot.type === 'room_link' ? 'bg-[#dbfcff]' : 'bg-[#ec4899]'
                 }`}
               >
                 {hotspot.type === 'room_link' ? (
@@ -469,7 +469,7 @@ export default function PanoramaPreview({
 
       {/* Add-mode hint */}
       {addMode && ready && (
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 px-3 py-1 rounded-full bg-[#3ECF8E] text-black text-[10px] font-mono font-bold animate-pulse">
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 px-3 py-1 rounded-full bg-[#dbfcff] text-black text-[10px] font-mono font-bold animate-pulse">
           Click on the panorama to place a hotspot
         </div>
       )}

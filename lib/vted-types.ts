@@ -35,7 +35,7 @@ export type VtedHotspotEffect = 'normal' | 'radar' | 'glowing' | 'subtle';
 export interface VtedHotspotStyle {
   icon?: string;            // Font Awesome class, e.g. "fas fa-map-marker-alt"
   shape?: VtedHotspotShape;
-  backgroundColor?: string; // hex with optional alpha, e.g. "#3ECF8E" or "#3ECF8E40"
+  backgroundColor?: string; // hex with optional alpha, e.g. "#dbfcff" or "#dbfcff40"
   size?: number;            // px, 8-64
   opacity?: number;         // 0-100
   rotate?: number;          // 0-360

@@ -59,7 +59,7 @@ const ExperienceViewer = dynamic(
 
 function RuntimeLoading() {
   return (
-    <div className="flex items-center justify-center h-full bg-[#0A0A0B]">
+    <div className="flex items-center justify-center h-full bg-[#131314]">
       <div className="text-zinc-500 font-mono text-xs animate-pulse">Loading runtime…</div>
     </div>
   );
@@ -144,9 +144,9 @@ export default function ProjectExperienceHub({
     }
     canvas.width = size;
     canvas.height = size;
-    ctx.fillStyle = '#09090B';
+    ctx.fillStyle = '#131314';
     ctx.fillRect(0, 0, size, size);
-    ctx.fillStyle = '#FAFAFA';
+    ctx.fillStyle = '#e5e2e3';
     for (let y = 0; y < gridSize; y++) {
       for (let x = 0; x < gridSize; x++) {
         if (grid[y][x]) {
@@ -194,13 +194,13 @@ export default function ProjectExperienceHub({
   }, [caps, activeSlug]);
 
   return (
-    <main className="min-h-screen flex flex-col bg-[#09090B] text-[#FAFAFA]">
+    <main className="min-h-screen flex flex-col bg-[#131314] text-[#e5e2e3]">
       {/* Header */}
-      <header className="shrink-0 border-b border-zinc-800/80 bg-[#0C0C0E]/95 backdrop-blur px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+      <header className="shrink-0 border-b border-zinc-800/80 bg-[#0e0e0f]/95 backdrop-blur px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <h1 className="text-sm sm:text-base font-bold truncate">{project.name}</h1>
-            <span className="shrink-0 text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#3ECF8E]/10 text-[#3ECF8E] border border-[#3ECF8E]/30">
+            <span className="shrink-0 text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#dbfcff]/10 text-[#dbfcff] border border-[#dbfcff]/30">
               Published
             </span>
           </div>
@@ -236,7 +236,7 @@ export default function ProjectExperienceHub({
 
       {/* Info drawer */}
       {showInfo && (
-        <aside className="shrink-0 border-b border-zinc-800 bg-[#0C0C0E] px-4 sm:px-6 py-4 relative">
+        <aside className="shrink-0 border-b border-zinc-800 bg-[#0e0e0f] px-4 sm:px-6 py-4 relative">
           <button
             onClick={() => setShowInfo(false)}
             className="absolute top-3 right-3 text-zinc-500 hover:text-white"
@@ -248,7 +248,7 @@ export default function ProjectExperienceHub({
           <p className="text-xs text-zinc-400 max-w-2xl">
             {project.description || 'Immersive project experiences by VizTR.'}
           </p>
-          {shared && <p className="text-[11px] text-[#3ECF8E] mt-2">Link copied to clipboard.</p>}
+          {shared && <p className="text-[11px] text-[#dbfcff] mt-2">Link copied to clipboard.</p>}
         </aside>
       )}
 
@@ -277,8 +277,8 @@ export default function ProjectExperienceHub({
       {/* Capability banner */}
       {capabilityNote && (
         <div className="shrink-0 px-4 sm:px-6 py-2 bg-zinc-900/60 border-b border-zinc-800 text-[11px] text-zinc-400 flex items-center gap-2">
-          {activeSlug === 'virtual-reality' && <Headset className="w-3.5 h-3.5 text-[#3ECF8E]" />}
-          {activeSlug === 'webar' && <Camera className="w-3.5 h-3.5 text-[#3ECF8E]" />}
+          {activeSlug === 'virtual-reality' && <Headset className="w-3.5 h-3.5 text-[#dbfcff]" />}
+          {activeSlug === 'webar' && <Camera className="w-3.5 h-3.5 text-[#dbfcff]" />}
           <span className="font-mono">{capabilityNote}</span>
         </div>
       )}
@@ -323,7 +323,7 @@ export default function ProjectExperienceHub({
       {/* QR Code Modal */}
       {showQr && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80" onClick={() => setShowQr(false)}>
-          <div className="bg-[#18181B] rounded-xl p-6 max-w-sm w-full mx-4 relative" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[#201f20] rounded-xl p-6 max-w-sm w-full mx-4 relative" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-bold">Share via QR Code</h3>
               <button onClick={() => setShowQr(false)} className="text-zinc-500 hover:text-white">
@@ -342,7 +342,7 @@ export default function ProjectExperienceHub({
       {/* QR Code Modal */}
       {showQr && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80" onClick={() => setShowQr(false)}>
-          <div className="bg-[#18181B] rounded-xl p-6 max-w-sm w-full mx-4 relative" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[#201f20] rounded-xl p-6 max-w-sm w-full mx-4 relative" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-bold">Share via QR Code</h3>
               <button onClick={() => setShowQr(false)} className="text-zinc-500 hover:text-white">

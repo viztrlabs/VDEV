@@ -104,10 +104,10 @@ export default function SplatConfigurator({
           <div className="relative">
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="flex items-center gap-2 px-3 py-2 bg-[#18181B]/90 backdrop-blur-sm border border-[#27272A] rounded-lg text-sm font-mono text-white hover:border-[#3ECF8E] transition-colors"
+              className="flex items-center gap-2 px-3 py-2 bg-[#201f20]/90 backdrop-blur-sm border border-[#353436] rounded-lg text-sm font-mono text-white hover:border-[#dbfcff] transition-colors"
               aria-label="Select splat scene"
             >
-              <Box className="w-4 h-4 text-[#3ECF8E]" />
+              <Box className="w-4 h-4 text-[#dbfcff]" />
               <span className="max-w-[200px] truncate">{activeScene?.name ?? 'Select Scene'}</span>
               <ChevronDown
                 className={`w-4 h-4 text-[#A1A1AA] transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
@@ -115,7 +115,7 @@ export default function SplatConfigurator({
             </button>
 
             {dropdownOpen && (
-              <div className="absolute top-full left-0 mt-2 w-64 bg-[#18181B] border border-[#27272A] rounded-lg shadow-xl overflow-hidden z-50 animate-in fade-in-0 zoom-in-95 duration-150">
+              <div className="absolute top-full left-0 mt-2 w-64 bg-[#201f20] border border-[#353436] rounded-lg shadow-xl overflow-hidden z-50 animate-in fade-in-0 zoom-in-95 duration-150">
                 {scenes.map((scene, index) => {
                   const isActive = scene.id === activeSceneId;
                   const isVisible = visibleScenes[index.toString()] ?? (index === 0);
@@ -124,12 +124,12 @@ export default function SplatConfigurator({
                       key={scene.id}
                       onClick={() => handleSceneChange(scene)}
                       className={`w-full px-3 py-2.5 flex items-center gap-2.5 text-left transition-colors ${
-                        isActive ? 'bg-[#3ECF8E]/10' : 'hover:bg-[#09090B]'
+                        isActive ? 'bg-[#dbfcff]/10' : 'hover:bg-[#131314]'
                       }`}
                     >
                       <div className="relative w-5 h-5 flex-shrink-0">
                         {isVisible ? (
-                          <CheckCircle2 className="w-5 h-5 text-[#3ECF8E]" />
+                          <CheckCircle2 className="w-5 h-5 text-[#dbfcff]" />
                         ) : (
                           <XCircle className="w-5 h-5 text-[#71717A]" />
                         )}
@@ -137,7 +137,7 @@ export default function SplatConfigurator({
                       <div className="flex-1 min-w-0">
                         <p
                           className={`text-sm font-mono truncate ${
-                            isActive ? 'text-[#3ECF8E] font-bold' : 'text-white'
+                            isActive ? 'text-[#dbfcff] font-bold' : 'text-white'
                           }`}
                         >
                           {scene.name}
@@ -147,7 +147,7 @@ export default function SplatConfigurator({
                         </p>
                       </div>
                       {isActive && (
-                        <span className="text-xs text-[#3ECF8E] font-mono">Active</span>
+                        <span className="text-xs text-[#dbfcff] font-mono">Active</span>
                       )}
                     </button>
                   );
@@ -160,7 +160,7 @@ export default function SplatConfigurator({
 
       {/* Visibility Toggles */}
       {showControls && scenes.length > 1 && (
-        <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-[#18181B]/90 backdrop-blur-sm border border-[#27272A] rounded-lg p-1.5">
+        <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-[#201f20]/90 backdrop-blur-sm border border-[#353436] rounded-lg p-1.5">
           {scenes.map((scene, index) => {
             const isVisible = visibleScenes[index.toString()] ?? (index === 0);
             return (
@@ -169,8 +169,8 @@ export default function SplatConfigurator({
                 onClick={() => toggleVisibility(index)}
                 className={`p-1.5 rounded transition-colors ${
                   isVisible
-                    ? 'bg-[#3ECF8E]/20 text-[#3ECF8E] border border-[#3ECF8E]/40'
-                    : 'text-[#71717A] hover:text-white hover:bg-[#09090B]'
+                    ? 'bg-[#dbfcff]/20 text-[#dbfcff] border border-[#dbfcff]/40'
+                    : 'text-[#71717A] hover:text-white hover:bg-[#131314]'
                 }`}
                 title={isVisible ? `Hide ${scene.name}` : `Show ${scene.name}`}
                 aria-label={isVisible ? `Hide ${scene.name}` : `Show ${scene.name}`}
@@ -184,17 +184,17 @@ export default function SplatConfigurator({
 
       {/* Active Scene Name Display */}
       {showControls && (
-        <div className="absolute bottom-3 left-3 z-10 bg-[#09090B]/80 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-[#27272A]">
+        <div className="absolute bottom-3 left-3 z-10 bg-[#131314]/80 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-[#353436]">
           <div className="flex items-center gap-2 text-xs font-mono text-[#A1A1AA]">
-            <Box className="w-3.5 h-3.5 text-[#3ECF8E]" />
+            <Box className="w-3.5 h-3.5 text-[#dbfcff]" />
             <span>{activeScene?.name ?? 'No Scene'}</span>
-            <span className="px-1.5 py-0.5 rounded bg-[#27272A] text-[10px] font-mono text-[#3ECF8E]">
+            <span className="px-1.5 py-0.5 rounded bg-[#353436] text-[10px] font-mono text-[#dbfcff]">
               {activeScene?.format?.toUpperCase() ?? 'SPLAT'}
             </span>
             {isLoading && (
               <>
-                <Loader2 className="w-3.5 h-3.5 text-[#3ECF8E] animate-spin" />
-                <span className="text-[#3ECF8E]">Loading...</span>
+                <Loader2 className="w-3.5 h-3.5 text-[#dbfcff] animate-spin" />
+                <span className="text-[#dbfcff]">Loading...</span>
               </>
             )}
           </div>

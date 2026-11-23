@@ -65,8 +65,8 @@ export default function PhaseProgressTracker() {
   ];
 
   return (
-    <section className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-6">
-      <div className="border-b border-[#27272A] pb-4">
+    <section className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-6">
+      <div className="border-b border-[#353436] pb-4">
         <h2 className="text-xl font-bold text-white flex items-center gap-2">
           <span>🎯 Project Pipeline Status</span>
         </h2>
@@ -82,7 +82,7 @@ export default function PhaseProgressTracker() {
                   ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-400'
                   : phase.status === 'in-progress'
                   ? 'bg-amber-950/60 border-amber-500/50 text-amber-400'
-                  : 'bg-[#09090B] border-[#27272A] text-[#71717A]'
+                  : 'bg-[#131314] border-[#353436] text-[#71717A]'
               }`}
             >
               {phase.status === 'completed' && <CheckCircle2 className="w-5 h-5" />}
@@ -90,7 +90,7 @@ export default function PhaseProgressTracker() {
               {phase.status === 'pending' && <AlertCircle className="w-5 h-5" />}
             </div>
 
-            <div className="flex-1 p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-3">
+            <div className="flex-1 p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-3">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <h4 className="text-sm font-bold text-white">{phase.name}</h4>
                 <span
@@ -118,9 +118,9 @@ export default function PhaseProgressTracker() {
                     <span>Phase Completion</span>
                     <span>{phase.completionPercentage}%</span>
                   </div>
-                  <div className="w-full h-2 rounded-full bg-[#18181B] overflow-hidden border border-[#27272A]">
+                  <div className="w-full h-2 rounded-full bg-[#201f20] overflow-hidden border border-[#353436]">
                     <div
-                      className="h-full bg-gradient-to-r from-[#3ECF8E] to-emerald-400 rounded-full transition-all"
+                      className="h-full bg-gradient-to-r from-[#dbfcff] to-emerald-400 rounded-full transition-all"
                       style={{ width: `${phase.completionPercentage}%` }}
                     />
                   </div>
@@ -128,7 +128,7 @@ export default function PhaseProgressTracker() {
               )}
 
               {phase.deliverables && phase.deliverables.length > 0 && (
-                <div className="pt-2 border-t border-[#27272A] space-y-2">
+                <div className="pt-2 border-t border-[#353436] space-y-2">
                   <span className="text-[11px] font-mono text-[#A1A1AA]">
                     Deliverables ({phase.deliverables.length}):
                   </span>
@@ -136,7 +136,7 @@ export default function PhaseProgressTracker() {
                     {phase.deliverables.map((deliverable, idx) => (
                       <li
                         key={idx}
-                        className="p-2 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-between text-xs"
+                        className="p-2 rounded-lg bg-[#201f20] border border-[#353436] flex items-center justify-between text-xs"
                       >
                         <span className="font-mono text-zinc-300 truncate max-w-[240px] sm:max-w-md">
                           {deliverable.name}
@@ -163,7 +163,7 @@ export default function PhaseProgressTracker() {
             </div>
 
             {index < phases.length - 1 && (
-              <div className="absolute left-[17px] top-10 bottom-[-24px] w-[2px] bg-[#27272A] z-0" />
+              <div className="absolute left-[17px] top-10 bottom-[-24px] w-[2px] bg-[#353436] z-0" />
             )}
           </div>
         ))}

@@ -239,7 +239,7 @@ export default function ProjectManagementSystem({
         hoursSpent: 8.0,
         hourlyRate: 175,
         disciplineBreakdown: [
-          { discipline: '3D Modeling & CAD', hours: 5.0, budgetHours: 40.0, color: '#3ECF8E' },
+          { discipline: '3D Modeling & CAD', hours: 5.0, budgetHours: 40.0, color: '#dbfcff' },
           { discipline: 'PBR Materials & Shaders', hours: 3.0, budgetHours: 35.0, color: '#06B6D4' },
           { discipline: 'Spatial Engine / Lighting', hours: 0, budgetHours: 35.0, color: '#8B5CF6' },
           { discipline: 'Client Review Prep', hours: 0, budgetHours: 20.0, color: '#F59E0B' }
@@ -343,9 +343,9 @@ export default function ProjectManagementSystem({
   return (
     <div className="space-y-6">
       {/* HEADER BANNER */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#18181B] via-[#121214] to-[#09090B] border border-[#27272A] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#201f20] via-[#131314] to-[#131314] border border-[#353436] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase tracking-wider">
             <FolderKanban className="w-4 h-4" />
             <span>CORE SYSTEM 01 • PROJECT MANAGEMENT SYSTEM</span>
           </div>
@@ -361,7 +361,7 @@ export default function ProjectManagementSystem({
           <button
             type="button"
             onClick={() => setIsCreatingModal(true)}
-            className="px-4 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#3ECF8E]/90 text-black font-mono font-bold text-xs flex items-center gap-2 shadow-lg shadow-[#3ECF8E]/20 transition-all cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#dbfcff]/90 text-black font-mono font-bold text-xs flex items-center gap-2 shadow-lg shadow-[#dbfcff]/20 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Create New Project</span>
@@ -373,12 +373,12 @@ export default function ProjectManagementSystem({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* LEFT COLUMN: PROJECT SELECTOR & QUICK FILTERS (4 Cols) */}
         <div className="lg:col-span-4 space-y-4">
-          <div className="p-4 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3">
+          <div className="p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-mono font-bold text-[#A1A1AA] uppercase">
                 Active Projects ({filteredProjects.length})
               </span>
-              <span className="text-[10px] font-mono text-[#3ECF8E] bg-[#3ECF8E]/10 px-2 py-0.5 rounded">
+              <span className="text-[10px] font-mono text-[#dbfcff] bg-[#dbfcff]/10 px-2 py-0.5 rounded">
                 Live Synced
               </span>
             </div>
@@ -391,7 +391,7 @@ export default function ProjectManagementSystem({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search by ID, name, client..."
-                className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
               />
             </div>
 
@@ -400,7 +400,7 @@ export default function ProjectManagementSystem({
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-2 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] focus:border-[#3ECF8E] focus:outline-none"
+                className="px-2 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] focus:border-[#dbfcff] focus:outline-none"
               >
                 <option value="all">All Statuses</option>
                 <option value="Work in Progress">In Production</option>
@@ -413,7 +413,7 @@ export default function ProjectManagementSystem({
               <select
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
-                className="px-2 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] focus:border-[#3ECF8E] focus:outline-none"
+                className="px-2 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] focus:border-[#dbfcff] focus:outline-none"
               >
                 <option value="all">All Disciplines</option>
                 <option value="WebXR">WebXR</option>
@@ -435,12 +435,12 @@ export default function ProjectManagementSystem({
                   onClick={() => setSelectedProjectId(proj.id)}
                   className={`p-3.5 rounded-xl border transition-all cursor-pointer text-left ${
                     isSelected
-                      ? 'bg-[#27272A]/80 border-[#3ECF8E] shadow-md shadow-[#3ECF8E]/10'
-                      : 'bg-[#18181B] border-[#27272A] hover:border-[#71717A] hover:bg-[#18181B]/80'
+                      ? 'bg-[#353436]/80 border-[#dbfcff] shadow-md shadow-[#dbfcff]/10'
+                      : 'bg-[#201f20] border-[#353436] hover:border-[#71717A] hover:bg-[#201f20]/80'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2 mb-1">
-                    <span className="text-[10px] font-mono font-bold text-[#3ECF8E]">
+                    <span className="text-[10px] font-mono font-bold text-[#dbfcff]">
                       {proj.id}
                     </span>
                     <span
@@ -475,9 +475,9 @@ export default function ProjectManagementSystem({
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="w-full h-1 rounded-full bg-[#09090B] mt-1 overflow-hidden">
+                  <div className="w-full h-1 rounded-full bg-[#131314] mt-1 overflow-hidden">
                     <div
-                      className="h-full bg-[#3ECF8E] rounded-full transition-all duration-300"
+                      className="h-full bg-[#dbfcff] rounded-full transition-all duration-300"
                       style={{ width: `${proj.progress}%` }}
                     />
                   </div>
@@ -491,16 +491,16 @@ export default function ProjectManagementSystem({
         {selectedProject ? (
           <div className="lg:col-span-8 space-y-5">
             {/* PROJECT HEADER CARD */}
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#27272A] pb-4">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#353436] pb-4">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-xs font-mono">
-                    <span className="text-[#3ECF8E] font-bold">{selectedProject.id}</span>
+                    <span className="text-[#dbfcff] font-bold">{selectedProject.id}</span>
                     <span className="text-[#71717A]">•</span>
-                    <span className="px-2 py-0.5 rounded bg-[#09090B] border border-[#27272A] text-[10px] text-white">
+                    <span className="px-2 py-0.5 rounded bg-[#131314] border border-[#353436] text-[10px] text-white">
                       {selectedProject.projectType}
                     </span>
-                    <span className="px-2 py-0.5 rounded bg-[#09090B] border border-[#27272A] text-[10px] text-[#3ECF8E]" suppressHydrationWarning>
+                    <span className="px-2 py-0.5 rounded bg-[#131314] border border-[#353436] text-[10px] text-[#dbfcff]" suppressHydrationWarning>
                       ${selectedProject.bookingAmount.toLocaleString('en-US')}
                     </span>
                   </div>
@@ -516,7 +516,7 @@ export default function ProjectManagementSystem({
                   <button
                     type="button"
                     onClick={() => setIsUploadModal(true)}
-                    className="px-3 py-1.5 rounded-lg bg-[#27272A] hover:bg-[#3ECF8E] hover:text-black text-white text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="px-3 py-1.5 rounded-lg bg-[#353436] hover:bg-[#dbfcff] hover:text-black text-white text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <Upload className="w-3.5 h-3.5" />
                     <span>Upload Asset</span>
@@ -525,14 +525,14 @@ export default function ProjectManagementSystem({
               </div>
 
               {/* TABS NAVIGATION */}
-              <div className="flex items-center gap-2 border-b border-[#27272A] pb-2 text-xs font-mono">
+              <div className="flex items-center gap-2 border-b border-[#353436] pb-2 text-xs font-mono">
                 <button
                   type="button"
                   onClick={() => setActiveTab('overview')}
                   className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
                     activeTab === 'overview'
-                      ? 'bg-[#3ECF8E] text-black font-bold'
-                      : 'text-[#A1A1AA] hover:text-white hover:bg-[#27272A]'
+                      ? 'bg-[#dbfcff] text-black font-bold'
+                      : 'text-[#A1A1AA] hover:text-white hover:bg-[#353436]'
                   }`}
                 >
                   Project Overview
@@ -542,8 +542,8 @@ export default function ProjectManagementSystem({
                   onClick={() => setActiveTab('pipeline')}
                   className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
                     activeTab === 'pipeline'
-                      ? 'bg-[#3ECF8E] text-black font-bold'
-                      : 'text-[#A1A1AA] hover:text-white hover:bg-[#27272A]'
+                      ? 'bg-[#dbfcff] text-black font-bold'
+                      : 'text-[#A1A1AA] hover:text-white hover:bg-[#353436]'
                   }`}
                 >
                   Pipeline & Milestones ({selectedProject.pipeline.stages.length})
@@ -553,8 +553,8 @@ export default function ProjectManagementSystem({
                   onClick={() => setActiveTab('assign')}
                   className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
                     activeTab === 'assign'
-                      ? 'bg-[#3ECF8E] text-black font-bold'
-                      : 'text-[#A1A1AA] hover:text-white hover:bg-[#27272A]'
+                      ? 'bg-[#dbfcff] text-black font-bold'
+                      : 'text-[#A1A1AA] hover:text-white hover:bg-[#353436]'
                   }`}
                 >
                   Team & Assignments
@@ -564,8 +564,8 @@ export default function ProjectManagementSystem({
                   onClick={() => setActiveTab('assets')}
                   className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
                     activeTab === 'assets'
-                      ? 'bg-[#3ECF8E] text-black font-bold'
-                      : 'text-[#A1A1AA] hover:text-white hover:bg-[#27272A]'
+                      ? 'bg-[#dbfcff] text-black font-bold'
+                      : 'text-[#A1A1AA] hover:text-white hover:bg-[#353436]'
                   }`}
                 >
                   Assets & Deliverables ({currentProjectAssets.length})
@@ -576,13 +576,13 @@ export default function ProjectManagementSystem({
               {activeTab === 'overview' && (
                 <div className="space-y-4 pt-1 animate-in fade-in duration-200">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
-                    <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A] space-y-1">
+                    <div className="p-3 rounded-xl bg-[#131314] border border-[#353436] space-y-1">
                       <div className="text-[#71717A]">CURRENT STATUS</div>
                       <div className="flex items-center gap-2">
                         <select
                           value={selectedProject.status}
                           onChange={(e) => handleUpdateStatus(e.target.value as ProjectStatus)}
-                          className="bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-white font-bold text-xs focus:outline-none focus:border-[#3ECF8E]"
+                          className="bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-white font-bold text-xs focus:outline-none focus:border-[#dbfcff]"
                         >
                           <option value="Work in Progress">Work in Progress</option>
                           <option value="Client Review">Client Review</option>
@@ -593,19 +593,19 @@ export default function ProjectManagementSystem({
                       </div>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A] space-y-1">
+                    <div className="p-3 rounded-xl bg-[#131314] border border-[#353436] space-y-1">
                       <div className="text-[#71717A]">HOURS LOGGED</div>
                       <div className="text-white font-bold">
                         {selectedProject.hoursMonitoring.hoursSpent}h / {selectedProject.hoursMonitoring.estimatedHours}h
                       </div>
-                      <div className="text-[10px] text-[#3ECF8E]">
+                      <div className="text-[10px] text-[#dbfcff]">
                         @ ${selectedProject.hoursMonitoring.hourlyRate}/hr billing
                       </div>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A] space-y-1">
+                    <div className="p-3 rounded-xl bg-[#131314] border border-[#353436] space-y-1">
                       <div className="text-[#71717A]">PROGRESS & SIGN-OFFS</div>
-                      <div className="text-[#3ECF8E] font-bold text-base">
+                      <div className="text-[#dbfcff] font-bold text-base">
                         {selectedProject.progress}%
                       </div>
                       <div className="text-[10px] text-[#A1A1AA]">
@@ -614,11 +614,11 @@ export default function ProjectManagementSystem({
                     </div>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2 text-xs">
+                  <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-2 text-xs">
                     <div className="font-mono text-[#71717A] uppercase text-[10px] font-bold">
                       Commission Brief & Architectural Scope
                     </div>
-                    <p className="text-[#FAFAFA] leading-relaxed">
+                    <p className="text-[#e5e2e3] leading-relaxed">
                       {selectedProject.notes || 'Full spatial architectural pipeline initialized with real-time WebXR delivery and 8K photorealistic lighting.'}
                     </p>
                   </div>
@@ -643,10 +643,10 @@ export default function ProjectManagementSystem({
                           key={stage.stageNumber || idx}
                           className={`p-3.5 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                             isCurrent
-                              ? 'bg-[#3ECF8E]/10 border-[#3ECF8E]'
+                              ? 'bg-[#dbfcff]/10 border-[#dbfcff]'
                               : isCompleted
-                              ? 'bg-[#09090B] border-emerald-900/60 text-[#A1A1AA]'
-                              : 'bg-[#09090B] border-[#27272A] opacity-75'
+                              ? 'bg-[#131314] border-emerald-900/60 text-[#A1A1AA]'
+                              : 'bg-[#131314] border-[#353436] opacity-75'
                           }`}
                         >
                           <div className="flex items-center gap-3">
@@ -655,8 +655,8 @@ export default function ProjectManagementSystem({
                                 isCompleted
                                   ? 'bg-emerald-500 text-black'
                                   : isCurrent
-                                  ? 'bg-[#3ECF8E] text-black ring-4 ring-[#3ECF8E]/20 animate-pulse'
-                                  : 'bg-[#27272A] text-[#71717A]'
+                                  ? 'bg-[#dbfcff] text-black ring-4 ring-[#dbfcff]/20 animate-pulse'
+                                  : 'bg-[#353436] text-[#71717A]'
                               }`}
                             >
                               {isCompleted ? <Check className="w-4 h-4" /> : idx + 1}
@@ -668,7 +668,7 @@ export default function ProjectManagementSystem({
                                   {stage.title}
                                 </h4>
                                 {isCurrent && (
-                                  <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-[#3ECF8E] text-black font-bold uppercase">
+                                  <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-[#dbfcff] text-black font-bold uppercase">
                                     In Progress
                                   </span>
                                 )}
@@ -683,8 +683,8 @@ export default function ProjectManagementSystem({
                               onClick={() => handleAdvanceStage(idx)}
                               className={`px-3 py-1 rounded text-[10px] font-mono font-bold cursor-pointer transition-colors ${
                                 isCurrent
-                                  ? 'bg-[#3ECF8E] text-black hover:bg-[#34b27b]'
-                                  : 'bg-[#27272A] text-[#A1A1AA] hover:text-white'
+                                  ? 'bg-[#dbfcff] text-black hover:bg-[#34b27b]'
+                                  : 'bg-[#353436] text-[#A1A1AA] hover:text-white'
                               }`}
                             >
                               {isCompleted ? 'Reopen Stage' : isCurrent ? 'Active Stage' : 'Set Active'}
@@ -702,27 +702,27 @@ export default function ProjectManagementSystem({
                 <div className="space-y-4 pt-1 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between text-xs font-mono text-[#A1A1AA]">
                     <span>Assigned Specialists ({TEAM_MEMBERS_DIRECTORY.length} in Studio Pool)</span>
-                    <span className="text-[#3ECF8E]">Lead: {selectedProject.leadArchitect}</span>
+                    <span className="text-[#dbfcff]">Lead: {selectedProject.leadArchitect}</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {TEAM_MEMBERS_DIRECTORY.map((member) => (
                       <div
                         key={member.id}
-                        className="p-3 rounded-xl bg-[#09090B] border border-[#27272A] flex items-center justify-between gap-3"
+                        className="p-3 rounded-xl bg-[#131314] border border-[#353436] flex items-center justify-between gap-3"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-[#27272A] border border-[#3ECF8E]/40 flex items-center justify-center text-xs font-mono font-bold text-[#3ECF8E]">
+                          <div className="w-8 h-8 rounded-full bg-[#353436] border border-[#dbfcff]/40 flex items-center justify-center text-xs font-mono font-bold text-[#dbfcff]">
                             {member.avatar}
                           </div>
                           <div>
                             <div className="text-xs font-bold text-white">{member.name}</div>
                             <div className="text-[10px] text-[#A1A1AA]">{member.role}</div>
-                            <div className="text-[9px] font-mono text-[#3ECF8E]">{member.discipline}</div>
+                            <div className="text-[9px] font-mono text-[#dbfcff]">{member.discipline}</div>
                           </div>
                         </div>
 
-                        <span className="px-2 py-0.5 rounded bg-[#18181B] border border-[#27272A] text-[9px] font-mono text-emerald-400">
+                        <span className="px-2 py-0.5 rounded bg-[#201f20] border border-[#353436] text-[9px] font-mono text-emerald-400">
                           Assigned
                         </span>
                       </div>
@@ -739,7 +739,7 @@ export default function ProjectManagementSystem({
                     <button
                       type="button"
                       onClick={() => setIsUploadModal(true)}
-                      className="text-[#3ECF8E] hover:underline font-bold flex items-center gap-1 cursor-pointer"
+                      className="text-[#dbfcff] hover:underline font-bold flex items-center gap-1 cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>Upload Asset</span>
@@ -747,13 +747,13 @@ export default function ProjectManagementSystem({
                   </div>
 
                   {currentProjectAssets.length === 0 ? (
-                    <div className="p-8 rounded-xl bg-[#09090B] border border-[#27272A] text-center space-y-2 font-mono text-xs text-[#71717A]">
+                    <div className="p-8 rounded-xl bg-[#131314] border border-[#353436] text-center space-y-2 font-mono text-xs text-[#71717A]">
                       <Upload className="w-8 h-8 mx-auto text-[#71717A]" />
                       <p>No production assets uploaded for this project yet.</p>
                       <button
                         type="button"
                         onClick={() => setIsUploadModal(true)}
-                        className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] text-black font-bold text-xs"
+                        className="px-3 py-1.5 rounded-lg bg-[#dbfcff] text-black font-bold text-xs"
                       >
                         Upload First Asset
                       </button>
@@ -763,10 +763,10 @@ export default function ProjectManagementSystem({
                       {currentProjectAssets.map((asset) => (
                         <div
                           key={asset.id}
-                          className="p-3 rounded-xl bg-[#09090B] border border-[#27272A] hover:border-[#71717A] transition-colors flex items-center justify-between gap-3 text-xs font-mono"
+                          className="p-3 rounded-xl bg-[#131314] border border-[#353436] hover:border-[#71717A] transition-colors flex items-center justify-between gap-3 text-xs font-mono"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-[#18181B] border border-[#27272A] flex items-center justify-center text-[#3ECF8E]">
+                            <div className="w-8 h-8 rounded-lg bg-[#201f20] border border-[#353436] flex items-center justify-center text-[#dbfcff]">
                               {asset.category === '3D Model' ? <FileCode className="w-4 h-4" /> : <FileText className="w-4 h-4" />}
                             </div>
                             <div>
@@ -788,7 +788,7 @@ export default function ProjectManagementSystem({
                               <button
                                 type="button"
                                 onClick={() => openModelViewer(asset.url, asset.name)}
-                                className="px-2.5 py-1 rounded bg-[#3ECF8E]/20 text-[#3ECF8E] hover:bg-[#3ECF8E] hover:text-black transition-colors font-bold text-[10px] flex items-center gap-1 cursor-pointer"
+                                className="px-2.5 py-1 rounded bg-[#dbfcff]/20 text-[#dbfcff] hover:bg-[#dbfcff] hover:text-black transition-colors font-bold text-[10px] flex items-center gap-1 cursor-pointer"
                               >
                                 <Eye className="w-3 h-3" />
                                 <span>View 3D</span>
@@ -797,7 +797,7 @@ export default function ProjectManagementSystem({
                             <a
                               href={asset.url}
                               download
-                              className="p-1.5 rounded bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors"
+                              className="p-1.5 rounded bg-[#201f20] hover:bg-[#353436] text-[#A1A1AA] hover:text-white transition-colors"
                               title="Download Asset"
                             >
                               <Download className="w-3.5 h-3.5" />
@@ -817,9 +817,9 @@ export default function ProjectManagementSystem({
       {/* CREATE NEW PROJECT MODAL */}
       {isCreatingModal && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#18181B] border border-[#27272A] rounded-2xl max-w-2xl w-full p-6 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
-              <div className="flex items-center gap-2 text-[#3ECF8E] font-mono font-bold text-xs uppercase">
+          <div className="bg-[#201f20] border border-[#353436] rounded-2xl max-w-2xl w-full p-6 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#353436] pb-3">
+              <div className="flex items-center gap-2 text-[#dbfcff] font-mono font-bold text-xs uppercase">
                 <FolderKanban className="w-4 h-4" />
                 <span>Initialize New Architectural Commission</span>
               </div>
@@ -842,7 +842,7 @@ export default function ProjectManagementSystem({
                     value={newProjectData.name}
                     onChange={(e) => setNewProjectData({ ...newProjectData, name: e.target.value })}
                     placeholder="e.g. The Elysium Tower & Sky Villas"
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   />
                 </div>
 
@@ -851,7 +851,7 @@ export default function ProjectManagementSystem({
                   <select
                     value={newProjectData.projectType}
                     onChange={(e) => setNewProjectData({ ...newProjectData, projectType: e.target.value as ProjectType })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     <option value="WebXR">WebXR Interactive</option>
                     <option value="WebAR">WebAR QuickLook</option>
@@ -869,7 +869,7 @@ export default function ProjectManagementSystem({
                     value={newProjectData.clientName}
                     onChange={(e) => setNewProjectData({ ...newProjectData, clientName: e.target.value })}
                     placeholder="e.g. Lord Norman Foster"
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   />
                 </div>
 
@@ -880,7 +880,7 @@ export default function ProjectManagementSystem({
                     value={newProjectData.clientCompany}
                     onChange={(e) => setNewProjectData({ ...newProjectData, clientCompany: e.target.value })}
                     placeholder="e.g. Foster + Partners London"
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   />
                 </div>
 
@@ -890,7 +890,7 @@ export default function ProjectManagementSystem({
                     type="number"
                     value={newProjectData.bookingAmount}
                     onChange={(e) => setNewProjectData({ ...newProjectData, bookingAmount: Number(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   />
                 </div>
 
@@ -899,7 +899,7 @@ export default function ProjectManagementSystem({
                   <select
                     value={newProjectData.leadArchitect}
                     onChange={(e) => setNewProjectData({ ...newProjectData, leadArchitect: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     {TEAM_MEMBERS_DIRECTORY.map((tm) => (
                       <option key={tm.id} value={tm.name}>
@@ -916,21 +916,21 @@ export default function ProjectManagementSystem({
                   rows={3}
                   value={newProjectData.notes}
                   onChange={(e) => setNewProjectData({ ...newProjectData, notes: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                  className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#27272A]">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#353436]">
                 <button
                   type="button"
                   onClick={() => setIsCreatingModal(false)}
-                  className="px-4 py-2 rounded-lg bg-[#27272A] text-white hover:bg-[#3f3f46] transition-colors"
+                  className="px-4 py-2 rounded-lg bg-[#353436] text-white hover:bg-[#3f3f46] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-lg bg-[#3ECF8E] text-black font-bold hover:bg-[#34b27b] transition-colors"
+                  className="px-5 py-2 rounded-lg bg-[#dbfcff] text-black font-bold hover:bg-[#34b27b] transition-colors"
                 >
                   Initialize Project
                 </button>
@@ -943,9 +943,9 @@ export default function ProjectManagementSystem({
       {/* UPLOAD ASSET MODAL */}
       {isUploadModal && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#18181B] border border-[#27272A] rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
-              <div className="flex items-center gap-2 text-[#3ECF8E] font-mono font-bold text-xs uppercase">
+          <div className="bg-[#201f20] border border-[#353436] rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#353436] pb-3">
+              <div className="flex items-center gap-2 text-[#dbfcff] font-mono font-bold text-xs uppercase">
                 <Upload className="w-4 h-4" />
                 <span>Upload Asset to {selectedProject?.id}</span>
               </div>
@@ -967,7 +967,7 @@ export default function ProjectManagementSystem({
                   value={uploadFormData.name}
                   onChange={(e) => setUploadFormData({ ...uploadFormData, name: e.target.value })}
                   placeholder="e.g. Apex_Tower_Facade_LOD0.glb"
-                  className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                  className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                 />
               </div>
 
@@ -977,7 +977,7 @@ export default function ProjectManagementSystem({
                   <select
                     value={uploadFormData.category}
                     onChange={(e) => setUploadFormData({ ...uploadFormData, category: e.target.value as ProjectAsset['category'] })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     <option value="3D Model">3D Model (GLB/GLTF)</option>
                     <option value="BIM / CAD">BIM / CAD (IFC/RVT/DWG)</option>
@@ -994,28 +994,28 @@ export default function ProjectManagementSystem({
                     value={uploadFormData.version}
                     onChange={(e) => setUploadFormData({ ...uploadFormData, version: e.target.value })}
                     placeholder="e.g. v2.1 Draco"
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   />
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl border border-dashed border-[#27272A] bg-[#09090B] text-center space-y-2 cursor-pointer hover:border-[#3ECF8E] transition-colors">
-                <Upload className="w-6 h-6 mx-auto text-[#3ECF8E]" />
+              <div className="p-4 rounded-xl border border-dashed border-[#353436] bg-[#131314] text-center space-y-2 cursor-pointer hover:border-[#dbfcff] transition-colors">
+                <Upload className="w-6 h-6 mx-auto text-[#dbfcff]" />
                 <p className="text-white font-bold">Drag & drop asset file or browse</p>
                 <p className="text-[10px] text-[#71717A]">Supports .glb, .gltf, .ifc, .rvt, .dwg, .exr, .png up to 500MB</p>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#27272A]">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#353436]">
                 <button
                   type="button"
                   onClick={() => setIsUploadModal(false)}
-                  className="px-4 py-2 rounded-lg bg-[#27272A] text-white hover:bg-[#3f3f46] transition-colors"
+                  className="px-4 py-2 rounded-lg bg-[#353436] text-white hover:bg-[#3f3f46] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-lg bg-[#3ECF8E] text-black font-bold hover:bg-[#34b27b] transition-colors"
+                  className="px-5 py-2 rounded-lg bg-[#dbfcff] text-black font-bold hover:bg-[#34b27b] transition-colors"
                 >
                   Upload & Attach
                 </button>

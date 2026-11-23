@@ -21,7 +21,7 @@ export default function Pano2VrPlayer({
 }) {
   if (!entryUrl) {
     return (
-      <div className="flex items-center justify-center h-full bg-[#0A0A0B]">
+      <div className="flex items-center justify-center h-full bg-[#131314]">
         <p className="text-zinc-500 font-mono text-sm">No tour package published yet.</p>
       </div>
     );

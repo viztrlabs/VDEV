@@ -160,10 +160,10 @@ export default function ModelManager() {
   return (
     <div className="space-y-6">
       {/* HEADER & STORAGE METRICS */}
-      <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <Box className="w-5 h-5 text-[#3ECF8E]" />
+            <Box className="w-5 h-5 text-[#dbfcff]" />
             <h2 className="text-lg font-bold font-display text-white">
               3D Model & WebXR Spatial Asset Manager
             </h2>
@@ -174,16 +174,16 @@ export default function ModelManager() {
         </div>
 
         {/* Storage Bar */}
-        <div className="w-full md:w-64 space-y-1.5 p-3 rounded-xl bg-[#09090B] border border-[#27272A]">
+        <div className="w-full md:w-64 space-y-1.5 p-3 rounded-xl bg-[#131314] border border-[#353436]">
           <div className="flex items-center justify-between text-[11px] font-mono">
             <span className="text-[#A1A1AA] flex items-center gap-1">
-              <HardDrive className="w-3 h-3 text-[#3ECF8E]" /> R2 Spatial Storage
+              <HardDrive className="w-3 h-3 text-[#dbfcff]" /> R2 Spatial Storage
             </span>
             <span className="text-white font-bold">{totalStorageMb.toFixed(1)} / {maxStorageMb} MB</span>
           </div>
-          <div className="w-full h-1.5 rounded-full bg-[#27272A] overflow-hidden">
+          <div className="w-full h-1.5 rounded-full bg-[#353436] overflow-hidden">
             <div
-              className="h-full bg-[#3ECF8E] transition-all"
+              className="h-full bg-[#dbfcff] transition-all"
               style={{ width: `${Math.min(100, (totalStorageMb / maxStorageMb) * 100)}%` }}
             />
           </div>
@@ -191,9 +191,9 @@ export default function ModelManager() {
       </div>
 
       {/* UPLOAD & ASSIGNMENT PANEL */}
-      <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+      <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
         <h3 className="text-sm font-bold font-display text-white flex items-center gap-2">
-          <Upload className="w-4 h-4 text-[#3ECF8E]" />
+          <Upload className="w-4 h-4 text-[#dbfcff]" />
           <span>Upload GLB / GLTF Geometry Asset</span>
         </h3>
 
@@ -207,7 +207,7 @@ export default function ModelManager() {
               placeholder="e.g. Apex Tower Facade PBR Model"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+              className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
             />
           </div>
 
@@ -218,7 +218,7 @@ export default function ModelManager() {
             <select
               value={selectedProjectId}
               onChange={(e) => setSelectedProjectId(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+              className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white focus:outline-none focus:border-[#dbfcff]"
             >
               {portfolioProjects.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -245,8 +245,8 @@ export default function ModelManager() {
           }}
           className={`border-2 border-dashed rounded-xl p-6 text-center transition-all cursor-pointer ${
             dragOver
-              ? 'border-[#3ECF8E] bg-[#3ECF8E]/10'
-              : 'border-[#27272A] bg-[#09090B] hover:border-[#3ECF8E]/50'
+              ? 'border-[#dbfcff] bg-[#dbfcff]/10'
+              : 'border-[#353436] bg-[#131314] hover:border-[#dbfcff]/50'
           }`}
           onClick={() => {
             const input = document.createElement('input');
@@ -259,10 +259,10 @@ export default function ModelManager() {
           }}
         >
           <div className="flex flex-col items-center justify-center space-y-2">
-            <Box className={`w-8 h-8 ${isUploading ? 'text-[#3ECF8E] animate-bounce' : 'text-[#71717A]'}`} />
+            <Box className={`w-8 h-8 ${isUploading ? 'text-[#dbfcff] animate-bounce' : 'text-[#71717A]'}`} />
             <div className="text-xs font-mono text-white">
               {isUploading ? (
-                <span className="text-[#3ECF8E] font-bold">Uploading & Optimizing Geometry...</span>
+                <span className="text-[#dbfcff] font-bold">Uploading & Optimizing Geometry...</span>
               ) : (
                 <span>Drag & drop binary GLB or GLTF package here, or click to browse</span>
               )}
@@ -282,23 +282,23 @@ export default function ModelManager() {
       </div>
 
       {/* ACTIVE ASSETS TABLE */}
-      <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+      <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
         <h3 className="text-sm font-bold font-display text-white">
           Active Spatial Assets in Cloudflare R2 ({models.length})
         </h3>
 
-        <div className="divide-y divide-[#27272A]">
+        <div className="divide-y divide-[#353436]">
           {models.map((model) => (
             <div key={model.id} className="py-4 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div
-                  className="w-16 h-12 rounded-lg bg-cover bg-center border border-[#27272A] shrink-0"
+                  className="w-16 h-12 rounded-lg bg-cover bg-center border border-[#353436] shrink-0"
                   style={{ backgroundImage: `url(${model.previewImage})` }}
                 />
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold text-white font-display">{model.title}</span>
-                    <span className="px-1.5 py-0.5 rounded bg-[#09090B] border border-[#27272A] text-[10px] font-mono uppercase text-[#3ECF8E]">
+                    <span className="px-1.5 py-0.5 rounded bg-[#131314] border border-[#353436] text-[10px] font-mono uppercase text-[#dbfcff]">
                       {model.format} • {model.fileSizeMb} MB
                     </span>
                     {model.dracoCompressed && (
@@ -308,7 +308,7 @@ export default function ModelManager() {
                     )}
                   </div>
                   <div className="text-[11px] font-mono text-[#71717A]">
-                    Assigned: <span className="text-[#FAFAFA]">{model.projectName}</span> • Storage: {model.storageKey}
+                    Assigned: <span className="text-[#e5e2e3]">{model.projectName}</span> • Storage: {model.storageKey}
                   </div>
                 </div>
               </div>
@@ -320,8 +320,8 @@ export default function ModelManager() {
                   onClick={() => toggleSetting(model.id, 'webxrEnabled')}
                   className={`px-2.5 py-1 rounded text-[11px] font-mono flex items-center gap-1 border transition-colors cursor-pointer ${
                     model.webxrEnabled
-                      ? 'bg-[#3ECF8E]/20 border-[#3ECF8E]/60 text-[#3ECF8E]'
-                      : 'bg-[#09090B] border-[#27272A] text-[#71717A]'
+                      ? 'bg-[#dbfcff]/20 border-[#dbfcff]/60 text-[#dbfcff]'
+                      : 'bg-[#131314] border-[#353436] text-[#71717A]'
                   }`}
                 >
                   <Eye className="w-3 h-3" />
@@ -334,7 +334,7 @@ export default function ModelManager() {
                   className={`px-2.5 py-1 rounded text-[11px] font-mono flex items-center gap-1 border transition-colors cursor-pointer ${
                     model.arEnabled
                       ? 'bg-emerald-950 border-emerald-600 text-emerald-400'
-                      : 'bg-[#09090B] border-[#27272A] text-[#71717A]'
+                      : 'bg-[#131314] border-[#353436] text-[#71717A]'
                   }`}
                 >
                   <Smartphone className="w-3 h-3" />
@@ -347,7 +347,7 @@ export default function ModelManager() {
                   className={`px-2.5 py-1 rounded text-[11px] font-mono flex items-center gap-1 border transition-colors cursor-pointer ${
                     model.vrEnabled
                       ? 'bg-indigo-950 border-indigo-600 text-indigo-400'
-                      : 'bg-[#09090B] border-[#27272A] text-[#71717A]'
+                      : 'bg-[#131314] border-[#353436] text-[#71717A]'
                   }`}
                 >
                   <Headset className="w-3 h-3" />
@@ -357,10 +357,10 @@ export default function ModelManager() {
                 {/* Preview in Viewer */}
                 <button
                   onClick={() => openModelViewer(model.storageKey, model.title)}
-                  className="p-1.5 rounded bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#FAFAFA] transition-colors cursor-pointer"
+                  className="p-1.5 rounded bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#e5e2e3] transition-colors cursor-pointer"
                   title="Test in 3D Viewer"
                 >
-                  <ExternalLink className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                  <ExternalLink className="w-3.5 h-3.5 text-[#dbfcff]" />
                 </button>
 
                 {/* Delete */}

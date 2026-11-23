@@ -53,7 +53,7 @@ function convInitial(name: string) {
 
 function statusBadgeClass(status: string) {
   const styles: Record<string, string> = {
-    open: 'bg-[#3ECF8E]/10 text-[#3ECF8E] border-[#3ECF8E]/40',
+    open: 'bg-[#dbfcff]/10 text-[#dbfcff] border-[#dbfcff]/40',
     assigned: 'bg-amber-500/10 text-amber-400 border-amber-500/40',
     resolved: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/40',
     closed: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/40',
@@ -195,9 +195,9 @@ export default function WhatsAppAdmin({ className }: WhatsAppAdminProps) {
   return (
     <div className={`space-y-6 ${className || ''}`}>
       {/* HEADER */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#18181B] via-[#121214] to-[#09090B] border border-[#27272A] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#201f20] via-[#131314] to-[#131314] border border-[#353436] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase tracking-wider">
             <Phone className="w-4 h-4" />
             <span>CORE SYSTEM 07 • WHATSAPP SUPPORT</span>
           </div>
@@ -208,14 +208,14 @@ export default function WhatsAppAdmin({ className }: WhatsAppAdminProps) {
         </div>
         <div className="flex items-center gap-2">
           <span className={`px-2.5 py-1 rounded-full text-xs font-mono font-bold ${
-            unreadTotal > 0 ? 'bg-rose-500 text-white' : 'bg-[#3ECF8E] text-black'
+            unreadTotal > 0 ? 'bg-rose-500 text-white' : 'bg-[#dbfcff] text-black'
           }`}>
             {unreadTotal > 0 ? `${unreadTotal} Unread` : 'All Clear'}
           </span>
           <button
             type="button"
             onClick={fetchConversations}
-            className="px-3 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center gap-1 transition-colors"
+            className="px-3 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center gap-1 transition-colors"
           >
             <Loader2 className="w-3 h-3 animate-spin" />
             <span>Refresh</span>
@@ -233,13 +233,13 @@ export default function WhatsAppAdmin({ className }: WhatsAppAdminProps) {
       <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-220px)]">
         {/* LEFT: Conversation List */}
         <div className="flex-1 min-w-[320px] flex flex-col">
-          <div className="p-4 rounded-2xl bg-[#18181B] border border-[#27272A] flex flex-col h-full">
+          <div className="p-4 rounded-2xl bg-[#201f20] border border-[#353436] flex flex-col h-full">
             {/* Filters */}
             <div className="flex gap-2 mb-4">
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as any)}
-                className="flex-1 px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+                className="flex-1 px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white focus:outline-none focus:border-[#dbfcff]"
               >
                 <option value="all">All Status</option>
                 <option value="open">Open</option>
@@ -252,7 +252,7 @@ export default function WhatsAppAdmin({ className }: WhatsAppAdminProps) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search client name or phone..."
-                className="flex-1 px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                className="flex-1 px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
               />
             </div>
 
@@ -270,8 +270,8 @@ export default function WhatsAppAdmin({ className }: WhatsAppAdminProps) {
                     onClick={() => selectConversation(conv)}
                     className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
                       selectedConversation?.id === conv.id
-                        ? 'bg-[#3ECF8E]/20 border border-[#3ECF8E]/40 text-white'
-                        : 'bg-[#09090B] border border-[#27272A]/50 text-zinc-300 hover:bg-[#27272A]/50 hover:text-white'
+                        ? 'bg-[#dbfcff]/20 border border-[#dbfcff]/40 text-white'
+                        : 'bg-[#131314] border border-[#353436]/50 text-zinc-300 hover:bg-[#353436]/50 hover:text-white'
                     }`}
                   >
                     <div className="flex-1 min-w-0">
@@ -315,7 +315,7 @@ export default function WhatsAppAdmin({ className }: WhatsAppAdminProps) {
           ) : (
             <div className="flex flex-col h-full">
               {/* Chat Header */}
-              <div className="p-4 rounded-t-2xl bg-[#18181B] border-b border-[#27272A] flex items-center justify-between">
+              <div className="p-4 rounded-t-2xl bg-[#201f20] border-b border-[#353436] flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-[#25D366]/20 flex items-center justify-center text-[#25D366] font-bold text-sm">
                     {convInitial(selectedConversation.client_name)}
@@ -324,7 +324,7 @@ export default function WhatsAppAdmin({ className }: WhatsAppAdminProps) {
                     <div className="text-sm font-bold font-display text-white">{selectedConversation.client_name}</div>
                     <div className="flex items-center gap-1 text-xs text-[#4B5563]">
                       <span className={`h-1.5 w-1.5 rounded-full ${
-                        selectedConversation.status === 'open' ? 'bg-[#3ECF8E]' : 'bg-zinc-500'
+                        selectedConversation.status === 'open' ? 'bg-[#dbfcff]' : 'bg-zinc-500'
                       }`} />
                       <span>{selectedConversation.status}</span>
                       <span>{selectedConversation.client_phone}</span>
@@ -337,7 +337,7 @@ export default function WhatsAppAdmin({ className }: WhatsAppAdminProps) {
                     onClick={() => updateConversationStatus('open')}
                     className={`px-2 py-1 rounded text-xs font-mono transition-colors ${
                       selectedConversation.status === 'open'
-                        ? 'bg-[#3ECF8E]/20 text-[#3ECF8E] border-[#3ECF8E]/40'
+                        ? 'bg-[#dbfcff]/20 text-[#dbfcff] border-[#dbfcff]/40'
                         : 'text-[#A1A1AA] hover:text-white hover:bg-white/10'
                     }`}
                     title="Mark Open"
@@ -372,7 +372,7 @@ export default function WhatsAppAdmin({ className }: WhatsAppAdminProps) {
               </div>
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#09090B]">
+              <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#131314]">
                 {messages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full text-[#71717A] text-xs font-mono">
                     <MessageSquare className="w-6 h-6 mb-2 opacity-50" />
@@ -391,7 +391,7 @@ export default function WhatsAppAdmin({ className }: WhatsAppAdminProps) {
                           className={`max-w-[80%] px-4 py-2.5 rounded-2xl text-sm ${
                             msg.sender === 'user'
                               ? 'bg-[#25D366] text-black rounded-tr-none'
-                              : 'bg-[#18181B] border border-[#27272A] text-zinc-300 rounded-tl-none'
+                              : 'bg-[#201f20] border border-[#353436] text-zinc-300 rounded-tl-none'
                           }`}
                         >
                           <p className="whitespace-pre-wrap">{msg.text}</p>
@@ -410,7 +410,7 @@ export default function WhatsAppAdmin({ className }: WhatsAppAdminProps) {
               </div>
 
               {/* Input */}
-              <div className="p-3 border-t border-[#27272A] bg-[#18181B]">
+              <div className="p-3 border-t border-[#353436] bg-[#201f20]">
                 <form onSubmit={sendMessage} className="relative flex items-center gap-2">
                   <input
                     type="text"
@@ -418,7 +418,7 @@ export default function WhatsAppAdmin({ className }: WhatsAppAdminProps) {
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type your reply..."
                     disabled={sending}
-                    className="w-full bg-[#09090B] border border-[#27272A] rounded-full px-4 py-2.5 pr-12 text-sm text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] disabled:opacity-50"
+                    className="w-full bg-[#131314] border border-[#353436] rounded-full px-4 py-2.5 pr-12 text-sm text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] disabled:opacity-50"
                   />
                   <button
                     type="submit"

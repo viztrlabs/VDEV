@@ -68,15 +68,15 @@ export default function BenefitsSection() {
   }));
 
   return (
-    <section id="benefits-section"className="py-16 px-4 sm:px-6 bg-[#0A0A0B] border-y border-[#1E293B]">
+    <section id="benefits-section"className="py-16 px-4 sm:px-6 bg-[#131314] border-y border-[#3b494b]">
       <div className="max-w-[1400px] mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-[#1E293B]">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-[#3b494b]">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#42CF8B] animate-pulse"/>
-              <CmsText fieldId="eyebrow" value={eyebrow} className="text-[11px] font-bold uppercase tracking-widest text-[#42CF8B]"/>
+              <span className="w-2 h-2 rounded-full bg-[#54de99] animate-pulse"/>
+              <CmsText fieldId="eyebrow" value={eyebrow} className="text-[11px] font-bold uppercase tracking-widest text-[#54de99]"/>
             </div>
-            <CmsText fieldId="heading" value={heading} as="h2" className="text-2xl sm:text-3xl font-display font-extrabold tracking-tight text-[#FAFAFA]"/>
+            <CmsText fieldId="heading" value={heading} as="h2" className="text-2xl sm:text-3xl font-display font-extrabold tracking-tight text-[#e5e2e3]"/>
           </div>
           <CmsText fieldId="description" value={description} as="p" rich className="text-xs sm:text-sm text-[#B9CACB] max-w-md"/>
         </div>
@@ -87,13 +87,13 @@ export default function BenefitsSection() {
             return (
               <div
                 key={benefit.id}
-                className="p-6 rounded-[2rem] bg-[#131314] border border-[#1E293B] hover:border-[#00F0FF]/40 transition-all duration-300 flex flex-col justify-between group shadow-sm"
+                className="p-6 rounded-[2rem] bg-[#131314] border border-[#3b494b] hover:border-[#00F0FF]/40 transition-all duration-300 flex flex-col justify-between group shadow-sm"
               >
                 <div>
-                  <div className="w-10 h-10 rounded-full bg-[#0A0A0B] border border-[#1E293B] text-[#00F0FF] flex items-center justify-center mb-4 group-hover:border-[#00F0FF]/50 transition-colors shadow-inner">
+                  <div className="w-10 h-10 rounded-full bg-[#131314] border border-[#3b494b] text-[#00F0FF] flex items-center justify-center mb-4 group-hover:border-[#00F0FF]/50 transition-colors shadow-inner">
                     <IconComponent className="w-4 h-4"/>
                   </div>
-                  <CmsText fieldId="title" listFieldId="benefits" itemId={benefit.id} value={benefit.title} as="h3" className="text-sm font-display font-bold text-[#FAFAFA] mb-2"/>
+                  <CmsText fieldId="title" listFieldId="benefits" itemId={benefit.id} value={benefit.title} as="h3" className="text-sm font-display font-bold text-[#e5e2e3] mb-2"/>
                   <CmsText fieldId="desc" listFieldId="benefits" itemId={benefit.id} value={benefit.desc} as="p" rich className="text-xs text-[#B9CACB] leading-relaxed"/>
                 </div>
               </div>

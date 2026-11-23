@@ -227,9 +227,9 @@ export default function SettingsManager({ onSaved }: SettingsManagerProps) {
   return (
     <div className="space-y-6">
       {/* BANNER */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#18181B] via-[#121214] to-[#09090B] border border-[#27272A] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#201f20] via-[#131314] to-[#131314] border border-[#353436] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase tracking-wider">
             <KeyRound className="w-4 h-4" />
             <span>CORE SYSTEM 06 • SERVER-SIDE CREDENTIALS</span>
           </div>
@@ -243,7 +243,7 @@ export default function SettingsManager({ onSaved }: SettingsManagerProps) {
         <button
           type="button"
           onClick={fetchSettings}
-          className="px-4 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center gap-2 transition-all cursor-pointer"
+          className="px-4 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center gap-2 transition-all cursor-pointer"
         >
           <Check className="w-4 h-4" />
           <span>Refresh</span>
@@ -273,11 +273,11 @@ export default function SettingsManager({ onSaved }: SettingsManagerProps) {
             return (
               <div
                 key={preset.key}
-                className="p-4 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3"
+                className="p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <preset.icon className="w-4 h-4 text-[#3ECF8E]" />
+                    <preset.icon className="w-4 h-4 text-[#dbfcff]" />
                     <span className="text-sm font-bold text-white font-display">
                       {preset.label}
                     </span>
@@ -300,13 +300,13 @@ export default function SettingsManager({ onSaved }: SettingsManagerProps) {
                     placeholder={preset.placeholder}
                     onChange={(e) => handleChange(preset.key, e.target.value)}
                     disabled={isSaving}
-                    className={`flex-1 px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] disabled:opacity-50`}
+                    className={`flex-1 px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] disabled:opacity-50`}
                   />
                   <button
                     type="button"
                     onClick={() => toggleReveal(preset.key)}
                     disabled={isSaving}
-                    className={`p-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`p-2 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
                     title={isRevealed ? 'Hide' : 'Reveal'}
                   >
                     {isRevealed ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -318,7 +318,7 @@ export default function SettingsManager({ onSaved }: SettingsManagerProps) {
                     type="button"
                     onClick={() => commit(preset.key)}
                     disabled={!draftVal || isSaving}
-                    className={`px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] disabled:opacity-40 text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`px-3 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] disabled:opacity-40 text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
                     {isSaving ? <div className="w-3 h-3 border-2 border-black border-t-transparent rounded-full animate-spin" /> : <Save className="w-3.5 h-3.5" />}
                     <span>{isSaving ? 'Saving…' : 'Save'}</span>
@@ -327,7 +327,7 @@ export default function SettingsManager({ onSaved }: SettingsManagerProps) {
                     <button
                       type="button"
                       onClick={() => removeSetting(preset.key)}
-                      className="px-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] hover:text-rose-400 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
+                      className="px-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] hover:text-rose-400 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                       <span>Delete</span>
@@ -344,7 +344,7 @@ export default function SettingsManager({ onSaved }: SettingsManagerProps) {
       </div>
 
       {/* WHATSAPP BOT CONFIGURATION */}
-      <div className="p-4 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+      <div className="p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Smartphone className="w-4 h-4 text-[#25D366]" />
@@ -360,7 +360,7 @@ export default function SettingsManager({ onSaved }: SettingsManagerProps) {
             href="https://github.com/viztrlabs/whatsapp_bot"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#3ECF8E] underline hover:text-[#4ade80]"
+            className="text-[#dbfcff] underline hover:text-[#4ade80]"
           >
             FEI XMD (rebranded as VizTR)
           </a>
@@ -371,7 +371,7 @@ export default function SettingsManager({ onSaved }: SettingsManagerProps) {
           {/* Webhook URL and Send URL are managed as preset keys above */}
         </div>
 
-        <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
+        <div className="p-3 rounded-lg bg-[#131314] border border-[#353436]">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-mono font-bold text-[#A1A1AA] uppercase">Bot .env file</span>
               <button
@@ -402,12 +402,12 @@ VIZTR_SEND_URL=${sendUrl}
 `;
                   navigator.clipboard.writeText(envContent);
                 }}
-                className="text-[10px] font-mono text-[#3ECF8E] hover:underline cursor-pointer flex items-center gap-1"
+                className="text-[10px] font-mono text-[#dbfcff] hover:underline cursor-pointer flex items-center gap-1"
               >
                 <Copy className="w-3 h-3" /> Copy .env
               </button>
             </div>
-            <pre className="text-[10px] font-mono text-[#A1A1AA] whitespace-pre-wrap break-all bg-[#18181B] p-2 rounded border border-[#27272A] max-h-40 overflow-y-auto">
+            <pre className="text-[10px] font-mono text-[#A1A1AA] whitespace-pre-wrap break-all bg-[#201f20] p-2 rounded border border-[#353436] max-h-40 overflow-y-auto">
 # VizTR WhatsApp Bot (.env)
 BOT_NAME=VizTR Support
 BOT_URL=https://viztr.com
@@ -417,25 +417,25 @@ VIZTR_SEND_URL=https://viztr.com/api/messaging/whatsapp/send
 </pre>
         </div>
 
-        <div className="p-3 rounded-lg bg-[#18181B] border border-[#27272A]">
+        <div className="p-3 rounded-lg bg-[#201f20] border border-[#353436]">
           <div className="flex items-center gap-2 mb-2">
             <span className="text-xs font-mono text-[#71717A]">Setup steps:</span>
           </div>
           <div className="text-[10px] text-[#A1A1AA] font-mono space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-[#3ECF8E] font-bold">1.</span>
-              <span>Clone the bot: <code className="bg-[#09090B] px-1 rounded">git clone https://github.com/viztrlabs/whatsapp_bot</code></span>
+              <span className="text-[#dbfcff] font-bold">1.</span>
+              <span>Clone the bot: <code className="bg-[#131314] px-1 rounded">git clone https://github.com/viztrlabs/whatsapp_bot</code></span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[#3ECF8E] font-bold">2.</span>
+              <span className="text-[#dbfcff] font-bold">2.</span>
               <span>Copy the .env above into the bot directory and set OWNER_NUMBER</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[#3ECF8E] font-bold">3.</span>
-              <span>Run <code className="bg-[#09090B] px-1 rounded">npm install</code> then <code className="bg-[#09090B] px-1 rounded">npm start</code></span>
+              <span className="text-[#dbfcff] font-bold">3.</span>
+              <span>Run <code className="bg-[#131314] px-1 rounded">npm install</code> then <code className="bg-[#131314] px-1 rounded">npm start</code></span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[#3ECF8E] font-bold">4.</span>
+              <span className="text-[#dbfcff] font-bold">4.</span>
               <span>Pair WhatsApp via terminal (link device with phone number)</span>
             </div>
           </div>
@@ -443,10 +443,10 @@ VIZTR_SEND_URL=https://viztr.com/api/messaging/whatsapp/send
       </div>
 
       {/* CUSTOM KEY */}
-      <div className="p-4 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+      <div className="p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Plus className="w-4 h-4 text-[#3ECF8E]" />
+            <Plus className="w-4 h-4 text-[#dbfcff]" />
             <span className="text-sm font-bold text-white font-display">Add Custom Setting</span>
           </div>
         </div>
@@ -456,7 +456,7 @@ VIZTR_SEND_URL=https://viztr.com/api/messaging/whatsapp/send
             <input
               id="custom-key"
               placeholder="e.g. STRIPE_SECRET_KEY"
-              className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+              className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white focus:outline-none focus:border-[#dbfcff]"
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -465,7 +465,7 @@ VIZTR_SEND_URL=https://viztr.com/api/messaging/whatsapp/send
               id="custom-value"
               type="password"
               placeholder="Secret value"
-              className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+              className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white focus:outline-none focus:border-[#dbfcff]"
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -473,7 +473,7 @@ VIZTR_SEND_URL=https://viztr.com/api/messaging/whatsapp/send
             <input
               id="custom-desc"
               placeholder="Optional description"
-              className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+              className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white focus:outline-none focus:border-[#dbfcff]"
             />
           </div>
           <button
@@ -497,7 +497,7 @@ VIZTR_SEND_URL=https://viztr.com/api/messaging/whatsapp/send
               if (descInput) descInput.value = '';
               setError(null);
             }}
-            className="w-full px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs transition-colors cursor-pointer"
+            className="w-full px-4 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs transition-colors cursor-pointer"
           >
             Add
           </button>
@@ -506,13 +506,13 @@ VIZTR_SEND_URL=https://viztr.com/api/messaging/whatsapp/send
 
       {/* EXISTING SETTINGS LIST */}
       {settings.length > 0 && (
-        <div className="p-4 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+        <div className="p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-mono font-bold uppercase text-[#71717A]">Configured Settings</span>
             <button
               type="button"
               onClick={() => navigator.clipboard.writeText(JSON.stringify(settings.map(s => `${s.key}=***`).join('\n')))}
-              className="text-[10px] font-mono text-[#3ECF8E] hover:underline cursor-pointer"
+              className="text-[10px] font-mono text-[#dbfcff] hover:underline cursor-pointer"
             >
               <Copy className="w-3 h-3" /> Copy keys only
             </button>
@@ -520,7 +520,7 @@ VIZTR_SEND_URL=https://viztr.com/api/messaging/whatsapp/send
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-[#27272A]">
+                <tr className="border-b border-[#353436]">
                   <th className="pb-2 text-[#71717A] font-mono">Key</th>
                   <th className="pb-2 text-[#71717A] font-mono">Description</th>
                   <th className="pb-2 text-[#71717A] font-mono">Updated</th>
@@ -529,10 +529,10 @@ VIZTR_SEND_URL=https://viztr.com/api/messaging/whatsapp/send
               </thead>
               <tbody>
                 {settings.map((s) => (
-                  <tr key={s.key} className="border-b border-[#27272A]/50 hover:bg-[#09090B]/30 transition-colors">
+                  <tr key={s.key} className="border-b border-[#353436]/50 hover:bg-[#131314]/30 transition-colors">
                     <td className="py-2 font-mono text-zinc-300 truncate max-w-[200px]">
                       <span className="flex items-center gap-1">
-                        <ShieldCheck className="w-3 h-3 text-[#3ECF8E]/50" />
+                        <ShieldCheck className="w-3 h-3 text-[#dbfcff]/50" />
                         {s.key}
                       </span>
                     </td>
@@ -574,13 +574,13 @@ VIZTR_SEND_URL=https://viztr.com/api/messaging/whatsapp/send
       )}
 
       {/* HELP */}
-      <details className="group p-4 rounded-2xl bg-[#18181B] border border-[#27272A]">
+      <details className="group p-4 rounded-2xl bg-[#201f20] border border-[#353436]">
         <summary className="flex items-center gap-2 cursor-pointer list-none text-sm font-bold text-white font-display">
-          <AlertCircle className="w-4 h-4 text-[#3ECF8E]" />
+          <AlertCircle className="w-4 h-4 text-[#dbfcff]" />
           Security Notes
         </summary>
         <div className="mt-4 space-y-2 text-xs text-[#A1A1AA] font-mono leading-relaxed">
-          <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
+          <div className="p-3 rounded-lg bg-[#131314] border border-[#353436]">
             <p className="mb-1">• Values are stored in Supabase <code>public.settings</code> table with RLS (admin-only access).</p>
             <p className="mb-1">• Keys are marked as encrypted (is_encrypted flag) — actual encryption depends on your Supabase configuration.</p>
             <p className="mb-1">• This bypasses Vercel environment variable limits.</p>

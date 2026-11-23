@@ -283,7 +283,7 @@ export default function ProjectStatsWidget({
         width: 480,
         margin: 2,
         color: {
-          dark: '#09090B',
+          dark: '#131314',
           light: '#FFFFFF',
         },
         errorCorrectionLevel: 'M',
@@ -387,7 +387,7 @@ export default function ProjectStatsWidget({
       doc.rect(margin, margin, contentWidth, 26, 'F');
 
       // Emerald Accent Top Stripe
-      doc.setFillColor(62, 207, 142); // #3ECF8E
+      doc.setFillColor(62, 207, 142); // #dbfcff
       doc.rect(margin, margin, contentWidth, 2, 'F');
 
       // Header Text
@@ -807,11 +807,11 @@ export default function ProjectStatsWidget({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
         <div className="flex items-center gap-2">
           <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#A1A1AA] flex items-center gap-1.5">
-            <TrendingUp className="w-3.5 h-3.5 text-[#3ECF8E]" />
+            <TrendingUp className="w-3.5 h-3.5 text-[#dbfcff]" />
             <span>Project Statistics</span>
           </h3>
           {projectId && (
-            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#09090B] border border-[#27272A] text-[#3ECF8E]">
+            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#131314] border border-[#353436] text-[#dbfcff]">
               {projectId}
             </span>
           )}
@@ -820,7 +820,7 @@ export default function ProjectStatsWidget({
         <div className="flex items-center gap-2">
           {/* REAL-TIME TELEMETRY PILL */}
           <div className="text-[11px] font-mono text-[#71717A] hidden md:flex items-center gap-1.5 mr-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#3ECF8E] animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#dbfcff] animate-pulse" />
             <span>Live telemetry</span>
           </div>
 
@@ -828,10 +828,10 @@ export default function ProjectStatsWidget({
           <button
             id="btn-export-project-stats"
             onClick={() => setExportModalOpen(true)}
-            className="px-3 py-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/60 text-zinc-300 hover:text-[#3ECF8E] text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer group"
+            className="px-3 py-1.5 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff]/60 text-zinc-300 hover:text-[#dbfcff] text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer group"
             title="Export project statistics summary as PDF"
           >
-            <FileDown className="w-3.5 h-3.5 text-[#3ECF8E] transition-transform group-hover:-translate-y-0.5" />
+            <FileDown className="w-3.5 h-3.5 text-[#dbfcff] transition-transform group-hover:-translate-y-0.5" />
             <span>Export Data</span>
           </button>
 
@@ -839,10 +839,10 @@ export default function ProjectStatsWidget({
           <button
             id="btn-qr-code-project-stats"
             onClick={() => handleOpenQrModal()}
-            className="px-3 py-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/60 text-zinc-300 hover:text-[#3ECF8E] text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer group"
+            className="px-3 py-1.5 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff]/60 text-zinc-300 hover:text-[#dbfcff] text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer group"
             title="Generate & display unique QR code for mobile device access"
           >
-            <QrCode className="w-3.5 h-3.5 text-[#3ECF8E] transition-transform group-hover:scale-110" />
+            <QrCode className="w-3.5 h-3.5 text-[#dbfcff] transition-transform group-hover:scale-110" />
             <span>Mobile QR</span>
           </button>
 
@@ -856,13 +856,13 @@ export default function ProjectStatsWidget({
                 }
                 setShareModalOpen(true);
               }}
-              className="px-3 py-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#3ECF8E]/40 hover:border-[#3ECF8E] text-[#3ECF8E] hover:text-[#3ECF8E] text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer group"
+              className="px-3 py-1.5 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#dbfcff]/40 hover:border-[#dbfcff] text-[#dbfcff] hover:text-[#dbfcff] text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer group"
               title="Generate temporary secure link for stakeholders"
             >
-              <Share2 className="w-3.5 h-3.5 text-[#3ECF8E] transition-transform group-hover:scale-110" />
+              <Share2 className="w-3.5 h-3.5 text-[#dbfcff] transition-transform group-hover:scale-110" />
               <span>Share Stats</span>
               {activeLinks.length > 0 && (
-                <span className="px-1.5 py-0.2 rounded-full text-[9px] bg-[#3ECF8E]/20 text-[#3ECF8E] border border-[#3ECF8E]/30 font-bold">
+                <span className="px-1.5 py-0.2 rounded-full text-[9px] bg-[#dbfcff]/20 text-[#dbfcff] border border-[#dbfcff]/30 font-bold">
                   {activeLinks.length}
                 </span>
               )}
@@ -901,7 +901,7 @@ export default function ProjectStatsWidget({
               },
             },
           }}
-          className="hd-card p-4 hover:border-[#3ECF8E]/40 transition-all flex flex-col justify-between space-y-3 group relative"
+          className="hd-card p-4 hover:border-[#dbfcff]/40 transition-all flex flex-col justify-between space-y-3 group relative"
         >
           <div className="flex items-start justify-between">
             <div className="space-y-1">
@@ -925,9 +925,9 @@ export default function ProjectStatsWidget({
                 }}
                 aria-label="View Revision History & recent markups"
                 title="Revision History — chronological list of markups & changes"
-                className="opacity-70 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/60 text-[#A1A1AA] hover:text-[#3ECF8E] cursor-pointer"
+                className="opacity-70 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff]/60 text-[#A1A1AA] hover:text-[#dbfcff] cursor-pointer"
               >
-                <History className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                <History className="w-3.5 h-3.5 text-[#dbfcff]" />
               </button>
 
               <button
@@ -937,20 +937,20 @@ export default function ProjectStatsWidget({
                   handleOpenQrModal();
                 }}
                 title="Scan QR on mobile"
-                className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/50 text-[#71717A] hover:text-[#3ECF8E] cursor-pointer"
+                className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff]/50 text-[#71717A] hover:text-[#dbfcff] cursor-pointer"
               >
                 <QrCode className="w-3.5 h-3.5" />
               </button>
-              <div className="w-9 h-9 rounded-lg bg-[#09090B] border border-[#27272A] group-hover:border-[#3ECF8E]/40 flex items-center justify-center text-[#3ECF8E] transition-colors">
+              <div className="w-9 h-9 rounded-lg bg-[#131314] border border-[#353436] group-hover:border-[#dbfcff]/40 flex items-center justify-center text-[#dbfcff] transition-colors">
                 <Clock className="w-4 h-4" />
               </div>
             </div>
           </div>
 
-          <div className="space-y-1.5 pt-1 border-t border-[#27272A]/70">
+          <div className="space-y-1.5 pt-1 border-t border-[#353436]/70">
             <div className="flex items-center justify-between text-[10px] font-mono">
               <span className="text-[#71717A]">Est. Budget: {stats.totalEstimatedHours}h</span>
-              <span className="text-[#3ECF8E] font-bold">{hoursPercentage}% used</span>
+              <span className="text-[#dbfcff] font-bold">{hoursPercentage}% used</span>
             </div>
             <div
               role="progressbar"
@@ -958,10 +958,10 @@ export default function ProjectStatsWidget({
               aria-valuemin={0}
               aria-valuemax={100}
               aria-label={`Hours budget utilization: ${hoursPercentage}%`}
-              className="w-full h-1.5 rounded-full bg-[#09090B] overflow-hidden"
+              className="w-full h-1.5 rounded-full bg-[#131314] overflow-hidden"
             >
               <div
-                className="h-full bg-[#3ECF8E] rounded-full transition-all duration-500"
+                className="h-full bg-[#dbfcff] rounded-full transition-all duration-500"
                 style={{ width: `${hoursPercentage}%` }}
               />
             </div>
@@ -982,7 +982,7 @@ export default function ProjectStatsWidget({
               },
             },
           }}
-          className="hd-card p-4 hover:border-[#3ECF8E]/40 transition-all flex flex-col justify-between space-y-3 group relative"
+          className="hd-card p-4 hover:border-[#dbfcff]/40 transition-all flex flex-col justify-between space-y-3 group relative"
         >
           <div className="flex items-start justify-between">
             <div className="space-y-1">
@@ -1008,9 +1008,9 @@ export default function ProjectStatsWidget({
                 }}
                 aria-label="View Revision History & recent markups"
                 title="Revision History — chronological list of markups & changes"
-                className="opacity-70 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/60 text-[#A1A1AA] hover:text-[#3ECF8E] cursor-pointer"
+                className="opacity-70 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff]/60 text-[#A1A1AA] hover:text-[#dbfcff] cursor-pointer"
               >
-                <History className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                <History className="w-3.5 h-3.5 text-[#dbfcff]" />
               </button>
 
               <button
@@ -1021,22 +1021,22 @@ export default function ProjectStatsWidget({
                 }}
                 aria-label="Scan QR on mobile for asset approval stats"
                 title="Scan QR on mobile"
-                className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/50 text-[#71717A] hover:text-[#3ECF8E] cursor-pointer"
+                className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff]/50 text-[#71717A] hover:text-[#dbfcff] cursor-pointer"
               >
                 <QrCode className="w-3.5 h-3.5" />
               </button>
-              <div className="w-9 h-9 rounded-lg bg-[#09090B] border border-[#27272A] group-hover:border-[#3ECF8E]/40 flex items-center justify-center text-[#3ECF8E] transition-colors">
+              <div className="w-9 h-9 rounded-lg bg-[#131314] border border-[#353436] group-hover:border-[#dbfcff]/40 flex items-center justify-center text-[#dbfcff] transition-colors">
                 <CheckCircle2 className="w-4 h-4" />
               </div>
             </div>
           </div>
 
-          <div className="space-y-1.5 pt-1 border-t border-[#27272A]/70">
+          <div className="space-y-1.5 pt-1 border-t border-[#353436]/70">
             <div className="flex items-center justify-between text-[10px] font-mono">
               <span className="text-[#71717A]">
                 {stats.totalAssets - stats.assetsApproved} pending signoff
               </span>
-              <span className="text-[#3ECF8E] font-bold">{assetsPercentage}% done</span>
+              <span className="text-[#dbfcff] font-bold">{assetsPercentage}% done</span>
             </div>
             <div
               role="progressbar"
@@ -1044,10 +1044,10 @@ export default function ProjectStatsWidget({
               aria-valuemin={0}
               aria-valuemax={100}
               aria-label={`Asset completion rate: ${assetsPercentage}%`}
-              className="w-full h-1.5 rounded-full bg-[#09090B] overflow-hidden"
+              className="w-full h-1.5 rounded-full bg-[#131314] overflow-hidden"
             >
               <div
-                className="h-full bg-[#3ECF8E] rounded-full transition-all duration-500"
+                className="h-full bg-[#dbfcff] rounded-full transition-all duration-500"
                 style={{ width: `${assetsPercentage}%` }}
               />
             </div>
@@ -1068,7 +1068,7 @@ export default function ProjectStatsWidget({
               },
             },
           }}
-          className="hd-card p-4 hover:border-[#3ECF8E]/40 transition-all flex flex-col justify-between space-y-3 group relative cursor-pointer"
+          className="hd-card p-4 hover:border-[#dbfcff]/40 transition-all flex flex-col justify-between space-y-3 group relative cursor-pointer"
           onClick={() => setRevisionModalOpen(true)}
           title="Click to view chronological Revision History & recent markups"
         >
@@ -1078,7 +1078,7 @@ export default function ProjectStatsWidget({
                 <span className="text-[11px] font-mono uppercase tracking-wider text-[#A1A1AA]">
                   Pending Revisions
                 </span>
-                <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E]">
+                <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-[#dbfcff]/10 border border-[#dbfcff]/30 text-[#dbfcff]">
                   History
                 </span>
               </div>
@@ -1101,7 +1101,7 @@ export default function ProjectStatsWidget({
                 }}
                 aria-label="View Revision History & recent markups"
                 title="Revision History — chronological list of markups & changes"
-                className="p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E] text-[#3ECF8E] cursor-pointer flex items-center gap-1 text-[10px] font-mono shadow-sm"
+                className="p-1.5 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff] text-[#dbfcff] cursor-pointer flex items-center gap-1 text-[10px] font-mono shadow-sm"
               >
                 <History className="w-3.5 h-3.5 animate-pulse" />
                 <span className="hidden xl:inline font-bold">Log</span>
@@ -1115,7 +1115,7 @@ export default function ProjectStatsWidget({
                 }}
                 aria-label="Scan QR on mobile for pending revisions"
                 title="Scan QR on mobile"
-                className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/50 text-[#71717A] hover:text-[#3ECF8E] cursor-pointer"
+                className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff]/50 text-[#71717A] hover:text-[#dbfcff] cursor-pointer"
               >
                 <QrCode className="w-3.5 h-3.5" />
               </button>
@@ -1123,7 +1123,7 @@ export default function ProjectStatsWidget({
                 className={`w-9 h-9 rounded-lg border flex items-center justify-center transition-colors ${
                   stats.pendingRevisions > 0
                     ? 'bg-amber-950/40 border-amber-800/60 text-amber-400 group-hover:border-amber-500'
-                    : 'bg-[#09090B] border-[#27272A] text-[#3ECF8E]'
+                    : 'bg-[#131314] border-[#353436] text-[#dbfcff]'
                 }`}
               >
                 {stats.pendingRevisions > 0 ? (
@@ -1135,7 +1135,7 @@ export default function ProjectStatsWidget({
             </div>
           </div>
 
-          <div className="pt-1 border-t border-[#27272A]/70 flex items-center justify-between text-[10px] font-mono">
+          <div className="pt-1 border-t border-[#353436]/70 flex items-center justify-between text-[10px] font-mono">
             <span className="text-[#71717A] truncate max-w-[140px]" title={stats.revisionsSummary}>
               {stats.revisionsSummary || (stats.pendingRevisions > 0 ? 'In active studio queue' : 'Zero blockers')}
             </span>
@@ -1167,7 +1167,7 @@ export default function ProjectStatsWidget({
               },
             },
           }}
-          className="hd-card p-4 hover:border-[#3ECF8E]/40 transition-all flex flex-col justify-between space-y-3 group relative"
+          className="hd-card p-4 hover:border-[#dbfcff]/40 transition-all flex flex-col justify-between space-y-3 group relative"
         >
           <div className="flex items-start justify-between">
             <div className="space-y-1 min-w-0">
@@ -1190,9 +1190,9 @@ export default function ProjectStatsWidget({
                 }}
                 aria-label="View Revision History & recent markups"
                 title="Revision History — chronological list of markups & changes"
-                className="opacity-70 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/60 text-[#A1A1AA] hover:text-[#3ECF8E] cursor-pointer"
+                className="opacity-70 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff]/60 text-[#A1A1AA] hover:text-[#dbfcff] cursor-pointer"
               >
-                <History className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                <History className="w-3.5 h-3.5 text-[#dbfcff]" />
               </button>
 
               <button
@@ -1203,24 +1203,24 @@ export default function ProjectStatsWidget({
                 }}
                 aria-label="Scan QR on mobile for current milestone status"
                 title="Scan QR on mobile"
-                className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/50 text-[#71717A] hover:text-[#3ECF8E] cursor-pointer"
+                className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff]/50 text-[#71717A] hover:text-[#dbfcff] cursor-pointer"
               >
                 <QrCode className="w-3.5 h-3.5" />
               </button>
-              <div className="w-9 h-9 rounded-lg bg-[#09090B] border border-[#27272A] group-hover:border-[#3ECF8E]/40 flex items-center justify-center text-[#3ECF8E] transition-colors shrink-0">
+              <div className="w-9 h-9 rounded-lg bg-[#131314] border border-[#353436] group-hover:border-[#dbfcff]/40 flex items-center justify-center text-[#dbfcff] transition-colors shrink-0">
                 <Sparkles className="w-4 h-4" />
               </div>
             </div>
           </div>
 
-          <div className="pt-1 border-t border-[#27272A]/70 flex items-center justify-between text-[10px] font-mono">
+          <div className="pt-1 border-t border-[#353436]/70 flex items-center justify-between text-[10px] font-mono">
             <span className="text-[#A1A1AA] truncate font-medium max-w-[130px]" title={stats.nextMilestone}>
               {stats.nextMilestone}
             </span>
             <span
               role="status"
               aria-label={`Milestone estimated completion time: ${stats.milestoneEta}`}
-              className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#09090B] border border-[#27272A] text-[#3ECF8E] shrink-0"
+              className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#131314] border border-[#353436] text-[#dbfcff] shrink-0"
             >
               {stats.milestoneEta}
             </span>
@@ -1241,14 +1241,14 @@ export default function ProjectStatsWidget({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: 15 }}
               transition={{ duration: 0.2 }}
-              className="hd-card w-full max-w-2xl bg-[#121215] border-[#27272A] shadow-2xl p-6 space-y-6 text-[#FAFAFA] font-sans"
+              className="hd-card w-full max-w-2xl bg-[#131314] border-[#353436] shadow-2xl p-6 space-y-6 text-[#e5e2e3] font-sans"
               onClick={(e) => e.stopPropagation()}
             >
               {/* MODAL HEADER */}
-              <div className="flex items-start justify-between gap-4 border-b border-[#27272A] pb-4">
+              <div className="flex items-start justify-between gap-4 border-b border-[#353436] pb-4">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] text-[10px] font-mono font-bold uppercase tracking-wider">
+                    <span className="px-2 py-0.5 rounded bg-[#dbfcff]/10 border border-[#dbfcff]/30 text-[#dbfcff] text-[10px] font-mono font-bold uppercase tracking-wider">
                       Stakeholder Telemetry Access
                     </span>
                     <span className="text-xs font-mono text-[#71717A]">• {projectId}</span>
@@ -1263,7 +1263,7 @@ export default function ProjectStatsWidget({
 
                 <button
                   onClick={() => setShareModalOpen(false)}
-                  className="p-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg bg-[#201f20] hover:bg-[#353436] text-zinc-400 hover:text-white transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -1275,7 +1275,7 @@ export default function ProjectStatsWidget({
                   {/* EXPIRATION DURATION SELECTOR */}
                   <div className="space-y-1.5">
                     <label className="text-[11px] text-[#A1A1AA] uppercase tracking-wider font-bold flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                      <Calendar className="w-3.5 h-3.5 text-[#dbfcff]" />
                       <span>Link Expiration Window</span>
                     </label>
                     <div className="grid grid-cols-4 gap-1.5">
@@ -1286,8 +1286,8 @@ export default function ProjectStatsWidget({
                           onClick={() => setDurationOption(dur)}
                           className={`py-2 rounded-lg border text-center font-bold text-xs transition-all cursor-pointer ${
                             durationOption === dur
-                              ? 'bg-[#3ECF8E] text-black border-[#3ECF8E] shadow-sm'
-                              : 'bg-[#18181B] text-[#A1A1AA] border-[#27272A] hover:border-zinc-500'
+                              ? 'bg-[#dbfcff] text-black border-[#dbfcff] shadow-sm'
+                              : 'bg-[#201f20] text-[#A1A1AA] border-[#353436] hover:border-zinc-500'
                           }`}
                         >
                           {dur.toUpperCase()}
@@ -1299,7 +1299,7 @@ export default function ProjectStatsWidget({
                   {/* RECIPIENT LABEL */}
                   <div className="space-y-1.5">
                     <label className="text-[11px] text-[#A1A1AA] uppercase tracking-wider font-bold flex items-center gap-1.5">
-                      <Mail className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                      <Mail className="w-3.5 h-3.5 text-[#dbfcff]" />
                       <span>Recipient / Organization</span>
                     </label>
                     <input
@@ -1307,72 +1307,72 @@ export default function ProjectStatsWidget({
                       value={recipientTag}
                       onChange={(e) => setRecipientTag(e.target.value)}
                       placeholder="e.g. Foster & Partners Executive Board"
-                      className="w-full px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#201f20] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
                     />
                   </div>
                 </div>
 
                 {/* SCOPES AND SECURITY */}
-                <div className="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A] space-y-3">
+                <div className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] space-y-3">
                   <div className="text-[11px] text-[#A1A1AA] uppercase tracking-wider font-bold flex items-center justify-between">
                     <span className="flex items-center gap-1.5">
-                      <ShieldCheck className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#dbfcff]" />
                       <span>Access Permissions & Security</span>
                     </span>
                     <span className="text-[10px] text-[#71717A] font-normal">Read-Only Enforced</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                    <label className="flex items-center gap-2 p-2 rounded-lg bg-[#18181B] border border-[#27272A] cursor-pointer hover:border-zinc-600">
+                    <label className="flex items-center gap-2 p-2 rounded-lg bg-[#201f20] border border-[#353436] cursor-pointer hover:border-zinc-600">
                       <input
                         type="checkbox"
                         checked={scopeStats}
                         onChange={(e) => setScopeStats(e.target.checked)}
-                        className="rounded border-[#27272A] text-[#3ECF8E] focus:ring-[#3ECF8E] accent-[#3ECF8E]"
+                        className="rounded border-[#353436] text-[#dbfcff] focus:ring-[#dbfcff] accent-[#dbfcff]"
                       />
                       <span className="text-[11px] text-white">Live Stats Telemetry</span>
                     </label>
 
-                    <label className="flex items-center gap-2 p-2 rounded-lg bg-[#18181B] border border-[#27272A] cursor-pointer hover:border-zinc-600">
+                    <label className="flex items-center gap-2 p-2 rounded-lg bg-[#201f20] border border-[#353436] cursor-pointer hover:border-zinc-600">
                       <input
                         type="checkbox"
                         checked={scopeRoadmap}
                         onChange={(e) => setScopeRoadmap(e.target.checked)}
-                        className="rounded border-[#27272A] text-[#3ECF8E] focus:ring-[#3ECF8E] accent-[#3ECF8E]"
+                        className="rounded border-[#353436] text-[#dbfcff] focus:ring-[#dbfcff] accent-[#dbfcff]"
                       />
                       <span className="text-[11px] text-white">7-Stage Roadmap</span>
                     </label>
 
-                    <label className="flex items-center gap-2 p-2 rounded-lg bg-[#18181B] border border-[#27272A] cursor-pointer hover:border-zinc-600">
+                    <label className="flex items-center gap-2 p-2 rounded-lg bg-[#201f20] border border-[#353436] cursor-pointer hover:border-zinc-600">
                       <input
                         type="checkbox"
                         checked={scopeDocs}
                         onChange={(e) => setScopeDocs(e.target.checked)}
-                        className="rounded border-[#27272A] text-[#3ECF8E] focus:ring-[#3ECF8E] accent-[#3ECF8E]"
+                        className="rounded border-[#353436] text-[#dbfcff] focus:ring-[#dbfcff] accent-[#dbfcff]"
                       />
                       <span className="text-[11px] text-white">Deliverable Stills</span>
                     </label>
                   </div>
 
                   {/* PIN PROTECTION ROW */}
-                  <div className="pt-2 border-t border-[#27272A]/70 flex flex-wrap items-center justify-between gap-3">
+                  <div className="pt-2 border-t border-[#353436]/70 flex flex-wrap items-center justify-between gap-3">
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={requirePin}
                         onChange={(e) => setRequirePin(e.target.checked)}
-                        className="rounded border-[#27272A] text-[#3ECF8E] focus:ring-[#3ECF8E] accent-[#3ECF8E]"
+                        className="rounded border-[#353436] text-[#dbfcff] focus:ring-[#dbfcff] accent-[#dbfcff]"
                       />
-                      <span className="text-[11px] text-[#FAFAFA] flex items-center gap-1">
-                        <Lock className="w-3 h-3 text-[#3ECF8E]" />
+                      <span className="text-[11px] text-[#e5e2e3] flex items-center gap-1">
+                        <Lock className="w-3 h-3 text-[#dbfcff]" />
                         <span>Require 4-Digit Access PIN</span>
                       </span>
                     </label>
 
                     {requirePin && (
                       <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1 bg-[#18181B] border border-[#27272A] rounded-lg px-2 py-1">
-                          <Key className="w-3 h-3 text-[#3ECF8E]" />
+                        <div className="flex items-center gap-1 bg-[#201f20] border border-[#353436] rounded-lg px-2 py-1">
+                          <Key className="w-3 h-3 text-[#dbfcff]" />
                           <input
                             type="text"
                             maxLength={4}
@@ -1384,7 +1384,7 @@ export default function ProjectStatsWidget({
                         <button
                           type="button"
                           onClick={generateRandomPin}
-                          className="px-2 py-1 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[10px] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                          className="px-2 py-1 rounded bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[10px] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
                         >
                           Randomize
                         </button>
@@ -1396,7 +1396,7 @@ export default function ProjectStatsWidget({
                 <div className="flex justify-end">
                   <button
                     type="submit"
-                    className="px-4 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shadow-lg flex items-center gap-1.5"
+                    className="px-4 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shadow-lg flex items-center gap-1.5"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>Generate New Secure Link</span>
@@ -1406,15 +1406,15 @@ export default function ProjectStatsWidget({
 
               {/* CURRENT GENERATED LINK DISPLAY BOX */}
               {currentGeneratedLink && (
-                <div className="p-4 rounded-xl bg-[#09090B] border border-[#3ECF8E]/40 space-y-3 font-mono">
+                <div className="p-4 rounded-xl bg-[#131314] border border-[#dbfcff]/40 space-y-3 font-mono">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[#3ECF8E] animate-pulse" />
+                      <span className="w-2 h-2 rounded-full bg-[#dbfcff] animate-pulse" />
                       <span className="text-xs font-bold text-white">
                         Active Stakeholder URL ({currentGeneratedLink.recipientLabel})
                       </span>
                     </div>
-                    <span className="text-[10px] text-[#3ECF8E] bg-[#3ECF8E]/10 px-2 py-0.5 rounded border border-[#3ECF8E]/30 font-bold">
+                    <span className="text-[10px] text-[#dbfcff] bg-[#dbfcff]/10 px-2 py-0.5 rounded border border-[#dbfcff]/30 font-bold">
                       {formatTimeLeft(currentGeneratedLink.expiresAt)}
                     </span>
                   </div>
@@ -1425,11 +1425,11 @@ export default function ProjectStatsWidget({
                       type="text"
                       readOnly
                       value={currentGeneratedLink.url}
-                      className="flex-1 px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-xs text-[#FAFAFA] font-mono focus:outline-none select-all"
+                      className="flex-1 px-3 py-2 rounded-lg bg-[#201f20] border border-[#353436] text-xs text-[#e5e2e3] font-mono focus:outline-none select-all"
                     />
                     <button
                       onClick={() => handleCopyLink(currentGeneratedLink.url)}
-                      className="px-3.5 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                      className="px-3.5 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
                     >
                       {copiedLink ? (
                         <>
@@ -1446,7 +1446,7 @@ export default function ProjectStatsWidget({
                   </div>
 
                   {/* ACTION QUICK LAUNCHERS */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#27272A] text-xs">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#353436] text-xs">
                     <div className="flex items-center gap-3 text-[11px] text-[#A1A1AA]">
                       {currentGeneratedLink.pinRequired && (
                         <span className="flex items-center gap-1 text-amber-400">
@@ -1461,17 +1461,17 @@ export default function ProjectStatsWidget({
                       <button
                         type="button"
                         onClick={() => setShowQrCode(!showQrCode)}
-                        className="px-2.5 py-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white flex items-center gap-1 text-[11px] transition-colors cursor-pointer"
+                        className="px-2.5 py-1 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white flex items-center gap-1 text-[11px] transition-colors cursor-pointer"
                       >
-                        <QrCode className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                        <QrCode className="w-3.5 h-3.5 text-[#dbfcff]" />
                         <span>{showQrCode ? 'Hide QR' : 'Show QR'}</span>
                       </button>
 
                       <a
                         href={`mailto:?subject=Project Statistics Review: ${projectName}&body=Here is the temporary secure link to review real-time statistics for ${projectName}:%0D%0A%0D%0A${encodeURIComponent(currentGeneratedLink.url)}${currentGeneratedLink.pinRequired ? `%0D%0A%0D%0AAccess PIN: ${currentGeneratedLink.pinCode}` : ''}%0D%0A%0D%0AThis link will expire in ${currentGeneratedLink.durationLabel}.`}
-                        className="px-2.5 py-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white flex items-center gap-1 text-[11px] transition-colors cursor-pointer"
+                        className="px-2.5 py-1 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white flex items-center gap-1 text-[11px] transition-colors cursor-pointer"
                       >
-                        <Mail className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                        <Mail className="w-3.5 h-3.5 text-[#dbfcff]" />
                         <span>Email</span>
                       </a>
 
@@ -1479,7 +1479,7 @@ export default function ProjectStatsWidget({
                         href={currentGeneratedLink.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="px-2.5 py-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#3ECF8E] flex items-center gap-1 text-[11px] transition-colors"
+                        className="px-2.5 py-1 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#dbfcff] flex items-center gap-1 text-[11px] transition-colors"
                       >
                         <span>Test Link</span>
                         <ExternalLink className="w-3 h-3" />
@@ -1527,7 +1527,7 @@ export default function ProjectStatsWidget({
                         }}
                         className="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-black text-white text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                       >
-                        <Download className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                        <Download className="w-3.5 h-3.5 text-[#dbfcff]" />
                         <span>Download QR Image</span>
                       </button>
                     </div>
@@ -1558,7 +1558,7 @@ export default function ProjectStatsWidget({
                       return (
                         <div
                           key={link.id}
-                          className="p-2.5 rounded-xl bg-[#18181B] border border-[#27272A] flex items-center justify-between gap-3"
+                          className="p-2.5 rounded-xl bg-[#201f20] border border-[#353436] flex items-center justify-between gap-3"
                         >
                           <div className="min-w-0 space-y-0.5">
                             <div className="flex items-center gap-2">
@@ -1591,14 +1591,14 @@ export default function ProjectStatsWidget({
                                 setCurrentGeneratedLink(link);
                                 handleCopyLink(link.url);
                               }}
-                              className="p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] text-[#3ECF8E] transition-colors cursor-pointer"
+                              className="p-1.5 rounded-lg bg-[#131314] hover:bg-[#353436] text-[#dbfcff] transition-colors cursor-pointer"
                               title="Copy URL"
                             >
                               <Copy className="w-3.5 h-3.5" />
                             </button>
                             <button
                               onClick={() => handleRevokeLink(link.id)}
-                              className="p-1.5 rounded-lg bg-[#09090B] hover:bg-rose-950 text-zinc-400 hover:text-rose-400 transition-colors cursor-pointer"
+                              className="p-1.5 rounded-lg bg-[#131314] hover:bg-rose-950 text-zinc-400 hover:text-rose-400 transition-colors cursor-pointer"
                               title="Revoke Link"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
@@ -1628,19 +1628,19 @@ export default function ProjectStatsWidget({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ duration: 0.2 }}
-              className="w-full max-w-lg bg-[#0E1015] border border-[#27272A] rounded-2xl shadow-2xl overflow-hidden my-auto relative"
+              className="w-full max-w-lg bg-[#0E1015] border border-[#353436] rounded-2xl shadow-2xl overflow-hidden my-auto relative"
               onClick={(e) => e.stopPropagation()}
             >
               {/* TOP HEADER */}
-              <div className="p-5 border-b border-[#27272A] flex items-start justify-between bg-[#14171F]">
+              <div className="p-5 border-b border-[#353436] flex items-start justify-between bg-[#14171F]">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 flex items-center justify-center text-[#3ECF8E]">
+                  <div className="w-10 h-10 rounded-xl bg-[#dbfcff]/10 border border-[#dbfcff]/30 flex items-center justify-center text-[#dbfcff]">
                     <FileDown className="w-5 h-5" />
                   </div>
                   <div>
                     <h3 className="font-display font-bold text-base text-white flex items-center gap-2">
                       <span>Export Project Summary</span>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#09090B] text-[#3ECF8E] border border-[#3ECF8E]/30">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#131314] text-[#dbfcff] border border-[#dbfcff]/30">
                         {projectId || 'VIZTR-882'}
                       </span>
                     </h3>
@@ -1653,7 +1653,7 @@ export default function ProjectStatsWidget({
                 <button
                   id="btn-close-export-modal"
                   onClick={() => setExportModalOpen(false)}
-                  className="p-1.5 rounded-lg text-[#71717A] hover:text-white hover:bg-[#27272A] transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg text-[#71717A] hover:text-white hover:bg-[#353436] transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -1672,12 +1672,12 @@ export default function ProjectStatsWidget({
                       onClick={() => setExportFormat('pdf')}
                       className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2 ${
                         exportFormat === 'pdf'
-                          ? 'bg-[#3ECF8E]/10 border-[#3ECF8E] text-white shadow-sm'
-                          : 'bg-[#18181B] border-[#27272A] text-[#A1A1AA] hover:border-[#3ECF8E]/40 hover:text-zinc-200'
+                          ? 'bg-[#dbfcff]/10 border-[#dbfcff] text-white shadow-sm'
+                          : 'bg-[#201f20] border-[#353436] text-[#A1A1AA] hover:border-[#dbfcff]/40 hover:text-zinc-200'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <FileText className={`w-4 h-4 ${exportFormat === 'pdf' ? 'text-[#3ECF8E]' : 'text-zinc-400'}`} />
+                        <FileText className={`w-4 h-4 ${exportFormat === 'pdf' ? 'text-[#dbfcff]' : 'text-zinc-400'}`} />
                         <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
                           Recommended
                         </span>
@@ -1694,11 +1694,11 @@ export default function ProjectStatsWidget({
                       onClick={() => setExportFormat('json')}
                       className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2 ${
                         exportFormat === 'json'
-                          ? 'bg-[#3ECF8E]/10 border-[#3ECF8E] text-white shadow-sm'
-                          : 'bg-[#18181B] border-[#27272A] text-[#A1A1AA] hover:border-[#3ECF8E]/40 hover:text-zinc-200'
+                          ? 'bg-[#dbfcff]/10 border-[#dbfcff] text-white shadow-sm'
+                          : 'bg-[#201f20] border-[#353436] text-[#A1A1AA] hover:border-[#dbfcff]/40 hover:text-zinc-200'
                       }`}
                     >
-                      <Code className={`w-4 h-4 ${exportFormat === 'json' ? 'text-[#3ECF8E]' : 'text-zinc-400'}`} />
+                      <Code className={`w-4 h-4 ${exportFormat === 'json' ? 'text-[#dbfcff]' : 'text-zinc-400'}`} />
                       <div>
                         <div className="text-xs font-bold font-mono">JSON Dataset</div>
                         <div className="text-[10px] text-[#71717A]">Raw Telemetry</div>
@@ -1711,11 +1711,11 @@ export default function ProjectStatsWidget({
                       onClick={() => setExportFormat('csv')}
                       className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2 ${
                         exportFormat === 'csv'
-                          ? 'bg-[#3ECF8E]/10 border-[#3ECF8E] text-white shadow-sm'
-                          : 'bg-[#18181B] border-[#27272A] text-[#A1A1AA] hover:border-[#3ECF8E]/40 hover:text-zinc-200'
+                          ? 'bg-[#dbfcff]/10 border-[#dbfcff] text-white shadow-sm'
+                          : 'bg-[#201f20] border-[#353436] text-[#A1A1AA] hover:border-[#dbfcff]/40 hover:text-zinc-200'
                       }`}
                     >
-                      <FileSpreadsheet className={`w-4 h-4 ${exportFormat === 'csv' ? 'text-[#3ECF8E]' : 'text-zinc-400'}`} />
+                      <FileSpreadsheet className={`w-4 h-4 ${exportFormat === 'csv' ? 'text-[#dbfcff]' : 'text-zinc-400'}`} />
                       <div>
                         <div className="text-xs font-bold font-mono">CSV Sheet</div>
                         <div className="text-[10px] text-[#71717A]">Spreadsheet Table</div>
@@ -1737,7 +1737,7 @@ export default function ProjectStatsWidget({
                         value={pdfClientNote}
                         onChange={(e) => setPdfClientNote(e.target.value)}
                         placeholder="e.g., Foster & Partners Review Board"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#18181B] border border-[#27272A] focus:border-[#3ECF8E] text-sm text-white focus:outline-none transition-colors"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#201f20] border border-[#353436] focus:border-[#dbfcff] text-sm text-white focus:outline-none transition-colors"
                       />
                     </div>
 
@@ -1746,12 +1746,12 @@ export default function ProjectStatsWidget({
                         Report Sections & Inclusions
                       </label>
                       <div className="space-y-2">
-                        <label className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#18181B] border border-[#27272A] cursor-pointer hover:border-[#3ECF8E]/40 transition-colors">
+                        <label className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#201f20] border border-[#353436] cursor-pointer hover:border-[#dbfcff]/40 transition-colors">
                           <input
                             type="checkbox"
                             checked={pdfIncludeRoadmap}
                             onChange={(e) => setPdfIncludeRoadmap(e.target.checked)}
-                            className="w-4 h-4 rounded text-[#3ECF8E] accent-[#3ECF8E] bg-[#09090B] border-[#27272A]"
+                            className="w-4 h-4 rounded text-[#dbfcff] accent-[#dbfcff] bg-[#131314] border-[#353436]"
                           />
                           <div className="text-xs">
                             <span className="text-white font-bold block">7-Stage Production Pipeline Audit</span>
@@ -1759,12 +1759,12 @@ export default function ProjectStatsWidget({
                           </div>
                         </label>
 
-                        <label className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#18181B] border border-[#27272A] cursor-pointer hover:border-[#3ECF8E]/40 transition-colors">
+                        <label className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#201f20] border border-[#353436] cursor-pointer hover:border-[#dbfcff]/40 transition-colors">
                           <input
                             type="checkbox"
                             checked={pdfIncludeRevisions}
                             onChange={(e) => setPdfIncludeRevisions(e.target.checked)}
-                            className="w-4 h-4 rounded text-[#3ECF8E] accent-[#3ECF8E] bg-[#09090B] border-[#27272A]"
+                            className="w-4 h-4 rounded text-[#dbfcff] accent-[#dbfcff] bg-[#131314] border-[#353436]"
                           />
                           <div className="text-xs">
                             <span className="text-white font-bold block">Revision Ledger & Quality Assurance Notes</span>
@@ -1775,20 +1775,20 @@ export default function ProjectStatsWidget({
                     </div>
 
                     {/* PDF PREVIEW SUMMARY BOX */}
-                    <div className="p-3.5 rounded-xl bg-[#14171F] border border-[#27272A] space-y-2">
+                    <div className="p-3.5 rounded-xl bg-[#14171F] border border-[#353436] space-y-2">
                       <div className="flex items-center justify-between text-[11px] font-mono">
                         <span className="text-[#A1A1AA] flex items-center gap-1.5">
-                          <ShieldCheck className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                          <ShieldCheck className="w-3.5 h-3.5 text-[#dbfcff]" />
                           <span>PDF Output Specification</span>
                         </span>
-                        <span className="text-[#3ECF8E] font-bold">A4 Vector Document</span>
+                        <span className="text-[#dbfcff] font-bold">A4 Vector Document</span>
                       </div>
                       <div className="grid grid-cols-2 gap-2 text-[11px] text-[#A1A1AA]">
-                        <div className="p-2 rounded-lg bg-[#09090B] border border-[#27272A]">
+                        <div className="p-2 rounded-lg bg-[#131314] border border-[#353436]">
                           <span className="text-[#71717A] block text-[9px] font-mono uppercase">Hours Utilization</span>
                           <span className="text-white font-bold font-mono">{stats.hoursSpent.toFixed(1)} / {stats.totalEstimatedHours} hrs ({hoursPercentage}%)</span>
                         </div>
-                        <div className="p-2 rounded-lg bg-[#09090B] border border-[#27272A]">
+                        <div className="p-2 rounded-lg bg-[#131314] border border-[#353436]">
                           <span className="text-[#71717A] block text-[9px] font-mono uppercase">Approval Progress</span>
                           <span className="text-white font-bold font-mono">{stats.assetsApproved} / {stats.totalAssets} assets ({assetsPercentage}%)</span>
                         </div>
@@ -1803,7 +1803,7 @@ export default function ProjectStatsWidget({
                     <span className="text-[11px] font-mono text-[#A1A1AA] uppercase tracking-wider block font-bold">
                       JSON Structure Payload
                     </span>
-                    <pre className="p-3 rounded-xl bg-[#09090B] border border-[#27272A] text-[11px] font-mono text-[#3ECF8E] overflow-x-auto max-h-48 text-left">
+                    <pre className="p-3 rounded-xl bg-[#131314] border border-[#353436] text-[11px] font-mono text-[#dbfcff] overflow-x-auto max-h-48 text-left">
 {JSON.stringify(
   {
     projectId: projectId || 'VIZTR-882',
@@ -1830,7 +1830,7 @@ export default function ProjectStatsWidget({
                     <span className="text-[11px] font-mono text-[#A1A1AA] uppercase tracking-wider block font-bold">
                       Tabular CSV Schema
                     </span>
-                    <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A] text-xs font-mono text-zinc-300 space-y-1">
+                    <div className="p-3 rounded-xl bg-[#131314] border border-[#353436] text-xs font-mono text-zinc-300 space-y-1">
                       <div className="text-[#71717A]">Category, Metric, Value, Details</div>
                       <div className="text-white">Telemetry, Hours Spent, {stats.hoursSpent.toFixed(1)}, Hours</div>
                       <div className="text-white">Telemetry, Assets Approved, {stats.assetsApproved}/{stats.totalAssets}, Approved</div>
@@ -1841,11 +1841,11 @@ export default function ProjectStatsWidget({
               </div>
 
               {/* FOOTER ACTIONS */}
-              <div className="p-5 border-t border-[#27272A] bg-[#14171F] flex items-center justify-between gap-3">
+              <div className="p-5 border-t border-[#353436] bg-[#14171F] flex items-center justify-between gap-3">
                 <button
                   type="button"
                   onClick={() => setExportModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-zinc-400 hover:text-white text-xs font-mono font-bold transition-colors cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-[#201f20] hover:bg-[#353436] text-zinc-400 hover:text-white text-xs font-mono font-bold transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -1856,7 +1856,7 @@ export default function ProjectStatsWidget({
                     id="btn-download-pdf-summary"
                     onClick={handleExportPdf}
                     disabled={exportingPdf}
-                    className="px-5 py-2.5 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer shadow-lg disabled:opacity-50"
+                    className="px-5 py-2.5 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer shadow-lg disabled:opacity-50"
                   >
                     {exportingPdf ? (
                       <span className="inline-block w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
@@ -1872,7 +1872,7 @@ export default function ProjectStatsWidget({
                     type="button"
                     id="btn-download-json-summary"
                     onClick={handleExportJson}
-                    className="px-5 py-2.5 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer shadow-lg"
+                    className="px-5 py-2.5 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer shadow-lg"
                   >
                     <Download className="w-4 h-4" />
                     <span>Download JSON File</span>
@@ -1884,7 +1884,7 @@ export default function ProjectStatsWidget({
                     type="button"
                     id="btn-download-csv-summary"
                     onClick={handleExportCsv}
-                    className="px-5 py-2.5 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer shadow-lg"
+                    className="px-5 py-2.5 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer shadow-lg"
                   >
                     <Download className="w-4 h-4" />
                     <span>Download CSV Sheet</span>
@@ -1910,13 +1910,13 @@ export default function ProjectStatsWidget({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="w-full max-w-lg rounded-2xl bg-[#0D0F14] border border-[#3ECF8E]/40 text-white shadow-2xl shadow-black/80 overflow-hidden flex flex-col my-8"
+              className="w-full max-w-lg rounded-2xl bg-[#0D0F14] border border-[#dbfcff]/40 text-white shadow-2xl shadow-black/80 overflow-hidden flex flex-col my-8"
               onClick={(e) => e.stopPropagation()}
             >
               {/* MODAL HEADER */}
-              <div className="p-5 border-b border-[#27272A] bg-[#14171F] flex items-center justify-between">
+              <div className="p-5 border-b border-[#353436] bg-[#14171F] flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#09090B] border border-[#3ECF8E]/40 flex items-center justify-center text-[#3ECF8E] shadow-sm">
+                  <div className="w-10 h-10 rounded-xl bg-[#131314] border border-[#dbfcff]/40 flex items-center justify-center text-[#dbfcff] shadow-sm">
                     <QrCode className="w-5 h-5" />
                   </div>
                   <div>
@@ -1924,8 +1924,8 @@ export default function ProjectStatsWidget({
                       <h3 className="text-base font-display font-bold text-white tracking-tight">
                         Mobile Access QR Code
                       </h3>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#3ECF8E]/20 text-[#3ECF8E] border border-[#3ECF8E]/30 flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#3ECF8E] animate-pulse" />
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#dbfcff]/20 text-[#dbfcff] border border-[#dbfcff]/30 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#dbfcff] animate-pulse" />
                         <span>Live Telemetry</span>
                       </span>
                     </div>
@@ -1939,7 +1939,7 @@ export default function ProjectStatsWidget({
                   id="btn-close-qr-modal"
                   type="button"
                   onClick={() => setQrModalOpen(false)}
-                  className="w-8 h-8 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                  className="w-8 h-8 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -1983,28 +1983,28 @@ export default function ProjectStatsWidget({
                   </div>
 
                   <div className="flex items-center gap-2 text-xs font-mono text-[#A1A1AA]">
-                    <Smartphone className="w-4 h-4 text-[#3ECF8E]" />
+                    <Smartphone className="w-4 h-4 text-[#dbfcff]" />
                     <span>Point phone camera or iPad lens at QR code</span>
                   </div>
                 </div>
 
                 {/* SECURITY & TOKEN DETAILS PANEL */}
                 {qrTargetLink && (
-                  <div className="p-3.5 rounded-xl bg-[#14171F] border border-[#27272A] space-y-2.5 text-xs font-mono">
+                  <div className="p-3.5 rounded-xl bg-[#14171F] border border-[#353436] space-y-2.5 text-xs font-mono">
                     <div className="flex items-center justify-between">
                       <span className="text-[#71717A] uppercase text-[10px] tracking-wider">Access Parameters</span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#09090B] border border-[#27272A] text-[#3ECF8E]">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#131314] border border-[#353436] text-[#dbfcff]">
                         Expires in: {formatTimeLeft(qrTargetLink.expiresAt)}
                       </span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2 text-[11px]">
-                      <div className="p-2 rounded-lg bg-[#09090B] border border-[#27272A]">
+                      <div className="p-2 rounded-lg bg-[#131314] border border-[#353436]">
                         <span className="text-[#71717A] block text-[9px] uppercase">Stakeholder Group</span>
                         <span className="text-white font-bold truncate block">{qrTargetLink.recipientLabel}</span>
                       </div>
 
-                      <div className="p-2 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-between">
+                      <div className="p-2 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-between">
                         <div>
                           <span className="text-[#71717A] block text-[9px] uppercase">Security PIN</span>
                           <span className="text-amber-400 font-bold tracking-widest">{qrTargetLink.pinCode || 'None'}</span>
@@ -2020,10 +2020,10 @@ export default function ProjectStatsWidget({
                                 setTimeout(() => setQrPinCopied(false), 2000);
                               }
                             }}
-                            className="p-1 rounded bg-[#18181B] hover:bg-[#27272A] text-zinc-400 hover:text-white border border-[#27272A] text-[10px] cursor-pointer"
+                            className="p-1 rounded bg-[#201f20] hover:bg-[#353436] text-zinc-400 hover:text-white border border-[#353436] text-[10px] cursor-pointer"
                             title="Copy PIN code"
                           >
-                            {qrPinCopied ? <Check className="w-3 h-3 text-[#3ECF8E]" /> : <Copy className="w-3 h-3" />}
+                            {qrPinCopied ? <Check className="w-3 h-3 text-[#dbfcff]" /> : <Copy className="w-3 h-3" />}
                           </button>
                         )}
                       </div>
@@ -2037,7 +2037,7 @@ export default function ProjectStatsWidget({
                           type="text"
                           readOnly
                           value={qrTargetLink.url}
-                          className="flex-1 px-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-zinc-300 font-mono text-[11px] select-all truncate outline-none"
+                          className="flex-1 px-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-zinc-300 font-mono text-[11px] select-all truncate outline-none"
                         />
                         <button
                           type="button"
@@ -2049,7 +2049,7 @@ export default function ProjectStatsWidget({
                               setTimeout(() => setQrCopied(false), 2500);
                             }
                           }}
-                          className="px-3 py-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#3ECF8E] text-[11px] font-bold flex items-center gap-1 transition-colors cursor-pointer shrink-0"
+                          className="px-3 py-1.5 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#dbfcff] text-[11px] font-bold flex items-center gap-1 transition-colors cursor-pointer shrink-0"
                         >
                           {qrCopied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                           <span>{qrCopied ? 'Copied' : 'Copy URL'}</span>
@@ -2061,7 +2061,7 @@ export default function ProjectStatsWidget({
               </div>
 
               {/* MODAL FOOTER ACTIONS */}
-              <div className="p-4 border-t border-[#27272A] bg-[#14171F] flex flex-wrap items-center justify-between gap-2.5">
+              <div className="p-4 border-t border-[#353436] bg-[#14171F] flex flex-wrap items-center justify-between gap-2.5">
                 <button
                   type="button"
                   onClick={() => {
@@ -2072,10 +2072,10 @@ export default function ProjectStatsWidget({
                       }
                     }, 50);
                   }}
-                  className="px-3 py-2 rounded-xl bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-zinc-300 hover:text-white text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="px-3 py-2 rounded-xl bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-zinc-300 hover:text-white text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                   title="Generate a new secure token and refresh QR code"
                 >
-                  <RefreshCw className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                  <RefreshCw className="w-3.5 h-3.5 text-[#dbfcff]" />
                   <span>Regenerate</span>
                 </button>
 
@@ -2085,9 +2085,9 @@ export default function ProjectStatsWidget({
                       href={qrTargetLink.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="px-3 py-2 rounded-xl bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-zinc-300 hover:text-white text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                      className="px-3 py-2 rounded-xl bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-zinc-300 hover:text-white text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                     >
-                      <ExternalLink className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                      <ExternalLink className="w-3.5 h-3.5 text-[#dbfcff]" />
                       <span>Test View</span>
                     </a>
                   )}
@@ -2097,7 +2097,7 @@ export default function ProjectStatsWidget({
                     id="btn-download-qr-png"
                     onClick={handleDownloadQrCode}
                     disabled={!qrDataUrl}
-                    className="px-4 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-lg disabled:opacity-50"
+                    className="px-4 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-lg disabled:opacity-50"
                   >
                     <Download className="w-4 h-4" />
                     <span>Download PNG</span>

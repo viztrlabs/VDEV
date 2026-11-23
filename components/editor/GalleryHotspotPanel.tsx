@@ -52,8 +52,8 @@ export function GalleryHotspotPanel({
 
   return (
     <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-[#09090B] border border-[#27272A] rounded-lg w-[480px] max-h-[70vh] overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#27272A]">
+      <div className="bg-[#131314] border border-[#353436] rounded-lg w-[480px] max-h-[70vh] overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-[#353436]">
           <h2 className="text-sm font-mono font-bold text-white">
             {multiple ? 'Select Gallery Images' : 'Select Gallery Image'}
           </h2>
@@ -68,7 +68,7 @@ export function GalleryHotspotPanel({
               <p className="text-xs font-mono text-[#71717A]">No media assets found</p>
               <button
                 onClick={onRefreshMedia}
-                className="mt-2 px-3 py-1.5 rounded bg-[#18181B] border border-[#27272A] text-xs font-mono text-[#A1A1AA] hover:text-white"
+                className="mt-2 px-3 py-1.5 rounded bg-[#201f20] border border-[#353436] text-xs font-mono text-[#A1A1AA] hover:text-white"
               >
                 Refresh
               </button>
@@ -82,8 +82,8 @@ export function GalleryHotspotPanel({
                   onClick={() => toggle(asset.url)}
                   className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-colors ${
                     selected
-                      ? 'border-[#3ECF8E]'
-                      : 'border-transparent hover:border-[#27272A]'
+                      ? 'border-[#dbfcff]'
+                      : 'border-transparent hover:border-[#353436]'
                   }`}
                 >
                   <img
@@ -93,7 +93,7 @@ export function GalleryHotspotPanel({
                   />
                   {selected && (
                     <div className="absolute top-1 right-1">
-                      <Check className="w-4 h-4 text-[#3ECF8E]" />
+                      <Check className="w-4 h-4 text-[#dbfcff]" />
                     </div>
                   )}
                 </button>
@@ -101,7 +101,7 @@ export function GalleryHotspotPanel({
             })
           )}
         </div>
-        <div className="flex items-center justify-between gap-2 px-4 py-3 border-t border-[#27272A]">
+        <div className="flex items-center justify-between gap-2 px-4 py-3 border-t border-[#353436]">
           {multiple && mediaAssets.length > 0 && (
             <button
               onClick={() => setSelectedUrls(allSelected ? [] : mediaAssets.map((a) => a.url))}
@@ -113,14 +113,14 @@ export function GalleryHotspotPanel({
           <div className="ml-auto flex items-center gap-2">
             <button
               onClick={onClose}
-              className="px-3 py-1.5 rounded bg-[#18181B] border border-[#27272A] text-xs font-mono text-[#A1A1AA] hover:text-white"
+              className="px-3 py-1.5 rounded bg-[#201f20] border border-[#353436] text-xs font-mono text-[#A1A1AA] hover:text-white"
             >
               Cancel
             </button>
             <button
               onClick={confirm}
               disabled={selectedUrls.length === 0}
-              className="px-3 py-1.5 rounded bg-[#3ECF8E] text-black text-xs font-mono font-bold disabled:opacity-50"
+              className="px-3 py-1.5 rounded bg-[#dbfcff] text-black text-xs font-mono font-bold disabled:opacity-50"
             >
               {multiple ? `Add (${selectedUrls.length})` : 'Select'}
             </button>

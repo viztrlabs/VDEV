@@ -50,7 +50,7 @@ export default function SplitViewport({ active = true, projectId }: SplitViewpor
 
   if (!active) {
     return (
-      <div className="flex items-center justify-center h-full bg-[#0c0c0f] text-[#71717A] text-sm">
+      <div className="flex items-center justify-center h-full bg-[#201f20] text-[#71717A] text-sm">
         Alignment mode inactive
       </div>
     );
@@ -59,7 +59,7 @@ export default function SplitViewport({ active = true, projectId }: SplitViewpor
   return (
     <div className="flex flex-col h-full">
       {/* Sync direction toolbar */}
-      <div className="flex items-center gap-2 px-3 py-2 border-b border-[#27272A] bg-[#0c0c0f]">
+      <div className="flex items-center gap-2 px-3 py-2 border-b border-[#353436] bg-[#201f20]">
         <span className="text-xs text-[#A1A1AA] font-mono">Camera Sync:</span>
         <div className="flex gap-1">
           {syncOptions.map((opt) => (
@@ -68,8 +68,8 @@ export default function SplitViewport({ active = true, projectId }: SplitViewpor
               onClick={() => handleSyncChange(opt.value)}
               className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-mono ${
                 syncDirection === opt.value
-                  ? 'bg-[#3ECF8E] text-black font-bold'
-                  : 'bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA]'
+                  ? 'bg-[#dbfcff] text-black font-bold'
+                  : 'bg-[#201f20] hover:bg-[#353436] text-[#A1A1AA]'
               }`}
             >
               {opt.icon}
@@ -85,7 +85,7 @@ export default function SplitViewport({ active = true, projectId }: SplitViewpor
       {/* Split view panels */}
       <div className="flex-1 flex min-h-0">
         {/* Panorama panel */}
-        <div className="flex-1 min-w-0 relative border-r border-[#27272A]">
+        <div className="flex-1 min-w-0 relative border-r border-[#353436]">
           <div className="absolute top-2 left-2 z-10 px-2 py-1 rounded bg-black/60 text-xs text-[#A1A1AA] font-mono">
             Panorama View
           </div>

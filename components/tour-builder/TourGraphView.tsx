@@ -109,7 +109,7 @@ export function TourGraphView({ selectedRoomId, onSelectRoom, onClose }: TourGra
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#09090B]">
+    <div className="fixed inset-0 z-50 bg-[#131314]">
       <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
         <div className="flex items-center gap-2">
           <span className="text-xs font-mono font-bold text-white">TOUR MAP</span>
@@ -118,16 +118,16 @@ export function TourGraphView({ selectedRoomId, onSelectRoom, onClose }: TourGra
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => setZoom((z) => Math.min(3, z * 1.2))} className="p-1.5 rounded bg-[#18181B] hover:bg-[#27272A]" title="Zoom In">
+          <button onClick={() => setZoom((z) => Math.min(3, z * 1.2))} className="p-1.5 rounded bg-[#201f20] hover:bg-[#353436]" title="Zoom In">
             <ZoomIn className="w-4 h-4 text-white" />
           </button>
-          <button onClick={() => setZoom((z) => Math.max(0.3, z * 0.8))} className="p-1.5 rounded bg-[#18181B] hover:bg-[#27272A]" title="Zoom Out">
+          <button onClick={() => setZoom((z) => Math.max(0.3, z * 0.8))} className="p-1.5 rounded bg-[#201f20] hover:bg-[#353436]" title="Zoom Out">
             <ZoomOut className="w-4 h-4 text-white" />
           </button>
-          <button onClick={handleReset} className="p-1.5 rounded bg-[#18181B] hover:bg-[#27272A]" title="Reset View">
+          <button onClick={handleReset} className="p-1.5 rounded bg-[#201f20] hover:bg-[#353436]" title="Reset View">
             <RotateCcw className="w-4 h-4 text-white" />
           </button>
-          <button onClick={onClose} className="px-3 py-1.5 rounded bg-[#27272A] hover:bg-[#3F3F46] text-xs font-mono text-white">
+          <button onClick={onClose} className="px-3 py-1.5 rounded bg-[#353436] hover:bg-[#3F3F46] text-xs font-mono text-white">
             Close
           </button>
         </div>
@@ -160,7 +160,7 @@ export function TourGraphView({ selectedRoomId, onSelectRoom, onClose }: TourGra
               refY="3.5"
               orient="auto"
             >
-              <polygon points="0 0, 10 3.5, 0 7" fill="#3ECF8E" />
+              <polygon points="0 0, 10 3.5, 0 7" fill="#dbfcff" />
             </marker>
           </defs>
 
@@ -171,7 +171,7 @@ export function TourGraphView({ selectedRoomId, onSelectRoom, onClose }: TourGra
                 y1={conn.from.y}
                 x2={conn.to.x}
                 y2={conn.to.y}
-                stroke="#3ECF8E"
+                stroke="#dbfcff"
                 strokeWidth="2"
                 strokeDasharray="6 3"
                 opacity="0.5"
@@ -205,8 +205,8 @@ export function TourGraphView({ selectedRoomId, onSelectRoom, onClose }: TourGra
               <div
                 className={`w-20 h-20 rounded-xl flex flex-col items-center justify-center transition-all ${
                   selectedRoomId === node.room.id
-                    ? 'bg-[#3ECF8E] shadow-lg shadow-[#3ECF8E]/30'
-                    : 'bg-[#18181B] border border-[#27272A] hover:border-[#3ECF8E]'
+                    ? 'bg-[#dbfcff] shadow-lg shadow-[#dbfcff]/30'
+                    : 'bg-[#201f20] border border-[#353436] hover:border-[#dbfcff]'
                 }`}
               >
                 {node.room.thumbnailUrl ? (
@@ -228,7 +228,7 @@ export function TourGraphView({ selectedRoomId, onSelectRoom, onClose }: TourGra
                 <span className="text-[10px] font-mono text-[#A1A1AA]">{node.room.name}</span>
               </div>
               {node.room.hotspots && node.room.hotspots.length > 0 && (
-                <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-[#3ECF8E] flex items-center justify-center">
+                <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-[#dbfcff] flex items-center justify-center">
                   <span className="text-[8px] font-mono text-black font-bold">{node.room.hotspots.length}</span>
                 </div>
               )}
@@ -237,7 +237,7 @@ export function TourGraphView({ selectedRoomId, onSelectRoom, onClose }: TourGra
         </div>
       </div>
 
-      <div className="absolute bottom-4 left-4 bg-[#18181B]/80 backdrop-blur-sm rounded px-3 py-2 text-[10px] font-mono text-[#71717A]">
+      <div className="absolute bottom-4 left-4 bg-[#201f20]/80 backdrop-blur-sm rounded px-3 py-2 text-[10px] font-mono text-[#71717A]">
         Drag to pan • Scroll to zoom • Click room to select
       </div>
     </div>

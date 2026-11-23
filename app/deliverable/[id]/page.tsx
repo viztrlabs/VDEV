@@ -9,8 +9,8 @@ const ModelCanvas = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="absolute inset-0 flex items-center justify-center bg-[#09090b]">
-        <Loader2 className="w-6 h-6 text-[#3ECF8E] animate-spin" />
+      <div className="absolute inset-0 flex items-center justify-center bg-[#131314]">
+        <Loader2 className="w-6 h-6 text-[#dbfcff] animate-spin" />
       </div>
     ),
   }
@@ -46,7 +46,7 @@ function MediaRenderer({ deliverable }: { deliverable: DeliverableData }) {
 
   if (mime.startsWith('model/') || url.endsWith('.glb') || url.endsWith('.gltf')) {
     return (
-      <div className="relative w-full h-[60vh] min-h-[400px] bg-[#09090b] rounded-lg overflow-hidden">
+      <div className="relative w-full h-[60vh] min-h-[400px] bg-[#131314] rounded-lg overflow-hidden">
         <ModelCanvas
           url={url}
           rotX={25}
@@ -77,7 +77,7 @@ function MediaRenderer({ deliverable }: { deliverable: DeliverableData }) {
 
   if (mime.startsWith('audio/') || url.match(/\.(mp3|wav|ogg|flac|aac)$/i)) {
     return (
-      <div className="w-full bg-[#18181b] border border-[#27272a] rounded-lg p-8">
+      <div className="w-full bg-[#201f20] border border-[#353436] rounded-lg p-8">
         <audio src={url} controls className="w-full" preload="metadata" />
       </div>
     );
@@ -85,7 +85,7 @@ function MediaRenderer({ deliverable }: { deliverable: DeliverableData }) {
 
   if (mime.startsWith('image/') || url.match(/\.(jpg|jpeg|png|gif|webp|avif|svg)$/i)) {
     return (
-      <div className="relative w-full bg-[#09090b] rounded-lg overflow-hidden flex items-center justify-center">
+      <div className="relative w-full bg-[#131314] rounded-lg overflow-hidden flex items-center justify-center">
         <img
           src={url}
           alt={deliverable.title}
@@ -96,7 +96,7 @@ function MediaRenderer({ deliverable }: { deliverable: DeliverableData }) {
   }
 
   return (
-    <div className="w-full bg-[#18181b] border border-[#27272a] rounded-lg p-12 text-center">
+    <div className="w-full bg-[#201f20] border border-[#353436] rounded-lg p-12 text-center">
       <AlertCircle className="w-12 h-12 text-[#71717a] mx-auto mb-4" />
       <p className="text-sm text-[#a1a1aa] font-mono">
         Preview not available for this file type ({mime || 'unknown'}).
@@ -104,7 +104,7 @@ function MediaRenderer({ deliverable }: { deliverable: DeliverableData }) {
       <a
         href={url}
         download
-        className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-[#3ECF8E] text-black text-sm font-mono font-bold rounded hover:bg-[#2fb875] transition-colors"
+        className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-[#dbfcff] text-black text-sm font-mono font-bold rounded hover:bg-[#2fb875] transition-colors"
       >
         <Download className="w-4 h-4" />
         Download File
@@ -141,9 +141,9 @@ export default function DeliverablePage({ params }: { params: Promise<{ id: stri
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#09090b] flex items-center justify-center">
+      <div className="min-h-screen bg-[#131314] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-8 h-8 text-[#3ECF8E] animate-spin" />
+          <Loader2 className="w-8 h-8 text-[#dbfcff] animate-spin" />
           <span className="text-xs text-[#71717a] font-mono">Loading deliverable...</span>
         </div>
       </div>
@@ -152,7 +152,7 @@ export default function DeliverablePage({ params }: { params: Promise<{ id: stri
 
   if (error || !deliverable) {
     return (
-      <div className="min-h-screen bg-[#09090b] flex items-center justify-center">
+      <div className="min-h-screen bg-[#131314] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3 max-w-md text-center px-4">
           <AlertCircle className="w-10 h-10 text-rose-400" />
           <h1 className="text-lg font-mono font-bold text-white">Deliverable Not Found</h1>
@@ -163,11 +163,11 @@ export default function DeliverablePage({ params }: { params: Promise<{ id: stri
   }
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-white">
+    <div className="min-h-screen bg-[#131314] text-white">
       <div className="max-w-5xl mx-auto px-4 py-6">
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 bg-[#18181b] border border-[#27272a] rounded text-[10px] font-mono font-bold text-[#3ECF8E] uppercase tracking-wider">
+            <span className="px-2 py-0.5 bg-[#201f20] border border-[#353436] rounded text-[10px] font-mono font-bold text-[#dbfcff] uppercase tracking-wider">
               {deliverable.type || 'Deliverable'}
             </span>
             <span className="text-[10px] font-mono text-[#71717a]">
@@ -191,9 +191,9 @@ export default function DeliverablePage({ params }: { params: Promise<{ id: stri
           <a
             href={deliverable.url}
             download
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#18181b] hover:bg-[#27272a] border border-[#27272a] rounded text-sm font-mono text-white transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#201f20] hover:bg-[#353436] border border-[#353436] rounded text-sm font-mono text-white transition-colors"
           >
-            <Download className="w-4 h-4 text-[#3ECF8E]" />
+            <Download className="w-4 h-4 text-[#dbfcff]" />
             Download
           </a>
           {deliverable.url.startsWith('http') && (
@@ -201,7 +201,7 @@ export default function DeliverablePage({ params }: { params: Promise<{ id: stri
               href={deliverable.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#18181b] hover:bg-[#27272a] border border-[#27272a] rounded text-sm font-mono text-[#a1a1aa] transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#201f20] hover:bg-[#353436] border border-[#353436] rounded text-sm font-mono text-[#a1a1aa] transition-colors"
             >
               <ExternalLink className="w-4 h-4" />
               Open Raw

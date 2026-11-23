@@ -159,9 +159,9 @@ export default function AIFloorplanWizard({ onGenerate, onCancel }: AIFloorplanW
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-[#0c0c0f] border border-[#27272A] rounded-xl w-full max-w-3xl mx-4 flex flex-col max-h-[90vh]">
+      <div className="bg-[#201f20] border border-[#353436] rounded-xl w-full max-w-3xl mx-4 flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[#27272A]">
+        <div className="flex items-center justify-between p-4 border-b border-[#353436]">
           <div>
             <h2 className="text-lg font-mono font-bold text-white">AI Floorplan Wizard</h2>
             <p className="text-[10px] font-mono text-[#71717A]">
@@ -172,7 +172,7 @@ export default function AIFloorplanWizard({ onGenerate, onCancel }: AIFloorplanW
             <button
               type="button"
               onClick={onCancel}
-              className="p-1 rounded hover:bg-[#27272A] text-[#71717A] hover:text-white"
+              className="p-1 rounded hover:bg-[#353436] text-[#71717A] hover:text-white"
             >
               <X className="w-4 h-4" />
             </button>
@@ -180,7 +180,7 @@ export default function AIFloorplanWizard({ onGenerate, onCancel }: AIFloorplanW
         </div>
 
         {/* Progress */}
-        <div className="flex items-center px-4 py-3 border-b border-[#27272A]">
+        <div className="flex items-center px-4 py-3 border-b border-[#353436]">
           {(['Upload', 'Configure', 'Generate'] as const).map((label, i) => {
             const stepNum = (i + 1) as Step;
             const isActive = step === stepNum;
@@ -190,10 +190,10 @@ export default function AIFloorplanWizard({ onGenerate, onCancel }: AIFloorplanW
                 <div
                   className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono ${
                     isComplete
-                      ? 'bg-[#3ECF8E] text-black'
+                      ? 'bg-[#dbfcff] text-black'
                       : isActive
-                        ? 'bg-[#3ECF8E]/20 text-[#3ECF8E] border border-[#3ECF8E]'
-                        : 'bg-[#27272A] text-[#71717A]'
+                        ? 'bg-[#dbfcff]/20 text-[#dbfcff] border border-[#dbfcff]'
+                        : 'bg-[#353436] text-[#71717A]'
                   }`}
                 >
                   {isComplete ? <Check className="w-3 h-3" /> : stepNum}
@@ -201,7 +201,7 @@ export default function AIFloorplanWizard({ onGenerate, onCancel }: AIFloorplanW
                 <span className={`ml-2 text-[10px] font-mono ${isActive ? 'text-white' : 'text-[#71717A]'}`}>
                   {label}
                 </span>
-                {stepNum < 3 && <div className="flex-1 h-px bg-[#27272A] ml-2" />}
+                {stepNum < 3 && <div className="flex-1 h-px bg-[#353436] ml-2" />}
               </div>
             );
           })}
@@ -215,7 +215,7 @@ export default function AIFloorplanWizard({ onGenerate, onCancel }: AIFloorplanW
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-4 border-t border-[#27272A]">
+        <div className="flex items-center justify-between p-4 border-t border-[#353436]">
           <button
             type="button"
             onClick={handleBack}
@@ -223,7 +223,7 @@ export default function AIFloorplanWizard({ onGenerate, onCancel }: AIFloorplanW
             className={`px-3 py-1.5 rounded font-mono text-xs ${
               step === 1
                 ? 'text-[#71717A] cursor-default'
-                : 'text-[#A1A1AA] hover:text-white hover:bg-[#27272A]'
+                : 'text-[#A1A1AA] hover:text-white hover:bg-[#353436]'
             }`}
           >
             Back
@@ -242,7 +242,7 @@ export default function AIFloorplanWizard({ onGenerate, onCancel }: AIFloorplanW
               <button
                 type="button"
                 onClick={handleNext}
-                className="px-4 py-1.5 rounded bg-[#3ECF8E] text-black font-mono text-xs font-bold hover:bg-[#3ECF8E]/90 transition"
+                className="px-4 py-1.5 rounded bg-[#dbfcff] text-black font-mono text-xs font-bold hover:bg-[#dbfcff]/90 transition"
               >
                 Next
               </button>
@@ -251,7 +251,7 @@ export default function AIFloorplanWizard({ onGenerate, onCancel }: AIFloorplanW
                 type="button"
                 onClick={handleGenerate}
                 disabled={step3Data.status === 'processing' || !step3Data.result}
-                className="px-4 py-1.5 rounded bg-[#3ECF8E] text-black font-mono text-xs font-bold hover:bg-[#3ECF8E]/90 transition disabled:opacity-50"
+                className="px-4 py-1.5 rounded bg-[#dbfcff] text-black font-mono text-xs font-bold hover:bg-[#dbfcff]/90 transition disabled:opacity-50"
               >
                 {step3Data.status === 'processing' && step3Data.result ? 'Processing...' : 'Use This Floorplan'}
               </button>
@@ -271,7 +271,7 @@ export default function AIFloorplanWizard({ onGenerate, onCancel }: AIFloorplanW
 
         {!step1Data.previewUrl ? (
           <div
-            className="border-2 border-dashed border-[#27272A] rounded-lg p-6 text-center cursor-pointer hover:border-[#3ECF8E]/50 transition-colors"
+            className="border-2 border-dashed border-[#353436] rounded-lg p-6 text-center cursor-pointer hover:border-[#dbfcff]/50 transition-colors"
             onDrop={handleDrop}
             onDragOver={handleDragOver}
             onClick={() => document.getElementById('ai-floorplan-upload')?.click()}
@@ -288,7 +288,7 @@ export default function AIFloorplanWizard({ onGenerate, onCancel }: AIFloorplanW
             />
           </div>
         ) : (
-          <div className="relative border border-[#27272A] rounded-lg p-3">
+          <div className="relative border border-[#353436] rounded-lg p-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={step1Data.previewUrl} alt="Floorplan preview" className="max-w-full max-h-64 mx-auto rounded" />
             <div className="absolute top-2 right-2 flex gap-1">
@@ -379,7 +379,7 @@ export default function AIFloorplanWizard({ onGenerate, onCancel }: AIFloorplanW
             <select
               value={step2Data.roomNamingMode}
               onChange={(e) => setStep2Data((prev) => ({ ...prev, roomNamingMode: e.target.value as 'auto' | 'manual' }))}
-              className="bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-[10px] font-mono text-white"
+              className="bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-[10px] font-mono text-white"
             >
               <option value="auto">Auto (AI suggests names)</option>
               <option value="manual">Manual (edit later in editor)</option>
@@ -396,7 +396,7 @@ export default function AIFloorplanWizard({ onGenerate, onCancel }: AIFloorplanW
     if (status === 'processing') {
       return (
         <div className="flex flex-col items-center justify-center py-12 gap-4">
-          <RotateCw className="w-8 h-8 text-[#3ECF8E] animate-spin" />
+          <RotateCw className="w-8 h-8 text-[#dbfcff] animate-spin" />
           <div className="text-sm font-mono text-white">Processing floorplan with AI…</div>
           <div className="text-[10px] font-mono text-[#71717A]">
             Detecting walls, rooms, doors, and windows
@@ -413,7 +413,7 @@ export default function AIFloorplanWizard({ onGenerate, onCancel }: AIFloorplanW
           <button
             type="button"
             onClick={() => handleGenerate()}
-            className="mt-3 px-3 py-1 rounded bg-[#3ECF8E]/20 text-[#3ECF8E] font-mono text-xs hover:bg-[#3ECF8E]/30"
+            className="mt-3 px-3 py-1 rounded bg-[#dbfcff]/20 text-[#dbfcff] font-mono text-xs hover:bg-[#dbfcff]/30"
           >
             Retry
           </button>
@@ -448,7 +448,7 @@ export default function AIFloorplanWizard({ onGenerate, onCancel }: AIFloorplanW
             </div>
           </div>
 
-          <div className="pt-2 border-t border-[#27272A]">
+          <div className="pt-2 border-t border-[#353436]">
             <button
               type="button"
               onClick={() => {
@@ -456,14 +456,14 @@ export default function AIFloorplanWizard({ onGenerate, onCancel }: AIFloorplanW
                   onGenerate?.(result);
                 }
               }}
-              className="w-full px-4 py-2 rounded bg-[#3ECF8E] text-black font-mono text-sm font-bold hover:bg-[#3ECF8E]/90 transition"
+              className="w-full px-4 py-2 rounded bg-[#dbfcff] text-black font-mono text-sm font-bold hover:bg-[#dbfcff]/90 transition"
             >
               Use This Floorplan
             </button>
             <button
               type="button"
               onClick={handleRestart}
-              className="w-full mt-2 px-4 py-1.5 rounded bg-transparent border border-[#27272A] text-[#A1A1AA] font-mono text-xs hover:bg-[#27272A]"
+              className="w-full mt-2 px-4 py-1.5 rounded bg-transparent border border-[#353436] text-[#A1A1AA] font-mono text-xs hover:bg-[#353436]"
             >
               Start Over
             </button>
@@ -496,7 +496,7 @@ function ToggleRow({
         type="button"
         onClick={() => onChange(!checked)}
         className={`relative w-8 h-4 rounded-full transition-colors ${
-          checked ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+          checked ? 'bg-[#dbfcff]' : 'bg-[#353436]'
         }`}
       >
         <div
@@ -542,7 +542,7 @@ function NumberInput({
 
 function StatCard({ label, value, icon }: { label: string; value: number; icon: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-2 p-2 rounded bg-[#18181B] border border-[#27272A]">
+    <div className="flex items-center gap-2 p-2 rounded bg-[#201f20] border border-[#353436]">
       {icon}
       <div>
         <div className="text-xs font-mono text-white">{label}</div>
@@ -564,7 +564,7 @@ function RoomRow({ room }: { room: VtedRoom }) {
   const colorClass = typeColors[room.type || 'other'] || typeColors.other;
 
   return (
-    <div className="flex items-center justify-between px-2 py-1 rounded bg-[#18181B] border border-[#27272A]">
+    <div className="flex items-center justify-between px-2 py-1 rounded bg-[#201f20] border border-[#353436]">
       <span className="text-xs font-mono text-white">{room.name}</span>
       <span className={`text-[9px] font-mono ${colorClass}`}>{room.type}</span>
       <span className="text-[9px] font-mono text-[#71717A]">{Math.round(room.area)} px²</span>

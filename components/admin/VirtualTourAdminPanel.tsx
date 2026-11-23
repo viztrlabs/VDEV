@@ -50,7 +50,7 @@ interface TourSettings {
   version: number;
 }
 
-const DEFAULT_THEME = { accentColor: '#3ECF8E', logoUrl: '', title: 'VizTR Virtual Tour' };
+const DEFAULT_THEME = { accentColor: '#dbfcff', logoUrl: '', title: 'VizTR Virtual Tour' };
 
 const DEFAULT_FEATURES: TourFeatureToggles = {
   hotspots: true,
@@ -218,11 +218,11 @@ export default function VirtualTourAdminPanel() {
     <div className="space-y-6">
       {/* HEADER */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest text-[#3ECF8E]">
+        <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest text-[#dbfcff]">
           <Globe className="w-4 h-4" /> Virtual Tour — Operator Console
         </div>
         {saved && (
-          <span className="flex items-center gap-1 text-[10px] font-mono text-[#3ECF8E]">
+          <span className="flex items-center gap-1 text-[10px] font-mono text-[#dbfcff]">
             <Check className="w-3 h-3" /> Saved
           </span>
         )}
@@ -248,14 +248,14 @@ export default function VirtualTourAdminPanel() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* LEFT: embedded live preview */}
-        <div className="rounded-2xl border border-[#27272A] bg-[#0c0c0f] overflow-hidden">
-          <div className="flex items-center justify-between px-3 py-2 border-b border-[#27272A]">
+        <div className="rounded-2xl border border-[#353436] bg-[#201f20] overflow-hidden">
+          <div className="flex items-center justify-between px-3 py-2 border-b border-[#353436]">
             <span className="text-[10px] font-mono uppercase tracking-wider text-[#71717A] flex items-center gap-1.5">
               <Eye className="w-3 h-3" /> Public Tour Preview
             </span>
             <button
               onClick={() => settings && window.open(settings.publicUrl, '_blank')}
-              className="flex items-center gap-1 text-[10px] font-mono text-[#3ECF8E] hover:underline"
+              className="flex items-center gap-1 text-[10px] font-mono text-[#dbfcff] hover:underline"
             >
               Open <ExternalLink className="w-3 h-3" />
             </button>
@@ -270,7 +270,7 @@ export default function VirtualTourAdminPanel() {
               />
             )}
             {settings && !settings.live && (
-              <div className="absolute inset-0 bg-[#09090B]/85 flex flex-col items-center justify-center text-center">
+              <div className="absolute inset-0 bg-[#131314]/85 flex flex-col items-center justify-center text-center">
                 <Radio className="w-6 h-6 text-rose-400 mb-2" />
                 <div className="text-xs font-mono font-bold text-rose-300 uppercase">Unpublished (Offline)</div>
               </div>
@@ -281,7 +281,7 @@ export default function VirtualTourAdminPanel() {
         {/* RIGHT: controls */}
         <div className="space-y-4">
           {/* Publish switch */}
-          <div className="rounded-2xl border border-[#27272A] bg-[#0c0c0f] p-4">
+          <div className="rounded-2xl border border-[#353436] bg-[#201f20] p-4">
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm font-bold text-white">Publish Tour</div>
@@ -293,7 +293,7 @@ export default function VirtualTourAdminPanel() {
                 onClick={toggleLive}
                 disabled={saving}
                 className={`relative w-12 h-6 rounded-full transition-colors ${
-                  settings?.live ? 'bg-[#3ECF8E]' : 'bg-[#3f3f46]'
+                  settings?.live ? 'bg-[#dbfcff]' : 'bg-[#3f3f46]'
                 }`}
               >
                 <span
@@ -306,7 +306,7 @@ export default function VirtualTourAdminPanel() {
           </div>
 
           {/* Feature toggles */}
-          <div className="rounded-2xl border border-[#27272A] bg-[#0c0c0f] p-4 space-y-2">
+          <div className="rounded-2xl border border-[#353436] bg-[#201f20] p-4 space-y-2">
             <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A] flex items-center gap-1.5 pb-1">
               <Sparkles className="w-3 h-3" /> Editable Public Features
             </div>
@@ -322,7 +322,7 @@ export default function VirtualTourAdminPanel() {
                     onClick={() => toggleFeature(row.key)}
                     disabled={saving}
                     className={`relative w-10 h-5 rounded-full transition-colors ${
-                      on ? 'bg-[#3ECF8E]' : 'bg-[#3f3f46]'
+                      on ? 'bg-[#dbfcff]' : 'bg-[#3f3f46]'
                     }`}
                   >
                     <span
@@ -338,7 +338,7 @@ export default function VirtualTourAdminPanel() {
 
           {/* THEME / BRANDING */}
           {settings && (
-          <div className="rounded-2xl border border-[#27272A] bg-[#0c0c0f] p-4 space-y-3">
+          <div className="rounded-2xl border border-[#353436] bg-[#201f20] p-4 space-y-3">
             <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A] flex items-center gap-1.5 pb-1">
               <Palette className="w-3 h-3" /> Theme &amp; Branding
             </div>
@@ -347,7 +347,7 @@ export default function VirtualTourAdminPanel() {
               <input
                 value={settings.theme.title}
                 onChange={(e) => updateTheme({ title: e.target.value })}
-                className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
               />
             </div>
             <div className="space-y-2">
@@ -356,7 +356,7 @@ export default function VirtualTourAdminPanel() {
                 value={settings.theme.logoUrl}
                 onChange={(e) => updateTheme({ logoUrl: e.target.value })}
                 placeholder="https://…/logo.png"
-                className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white"
+                className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white"
               />
             </div>
             <div className="space-y-2">
@@ -366,12 +366,12 @@ export default function VirtualTourAdminPanel() {
                   type="color"
                   value={settings.theme.accentColor}
                   onChange={(e) => updateTheme({ accentColor: e.target.value })}
-                  className="w-9 h-8 rounded bg-[#18181B] border border-[#27272A] cursor-pointer"
+                  className="w-9 h-8 rounded bg-[#201f20] border border-[#353436] cursor-pointer"
                 />
                 <input
                   value={settings.theme.accentColor}
                   onChange={(e) => updateTheme({ accentColor: e.target.value })}
-                  className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white font-mono"
+                  className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white font-mono"
                 />
               </div>
             </div>
@@ -379,19 +379,19 @@ export default function VirtualTourAdminPanel() {
           )}
 
           {/* Client link generator */}
-          <div className="rounded-2xl border border-[#27272A] bg-[#0c0c0f] p-4 space-y-3">
+          <div className="rounded-2xl border border-[#353436] bg-[#201f20] p-4 space-y-3">
             <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">
               Client Link
             </div>
             <div className="flex items-center gap-2">
               <span
                 className={`w-2.5 h-2.5 rounded-full ${
-                  settings?.live ? 'bg-[#3ECF8E] animate-pulse' : 'bg-rose-500'
+                  settings?.live ? 'bg-[#dbfcff] animate-pulse' : 'bg-rose-500'
                 }`}
               />
               <span
                 className={`text-xs font-mono font-bold ${
-                  settings?.live ? 'text-[#3ECF8E]' : 'text-rose-400'
+                  settings?.live ? 'text-[#dbfcff]' : 'text-rose-400'
                 }`}
               >
                 {settings?.live ? 'LIVE' : 'OFFLINE'}
@@ -403,20 +403,20 @@ export default function VirtualTourAdminPanel() {
             <div className="flex items-center gap-2">
               <button
                 onClick={copyLink}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-xs font-mono text-white"
               >
-                {copied ? <Check className="w-3.5 h-3.5 text-[#3ECF8E]" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? <Check className="w-3.5 h-3.5 text-[#dbfcff]" /> : <Copy className="w-3.5 h-3.5" />}
                 {copied ? 'Copied' : 'Copy Link'}
               </button>
               <button
                 onClick={() => settings && window.open(settings.publicUrl, '_blank')}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
               >
                 <ExternalLink className="w-3.5 h-3.5" /> Preview
               </button>
               <button
                 onClick={() => window.open('/api/tour/export', '_blank')}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-xs font-mono text-white"
                 title="Download self-hostable ZIP"
               >
                 <Download className="w-3.5 h-3.5" /> Export ZIP
@@ -431,7 +431,7 @@ export default function VirtualTourAdminPanel() {
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-mono ${
                     settings?.accessLevel === 'private'
                       ? 'bg-amber-500/15 border-amber-500/40 text-amber-300'
-                      : 'bg-[#18181B] hover:bg-[#27272A] border-[#27272A] text-white'
+                      : 'bg-[#201f20] hover:bg-[#353436] border-[#353436] text-white'
                   }`}
                 >
                   {settings?.accessLevel === 'private' ? <Lock className="w-3.5 h-3.5" /> : <Globe className="w-3.5 h-3.5" />}
@@ -439,7 +439,7 @@ export default function VirtualTourAdminPanel() {
                 </button>
                 <button
                   onClick={clearCache}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-xs font-mono text-white"
                   title="Bump version so visitors see fresh data"
                 >
                   <RefreshCw className="w-3.5 h-3.5" /> Clear Cache (v{settings?.version || 1})
@@ -462,7 +462,7 @@ export default function VirtualTourAdminPanel() {
                 <div className="text-[10px] font-mono text-[#71717A] flex items-center gap-1.5">
                   <Share2 className="w-3 h-3" /> Embed snippet
                 </div>
-                <pre className="text-[10px] font-mono text-[#A1A1AA] bg-[#09090B] border border-[#27272A] rounded p-2 overflow-x-auto">
+                <pre className="text-[10px] font-mono text-[#A1A1AA] bg-[#131314] border border-[#353436] rounded p-2 overflow-x-auto">
 {`<iframe src="${typeof window !== 'undefined' ? window.location.origin : ''}${settings?.publicUrl}" width="100%" height="600" style="border:0" allow="fullscreen"></iframe>`}
                 </pre>
               </div>

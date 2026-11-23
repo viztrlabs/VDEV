@@ -90,10 +90,10 @@ function SignupContent() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[#09090B] text-white px-4">
-      <div className="w-full max-w-sm rounded-2xl border border-[#27272A] bg-[#0c0c0f] p-6 space-y-4">
+    <main className="min-h-screen flex items-center justify-center bg-[#131314] text-white px-4">
+      <div className="w-full max-w-sm rounded-2xl border border-[#353436] bg-[#201f20] p-6 space-y-4">
         <div className="text-center">
-          <div className="text-lg font-mono font-bold text-[#3ECF8E]">VizTR</div>
+          <div className="text-lg font-mono font-bold text-[#dbfcff]">VizTR</div>
           <div className="text-xs text-[#71717A] font-mono mt-1">Create your studio</div>
         </div>
 
@@ -114,13 +114,13 @@ function SignupContent() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Full name"
-              className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-2 text-sm"
+              className="w-full bg-[#201f20] border border-[#353436] rounded px-3 py-2 text-sm"
             />
             <input
               value={orgName}
               onChange={(e) => setOrgName(e.target.value)}
               placeholder="Studio / Company name"
-              className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-2 text-sm"
+              className="w-full bg-[#201f20] border border-[#353436] rounded px-3 py-2 text-sm"
             />
             <input
               type="email"
@@ -128,7 +128,7 @@ function SignupContent() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@studio.com"
-              className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-2 text-sm"
+              className="w-full bg-[#201f20] border border-[#353436] rounded px-3 py-2 text-sm"
             />
             <input
               type="password"
@@ -137,19 +137,19 @@ function SignupContent() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password (min 6)"
-              className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-2 text-sm"
+              className="w-full bg-[#201f20] border border-[#353436] rounded px-3 py-2 text-sm"
             />
             <button
               type="submit"
               disabled={busy}
-              className="w-full bg-[#3ECF8E] hover:bg-[#34b876] text-black font-mono font-bold text-xs py-2 rounded disabled:opacity-50"
+              className="w-full bg-[#dbfcff] hover:bg-[#34b876] text-black font-mono font-bold text-xs py-2 rounded disabled:opacity-50"
             >
               {busy ? 'Creating…' : 'Create Account'}
             </button>
           </form>
         ) : (
           <div className="text-center space-y-3 py-2">
-            <div className="text-sm font-bold text-[#3ECF8E]">
+            <div className="text-sm font-bold text-[#dbfcff]">
               Account created
             </div>
             <p className="text-xs font-mono text-[#A1A1AA]">
@@ -158,7 +158,7 @@ function SignupContent() {
             </p>
             <Link
               href="/login"
-              className="inline-block text-xs font-mono text-[#3ECF8E] hover:underline"
+              className="inline-block text-xs font-mono text-[#dbfcff] hover:underline"
             >
               Go to sign in
             </Link>
@@ -167,7 +167,7 @@ function SignupContent() {
 
         <div className="text-center text-[11px] text-[#71717A] font-mono">
           Already have an account?{' '}
-          <Link href="/login" className="text-[#3ECF8E] hover:underline">
+          <Link href="/login" className="text-[#dbfcff] hover:underline">
             Sign in
           </Link>
         </div>
@@ -178,7 +178,7 @@ function SignupContent() {
 
 function SignupLoading() {
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[#09090B] text-white">
+    <main className="min-h-screen flex items-center justify-center bg-[#131314] text-white">
       <div className="text-xs font-mono text-[#71717A]">Loading…</div>
     </main>
   );

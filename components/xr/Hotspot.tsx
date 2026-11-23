@@ -26,10 +26,10 @@ export default function Hotspot({ hotspot, onClick }: HotspotProps) {
       onClick={() => onClick(hotspot)}
     >
       {/* Outer Pulsing Aura */}
-      <div className="w-8 h-8 rounded-full bg-[#3ECF8E]/20 animate-ping absolute inset-0 -m-1 pointer-events-none" />
+      <div className="w-8 h-8 rounded-full bg-[#dbfcff]/20 animate-ping absolute inset-0 -m-1 pointer-events-none" />
 
       {/* Core Button Ring */}
-      <div className="w-6 h-6 rounded-full bg-black/80 border-2 border-[#3ECF8E] text-[#3ECF8E] flex items-center justify-center shadow-lg group-hover:scale-125 group-hover:bg-[#3ECF8E] group-hover:text-black transition-all duration-200">
+      <div className="w-6 h-6 rounded-full bg-black/80 border-2 border-[#dbfcff] text-[#dbfcff] flex items-center justify-center shadow-lg group-hover:scale-125 group-hover:bg-[#dbfcff] group-hover:text-black transition-all duration-200">
         {hotspot.action === 'teleport' && <ArrowRight className="w-3.5 h-3.5" />}
         {hotspot.action === 'open_info' && <Info className="w-3.5 h-3.5" />}
         {hotspot.action === 'play_media' && <Play className="w-3.5 h-3.5 fill-current" />}

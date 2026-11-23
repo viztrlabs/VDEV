@@ -80,13 +80,13 @@ export default function PortfolioPreview() {
 
   return (
     <section id="portfolio-preview" className="py-24 w-full container-ultrawide border-t border-white/10">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-[#1E293B]">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-[#3b494b]">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#42CF8B] animate-pulse"/>
-            <CmsText fieldId="eyebrow" value={eyebrow} className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#42CF8B]"/>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#54de99] animate-pulse"/>
+            <CmsText fieldId="eyebrow" value={eyebrow} className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#54de99]"/>
           </div>
-          <CmsText fieldId="heading" value={heading} as="h2" className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#FAFAFA] font-display"/>
+          <CmsText fieldId="heading" value={heading} as="h2" className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#e5e2e3] font-display"/>
           <CmsText fieldId="description" value={description} as="p" rich className="text-xs sm:text-sm text-[#B9CACB] mt-1 prose-readable"/>
         </div>
 
@@ -107,7 +107,7 @@ export default function PortfolioPreview() {
             className={`px-4 py-1.5 rounded-full text-xs font-mono font-semibold uppercase tracking-wider transition-all cursor-pointer border ${
               activeFilter === filter.category
                 ? 'bg-[#00F0FF] text-black border-[#00F0FF] '
-                : 'glass-pill text-[var(--text-secondary)] hover:text-white border-[#1E293B]'
+                : 'glass-pill text-[var(--text-secondary)] hover:text-white border-[#3b494b]'
             }`}
           >
             <CmsText fieldId="label" listFieldId="filterLabels" itemId={filter.id} value={filter.label}/>
@@ -120,11 +120,11 @@ export default function PortfolioPreview() {
         {filteredProjects.map((project) => (
           <div
             key={project.id}
-            className="group rounded-[2rem] overflow-hidden bg-[#131314] border border-[#1E293B] hover:border-[#00F0FF]/40 transition-all duration-300 flex flex-col justify-between shadow-sm"
+            className="group rounded-[2rem] overflow-hidden bg-[#131314] border border-[#3b494b] hover:border-[#00F0FF]/40 transition-all duration-300 flex flex-col justify-between shadow-sm"
           >
             <div>
               {/* Media Preview Box */}
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-black/40 border-b border-[#1E293B]">
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-black/40 border-b border-[#3b494b]">
                 <Image
                   src={project.featuredImage}
                   alt={project.title}
@@ -137,7 +137,7 @@ export default function PortfolioPreview() {
 
                 {/* Badges */}
                 <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
-                  <span className="px-2.5 py-0.5 rounded-full bg-[#0A0A0B] text-[#FAFAFA] text-[9px] font-mono font-bold uppercase tracking-wider border border-[#1E293B]">
+                  <span className="px-2.5 py-0.5 rounded-full bg-[#131314] text-[#e5e2e3] text-[9px] font-mono font-bold uppercase tracking-wider border border-[#3b494b]">
                     {project.category}
                   </span>
                   {project.panorama && (
@@ -147,7 +147,7 @@ export default function PortfolioPreview() {
                     </span>
                   )}
                   {project.video && (
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#0A0A0B] text-[#00F0FF] border border-[#00F0FF]/40 text-[9px] font-mono font-bold flex items-center gap-1">
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#131314] text-[#00F0FF] border border-[#00F0FF]/40 text-[9px] font-mono font-bold flex items-center gap-1">
                       <Play className="w-2.5 h-2.5 fill-[#00F0FF]"/>
                       <span>4K FILM</span>
                     </span>
@@ -159,7 +159,7 @@ export default function PortfolioPreview() {
                   {project.panorama ? (
                     <button
                       onClick={() => handlePanorama(project.panorama!, project.title)}
-                      className="px-4 py-2 rounded-full bg-[#42CF8B] hover:bg-[#58dc9b] text-black text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-md"
+                      className="px-4 py-2 rounded-full bg-[#54de99] hover:bg-[#58dc9b] text-black text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-md"
                     >
                       <Compass className="w-3.5 h-3.5"/>
                       <CmsText fieldId="ctaPanoramaLabel" value={ctaPanoramaLabel}/>
@@ -184,7 +184,7 @@ export default function PortfolioPreview() {
 
                   <Link
                     href={`/portfolio/${project.id}`}
-                    className="p-2 rounded-full bg-[#0A0A0B] hover:border-[#00F0FF]/50 text-[#FAFAFA] text-xs transition-colors border border-[#1E293B]"
+                    className="p-2 rounded-full bg-[#131314] hover:border-[#00F0FF]/50 text-[#e5e2e3] text-xs transition-colors border border-[#3b494b]"
                     title={caseStudyTitle}
                     aria-label={caseStudyTitle}
                   >
@@ -199,7 +199,7 @@ export default function PortfolioPreview() {
                   <span>{project.location}</span>
                   <span>{project.year}</span>
                 </div>
-                <h3 className="text-sm font-bold text-[#FAFAFA]">
+                <h3 className="text-sm font-bold text-[#e5e2e3]">
                   <Link href={`/portfolio/${project.id}`} className="hover:text-[#00F0FF] transition-colors">
                     {project.title}
                   </Link>
@@ -215,7 +215,7 @@ export default function PortfolioPreview() {
               {project.tags.slice(0, 3).map((tag, idx) => (
                 <span
                   key={idx}
-                  className="px-2 py-0.5 rounded-full bg-[#0A0A0B] text-[9px] font-mono text-[#a1abc4] border border-[#1E293B]"
+                  className="px-2 py-0.5 rounded-full bg-[#131314] text-[9px] font-mono text-[#a1abc4] border border-[#3b494b]"
                 >
                   {tag}
                 </span>

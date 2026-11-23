@@ -101,15 +101,15 @@ export default function CanvasTab({ rooms, onUpdateRoom, onAutoLink, onSave, sav
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-[#09090B] overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2 border-b border-[#27272A] bg-[#0c0c0f]">
-        <h2 className="text-sm font-mono font-bold text-[#3ECF8E] flex items-center gap-2">
+    <div className="flex-1 flex flex-col bg-[#131314] overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-[#353436] bg-[#201f20]">
+        <h2 className="text-sm font-mono font-bold text-[#dbfcff] flex items-center gap-2">
           <LayoutGrid className="w-4 h-4" />
           Canvas — Tour Map
         </h2>
         <div className="flex items-center gap-1.5">
           {saved && (
-            <span className="flex items-center gap-1 text-[10px] font-mono text-[#3ECF8E]">
+            <span className="flex items-center gap-1 text-[10px] font-mono text-[#dbfcff]">
               <CheckCircle2 className="w-3.5 h-3.5" />
               Saved
             </span>
@@ -117,7 +117,7 @@ export default function CanvasTab({ rooms, onUpdateRoom, onAutoLink, onSave, sav
           <button
             type="button"
             onClick={autoArrange}
-            className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#18181B] hover:bg-[#27272A] text-[10px] font-mono text-white"
+            className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#201f20] hover:bg-[#353436] text-[10px] font-mono text-white"
             title="Auto-arrange"
           >
             <Wand2 className="w-3 h-3" />
@@ -126,7 +126,7 @@ export default function CanvasTab({ rooms, onUpdateRoom, onAutoLink, onSave, sav
           <button
             type="button"
             onClick={onAutoLink}
-            className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#18181B] hover:bg-[#27272A] text-[10px] font-mono text-white"
+            className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#201f20] hover:bg-[#353436] text-[10px] font-mono text-white"
             title="Create hotspot links between scenes within 200m"
           >
             <Link2 className="w-3 h-3" />
@@ -135,7 +135,7 @@ export default function CanvasTab({ rooms, onUpdateRoom, onAutoLink, onSave, sav
           <button
             type="button"
             onClick={onSave}
-            className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#3ECF8E] hover:bg-[#34b876] text-black text-[10px] font-bold font-mono"
+            className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#dbfcff] hover:bg-[#34b876] text-black text-[10px] font-bold font-mono"
           >
             <Save className="w-3 h-3" />
             Save Layout
@@ -143,8 +143,8 @@ export default function CanvasTab({ rooms, onUpdateRoom, onAutoLink, onSave, sav
         </div>
       </div>
 
-      <div className="px-4 py-1.5 text-[10px] font-mono text-[#71717A] border-b border-[#27272A]">
-        Tip: Hold <kbd className="px-1 bg-[#27272A] rounded">Space</kbd> + drag to pan · Click + drag a card to move
+      <div className="px-4 py-1.5 text-[10px] font-mono text-[#71717A] border-b border-[#353436]">
+        Tip: Hold <kbd className="px-1 bg-[#353436] rounded">Space</kbd> + drag to pan · Click + drag a card to move
       </div>
 
       <div className="flex-1 overflow-hidden relative">
@@ -157,7 +157,7 @@ export default function CanvasTab({ rooms, onUpdateRoom, onAutoLink, onSave, sav
             spaceDown ? 'cursor-grab' : isPanning ? 'cursor-grabbing' : 'cursor-default'
           }`}
           style={{
-            backgroundImage: 'radial-gradient(circle, #18181B 1px, transparent 1px)',
+            backgroundImage: 'radial-gradient(circle, #201f20 1px, transparent 1px)',
             backgroundSize: '20px 20px',
           }}
         >
@@ -190,7 +190,7 @@ export default function CanvasTab({ rooms, onUpdateRoom, onAutoLink, onSave, sav
                         y1={(r as any).floorPlanY ?? 80}
                         x2={(o as any).floorPlanX ?? 80}
                         y2={(o as any).floorPlanY ?? 80}
-                        stroke="#3ECF8E"
+                        stroke="#dbfcff"
                         strokeOpacity={0.4}
                         strokeWidth={1.5}
                         strokeDasharray="4 4"
@@ -207,27 +207,27 @@ export default function CanvasTab({ rooms, onUpdateRoom, onAutoLink, onSave, sav
                 <div
                   key={r.id}
                   onPointerDown={(e) => onCardPointerDown(e, r.id)}
-                  className={`absolute w-44 rounded-lg border bg-[#0c0c0f] overflow-hidden cursor-move shadow-xl select-none ${
+                  className={`absolute w-44 rounded-lg border bg-[#201f20] overflow-hidden cursor-move shadow-xl select-none ${
                     dragId === r.id
-                      ? 'border-[#3ECF8E] shadow-[0_0_20px_rgba(62,207,142,0.4)]'
-                      : 'border-[#27272A]'
+                      ? 'border-[#dbfcff] shadow-[0_0_20px_rgba(62,207,142,0.4)]'
+                      : 'border-[#353436]'
                   }`}
                   style={{ left: x, top: y, touchAction: 'none' }}
                 >
-                  <div className="relative w-full h-20 bg-[#18181B]">
+                  <div className="relative w-full h-20 bg-[#201f20]">
                     {r.thumbnailUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={r.thumbnailUrl} alt={r.name} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <ImageIcon className="w-6 h-6 text-[#27272A]" />
+                        <ImageIcon className="w-6 h-6 text-[#353436]" />
                       </div>
                     )}
                     <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-black/60 text-[9px] font-mono text-white">
                       {String(idx).padStart(2, '0')}
                     </div>
                     {typeof (r as any).lat === 'number' && (
-                      <div className="absolute top-1 right-1 px-1.5 py-0.5 rounded bg-[#3ECF8E] text-[9px] font-mono text-black flex items-center gap-0.5">
+                      <div className="absolute top-1 right-1 px-1.5 py-0.5 rounded bg-[#dbfcff] text-[9px] font-mono text-black flex items-center gap-0.5">
                         <MapPin className="w-2.5 h-2.5" />
                         GPS
                       </div>

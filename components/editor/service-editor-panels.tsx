@@ -155,9 +155,9 @@ export function ServiceEditorPanels({ tabs, tabData, loading, error, onDataChang
   if (loading) {
     return (
       <div className="space-y-3">
-        <div className="flex items-center gap-1 p-1 rounded-lg bg-[#09090B] border border-[#27272A]">
+        <div className="flex items-center gap-1 p-1 rounded-lg bg-[#131314] border border-[#353436]">
           {tabs.map((tab) => (
-            <div key={tab.key} className="h-6 w-24 rounded bg-[#27272A]/60" />
+            <div key={tab.key} className="h-6 w-24 rounded bg-[#353436]/60" />
           ))}
         </div>
         <TableSkeleton rows={4} columns={activeTab?.columns.length || 4} />
@@ -176,7 +176,7 @@ export function ServiceEditorPanels({ tabs, tabData, loading, error, onDataChang
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <div role="tablist" className="flex items-center gap-1 p-1 rounded-lg bg-[#09090B] border border-[#27272A]">
+        <div role="tablist" className="flex items-center gap-1 p-1 rounded-lg bg-[#131314] border border-[#353436]">
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -184,8 +184,8 @@ export function ServiceEditorPanels({ tabs, tabData, loading, error, onDataChang
               onClick={() => setActive(tab.key)}
               className={`px-2 py-1.5 rounded border text-[10px] font-mono ${
                 active === tab.key
-                  ? 'bg-[#3ECF8E]/15 border-[#3ECF8E]/40 text-[#3ECF8E]'
-                  : 'bg-[#09090B] border-[#27272A] text-[#A1A1AA]'
+                  ? 'bg-[#dbfcff]/15 border-[#dbfcff]/40 text-[#dbfcff]'
+                  : 'bg-[#131314] border-[#353436] text-[#A1A1AA]'
               }`}
             >
               {tab.label}
@@ -197,18 +197,18 @@ export function ServiceEditorPanels({ tabs, tabData, loading, error, onDataChang
           <button
             type="button"
             onClick={openCreate}
-            className="px-2.5 py-1.5 rounded border border-[#3ECF8E]/40 bg-[#3ECF8E]/15 text-[10px] font-mono text-[#3ECF8E] hover:bg-[#3ECF8E]/25"
+            className="px-2.5 py-1.5 rounded border border-[#dbfcff]/40 bg-[#dbfcff]/15 text-[10px] font-mono text-[#dbfcff] hover:bg-[#dbfcff]/25"
           >
             + New
           </button>
         )}
       </div>
 
-      <div className="rounded border border-[#27272A] bg-[#0c0c0f]">
+      <div className="rounded border border-[#353436] bg-[#201f20]">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-[11px] font-mono">
             <thead>
-              <tr className="border-b border-[#27272A] text-[#71717A]">
+              <tr className="border-b border-[#353436] text-[#71717A]">
                 {activeTab?.columns.map((col) => (
                   <th key={col.key} className="px-3 py-2 font-medium">
                     {col.label}
@@ -219,9 +219,9 @@ export function ServiceEditorPanels({ tabs, tabData, loading, error, onDataChang
             </thead>
             <tbody>
               {rows.map((row, idx) => (
-                <tr key={idx} className="border-b border-[#27272A] last:border-b-0">
+                <tr key={idx} className="border-b border-[#353436] last:border-b-0">
                   {activeTab?.columns.map((col) => (
-                    <td key={col.key} className="px-3 py-2 text-[#FAFAFA]">
+                    <td key={col.key} className="px-3 py-2 text-[#e5e2e3]">
                       {col.render ? col.render(row[col.key], row) : String(row[col.key] ?? '-')}
                     </td>
                   ))}
@@ -232,7 +232,7 @@ export function ServiceEditorPanels({ tabs, tabData, loading, error, onDataChang
                             <button
                               type="button"
                               onClick={() => openEdit(row)}
-                              className="px-2 py-1 rounded border border-[#27272A] bg-[#09090B] text-[10px] font-mono text-[#A1A1AA] hover:text-white"
+                              className="px-2 py-1 rounded border border-[#353436] bg-[#131314] text-[10px] font-mono text-[#A1A1AA] hover:text-white"
                             >
                               Edit
                             </button>
@@ -251,7 +251,7 @@ export function ServiceEditorPanels({ tabs, tabData, loading, error, onDataChang
                             <button
                               type="button"
                               onClick={() => onOpenEditor(row.id)}
-                              className="px-2 py-1 rounded border border-[#3ECF8E]/40 bg-[#3ECF8E]/15 text-[10px] font-mono text-[#3ECF8E] hover:bg-[#3ECF8E]/25"
+                              className="px-2 py-1 rounded border border-[#dbfcff]/40 bg-[#dbfcff]/15 text-[10px] font-mono text-[#dbfcff] hover:bg-[#dbfcff]/25"
                               title="Open in Editor"
                             >
                               <ExternalLink className="w-3 h-3" />

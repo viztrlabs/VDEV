@@ -170,12 +170,12 @@ export default function DocumentQuickViewModal({
       <div
         ref={modalContainerRef}
         onClick={(e) => e.stopPropagation()}
-        className={`w-full max-w-5xl rounded-2xl bg-[#121215] border border-[#27272A] shadow-2xl overflow-hidden flex flex-col transition-all duration-200 ${
+        className={`w-full max-w-5xl rounded-2xl bg-[#131314] border border-[#353436] shadow-2xl overflow-hidden flex flex-col transition-all duration-200 ${
           isFullscreen ? 'h-full max-h-screen rounded-none' : 'max-h-[92vh] h-[850px]'
         }`}
       >
         {/* TOP TOOLBAR */}
-        <div className="p-3.5 sm:px-5 sm:py-3.5 border-b border-[#27272A] bg-[#18181B] flex flex-wrap items-center justify-between gap-3 shrink-0">
+        <div className="p-3.5 sm:px-5 sm:py-3.5 border-b border-[#353436] bg-[#201f20] flex flex-wrap items-center justify-between gap-3 shrink-0">
           {/* LEFT: DOCUMENT META & BADGE */}
           <div className="flex items-center gap-3 min-w-0">
             <div
@@ -197,7 +197,7 @@ export default function DocumentQuickViewModal({
                 <h3 className="text-xs sm:text-sm font-bold font-display text-white truncate" title={doc.title}>
                   {doc.title}
                 </h3>
-                <span className="hidden md:inline px-2 py-0.5 rounded text-[9px] font-mono uppercase bg-[#09090B] border border-[#27272A] text-[#3ECF8E]">
+                <span className="hidden md:inline px-2 py-0.5 rounded text-[9px] font-mono uppercase bg-[#131314] border border-[#353436] text-[#dbfcff]">
                   Quick View
                 </span>
               </div>
@@ -208,12 +208,12 @@ export default function DocumentQuickViewModal({
           </div>
 
           {/* CENTER: TAB TOGGLES */}
-          <div className="flex items-center gap-1 p-1 rounded-xl bg-[#09090B] border border-[#27272A] text-xs font-mono">
+          <div className="flex items-center gap-1 p-1 rounded-xl bg-[#131314] border border-[#353436] text-xs font-mono">
             <button
               onClick={() => setActiveTab('preview')}
               className={`px-3 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${
                 activeTab === 'preview'
-                  ? 'bg-[#18181B] text-white font-bold border border-[#3ECF8E]/40 text-[#3ECF8E]'
+                  ? 'bg-[#201f20] text-white font-bold border border-[#dbfcff]/40 text-[#dbfcff]'
                   : 'text-[#71717A] hover:text-white'
               }`}
             >
@@ -224,7 +224,7 @@ export default function DocumentQuickViewModal({
               onClick={() => setActiveTab('inspector')}
               className={`px-3 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${
                 activeTab === 'inspector'
-                  ? 'bg-[#18181B] text-[#3ECF8E] font-bold border border-[#3ECF8E]/40'
+                  ? 'bg-[#201f20] text-[#dbfcff] font-bold border border-[#dbfcff]/40'
                   : 'text-[#71717A] hover:text-white'
               }`}
             >
@@ -237,7 +237,7 @@ export default function DocumentQuickViewModal({
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => onDownload(doc)}
-              className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm"
+              className="px-3 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm"
               title="Download File"
             >
               <Download className="w-3.5 h-3.5" />
@@ -246,7 +246,7 @@ export default function DocumentQuickViewModal({
 
             <button
               onClick={toggleFullscreen}
-              className="p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
               title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
             >
               {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -254,7 +254,7 @@ export default function DocumentQuickViewModal({
 
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
               title="Close (ESC)"
             >
               <X className="w-4 h-4" />
@@ -264,10 +264,10 @@ export default function DocumentQuickViewModal({
 
         {/* SUB-TOOLBAR FOR PREVIEW MODE */}
         {activeTab === 'preview' && (
-          <div className="px-4 py-2 bg-[#09090B] border-b border-[#27272A] flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-[#A1A1AA]">
+          <div className="px-4 py-2 bg-[#131314] border-b border-[#353436] flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-[#A1A1AA]">
             {/* VIEWPORT CONTROLS: ZOOM & ROTATE */}
             <div className="flex items-center gap-2">
-              <div className="flex items-center bg-[#18181B] border border-[#27272A] rounded-lg p-0.5">
+              <div className="flex items-center bg-[#201f20] border border-[#353436] rounded-lg p-0.5">
                 <button
                   onClick={handleZoomOut}
                   disabled={zoomLevel <= 50}
@@ -291,7 +291,7 @@ export default function DocumentQuickViewModal({
 
               <button
                 onClick={handleResetZoom}
-                className="px-2 py-1 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[10px] text-zinc-300 hover:text-white cursor-pointer"
+                className="px-2 py-1 rounded bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[10px] text-zinc-300 hover:text-white cursor-pointer"
                 title="Fit to Window (100%)"
               >
                 Fit
@@ -299,14 +299,14 @@ export default function DocumentQuickViewModal({
 
               <button
                 onClick={handleRotate}
-                className="p-1.5 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-zinc-300 hover:text-white cursor-pointer"
+                className="p-1.5 rounded bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-zinc-300 hover:text-white cursor-pointer"
                 title="Rotate 90° Clockwise"
               >
                 <RotateCw className="w-3.5 h-3.5" />
               </button>
 
               {doc.fileType === 'pdf' && (
-                <div className="hidden sm:flex items-center gap-1 ml-2 pl-2 border-l border-[#27272A]">
+                <div className="hidden sm:flex items-center gap-1 ml-2 pl-2 border-l border-[#353436]">
                   <span className="text-[10px] text-[#71717A]">Palette:</span>
                   <button
                     onClick={() => setBlueprintTheme('blueprint')}
@@ -352,7 +352,7 @@ export default function DocumentQuickViewModal({
                     onClick={() => setCadViewAngle(angle)}
                     className={`px-2 py-0.5 rounded text-[10px] uppercase font-mono cursor-pointer ${
                       cadViewAngle === angle
-                        ? 'bg-[#3ECF8E]/20 text-[#3ECF8E] border border-[#3ECF8E]/40 font-bold'
+                        ? 'bg-[#dbfcff]/20 text-[#dbfcff] border border-[#dbfcff]/40 font-bold'
                         : 'text-[#71717A] hover:text-white'
                     }`}
                   >
@@ -365,7 +365,7 @@ export default function DocumentQuickViewModal({
             {/* PAGE NAVIGATION FOR MULTI-SHEET PDFS */}
             {doc.fileType === 'pdf' && (
               <div className="flex items-center gap-2">
-                <div className="flex items-center bg-[#18181B] border border-[#27272A] rounded-lg p-0.5">
+                <div className="flex items-center bg-[#201f20] border border-[#353436] rounded-lg p-0.5">
                   <button
                     onClick={handlePrevPage}
                     disabled={currentPage <= 1}
@@ -389,7 +389,7 @@ export default function DocumentQuickViewModal({
 
                 <button
                   onClick={handlePrint}
-                  className="hidden md:flex p-1.5 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-zinc-300 hover:text-white cursor-pointer items-center gap-1 text-[10px]"
+                  className="hidden md:flex p-1.5 rounded bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-zinc-300 hover:text-white cursor-pointer items-center gap-1 text-[10px]"
                   title="Print Drawing Set"
                 >
                   <Printer className="w-3.5 h-3.5" />
@@ -401,7 +401,7 @@ export default function DocumentQuickViewModal({
         )}
 
         {/* MAIN BODY VIEW */}
-        <div className="flex-1 overflow-y-auto bg-[#09090B] relative flex flex-col p-4">
+        <div className="flex-1 overflow-y-auto bg-[#131314] relative flex flex-col p-4">
           {activeTab === 'preview' ? (
             <div className="flex-1 flex flex-col items-center justify-center min-h-[460px] overflow-auto">
               {/* PDF ARCHITECTURAL BLUEPRINT VIEWER */}
@@ -416,7 +416,7 @@ export default function DocumentQuickViewModal({
                     blueprintTheme === 'blueprint'
                       ? 'bg-[#081c2f] border-cyan-800 text-cyan-300'
                       : blueprintTheme === 'dark'
-                      ? 'bg-[#121214] border-zinc-700 text-zinc-200'
+                      ? 'bg-[#131314] border-zinc-700 text-zinc-200'
                       : 'bg-[#faf8f5] border-zinc-400 text-zinc-900'
                   }`}
                 >
@@ -589,11 +589,11 @@ export default function DocumentQuickViewModal({
 
               {/* CAD & BIM 3D WIREFRAME VIEWPORT */}
               {(doc.fileType === 'cad' || doc.fileType === 'bim') && (
-                <div className="w-full max-w-3xl rounded-xl bg-[#09090B] border border-[#27272A] p-6 space-y-4 shadow-2xl">
+                <div className="w-full max-w-3xl rounded-xl bg-[#131314] border border-[#353436] p-6 space-y-4 shadow-2xl">
                   {/* 3D VIEWPORT HEADER */}
-                  <div className="flex items-center justify-between pb-3 border-b border-[#27272A] text-xs font-mono">
+                  <div className="flex items-center justify-between pb-3 border-b border-[#353436] text-xs font-mono">
                     <div className="flex items-center gap-2">
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#3ECF8E] animate-pulse" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#dbfcff] animate-pulse" />
                       <span className="text-white font-bold">Interactive CAD Wireframe Viewport</span>
                       <span className="text-[#71717A] text-[10px]">({doc.extension} Mesh)</span>
                     </div>
@@ -606,18 +606,18 @@ export default function DocumentQuickViewModal({
                   </div>
 
                   {/* SIMULATED 3D WIREFRAME CANVAS */}
-                  <div className="relative w-full h-[320px] bg-[#121215] rounded-lg border border-[#27272A] overflow-hidden flex items-center justify-center">
+                  <div className="relative w-full h-[320px] bg-[#131314] rounded-lg border border-[#353436] overflow-hidden flex items-center justify-center">
                     {/* Background Grid */}
                     <div
                       className="absolute inset-0 opacity-20"
                       style={{
-                        backgroundImage: 'linear-gradient(to right, #3ECF8E 1px, transparent 1px), linear-gradient(to bottom, #3ECF8E 1px, transparent 1px)',
+                        backgroundImage: 'linear-gradient(to right, #dbfcff 1px, transparent 1px), linear-gradient(to bottom, #dbfcff 1px, transparent 1px)',
                         backgroundSize: '30px 30px',
                       }}
                     />
 
                     {/* AXIS GIZMO IN CORNER */}
-                    <div className="absolute bottom-3 left-3 p-2 rounded bg-black/70 border border-[#27272A] text-[9px] font-mono space-y-0.5">
+                    <div className="absolute bottom-3 left-3 p-2 rounded bg-black/70 border border-[#353436] text-[9px] font-mono space-y-0.5">
                       <div className="text-red-400 font-bold">X: +14,820.5 mm</div>
                       <div className="text-emerald-400 font-bold">Y: +8,902.1 mm</div>
                       <div className="text-blue-400 font-bold">Z: +140,000.0 mm</div>
@@ -628,7 +628,7 @@ export default function DocumentQuickViewModal({
                       animate={{ rotateY: 360 }}
                       transition={{ repeat: Infinity, duration: 25, ease: 'linear' }}
                       viewBox="0 0 400 240"
-                      className="w-72 h-72 stroke-[#3ECF8E] fill-[#3ECF8E]/5 stroke-[1.2]"
+                      className="w-72 h-72 stroke-[#dbfcff] fill-[#dbfcff]/5 stroke-[1.2]"
                     >
                       {/* Isometric Prism Box */}
                       <polygon points="200,40 320,100 200,160 80,100" />
@@ -641,23 +641,23 @@ export default function DocumentQuickViewModal({
                       <line x1="80" y1="160" x2="320" y2="160" strokeDasharray="3 3" opacity="0.6" />
 
                       {/* Node markers */}
-                      <circle cx="200" cy="40" r="3" fill="#3ECF8E" />
-                      <circle cx="320" cy="100" r="3" fill="#3ECF8E" />
-                      <circle cx="200" cy="160" r="3" fill="#3ECF8E" />
-                      <circle cx="80" cy="100" r="3" fill="#3ECF8E" />
-                      <circle cx="200" cy="220" r="3" fill="#3ECF8E" />
-                      <circle cx="80" cy="160" r="3" fill="#3ECF8E" />
-                      <circle cx="320" cy="160" r="3" fill="#3ECF8E" />
+                      <circle cx="200" cy="40" r="3" fill="#dbfcff" />
+                      <circle cx="320" cy="100" r="3" fill="#dbfcff" />
+                      <circle cx="200" cy="160" r="3" fill="#dbfcff" />
+                      <circle cx="80" cy="100" r="3" fill="#dbfcff" />
+                      <circle cx="200" cy="220" r="3" fill="#dbfcff" />
+                      <circle cx="80" cy="160" r="3" fill="#dbfcff" />
+                      <circle cx="320" cy="160" r="3" fill="#dbfcff" />
                     </motion.svg>
                   </div>
 
                   {/* CAD CONTROLS FOOTER */}
                   <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-[#71717A]">
                     <div className="flex items-center gap-2">
-                      <Box className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                      <Box className="w-3.5 h-3.5 text-[#dbfcff]" />
                       <span>Coordinate System: UTM WGS84 Zone 33N</span>
                     </div>
-                    <div className="text-[#3ECF8E] font-bold">
+                    <div className="text-[#dbfcff] font-bold">
                       Geometry Verified · 0 Non-Manifold Edges
                     </div>
                   </div>
@@ -666,10 +666,10 @@ export default function DocumentQuickViewModal({
 
               {/* TECHNICAL SPEC & JSON VIEWER */}
               {doc.fileType === 'spec' && (
-                <div className="w-full max-w-3xl rounded-xl bg-[#09090B] border border-[#27272A] p-5 space-y-4 shadow-2xl">
-                  <div className="flex items-center justify-between pb-3 border-b border-[#27272A] text-xs font-mono">
+                <div className="w-full max-w-3xl rounded-xl bg-[#131314] border border-[#353436] p-5 space-y-4 shadow-2xl">
+                  <div className="flex items-center justify-between pb-3 border-b border-[#353436] text-xs font-mono">
                     <div className="flex items-center gap-2">
-                      <FileCode className="w-4 h-4 text-[#3ECF8E]" />
+                      <FileCode className="w-4 h-4 text-[#dbfcff]" />
                       <span className="text-white font-bold">{doc.fileName}</span>
                       <span className="text-[10px] text-[#71717A]">(PBR Photometric Spec)</span>
                     </div>
@@ -678,15 +678,15 @@ export default function DocumentQuickViewModal({
                         navigator.clipboard.writeText(`{\n  "specVersion": "2.0",\n  "materialIndex": {\n    "albedo_map": "Apex_Glazing_Albedo_8K.exr",\n    "refractive_index_ior": 1.52,\n    "specular_reflectance": 0.082,\n    "roughness_microfacet": 0.015\n  }\n}`);
                         showToast('Schema JSON copied to clipboard', 'info');
                       }}
-                      className="px-2.5 py-1 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[10px] text-zinc-300 hover:text-white flex items-center gap-1 cursor-pointer"
+                      className="px-2.5 py-1 rounded bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[10px] text-zinc-300 hover:text-white flex items-center gap-1 cursor-pointer"
                     >
-                      <Copy className="w-3 h-3 text-[#3ECF8E]" />
+                      <Copy className="w-3 h-3 text-[#dbfcff]" />
                       <span>Copy JSON</span>
                     </button>
                   </div>
 
                   {/* SYNTAX HIGHLIGHTED JSON CONTAINER */}
-                  <div className="p-4 rounded-lg bg-[#121215] border border-[#27272A] font-mono text-xs overflow-x-auto space-y-1">
+                  <div className="p-4 rounded-lg bg-[#131314] border border-[#353436] font-mono text-xs overflow-x-auto space-y-1">
                     <div className="text-[#71717A]">{'// VizTR PBR Spectral Optical Profile v2026.1'}</div>
                     <div className="text-zinc-300">&#123;</div>
                     <div className="pl-4 text-emerald-400">
@@ -732,7 +732,7 @@ export default function DocumentQuickViewModal({
           ) : (
             /* TECHNICAL INSPECTOR & CRYPTOGRAPHIC VERIFICATION TAB */
             <div className="max-w-2xl mx-auto w-full py-4 space-y-5 text-xs font-mono">
-              <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-3">
+              <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436] space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] uppercase text-[#71717A] font-bold tracking-wider">
                     Digital Asset Ledger & Signature
@@ -743,12 +743,12 @@ export default function DocumentQuickViewModal({
                   </span>
                 </div>
 
-                <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] space-y-1">
+                <div className="p-3 rounded-lg bg-[#131314] border border-[#353436] space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] text-[#71717A] uppercase">SHA-256 Checksum Hash</span>
                     <button
                       onClick={handleCopyChecksum}
-                      className="text-[10px] text-[#3ECF8E] hover:underline flex items-center gap-1 cursor-pointer"
+                      className="text-[10px] text-[#dbfcff] hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       <Copy className="w-3 h-3" />
                       <span>{isCopied ? 'Copied!' : 'Copy Hash'}</span>
@@ -762,49 +762,49 @@ export default function DocumentQuickViewModal({
 
               {/* METADATA GRID */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <div className="p-3 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+                <div className="p-3 rounded-xl bg-[#201f20] border border-[#353436] space-y-1">
                   <span className="text-[10px] text-[#71717A] uppercase flex items-center gap-1">
-                    <HardDrive className="w-3 h-3 text-[#3ECF8E]" />
+                    <HardDrive className="w-3 h-3 text-[#dbfcff]" />
                     <span>File Size</span>
                   </span>
                   <div className="text-white font-bold">{doc.fileSize}</div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+                <div className="p-3 rounded-xl bg-[#201f20] border border-[#353436] space-y-1">
                   <span className="text-[10px] text-[#71717A] uppercase flex items-center gap-1">
-                    <Tag className="w-3 h-3 text-[#3ECF8E]" />
+                    <Tag className="w-3 h-3 text-[#dbfcff]" />
                     <span>Version Tag</span>
                   </span>
                   <div className="text-white font-bold">{doc.version}</div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+                <div className="p-3 rounded-xl bg-[#201f20] border border-[#353436] space-y-1">
                   <span className="text-[10px] text-[#71717A] uppercase flex items-center gap-1">
-                    <Calendar className="w-3 h-3 text-[#3ECF8E]" />
+                    <Calendar className="w-3 h-3 text-[#dbfcff]" />
                     <span>Last Ingested</span>
                   </span>
                   <div className="text-white font-bold">{doc.updatedAt}</div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+                <div className="p-3 rounded-xl bg-[#201f20] border border-[#353436] space-y-1">
                   <span className="text-[10px] text-[#71717A] uppercase flex items-center gap-1">
-                    <User className="w-3 h-3 text-[#3ECF8E]" />
+                    <User className="w-3 h-3 text-[#dbfcff]" />
                     <span>Uploading Author</span>
                   </span>
                   <div className="text-white font-bold truncate">{doc.uploadedBy}</div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+                <div className="p-3 rounded-xl bg-[#201f20] border border-[#353436] space-y-1">
                   <span className="text-[10px] text-[#71717A] uppercase flex items-center gap-1">
-                    <Layers className="w-3 h-3 text-[#3ECF8E]" />
+                    <Layers className="w-3 h-3 text-[#dbfcff]" />
                     <span>Classification</span>
                   </span>
                   <div className="text-white font-bold">{doc.category}</div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+                <div className="p-3 rounded-xl bg-[#201f20] border border-[#353436] space-y-1">
                   <span className="text-[10px] text-[#71717A] uppercase flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3 text-[#3ECF8E]" />
+                    <CheckCircle2 className="w-3 h-3 text-[#dbfcff]" />
                     <span>Units / Scale</span>
                   </span>
                   <div className="text-white font-bold">{doc.pageCountOrUnits || 'Metric mm (1:1)'}</div>
@@ -812,7 +812,7 @@ export default function DocumentQuickViewModal({
               </div>
 
               {/* SCOPE DESCRIPTION */}
-              <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1.5">
+              <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436] space-y-1.5">
                 <span className="text-[10px] uppercase text-[#71717A] font-bold tracking-wider">
                   Technical Scope & Architectural Notes
                 </span>
@@ -825,9 +825,9 @@ export default function DocumentQuickViewModal({
         </div>
 
         {/* BOTTOM FOOTER STATUS */}
-        <div className="p-3 px-5 border-t border-[#27272A] bg-[#18181B] flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] font-mono text-[#71717A] shrink-0">
+        <div className="p-3 px-5 border-t border-[#353436] bg-[#201f20] flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] font-mono text-[#71717A] shrink-0">
           <div className="flex items-center gap-2">
-            <span className="text-[#3ECF8E]">● Live In-Browser Preview</span>
+            <span className="text-[#dbfcff]">● Live In-Browser Preview</span>
             <span>·</span>
             <span>No local CAD / BIM workstation install required</span>
           </div>
@@ -836,7 +836,7 @@ export default function DocumentQuickViewModal({
             <span className="text-[#A1A1AA]">Press [ESC] to exit</span>
             <button
               onClick={onClose}
-              className="px-3 py-1 rounded bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-white cursor-pointer"
+              className="px-3 py-1 rounded bg-[#131314] hover:bg-[#353436] border border-[#353436] text-white cursor-pointer"
             >
               Close
             </button>

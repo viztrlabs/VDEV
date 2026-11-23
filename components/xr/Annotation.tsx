@@ -11,9 +11,9 @@ interface AnnotationProps {
 
 export default function Annotation({ annotation, onClose }: AnnotationProps) {
   return (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 max-w-sm w-full p-5 rounded-2xl bg-black/85 backdrop-blur-xl border border-white/20 text-[#FAFAFA] shadow-2xl space-y-3 animate-in fade-in zoom-in-95 duration-200">
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 max-w-sm w-full p-5 rounded-2xl bg-black/85 backdrop-blur-xl border border-white/20 text-[#e5e2e3] shadow-2xl space-y-3 animate-in fade-in zoom-in-95 duration-200">
       <div className="flex items-center justify-between border-b border-white/10 pb-2">
-        <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E]">
+        <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff]">
           <Box className="w-3.5 h-3.5" />
           <span className="font-bold uppercase tracking-wider">{annotation.title}</span>
         </div>
@@ -33,7 +33,7 @@ export default function Annotation({ annotation, onClose }: AnnotationProps) {
         <span>VizTR Interactive Spatial Node</span>
         <button
           onClick={onClose}
-          className="text-[#3ECF8E] hover:underline cursor-pointer"
+          className="text-[#dbfcff] hover:underline cursor-pointer"
         >
           Dismiss [ESC]
         </button>

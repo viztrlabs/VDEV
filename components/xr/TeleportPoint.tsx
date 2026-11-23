@@ -24,12 +24,12 @@ export default function TeleportPoint({ teleport, onTeleport }: TeleportPointPro
       onClick={() => onTeleport(teleport.targetSceneId)}
     >
       {/* Ground Nav Ring */}
-      <div className="w-10 h-10 rounded-full border-2 border-dashed border-[#3ECF8E]/80 animate-spin-slow flex items-center justify-center bg-black/60 shadow-xl group-hover:scale-125 group-hover:border-[#3ECF8E] transition-all">
-        <Compass className="w-5 h-5 text-[#3ECF8E]" />
+      <div className="w-10 h-10 rounded-full border-2 border-dashed border-[#dbfcff]/80 animate-spin-slow flex items-center justify-center bg-black/60 shadow-xl group-hover:scale-125 group-hover:border-[#dbfcff] transition-all">
+        <Compass className="w-5 h-5 text-[#dbfcff]" />
       </div>
 
       {/* Label Badge */}
-      <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 hidden group-hover:block whitespace-nowrap px-3 py-1 rounded-md bg-black/90 backdrop-blur-md border border-[#3ECF8E]/40 text-[10px] font-mono font-bold text-[#3ECF8E] shadow-2xl">
+      <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 hidden group-hover:block whitespace-nowrap px-3 py-1 rounded-md bg-black/90 backdrop-blur-md border border-[#dbfcff]/40 text-[10px] font-mono font-bold text-[#dbfcff] shadow-2xl">
         Teleport to {teleport.label} →
       </div>
     </div>

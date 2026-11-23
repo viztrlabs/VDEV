@@ -171,9 +171,9 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
   return (
     <div className="space-y-6">
       {/* BANNER */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#18181B] via-[#121214] to-[#09090B] border border-[#27272A] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#201f20] via-[#131314] to-[#131314] border border-[#353436] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase tracking-wider">
             <HardDrive className="w-4 h-4" />
             <span>CORE SYSTEM 04 • CLOUD & LOCAL FILE STORAGE</span>
           </div>
@@ -189,7 +189,7 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
           <button
             type="button"
             onClick={() => setIsUploadModal(true)}
-            className="px-4 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#3ECF8E]/90 text-black font-mono font-bold text-xs flex items-center gap-2 shadow-lg shadow-[#3ECF8E]/20 transition-all cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#dbfcff]/90 text-black font-mono font-bold text-xs flex items-center gap-2 shadow-lg shadow-[#dbfcff]/20 transition-all cursor-pointer"
           >
             <Upload className="w-4 h-4" />
             <span>Upload to Cloud / Local Storage</span>
@@ -199,16 +199,16 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
 
       {/* STORAGE TIERS & CAPACITY BREAKDOWN CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+        <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436] space-y-1">
           <div className="flex items-center justify-between text-[#A1A1AA] text-xs font-mono">
             <span>TOTAL INDEXED FILES</span>
-            <HardDrive className="w-4 h-4 text-[#3ECF8E]" />
+            <HardDrive className="w-4 h-4 text-[#dbfcff]" />
           </div>
           <div className="text-2xl font-bold text-white font-mono">{files.length} Assets</div>
-          <div className="text-[10px] text-[#3ECF8E]">{totalMb} MB Stored in Cluster</div>
+          <div className="text-[10px] text-[#dbfcff]">{totalMb} MB Stored in Cluster</div>
         </div>
 
-        <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+        <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436] space-y-1">
           <div className="flex items-center justify-between text-[#A1A1AA] text-xs font-mono">
             <span>CLOUDFLARE R2 (ZERO EGRESS)</span>
             <Cloud className="w-4 h-4 text-sky-400" />
@@ -219,7 +219,7 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
           <div className="text-[10px] text-[#A1A1AA]">Primary 3D GLB & Video CDN</div>
         </div>
 
-        <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+        <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436] space-y-1">
           <div className="flex items-center justify-between text-[#A1A1AA] text-xs font-mono">
             <span>AWS S3 ARCHIVAL</span>
             <Database className="w-4 h-4 text-amber-400" />
@@ -230,15 +230,15 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
           <div className="text-[10px] text-amber-400">8K EXR Master Renders</div>
         </div>
 
-        <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+        <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436] space-y-1">
           <div className="flex items-center justify-between text-[#A1A1AA] text-xs font-mono">
             <span>LOCAL NVME / SYMLINKS</span>
-            <Link2 className="w-4 h-4 text-[#3ECF8E]" />
+            <Link2 className="w-4 h-4 text-[#dbfcff]" />
           </div>
           <div className="text-2xl font-bold text-white font-mono">
             {files.filter((f) => f.provider === 'local_fs').length} Files
           </div>
-          <div className="text-[10px] text-[#3ECF8E]">Zero-Latency Studio Mount</div>
+          <div className="text-[10px] text-[#dbfcff]">Zero-Latency Studio Mount</div>
         </div>
       </div>
 
@@ -246,12 +246,12 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* LEFT COLUMN: FILE EXPLORER (6 Cols) */}
         <div className="lg:col-span-6 space-y-4">
-          <div className="p-4 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3">
+          <div className="p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-mono font-bold text-[#A1A1AA] uppercase">
                 Storage Explorer ({filteredFiles.length})
               </span>
-              <span className="text-[10px] font-mono text-[#3ECF8E] bg-[#3ECF8E]/10 px-2 py-0.5 rounded">
+              <span className="text-[10px] font-mono text-[#dbfcff] bg-[#dbfcff]/10 px-2 py-0.5 rounded">
                 Multi-Cloud Linked
               </span>
             </div>
@@ -264,7 +264,7 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search file name, tag, or project..."
-                className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
               />
             </div>
 
@@ -273,7 +273,7 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
               <select
                 value={providerFilter}
                 onChange={(e) => setProviderFilter(e.target.value)}
-                className="px-2 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] focus:border-[#3ECF8E] focus:outline-none"
+                className="px-2 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] focus:border-[#dbfcff] focus:outline-none"
               >
                 <option value="all">All Storage Providers</option>
                 <option value="cloudflare_r2">Cloudflare R2</option>
@@ -285,7 +285,7 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="px-2 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] focus:border-[#3ECF8E] focus:outline-none"
+                className="px-2 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] focus:border-[#dbfcff] focus:outline-none"
               >
                 <option value="all">All File Types</option>
                 <option value="3d_model">3D Models (.glb/.gltf)</option>
@@ -306,14 +306,14 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
                   onClick={() => setSelectedFile(file)}
                   className={`p-3.5 rounded-xl border transition-all cursor-pointer text-left ${
                     isSelected
-                      ? 'bg-[#27272A]/80 border-[#3ECF8E] shadow-md shadow-[#3ECF8E]/10'
-                      : 'bg-[#18181B] border-[#27272A] hover:border-[#71717A]'
+                      ? 'bg-[#353436]/80 border-[#dbfcff] shadow-md shadow-[#dbfcff]/10'
+                      : 'bg-[#201f20] border-[#353436] hover:border-[#71717A]'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2 mb-1">
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-center text-[#3ECF8E]">
-                        {file.fileType === '3d_model' && <FileCode className="w-3.5 h-3.5 text-[#3ECF8E]" />}
+                      <div className="w-7 h-7 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-center text-[#dbfcff]">
+                        {file.fileType === '3d_model' && <FileCode className="w-3.5 h-3.5 text-[#dbfcff]" />}
                         {file.fileType === 'render' && <ImageIcon className="w-3.5 h-3.5 text-amber-400" />}
                         {file.fileType === 'video' && <Video className="w-3.5 h-3.5 text-sky-400" />}
                         {file.fileType === 'cad_bim' && <Layers className="w-3.5 h-3.5 text-purple-400" />}
@@ -343,11 +343,11 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
                     </span>
                   </div>
 
-                  <div className="mt-2.5 flex items-center justify-between text-[9px] font-mono text-[#71717A] border-t border-[#27272A] pt-2">
+                  <div className="mt-2.5 flex items-center justify-between text-[9px] font-mono text-[#71717A] border-t border-[#353436] pt-2">
                     <span>{file.dimensions}</span>
                     <div className="flex items-center gap-1">
                       {file.tags.slice(0, 2).map((t, idx) => (
-                        <span key={idx} className="bg-[#09090B] px-1.5 py-0.2 rounded text-[8px] text-[#A1A1AA]">
+                        <span key={idx} className="bg-[#131314] px-1.5 py-0.2 rounded text-[8px] text-[#A1A1AA]">
                           {t}
                         </span>
                       ))}
@@ -362,11 +362,11 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
         {/* RIGHT COLUMN: ASSET INSPECTOR & PREVIEW (6 Cols) */}
         {selectedFile && (
           <div className="lg:col-span-6 space-y-5">
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#27272A] pb-4">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#353436] pb-4">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-xs font-mono">
-                    <span className="text-[#3ECF8E] font-bold">FORMAT: {selectedFile.format.toUpperCase()}</span>
+                    <span className="text-[#dbfcff] font-bold">FORMAT: {selectedFile.format.toUpperCase()}</span>
                     <span className="text-[#71717A]">•</span>
                     <span className="text-white">{selectedFile.dimensions}</span>
                   </div>
@@ -392,19 +392,19 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
 
               {/* STORAGE METADATA SPECS */}
               <div className="space-y-2 text-xs font-mono">
-                <div className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] space-y-1">
+                <div className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] space-y-1">
                   <div className="text-[#71717A] text-[10px]">PUBLIC CDN URL</div>
                   <div className="flex items-center gap-2">
                     <input
                       type="text"
                       readOnly
                       value={selectedFile.cdnUrl}
-                      className="flex-1 bg-transparent text-[#3ECF8E] text-[11px] select-all focus:outline-none"
+                      className="flex-1 bg-transparent text-[#dbfcff] text-[11px] select-all focus:outline-none"
                     />
                     <button
                       type="button"
                       onClick={() => handleCopy(selectedFile.cdnUrl, 'cdn')}
-                      className="p-1 rounded bg-[#18181B] hover:bg-[#27272A] text-white"
+                      className="p-1 rounded bg-[#201f20] hover:bg-[#353436] text-white"
                       title="Copy CDN Link"
                     >
                       {copiedLink === 'cdn' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
@@ -413,7 +413,7 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
                 </div>
 
                 {selectedFile.symbolicPath && (
-                  <div className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] space-y-1">
+                  <div className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] space-y-1">
                     <div className="text-[#71717A] text-[10px]">LOCAL FILESYSTEM SYMBOLIC LINK</div>
                     <div className="flex items-center gap-2">
                       <input
@@ -425,7 +425,7 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
                       <button
                         type="button"
                         onClick={() => handleCopy(selectedFile.symbolicPath || '', 'symlink')}
-                        className="p-1 rounded bg-[#18181B] hover:bg-[#27272A] text-white"
+                        className="p-1 rounded bg-[#201f20] hover:bg-[#353436] text-white"
                         title="Copy Symbolic Link"
                       >
                         {copiedLink === 'symlink' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Link2 className="w-3.5 h-3.5" />}
@@ -434,12 +434,12 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
                   </div>
                 )}
 
-                <div className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-between">
+                <div className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-between">
                   <span className="text-[#71717A]">Storage Bucket:</span>
                   <span className="text-white font-bold truncate max-w-[200px]">{selectedFile.providerBucket}</span>
                 </div>
 
-                <div className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-between">
+                <div className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-between">
                   <span className="text-[#71717A]">Uploaded By:</span>
                   <span className="text-white">{selectedFile.uploadedBy}</span>
                 </div>
@@ -451,7 +451,7 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
                   <button
                     type="button"
                     onClick={() => openModelViewer(selectedFile.cdnUrl, selectedFile.fileName)}
-                    className="flex-1 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                    className="flex-1 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
                   >
                     <Eye className="w-4 h-4" />
                     <span>Launch 3D WebXR Preview</span>
@@ -471,7 +471,7 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
                         }
                       ])
                     }
-                    className="flex-1 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                    className="flex-1 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
                   >
                     <Eye className="w-4 h-4" />
                     <span>Inspect 8K Master</span>
@@ -483,7 +483,7 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
                   target="_blank"
                   rel="noreferrer"
                   download
-                  className="px-4 py-2 rounded-xl bg-[#27272A] hover:bg-[#3f3f46] text-white font-mono font-bold text-xs flex items-center gap-2 transition-colors"
+                  className="px-4 py-2 rounded-xl bg-[#353436] hover:bg-[#3f3f46] text-white font-mono font-bold text-xs flex items-center gap-2 transition-colors"
                 >
                   <Download className="w-4 h-4" />
                   <span>Download</span>
@@ -497,9 +497,9 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
       {/* UPLOAD MODAL */}
       {isUploadModal && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#18181B] border border-[#27272A] rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
-              <div className="flex items-center gap-2 text-[#3ECF8E] font-mono font-bold text-xs uppercase">
+          <div className="bg-[#201f20] border border-[#353436] rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#353436] pb-3">
+              <div className="flex items-center gap-2 text-[#dbfcff] font-mono font-bold text-xs uppercase">
                 <Upload className="w-4 h-4" />
                 <span>Upload Asset to Multi-Cloud / Local</span>
               </div>
@@ -521,7 +521,7 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
                   value={newFileData.fileName}
                   onChange={(e) => setNewFileData({ ...newFileData, fileName: e.target.value })}
                   placeholder="e.g. apex_tower_night_facade_draco.glb"
-                  className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                  className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                 />
               </div>
 
@@ -531,7 +531,7 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
                   <select
                     value={newFileData.fileType}
                     onChange={(e) => setNewFileData({ ...newFileData, fileType: e.target.value as any })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     <option value="3d_model">3D Model (.glb/.gltf/.fbx)</option>
                     <option value="render">8K Render (.exr/.png)</option>
@@ -545,7 +545,7 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
                   <select
                     value={newFileData.provider}
                     onChange={(e) => setNewFileData({ ...newFileData, provider: e.target.value as any })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     <option value="cloudflare_r2">Cloudflare R2 (CDN)</option>
                     <option value="aws_s3">AWS S3 (Archival)</option>
@@ -560,7 +560,7 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
                 <select
                   value={newFileData.projectId}
                   onChange={(e) => setNewFileData({ ...newFileData, projectId: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                  className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                 >
                   {projects.map((p) => (
                     <option key={p.id} value={p.id}>
@@ -577,7 +577,7 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
                   value={newFileData.tags}
                   onChange={(e) => setNewFileData({ ...newFileData, tags: e.target.value })}
                   placeholder="e.g. Draco, LOD0, WebXR Ready"
-                  className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                  className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                 />
               </div>
 
@@ -587,27 +587,27 @@ export default function FileStorageManager({ projects }: FileStorageManagerProps
                     <span>Uploading & generating CDN bindings...</span>
                     <span>{uploadProgress}%</span>
                   </div>
-                  <div className="w-full h-1.5 rounded-full bg-[#09090B] overflow-hidden">
+                  <div className="w-full h-1.5 rounded-full bg-[#131314] overflow-hidden">
                     <div
-                      className="h-full bg-[#3ECF8E] transition-all duration-200"
+                      className="h-full bg-[#dbfcff] transition-all duration-200"
                       style={{ width: `${uploadProgress}%` }}
                     />
                   </div>
                 </div>
               )}
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#27272A]">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#353436]">
                 <button
                   type="button"
                   onClick={() => setIsUploadModal(false)}
-                  className="px-4 py-2 rounded-lg bg-[#27272A] text-white hover:bg-[#3f3f46] transition-colors"
+                  className="px-4 py-2 rounded-lg bg-[#353436] text-white hover:bg-[#3f3f46] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isUploading}
-                  className="px-5 py-2 rounded-lg bg-[#3ECF8E] text-black font-bold hover:bg-[#34b27b] disabled:opacity-50 transition-colors"
+                  className="px-5 py-2 rounded-lg bg-[#dbfcff] text-black font-bold hover:bg-[#34b27b] disabled:opacity-50 transition-colors"
                 >
                   {isUploading ? 'Uploading...' : 'Save & Publish Asset'}
                 </button>

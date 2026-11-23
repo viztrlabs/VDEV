@@ -166,15 +166,15 @@ export default function ServiceEditorPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#09090B] text-white">
-      <div className="px-4 sm:px-6 py-3 border-b border-[#27272A] flex items-center justify-between">
+    <div className="min-h-screen bg-[#131314] text-white">
+      <div className="px-4 sm:px-6 py-3 border-b border-[#353436] flex items-center justify-between">
         <div>
           <h1 className="text-sm font-mono font-bold text-white capitalize">{meta.title}</h1>
           <p className="text-[10px] font-mono text-[#71717A]">{projectId} / {serviceSlug}</p>
         </div>
         <button
           onClick={() => handleOpenEditor()}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#3ECF8E]/40 bg-[#3ECF8E]/15 text-[10px] font-mono font-semibold text-[#3ECF8E] hover:bg-[#3ECF8E]/25 shadow-lg shadow-[#3ECF8E]/20 transition"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#dbfcff]/40 bg-[#dbfcff]/15 text-[10px] font-mono font-semibold text-[#dbfcff] hover:bg-[#dbfcff]/25 shadow-lg shadow-[#dbfcff]/20 transition"
         >
           <Play className="w-3.5 h-3.5" />
           <ExternalLink className="w-3.5 h-3.5" />

@@ -27,7 +27,7 @@ function InContextShell({ onExit }: { onExit: () => void }) {
   );
 
   return (
-    <div className="flex h-screen w-full flex-col bg-[#09090B] text-[#FAFAFA]">
+    <div className="flex h-screen w-full flex-col bg-[#131314] text-[#e5e2e3]">
       <EditorToolbar onExit={onExit} />
       <div
         ref={containerRef}

@@ -726,12 +726,12 @@ const INITIAL_SOCIAL_LINKS: CMSSocialLink[] = [
 
 const INITIAL_THEME_CUSTOMIZATION: CMSThemeCustomization = {
   colorPalette: {
-    primary: '#3ECF8E',
+    primary: '#dbfcff',
     accent: '#34B27B',
-    background: '#09090B',
-    card: '#18181B',
-    border: '#27272A',
-    text: '#FAFAFA',
+    background: '#131314',
+    card: '#201f20',
+    border: '#353436',
+    text: '#e5e2e3',
   },
   typography: {
     headingFont: 'Space Grotesk',

@@ -333,7 +333,7 @@ export default function ControlBar({
           />
 
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-2.5 py-1 rounded bg-[#18181B] border border-[#27272A] text-[#3ECF8E] text-[10px] font-mono font-bold uppercase tracking-wider">
+            <div className="flex items-center gap-2 px-2.5 py-1 rounded bg-[#201f20] border border-[#353436] text-[#dbfcff] text-[10px] font-mono font-bold uppercase tracking-wider">
               <Compass className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '10s' }} />
               <span>360° TOUR</span>
             </div>
@@ -341,7 +341,7 @@ export default function ControlBar({
             <div className="relative">
               <button
                 onClick={() => setRoomDropdownOpen(!roomDropdownOpen)}
-                className="flex items-center gap-2 px-3 py-1 rounded-xl bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white transition-colors cursor-pointer"
+                className="flex items-center gap-2 px-3 py-1 rounded-xl bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-xs font-mono text-white transition-colors cursor-pointer"
               >
                 <DoorOpen className="w-3.5 h-3.5 text-rose-400" />
                 <span className="font-bold max-w-[200px] sm:max-w-[320px] truncate">{currentRoom.name}</span>
@@ -350,10 +350,10 @@ export default function ControlBar({
 
               {roomDropdownOpen && (
                 <div
-                  className="absolute top-full left-0 mt-2 w-80 rounded-2xl bg-[#121215] border border-[#27272A] shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150 font-mono text-xs"
+                  className="absolute top-full left-0 mt-2 w-80 rounded-2xl bg-[#131314] border border-[#353436] shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150 font-mono text-xs"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="px-2 py-1.5 text-[10px] text-[#71717A] uppercase font-bold tracking-wider border-b border-[#27272A] mb-1">
+                  <div className="px-2 py-1.5 text-[10px] text-[#71717A] uppercase font-bold tracking-wider border-b border-[#353436] mb-1">
                     Tour Room Nodes ({rooms.length})
                   </div>
                   <div className="space-y-1 max-h-64 overflow-y-auto">
@@ -369,11 +369,11 @@ export default function ControlBar({
                           }}
                           className={`w-full text-left p-2 rounded-xl flex items-center gap-3 transition-colors cursor-pointer ${
                             isSelected
-                              ? 'bg-[#18181B] text-[#3ECF8E] border border-[#3ECF8E]/30 font-bold'
-                              : 'hover:bg-[#18181B] text-zinc-300 hover:text-white'
+                              ? 'bg-[#201f20] text-[#dbfcff] border border-[#dbfcff]/30 font-bold'
+                              : 'hover:bg-[#201f20] text-zinc-300 hover:text-white'
                           }`}
                         >
-                          <div className="w-10 h-10 rounded-lg bg-cover bg-center shrink-0 border border-[#27272A]" style={{ backgroundImage: `url(${room.thumbnailUrl})` }} />
+                          <div className="w-10 h-10 rounded-lg bg-cover bg-center shrink-0 border border-[#353436]" style={{ backgroundImage: `url(${room.thumbnailUrl})` }} />
                           <div className="min-w-0 flex-1">
                             <div className="text-xs truncate">{room.name}</div>
                             <div className="text-[10px] text-[#71717A] truncate">{hpCount} Hotspots · {room.subtitle}</div>
@@ -415,8 +415,8 @@ export default function ControlBar({
               onClick={() => setHotspotDrawerOpen(!hotspotDrawerOpen)}
               className={`px-2.5 py-1.5 rounded-xl border text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer ${
                 hotspotDrawerOpen
-                  ? 'bg-[#3ECF8E] text-black border-[#3ECF8E] font-bold'
-                  : 'bg-[#18181B] hover:bg-[#27272A] text-[#FAFAFA] border-[#27272A]'
+                  ? 'bg-[#dbfcff] text-black border-[#dbfcff] font-bold'
+                  : 'bg-[#201f20] hover:bg-[#353436] text-[#e5e2e3] border-[#353436]'
               }`}
               title="Manage Room Hotspots"
             >
@@ -434,7 +434,7 @@ export default function ControlBar({
               }}
               className={`p-1.5 rounded-xl border transition-colors cursor-pointer ${
                 showHotspots
-                  ? 'bg-[#18181B] hover:bg-[#27272A] text-[#3ECF8E] border-[#27272A]'
+                  ? 'bg-[#201f20] hover:bg-[#353436] text-[#dbfcff] border-[#353436]'
                   : 'bg-zinc-800 text-zinc-500 border-zinc-700'
               }`}
               title={showHotspots ? 'Hide Hotspots' : 'Show Hotspots'}
@@ -449,15 +449,15 @@ export default function ControlBar({
               }}
               className={`p-1.5 rounded-xl border text-[10px] font-mono transition-colors cursor-pointer hidden md:flex items-center gap-1 ${
                 preferences.gyroscopeEnabled
-                  ? 'bg-[#3ECF8E] text-black border-[#3ECF8E]'
-                  : 'bg-[#18181B] hover:bg-[#27272A] text-[#FAFAFA] border-[#27272A]'
+                  ? 'bg-[#dbfcff] text-black border-[#dbfcff]'
+                  : 'bg-[#201f20] hover:bg-[#353436] text-[#e5e2e3] border-[#353436]'
               }`}
               title="Toggle Gyroscope Mode"
             >
               <Smartphone className="w-3.5 h-3.5" />
             </button>
 
-            <div className="hidden sm:flex items-center bg-[#18181B] border border-[#27272A] rounded-xl p-0.5 gap-0.5">
+            <div className="hidden sm:flex items-center bg-[#201f20] border border-[#353436] rounded-xl p-0.5 gap-0.5">
               <button
                 onClick={goBack}
                 disabled={roomHistoryIndex <= 0}
@@ -467,7 +467,7 @@ export default function ControlBar({
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
               </button>
-              <span className="text-[10px] font-mono text-[#3ECF8E] px-1 min-w-[28px] text-center" aria-label="Current scene">
+              <span className="text-[10px] font-mono text-[#dbfcff] px-1 min-w-[28px] text-center" aria-label="Current scene">
                 {roomHistoryIndex + 1}/{roomHistory.length || 1}
               </span>
               <button
@@ -497,7 +497,7 @@ export default function ControlBar({
               </button>
             </div>
 
-            <div className="hidden sm:flex items-center bg-[#18181B] border border-[#27272A] rounded-xl p-0.5">
+            <div className="hidden sm:flex items-center bg-[#201f20] border border-[#353436] rounded-xl p-0.5">
               <button
                 onClick={() => setShowPreferences(true)}
                 className="p-1 hover:text-white cursor-pointer text-zinc-300"
@@ -508,7 +508,7 @@ export default function ControlBar({
               </button>
             </div>
 
-            <div className="hidden sm:flex items-center bg-[#18181B] border border-[#27272A] rounded-xl p-0.5">
+            <div className="hidden sm:flex items-center bg-[#201f20] border border-[#353436] rounded-xl p-0.5">
               <button
                 onClick={() => updatePreferences({ defaultZoom: Math.max(0.5, preferences.defaultZoom - 0.5) })}
                 className="p-1 hover:text-white cursor-pointer text-zinc-300"
@@ -529,7 +529,7 @@ export default function ControlBar({
 
             <button
               onClick={toggleFullscreen}
-              className="p-1.5 rounded-xl bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#FAFAFA] transition-colors cursor-pointer"
+              className="p-1.5 rounded-xl bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#e5e2e3] transition-colors cursor-pointer"
               aria-label={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
               title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
             >
@@ -553,12 +553,12 @@ export default function ControlBar({
         {(tourTheme.logoUrl || preferences.clientLogoUrl) ? (
           <img src={tourTheme.logoUrl || preferences.clientLogoUrl} alt="Client Logo" className="h-10 w-auto object-contain drop-shadow-xl" />
         ) : (
-          <div className="h-10 w-28 rounded-lg bg-[#18181B]/90 border border-[#27272A] flex items-center justify-center text-xs font-mono text-[#71717A] backdrop-blur-md">
+          <div className="h-10 w-28 rounded-lg bg-[#201f20]/90 border border-[#353436] flex items-center justify-center text-xs font-mono text-[#71717A] backdrop-blur-md">
             Client Logo
           </div>
         )}
         {tourTheme.title && <span className="text-xs font-mono font-bold text-white/90 drop-shadow">{tourTheme.title}</span>}
-        <label className="cursor-pointer p-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#71717A] hover:text-white transition-colors backdrop-blur-md">
+        <label className="cursor-pointer p-1 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#71717A] hover:text-white transition-colors backdrop-blur-md">
           <input
             type="file"
             accept="image/*"
@@ -581,11 +581,11 @@ export default function ControlBar({
         {preferences.viztrLogoUrl ? (
           <img src={preferences.viztrLogoUrl} alt="VizTR Logo" className="h-8 w-auto object-contain drop-shadow-xl" />
         ) : (
-          <div className="h-8 w-20 rounded-lg bg-[#18181B]/90 border border-[#27272A] flex items-center justify-center text-xs font-mono font-bold text-[#3ECF8E] backdrop-blur-md">
+          <div className="h-8 w-20 rounded-lg bg-[#201f20]/90 border border-[#353436] flex items-center justify-center text-xs font-mono font-bold text-[#dbfcff] backdrop-blur-md">
             VIZTR
           </div>
         )}
-        <label className="cursor-pointer p-1 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#71717A] hover:text-white transition-colors backdrop-blur-md">
+        <label className="cursor-pointer p-1 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#71717A] hover:text-white transition-colors backdrop-blur-md">
           <input
             type="file"
             accept="image/*"
@@ -664,7 +664,7 @@ export default function ControlBar({
               <button
                 onClick={() => setHotspotDrawerOpen(!hotspotDrawerOpen)}
                 className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
-                  hotspotDrawerOpen ? 'bg-[#3ECF8E] text-black' : 'text-zinc-300 hover:text-white hover:bg-white/10'
+                  hotspotDrawerOpen ? 'bg-[#dbfcff] text-black' : 'text-zinc-300 hover:text-white hover:bg-white/10'
                 }`}
                 aria-label="Manage Room Hotspots"
                 title="Manage Room Hotspots"
@@ -677,7 +677,7 @@ export default function ControlBar({
                 <button
                   onClick={() => setSettingsMenuOpen(!settingsMenuOpen)}
                   className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors cursor-pointer settings-menu-trigger ${
-                    settingsMenuOpen ? 'bg-[#3ECF8E] text-black' : 'text-zinc-300 hover:text-white hover:bg-white/10'
+                    settingsMenuOpen ? 'bg-[#dbfcff] text-black' : 'text-zinc-300 hover:text-white hover:bg-white/10'
                   }`}
                   aria-label="Settings Menu"
                   title="Settings Menu"
@@ -699,14 +699,14 @@ export default function ControlBar({
                         Settings Menu
                       </div>
 
-                      <div className="flex items-center justify-between py-2 border-b border-[#27272A]">
+                      <div className="flex items-center justify-between py-2 border-b border-[#353436]">
                         <div className="flex items-center gap-2">
-                          <Music className="w-4 h-4 text-[#3ECF8E]" />
+                          <Music className="w-4 h-4 text-[#dbfcff]" />
                           <span className="text-xs text-white">Background Music</span>
                         </div>
                         <button
                           onClick={() => updatePreferences({ musicEnabled: !preferences.musicEnabled })}
-                          className={`relative w-10 h-5 rounded-full transition-colors ${preferences.musicEnabled ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'}`}
+                          className={`relative w-10 h-5 rounded-full transition-colors ${preferences.musicEnabled ? 'bg-[#dbfcff]' : 'bg-[#353436]'}`}
                           role="switch"
                           aria-checked={preferences.musicEnabled}
                         >
@@ -717,7 +717,7 @@ export default function ControlBar({
                         </button>
                       </div>
 
-                      <div className="py-2 border-b border-[#27272A]">
+                      <div className="py-2 border-b border-[#353436]">
                         <label className="flex items-center gap-2 text-xs text-white cursor-pointer">
                           <Upload className="w-3.5 h-3.5" />
                           <span>Upload Music</span>
@@ -737,9 +737,9 @@ export default function ControlBar({
                         </label>
                       </div>
 
-                      <div className="py-2 border-b border-[#27272A]">
+                      <div className="py-2 border-b border-[#353436]">
                         <div className="flex items-center gap-2 mb-1">
-                          <Volume2 className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                          <Volume2 className="w-3.5 h-3.5 text-[#dbfcff]" />
                           <span className="text-xs text-white">Music Volume: {Math.round(preferences.musicVolume * 100)}%</span>
                         </div>
                         <input
@@ -749,21 +749,21 @@ export default function ControlBar({
                           step="0.05"
                           value={preferences.musicVolume}
                           onChange={(e) => updatePreferences({ musicVolume: parseFloat(e.target.value) })}
-                          className="w-full h-1.5 bg-[#27272A] rounded-full appearance-none cursor-pointer accent-[#3ECF8E]"
+                          className="w-full h-1.5 bg-[#353436] rounded-full appearance-none cursor-pointer accent-[#dbfcff]"
                         />
                       </div>
 
-                      <div className="py-2 border-b border-[#27272A]">
+                      <div className="py-2 border-b border-[#353436]">
                         <div className="flex items-center gap-2 mb-2">
-                          <Bot className="w-4 h-4 text-[#3ECF8E]" />
+                          <Bot className="w-4 h-4 text-[#dbfcff]" />
                           <span className="text-xs text-white">AI Assistant</span>
                         </div>
                         <div className="flex items-center gap-2">
                           {preferences.aiAssistantAvatarUrl ? (
                             <img src={preferences.aiAssistantAvatarUrl} alt="AI Assistant Avatar" className="w-10 h-10 rounded-full object-cover" />
                           ) : (
-                            <div className="w-10 h-10 rounded-full bg-[#18181B] border border-[#27272A] flex items-center justify-center">
-                              <Bot className="w-5 h-5 text-[#3ECF8E]" />
+                            <div className="w-10 h-10 rounded-full bg-[#201f20] border border-[#353436] flex items-center justify-center">
+                              <Bot className="w-5 h-5 text-[#dbfcff]" />
                             </div>
                           )}
                           <div className="flex-1">
@@ -790,8 +790,8 @@ export default function ControlBar({
                           onClick={() => updatePreferences({ aiAssistantEnabled: !preferences.aiAssistantEnabled })}
                           className={`w-full mt-2 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                             preferences.aiAssistantEnabled
-                              ? 'bg-[#3ECF8E] text-black font-bold'
-                              : 'bg-[#18181B] text-[#A1A1AA] hover:bg-[#27272A] hover:text-white'
+                              ? 'bg-[#dbfcff] text-black font-bold'
+                              : 'bg-[#201f20] text-[#A1A1AA] hover:bg-[#353436] hover:text-white'
                           }`}
                         >
                           {preferences.aiAssistantEnabled ? 'Assistant On' : 'Assistant Off'}
@@ -801,7 +801,7 @@ export default function ControlBar({
                       <div className="py-2">
                         <div className="flex items-center justify-between cursor-pointer" onClick={() => setShowGoogleDrivePanel(!showGoogleDrivePanel)}>
                           <div className="flex items-center gap-2 text-xs text-white">
-                            <Globe className="w-4 h-4 text-[#3ECF8E]" />
+                            <Globe className="w-4 h-4 text-[#dbfcff]" />
                             <span>Google Drive Images</span>
                           </div>
                           <ChevronDown className={`w-3.5 h-3.5 text-[#71717A] transition-transform ${showGoogleDrivePanel ? 'rotate-180' : ''}`} />
@@ -822,12 +822,12 @@ export default function ControlBar({
                                   placeholder="Folder ID"
                                   value={preferences.googleDriveFolderId}
                                   onChange={(e) => updatePreferences({ googleDriveFolderId: e.target.value })}
-                                  className="flex-1 px-2 py-1 rounded bg-[#09090B] border border-[#27272A] text-xs text-white focus:outline-none focus:border-[#3ECF8E]"
+                                  className="flex-1 px-2 py-1 rounded bg-[#131314] border border-[#353436] text-xs text-white focus:outline-none focus:border-[#dbfcff]"
                                 />
                                 <button
                                   onClick={() => updatePreferences({ showGoogleDriveSection: !preferences.showGoogleDriveSection })}
                                   className={`px-2 py-1 rounded text-[10px] font-bold transition-colors ${
-                                    preferences.showGoogleDriveSection ? 'bg-[#3ECF8E] text-black' : 'bg-[#18181B] text-[#A1A1AA] hover:text-white'
+                                    preferences.showGoogleDriveSection ? 'bg-[#dbfcff] text-black' : 'bg-[#201f20] text-[#A1A1AA] hover:text-white'
                                   }`}
                                 >
                                   {preferences.showGoogleDriveSection ? 'Hide' : 'Load'}
@@ -838,7 +838,7 @@ export default function ControlBar({
                         </AnimatePresence>
                       </div>
 
-                      <div className="absolute top-full right-6 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-[#121215]" />
+                      <div className="absolute top-full right-6 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-[#131314]" />
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -874,7 +874,7 @@ export default function ControlBar({
                   updatePreferences({ autoRotate: next });
                 }}
                 className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${
-                  isPlaying ? 'bg-[#3ECF8E] text-black hover:bg-[#34b27b] scale-105' : 'bg-white/10 text-white hover:bg-white/20'
+                  isPlaying ? 'bg-[#dbfcff] text-black hover:bg-[#34b27b] scale-105' : 'bg-white/10 text-white hover:bg-white/20'
                 }`}
                 aria-label={isPlaying ? 'Pause auto-rotate' : 'Play auto-rotate'}
                 title={isPlaying ? 'Pause Auto-Rotate' : 'Play Auto-Rotate'}
@@ -885,7 +885,7 @@ export default function ControlBar({
               <button
                 onClick={() => setGuidedOn(!guidedOn)}
                 className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${
-                  guidedOn ? 'bg-[#3ECF8E] text-black hover:bg-[#34b27b] scale-105' : 'bg-white/10 text-white hover:bg-white/20'
+                  guidedOn ? 'bg-[#dbfcff] text-black hover:bg-[#34b27b] scale-105' : 'bg-white/10 text-white hover:bg-white/20'
                 }`}
                 aria-label="Toggle guided tour"
                 title="Guided Tour (auto-advance scenes)"
@@ -904,7 +904,7 @@ export default function ControlBar({
               </button>
 
               {preferences.showSceneCounter && (
-                <div className="px-2 py-0.5 text-[10px] font-mono text-[#3ECF8E] bg-black/40 rounded-full">
+                <div className="px-2 py-0.5 text-[10px] font-mono text-[#dbfcff] bg-black/40 rounded-full">
                   {roomHistoryIndex + 1}/{Math.max(roomHistory.length, 1)}
                 </div>
               )}
@@ -929,7 +929,7 @@ export default function ControlBar({
                 <button
                   onClick={() => setShowHotspotListPanel(!showHotspotListPanel)}
                   className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${
-                    showHotspotListPanel ? 'bg-[#3ECF8E] text-black scale-105' : 'bg-white/10 hover:bg-white/20 text-white'
+                    showHotspotListPanel ? 'bg-[#dbfcff] text-black scale-105' : 'bg-white/10 hover:bg-white/20 text-white'
                   }} border border-white/10 backdrop-blur-xl shadow-xl`}
                   aria-label="Toggle Hotspot List"
                   title="Hotspot List"
@@ -962,7 +962,7 @@ export default function ControlBar({
                           currentHotspots.map((hp) => {
                             const colorStyle = getColorClasses(hp.color);
                             return (
-                              <div key={hp.id} className="flex items-center gap-2.5 p-2 rounded-xl bg-[#09090B] border border-[#27272A] hover:border-[#3ECF8E]/30 transition-all">
+                              <div key={hp.id} className="flex items-center gap-2.5 p-2 rounded-xl bg-[#131314] border border-[#353436] hover:border-[#dbfcff]/30 transition-all">
                                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${colorStyle.bg} text-white`}>
                                   {getHotspotIcon(hp.icon, hp.type)}
                                 </div>
@@ -980,7 +980,7 @@ export default function ControlBar({
                           })
                         )}
                       </div>
-                      <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-[#121215]" />
+                      <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-[#131314]" />
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -998,7 +998,7 @@ export default function ControlBar({
                 >
                   <ZoomIn className="w-4 h-4" />
                 </button>
-                <span className="text-[9px] font-mono text-[#3ECF8E] w-12 text-center">{Math.round(fov)}°</span>
+                <span className="text-[9px] font-mono text-[#dbfcff] w-12 text-center">{Math.round(fov)}°</span>
                 <button
                   onClick={() => updatePreferences({ defaultZoom: Math.min(3, preferences.defaultZoom + 0.5) })}
                   className="w-10 h-10 rounded-full flex items-center justify-center text-white hover:bg-white/15 transition-colors cursor-pointer"

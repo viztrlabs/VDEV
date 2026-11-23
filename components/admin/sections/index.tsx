@@ -8,7 +8,7 @@ export function DashboardOverview() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+        <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
           <span>PLATFORM OVERVIEW</span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-bold font-display text-white">
@@ -28,7 +28,7 @@ export function SuperAdminGovernance() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+        <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
           <span>SUPER ADMIN GOVERNANCE</span>
         </div>
         <h2 className="text-2xl font-bold font-display text-white">
@@ -48,7 +48,7 @@ export function CoreSystemsFleet() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+        <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
           <span>CORE SYSTEMS FLEET</span>
         </div>
         <h2 className="text-2xl font-bold font-display text-white">
@@ -68,7 +68,7 @@ export function SuperAdminCMS() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+        <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
           <span>SUPER ADMIN CMS SUITE</span>
         </div>
         <h2 className="text-2xl font-bold font-display text-white">
@@ -88,7 +88,7 @@ export function DocStudioCRMSection() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+        <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
           <span>DOC STUDIO & CRM</span>
         </div>
         <h2 className="text-2xl font-bold font-display text-white">
@@ -108,7 +108,7 @@ export function XRRealTimeEngine() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+        <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
           <span>XR REAL-TIME ENGINE</span>
         </div>
         <h2 className="text-2xl font-bold font-display text-white">
@@ -128,7 +128,7 @@ export function MeetingsBookings() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+        <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
           <span>MEETINGS & BOOKINGS</span>
         </div>
         <h2 className="text-2xl font-bold font-display text-white">
@@ -148,7 +148,7 @@ export function CloudInfrastructure() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+        <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
           <span>CLOUD INFRASTRUCTURE</span>
         </div>
         <h2 className="text-2xl font-bold font-display text-white">
@@ -168,7 +168,7 @@ export function SuperAdminGA4Analytics() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+        <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
           <span>GOOGLE ANALYTICS 4</span>
         </div>
         <h2 className="text-2xl font-bold font-display text-white">
@@ -188,7 +188,7 @@ export function ClientDiscoveryForm() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+        <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
           <span>CLIENT DISCOVERY</span>
         </div>
         <h2 className="text-2xl font-bold font-display text-white">

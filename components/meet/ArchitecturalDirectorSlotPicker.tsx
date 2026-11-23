@@ -683,13 +683,13 @@ export default function ArchitecturalDirectorSlotPicker({
   return (
     <div
       id="architectural-director-slot-picker"
-      className="p-6 rounded-2xl bg-[#121214] border border-[#27272A] space-y-6 shadow-2xl relative overflow-hidden"
+      className="p-6 rounded-2xl bg-[#131314] border border-[#353436] space-y-6 shadow-2xl relative overflow-hidden"
     >
       {/* BACKGROUND ACCENT GLOW */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-[#00897B]/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* HEADER SECTION */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#27272A] pb-5 relative z-10">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#353436] pb-5 relative z-10">
         <div className="space-y-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="px-2 py-0.5 rounded-full bg-[#00897B]/10 text-[#26A69A] border border-[#00897B]/30 text-[10px] font-mono font-bold uppercase tracking-wider flex items-center gap-1">
@@ -709,9 +709,9 @@ export default function ArchitecturalDirectorSlotPicker({
         </div>
 
         {/* TIMEZONE & PROJECT INDICATOR */}
-        <div className="flex items-center gap-3 bg-[#18181B] border border-[#27272A] px-3.5 py-2 rounded-xl text-xs font-mono shrink-0">
+        <div className="flex items-center gap-3 bg-[#201f20] border border-[#353436] px-3.5 py-2 rounded-xl text-xs font-mono shrink-0">
           <div className="flex items-center gap-2">
-            <Building2 className="w-4 h-4 text-[#3ECF8E]" />
+            <Building2 className="w-4 h-4 text-[#dbfcff]" />
             <span className="text-white font-bold">{currentProjectId}</span>
           </div>
           <span className="text-[#3F3F46]">|</span>
@@ -742,7 +742,7 @@ export default function ArchitecturalDirectorSlotPicker({
                 <div className="text-[11px] font-mono text-[#A1A1AA] flex items-center gap-3">
                   <span>Host: <strong className="text-white">{bookedMeetingResult.hostName}</strong></span>
                   <span>•</span>
-                  <span>Code: <strong className="text-[#3ECF8E]">{bookedMeetingResult.meetingCode}</strong></span>
+                  <span>Code: <strong className="text-[#dbfcff]">{bookedMeetingResult.meetingCode}</strong></span>
                 </div>
               </div>
             </div>
@@ -759,14 +759,14 @@ export default function ArchitecturalDirectorSlotPicker({
               </a>
               <button
                 onClick={() => handleCopyMeetUrl(bookedMeetingResult.meetingUri)}
-                className="px-3 py-2 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-2 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-xs font-mono text-white flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 {hasCopiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{hasCopiedUrl ? 'Copied' : 'Copy Link'}</span>
               </button>
               <button
                 onClick={() => setBookedMeetingResult(null)}
-                className="p-2 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#71717A] hover:text-white"
+                className="p-2 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#71717A] hover:text-white"
                 title="Dismiss"
               >
                 <X className="w-3.5 h-3.5" />
@@ -808,7 +808,7 @@ export default function ArchitecturalDirectorSlotPicker({
                   className={`px-4 py-2.5 rounded-xl border text-xs font-mono transition-all flex items-center gap-3 shrink-0 cursor-pointer ${
                     isSelected
                       ? 'bg-[#00897B] text-white border-[#26A69A] shadow-lg shadow-[#00897B]/20 font-bold'
-                      : 'bg-[#18181B] text-[#A1A1AA] border-[#27272A] hover:border-[#3F3F46] hover:text-white'
+                      : 'bg-[#201f20] text-[#A1A1AA] border-[#353436] hover:border-[#3F3F46] hover:text-white'
                   }`}
                 >
                   <Calendar className="w-3.5 h-3.5" />
@@ -817,7 +817,7 @@ export default function ArchitecturalDirectorSlotPicker({
                     className={`px-1.5 py-0.5 rounded text-[10px] ${
                       isSelected
                         ? 'bg-black/30 text-white font-bold'
-                        : 'bg-[#27272A] text-[#71717A]'
+                        : 'bg-[#353436] text-[#71717A]'
                     }`}
                   >
                     {d.open} open / {d.total}
@@ -834,7 +834,7 @@ export default function ArchitecturalDirectorSlotPicker({
           <div className="lg:col-span-3 space-y-2">
             <div className="flex items-center justify-between text-xs font-mono">
               <span className="text-[#A1A1AA] uppercase font-bold text-[11px] flex items-center gap-1.5">
-                <Award className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                <Award className="w-3.5 h-3.5 text-[#dbfcff]" />
                 Architectural Director Specialization & Real-Time Availability
               </span>
               <span className="text-[10px] text-[#71717A]">
@@ -847,8 +847,8 @@ export default function ArchitecturalDirectorSlotPicker({
                 onClick={() => setSelectedDirectorId('all')}
                 className={`p-2.5 rounded-xl border text-xs font-mono transition-all text-left flex flex-col justify-between cursor-pointer ${
                   selectedDirectorId === 'all'
-                    ? 'bg-[#18181B] border-[#00897B] text-white ring-1 ring-[#00897B]'
-                    : 'bg-[#141416] border-[#27272A] text-[#A1A1AA] hover:border-[#3F3F46]'
+                    ? 'bg-[#201f20] border-[#00897B] text-white ring-1 ring-[#00897B]'
+                    : 'bg-[#131314] border-[#353436] text-[#A1A1AA] hover:border-[#3F3F46]'
                 }`}
               >
                 <div className="font-bold text-xs truncate">All Directors</div>
@@ -865,8 +865,8 @@ export default function ArchitecturalDirectorSlotPicker({
                     onClick={() => setSelectedDirectorId(director.id)}
                     className={`p-2.5 rounded-xl border text-xs font-mono transition-all text-left flex flex-col justify-between gap-2 cursor-pointer ${
                       isSelected
-                        ? 'bg-[#18181B] border-[#00897B] text-white ring-1 ring-[#00897B]'
-                        : 'bg-[#141416] border-[#27272A] text-[#A1A1AA] hover:border-[#3F3F46]'
+                        ? 'bg-[#201f20] border-[#00897B] text-white ring-1 ring-[#00897B]'
+                        : 'bg-[#131314] border-[#353436] text-[#A1A1AA] hover:border-[#3F3F46]'
                     }`}
                   >
                     <div className="flex items-center gap-2">
@@ -911,7 +911,7 @@ export default function ArchitecturalDirectorSlotPicker({
             <select
               value={selectedFocusFilter}
               onChange={(e) => setSelectedFocusFilter(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-xl bg-[#141416] border border-[#27272A] text-white text-xs font-mono focus:outline-none focus:border-[#00897B] cursor-pointer"
+              className="w-full px-3 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-white text-xs font-mono focus:outline-none focus:border-[#00897B] cursor-pointer"
             >
               <option value="all">All Review Categories</option>
               <option value="milestone_review">Milestone 100% Signoff</option>
@@ -921,9 +921,9 @@ export default function ArchitecturalDirectorSlotPicker({
             </select>
 
             {/* WORKING HOURS LEGEND */}
-            <div className="p-2 rounded-lg bg-[#18181B] border border-[#27272A] text-[9px] font-mono text-[#71717A] space-y-1">
+            <div className="p-2 rounded-lg bg-[#201f20] border border-[#353436] text-[9px] font-mono text-[#71717A] space-y-1">
               <div className="flex items-center gap-1.5 text-white font-bold">
-                <Clock className="w-3 h-3 text-[#3ECF8E]" />
+                <Clock className="w-3 h-3 text-[#dbfcff]" />
                 <span>Schedule Protection Active</span>
               </div>
               <p>Booked slots & off-hours review requests are strictly locked.</p>
@@ -958,7 +958,7 @@ export default function ArchitecturalDirectorSlotPicker({
           </div>
 
           {filteredSlots.length === 0 ? (
-            <div className="p-8 rounded-xl bg-[#141416] border border-[#27272A] text-center space-y-3">
+            <div className="p-8 rounded-xl bg-[#131314] border border-[#353436] text-center space-y-3">
               <Calendar className="w-8 h-8 text-[#52525B] mx-auto" />
               <div className="text-xs font-mono text-[#A1A1AA]">
                 No available slots matching this filter criteria for this date.
@@ -969,7 +969,7 @@ export default function ArchitecturalDirectorSlotPicker({
                   setSelectedFocusFilter('all');
                   setShowOnlyAvailableSlots(false);
                 }}
-                className="px-3 py-1.5 rounded-lg bg-[#27272A] hover:bg-[#3F3F46] text-xs font-mono text-white"
+                className="px-3 py-1.5 rounded-lg bg-[#353436] hover:bg-[#3F3F46] text-xs font-mono text-white"
               >
                 Reset Filters
               </button>
@@ -988,10 +988,10 @@ export default function ArchitecturalDirectorSlotPicker({
                     onClick={() => handleSelectSlot(slot)}
                     className={`p-4 rounded-xl border transition-all flex flex-col justify-between space-y-3 ${
                       !slot.isValidOpenSlot
-                        ? 'bg-[#121214]/60 border-[#27272A]/60 opacity-60 cursor-not-allowed'
+                        ? 'bg-[#131314]/60 border-[#353436]/60 opacity-60 cursor-not-allowed'
                         : isSelected
-                        ? 'bg-[#18181B] border-[#00897B] ring-1 ring-[#00897B] shadow-xl shadow-[#00897B]/10 cursor-pointer'
-                        : 'bg-[#141416] border-[#27272A] hover:border-[#00897B]/50 cursor-pointer'
+                        ? 'bg-[#201f20] border-[#00897B] ring-1 ring-[#00897B] shadow-xl shadow-[#00897B]/10 cursor-pointer'
+                        : 'bg-[#131314] border-[#353436] hover:border-[#00897B]/50 cursor-pointer'
                     }`}
                   >
                     <div className="space-y-3">
@@ -1000,10 +1000,10 @@ export default function ArchitecturalDirectorSlotPicker({
                         <div
                           className={`flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-mono font-bold ${
                             slot.isBooked
-                              ? 'bg-[#27272A] text-[#71717A] line-through'
+                              ? 'bg-[#353436] text-[#71717A] line-through'
                               : slot.isOutsideHours
                               ? 'bg-red-950/60 text-red-400 border border-red-900/60'
-                              : 'bg-[#27272A] text-[#3ECF8E]'
+                              : 'bg-[#353436] text-[#dbfcff]'
                           }`}
                         >
                           <Clock className="w-3 h-3" />
@@ -1102,7 +1102,7 @@ export default function ArchitecturalDirectorSlotPicker({
                     </div>
 
                     {/* BOOK CTA */}
-                    <div className="pt-2 border-t border-[#27272A] flex items-center justify-between">
+                    <div className="pt-2 border-t border-[#353436] flex items-center justify-between">
                       <span className="text-[10px] font-mono text-[#A1A1AA] flex items-center gap-1">
                         <Video className="w-3 h-3 text-[#26A69A]" />
                         <span>Google Meet HD</span>
@@ -1120,7 +1120,7 @@ export default function ArchitecturalDirectorSlotPicker({
                           <ChevronRight className="w-3.5 h-3.5" />
                         </button>
                       ) : (
-                        <span className="px-2.5 py-1 rounded bg-[#27272A] text-[#71717A] font-mono text-[10px]">
+                        <span className="px-2.5 py-1 rounded bg-[#353436] text-[#71717A] font-mono text-[10px]">
                           {slot.isBooked ? 'Unavailable' : 'Outside Hours'}
                         </span>
                       )}
@@ -1134,10 +1134,10 @@ export default function ArchitecturalDirectorSlotPicker({
 
         {/* RIGHT: DIRECTOR PROFILE & SLOT HIGHLIGHT (4 COLS) */}
         <div className="lg:col-span-4 space-y-4">
-          <div className="p-4 rounded-xl bg-[#141416] border border-[#27272A] space-y-4">
-            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white flex items-center justify-between border-b border-[#27272A] pb-3">
+          <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-4">
+            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-white flex items-center justify-between border-b border-[#353436] pb-3">
               <span className="flex items-center gap-2">
-                <Award className="w-4 h-4 text-[#3ECF8E]" />
+                <Award className="w-4 h-4 text-[#dbfcff]" />
                 <span>Director Dossier</span>
               </span>
               {activeDirectorObj && renderStatusBadge(directorLiveStatuses[activeDirectorObj.id] || 'available')}
@@ -1159,7 +1159,7 @@ export default function ArchitecturalDirectorSlotPicker({
                   <div>
                     <h5 className="font-bold text-white text-sm">{activeDirectorObj.name}</h5>
                     <div className="text-[11px] text-[#A1A1AA]">{activeDirectorObj.role}</div>
-                    <div className="text-[10px] text-[#3ECF8E] flex items-center gap-1">
+                    <div className="text-[10px] text-[#dbfcff] flex items-center gap-1">
                       <span>★ {activeDirectorObj.rating}</span>
                       <span>({activeDirectorObj.reviewsCount} reviews)</span>
                     </div>
@@ -1171,7 +1171,7 @@ export default function ArchitecturalDirectorSlotPicker({
                 </p>
 
                 {/* LIVE AVAILABILITY INTERACTIVE TOGGLE */}
-                <div className="p-3 rounded-xl bg-[#18181B] border border-[#27272A] space-y-2">
+                <div className="p-3 rounded-xl bg-[#201f20] border border-[#353436] space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] text-[#A1A1AA] uppercase font-bold">Live Status Override</span>
                     <span className="text-[9px] text-[#71717A]">Click to switch</span>
@@ -1196,7 +1196,7 @@ export default function ArchitecturalDirectorSlotPicker({
                                 : st === 'in_review'
                                 ? 'bg-amber-950 text-amber-300 border-amber-700'
                                 : 'bg-purple-950 text-purple-300 border-purple-700'
-                              : 'bg-[#141416] text-[#71717A] border-[#27272A] hover:text-white'
+                              : 'bg-[#131314] text-[#71717A] border-[#353436] hover:text-white'
                           }`}
                         >
                           {st === 'available' ? 'Available' : st === 'in_review' ? 'In Review' : 'In VR Lab'}
@@ -1212,7 +1212,7 @@ export default function ArchitecturalDirectorSlotPicker({
                     {activeDirectorObj.specialties.map((spec, i) => (
                       <span
                         key={i}
-                        className="px-2 py-0.5 rounded-md bg-[#1F1F23] border border-[#27272A] text-white text-[10px]"
+                        className="px-2 py-0.5 rounded-md bg-[#1F1F23] border border-[#353436] text-white text-[10px]"
                       >
                         {spec}
                       </span>
@@ -1220,14 +1220,14 @@ export default function ArchitecturalDirectorSlotPicker({
                   </div>
                 </div>
 
-                <div className="p-3 rounded-lg bg-[#18181B] border border-[#27272A] space-y-1.5 text-[10px]">
+                <div className="p-3 rounded-lg bg-[#201f20] border border-[#353436] space-y-1.5 text-[10px]">
                   <div className="flex items-center justify-between text-[#A1A1AA]">
                     <span>Studio Base</span>
                     <span className="text-white">{activeDirectorObj.studioLocation}</span>
                   </div>
                   <div className="flex items-center justify-between text-[#A1A1AA]">
                     <span>Official Working Hours</span>
-                    <span className="text-[#3ECF8E] font-bold">
+                    <span className="text-[#dbfcff] font-bold">
                       {activeDirectorObj.workingHoursStart}:00 – {Math.floor(activeDirectorObj.workingHoursEnd)}:{activeDirectorObj.workingHoursEnd % 1 !== 0 ? '30' : '00'}
                     </span>
                   </div>
@@ -1256,22 +1256,22 @@ export default function ArchitecturalDirectorSlotPicker({
           </div>
 
           {/* STUDIO HARDWARE & SCHEDULE ASSURANCE */}
-          <div className="p-4 rounded-xl bg-[#141416] border border-[#27272A] space-y-2 text-[11px] font-mono">
+          <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-2 text-[11px] font-mono">
             <div className="text-white font-bold flex items-center gap-1.5 text-xs">
               <Layers className="w-3.5 h-3.5 text-[#00897B]" />
               <span>Conflict Prevention Rules</span>
             </div>
             <ul className="space-y-1 text-[#A1A1AA] text-[10px]">
               <li className="flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-[#3ECF8E]" />
+                <span className="w-1 h-1 rounded-full bg-[#dbfcff]" />
                 Instant slot reservation locks double-bookings
               </li>
               <li className="flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-[#3ECF8E]" />
+                <span className="w-1 h-1 rounded-full bg-[#dbfcff]" />
                 Working hours bound to director studio timezone
               </li>
               <li className="flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-[#3ECF8E]" />
+                <span className="w-1 h-1 rounded-full bg-[#dbfcff]" />
                 Live Google Meet link auto-emailed upon signoff
               </li>
             </ul>
@@ -1287,24 +1287,24 @@ export default function ArchitecturalDirectorSlotPicker({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-lg w-full p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5 shadow-2xl text-xs font-mono"
+              className="max-w-lg w-full p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5 shadow-2xl text-xs font-mono"
             >
               {/* MODAL HEADER */}
-              <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+              <div className="flex items-center justify-between border-b border-[#353436] pb-3">
                 <div className="flex items-center gap-2 text-white font-bold text-sm font-display">
                   <CalendarCheck className="w-4 h-4 text-[#26A69A]" />
                   <span>Confirm Live Review Slot & Google Meet Space</span>
                 </div>
                 <button
                   onClick={() => setIsBookingModalOpen(false)}
-                  className="p-1 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white"
+                  className="p-1 rounded hover:bg-[#353436] text-[#A1A1AA] hover:text-white"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               {/* SLOT SUMMARY CARD */}
-              <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-3">
+              <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full overflow-hidden border border-[#3F3F46] shrink-0">
@@ -1325,13 +1325,13 @@ export default function ArchitecturalDirectorSlotPicker({
                   </div>
 
                   <div className="text-right">
-                    <div className="text-[#3ECF8E] font-bold">{activeSlot.startTime} – {activeSlot.endTime}</div>
+                    <div className="text-[#dbfcff] font-bold">{activeSlot.startTime} – {activeSlot.endTime}</div>
                     <div className="text-[10px] text-[#A1A1AA]">{activeSlot.displayDate}</div>
                     <div className="text-[10px] text-[#71717A]">{activeSlot.durationMinutes} Minutes</div>
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-[#27272A] space-y-1">
+                <div className="pt-2 border-t border-[#353436] space-y-1">
                   <div className="text-white font-bold">{activeSlot.focusLabel}</div>
                   <div className="text-[10px] text-[#A1A1AA]">
                     Project Target: <strong className="text-white">{currentProjectName} ({currentProjectId})</strong>
@@ -1348,7 +1348,7 @@ export default function ArchitecturalDirectorSlotPicker({
                     value={clientCustomNotes}
                     onChange={(e) => setClientCustomNotes(e.target.value)}
                     placeholder="Specific questions regarding facade curvature, lighting reflections, or structural clearances..."
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B] text-xs resize-none"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B] text-xs resize-none"
                   />
                 </div>
 
@@ -1359,11 +1359,11 @@ export default function ArchitecturalDirectorSlotPicker({
                     value={additionalAttendees}
                     onChange={(e) => setAdditionalAttendees(e.target.value)}
                     placeholder="partner@fosterpartners.com, bim.lead@studio.com"
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B] text-xs"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B] text-xs"
                   />
                 </div>
 
-                <label className="flex items-center justify-between p-3 rounded-lg bg-[#09090B] border border-[#27272A] cursor-pointer">
+                <label className="flex items-center justify-between p-3 rounded-lg bg-[#131314] border border-[#353436] cursor-pointer">
                   <div>
                     <div className="text-white font-bold">Enable 8K WebXR In-Call Teleportation</div>
                     <div className="text-[10px] text-[#71717A]">Inject live multi-user 3D viewer links directly into Google Meet</div>
@@ -1378,12 +1378,12 @@ export default function ArchitecturalDirectorSlotPicker({
               </div>
 
               {/* ACTIONS */}
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#27272A]">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#353436]">
                 <button
                   type="button"
                   onClick={() => setIsBookingModalOpen(false)}
                   disabled={isConfirmingBooking}
-                  className="px-4 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white"
+                  className="px-4 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white"
                 >
                   Cancel
                 </button>

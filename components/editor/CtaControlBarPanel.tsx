@@ -30,13 +30,13 @@ interface CtaControlBarPanelProps {
 
 function ToggleRow({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) {
   return (
-    <div className="flex items-center justify-between p-2 rounded bg-[#09090B] border border-[#27272A]">
-      <span className="text-[10px] font-mono text-[#FAFAFA]">{label}</span>
+    <div className="flex items-center justify-between p-2 rounded bg-[#131314] border border-[#353436]">
+      <span className="text-[10px] font-mono text-[#e5e2e3]">{label}</span>
       <button
         type="button"
         onClick={() => onChange(!value)}
         className={`w-9 h-5 rounded-full relative transition-colors ${
-          value ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+          value ? 'bg-[#dbfcff]' : 'bg-[#353436]'
         }`}
       >
         <span
@@ -99,19 +99,19 @@ export default function CtaControlBarPanel({
   return (
     <div className="max-w-3xl mx-auto p-4 space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-mono font-bold text-[#3ECF8E] flex items-center gap-2">
+        <h2 className="text-sm font-mono font-bold text-[#dbfcff] flex items-center gap-2">
           <Megaphone className="w-4 h-4" />
           Call To Action & Control Bar
         </h2>
         {saved && (
-          <span className="flex items-center gap-1 text-[10px] font-mono text-[#3ECF8E]">
+          <span className="flex items-center gap-1 text-[10px] font-mono text-[#dbfcff]">
             <CheckCircle2 className="w-3.5 h-3.5" />
             Saved
           </span>
         )}
       </div>
 
-      <div role="tablist" className="flex items-center gap-1 p-1 rounded-lg bg-[#09090B] border border-[#27272A]">
+      <div role="tablist" className="flex items-center gap-1 p-1 rounded-lg bg-[#131314] border border-[#353436]">
         <button
           type="button"
           role="tab"
@@ -119,7 +119,7 @@ export default function CtaControlBarPanel({
           onClick={() => setTab('cta')}
           className={`flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded text-[10px] font-mono transition-all ${
             tab === 'cta'
-              ? 'bg-[#3ECF8E]/15 text-[#3ECF8E] border border-[#3ECF8E]/30'
+              ? 'bg-[#dbfcff]/15 text-[#dbfcff] border border-[#dbfcff]/30'
               : 'text-[#71717A] hover:text-white border border-transparent'
           }`}
         >
@@ -133,7 +133,7 @@ export default function CtaControlBarPanel({
           onClick={() => setTab('bar')}
           className={`flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded text-[10px] font-mono transition-all ${
             tab === 'bar'
-              ? 'bg-[#3ECF8E]/15 text-[#3ECF8E] border border-[#3ECF8E]/30'
+              ? 'bg-[#dbfcff]/15 text-[#dbfcff] border border-[#dbfcff]/30'
               : 'text-[#71717A] hover:text-white border border-transparent'
           }`}
         >
@@ -143,7 +143,7 @@ export default function CtaControlBarPanel({
       </div>
 
       {tab === 'cta' && (
-        <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-3 space-y-3">
+        <div className="rounded-xl border border-[#353436] bg-[#201f20] p-3 space-y-3">
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="block text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA] mb-1">
@@ -157,8 +157,8 @@ export default function CtaControlBarPanel({
                     onClick={() => setCta({ layout: l })}
                     className={`px-2 py-1.5 rounded border text-[10px] font-mono ${
                       cta.layout === l
-                        ? 'bg-[#3ECF8E]/15 border-[#3ECF8E]/40 text-[#3ECF8E]'
-                        : 'bg-[#09090B] border-[#27272A] text-[#A1A1AA]'
+                        ? 'bg-[#dbfcff]/15 border-[#dbfcff]/40 text-[#dbfcff]'
+                        : 'bg-[#131314] border-[#353436] text-[#A1A1AA]'
                     }`}
                   >
                     {l}
@@ -178,8 +178,8 @@ export default function CtaControlBarPanel({
                     onClick={() => setCta({ position: p })}
                     className={`px-2 py-1.5 rounded border text-[10px] font-mono ${
                       cta.position === p
-                        ? 'bg-[#3ECF8E]/15 border-[#3ECF8E]/40 text-[#3ECF8E]'
-                        : 'bg-[#09090B] border-[#27272A] text-[#A1A1AA]'
+                        ? 'bg-[#dbfcff]/15 border-[#dbfcff]/40 text-[#dbfcff]'
+                        : 'bg-[#131314] border-[#353436] text-[#A1A1AA]'
                     }`}
                   >
                     {p}
@@ -206,14 +206,14 @@ export default function CtaControlBarPanel({
       )}
 
       {tab === 'bar' && (
-        <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-3 space-y-2">
+        <div className="rounded-xl border border-[#353436] bg-[#201f20] p-3 space-y-2">
           <div className="text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA]">
             {items.length} control items
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-[10px] font-mono">
               <thead>
-                <tr className="text-[#71717A] border-b border-[#27272A]">
+                <tr className="text-[#71717A] border-b border-[#353436]">
                   <th className="text-left px-2 py-1.5">ID</th>
                   <th className="text-left px-2 py-1.5">Label</th>
                   <th className="text-left px-2 py-1.5">Category</th>
@@ -223,14 +223,14 @@ export default function CtaControlBarPanel({
               </thead>
               <tbody>
                 {items.map((item) => (
-                  <tr key={item.id} className="border-b border-[#18181B] hover:bg-[#09090B]">
+                  <tr key={item.id} className="border-b border-[#201f20] hover:bg-[#131314]">
                     <td className="px-2 py-1.5 text-[#71717A]">{item.id}</td>
                     <td className="px-2 py-1.5 text-white">{ITEM_LABELS[item.id] || item.id}</td>
                     <td className="px-2 py-1.5">
                       <select
                         value={item.category}
                         onChange={(e) => setItem(item.id, { category: e.target.value as 'icon' | 'text' })}
-                        className="bg-[#09090B] border border-[#27272A] rounded px-1 py-0.5 text-[10px] text-white"
+                        className="bg-[#131314] border border-[#353436] rounded px-1 py-0.5 text-[10px] text-white"
                       >
                         <option value="icon">icon</option>
                         <option value="text">text</option>
@@ -240,7 +240,7 @@ export default function CtaControlBarPanel({
                       <input
                         value={item.source}
                         onChange={(e) => setItem(item.id, { source: e.target.value })}
-                        className="w-32 bg-[#09090B] border border-[#27272A] rounded px-1 py-0.5 text-[10px] text-white font-mono"
+                        className="w-32 bg-[#131314] border border-[#353436] rounded px-1 py-0.5 text-[10px] text-white font-mono"
                       />
                     </td>
                     <td className="px-2 py-1.5 text-right">
@@ -248,7 +248,7 @@ export default function CtaControlBarPanel({
                         type="button"
                         onClick={() => setItem(item.id, { hidden: !item.hidden })}
                         className={`p-1 rounded ${
-                          item.hidden ? 'bg-rose-500/20 text-rose-400' : 'bg-[#3ECF8E]/15 text-[#3ECF8E]'
+                          item.hidden ? 'bg-rose-500/20 text-rose-400' : 'bg-[#dbfcff]/15 text-[#dbfcff]'
                         }`}
                         title={item.hidden ? 'Hidden' : 'Visible'}
                       >
@@ -266,7 +266,7 @@ export default function CtaControlBarPanel({
       <button
         type="button"
         onClick={onSave}
-        className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
+        className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
       >
         <Save className="w-3.5 h-3.5" />
         Save
@@ -287,7 +287,7 @@ function OffsetField({ label, value, onChange }: { label: string; value: number;
         max={400}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full accent-[#3ECF8E]"
+        className="w-full accent-[#dbfcff]"
       />
     </div>
   );

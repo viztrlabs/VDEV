@@ -79,9 +79,9 @@ export default function HotspotOverlay({
               </button>
 
               <div className="absolute -bottom-8 whitespace-nowrap px-2.5 py-1 rounded-xl bg-black/90 backdrop-blur-md text-[11px] font-mono font-bold text-white border border-white/15 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl flex items-center gap-1.5">
-                {isPortal && <DoorOpen className="w-3 h-3 text-[#3ECF8E]" />}
+                {isPortal && <DoorOpen className="w-3 h-3 text-[#dbfcff]" />}
                 <span>{hp.title}</span>
-                {isPortal && <span className="text-[9px] text-[#3ECF8E]">» Jump</span>}
+                {isPortal && <span className="text-[9px] text-[#dbfcff]">» Jump</span>}
               </div>
             </div>
           </div>

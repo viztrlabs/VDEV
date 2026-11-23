@@ -56,7 +56,7 @@ export function buildServiceTabs(experienceOptions: { label: string; value: stri
           label: 'URL',
           render: (value) =>
             value ? (
-              <a href={value} target="_blank" rel="noreferrer" className="text-[#3ECF8E] underline">
+              <a href={value} target="_blank" rel="noreferrer" className="text-[#dbfcff] underline">
                 Open
               </a>
             ) : (
@@ -97,7 +97,7 @@ export function buildServiceTabs(experienceOptions: { label: string; value: stri
           label: 'URL',
           render: (value) =>
             value ? (
-              <a href={value} target="_blank" rel="noreferrer" className="text-[#3ECF8E] underline">
+              <a href={value} target="_blank" rel="noreferrer" className="text-[#dbfcff] underline">
                 Open
               </a>
             ) : (

@@ -98,8 +98,8 @@ const STUDIO_SERVICES: ServiceConfig[] = [
     name: 'Still Renders',
     slug: 'exterior',
     icon: Globe,
-    color: 'text-[#3ECF8E]',
-    bgColor: 'bg-[#3ECF8E]/10',
+    color: 'text-[#dbfcff]',
+    bgColor: 'bg-[#dbfcff]/10',
     description: 'Exterior architectural renders and imagery',
     viewerComponent: 'ImageViewer',
   },
@@ -483,7 +483,7 @@ export default function ExperiencePage() {
     if (loading || dataLoading) {
       return (
         <div className="flex items-center justify-center h-96">
-          <Loader2 className="w-12 h-12 text-[#3ECF8E] animate-spin" />
+          <Loader2 className="w-12 h-12 text-[#dbfcff] animate-spin" />
         </div>
       );
     }
@@ -589,7 +589,7 @@ export default function ExperiencePage() {
       case 'interior':
         return (
           <div className="h-96 flex items-center justify-center bg-black/20 rounded-xl border border-white/10">
-            <Globe className="w-16 h-16 text-[#3ECF8E]" />
+            <Globe className="w-16 h-16 text-[#dbfcff]" />
             <div className="ml-4">
               <h3 className="text-xl font-bold">Still Renders</h3>
               <p className="text-sm text-gray-400">Loading architectural renders...</p>
@@ -616,9 +616,9 @@ export default function ExperiencePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] text-white">
+    <div className="min-h-screen bg-[#131314] text-white">
       {/* Header */}
-      <header className="border-b border-white/10 bg-[#0A0A0B]/80 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b border-white/10 bg-[#131314]/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <button
             onClick={() => router.back()}

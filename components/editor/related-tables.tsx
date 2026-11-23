@@ -19,7 +19,7 @@ export function RelatedTables({ projectId, tabs, tabData }: Props) {
 
   return (
     <div className="space-y-3">
-      <div className="flex gap-2 border-b border-[#27272A]">
+      <div className="flex gap-2 border-b border-[#353436]">
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -27,7 +27,7 @@ export function RelatedTables({ projectId, tabs, tabData }: Props) {
             onClick={() => setActiveTab(tab.key)}
             className={`px-3 py-1.5 text-xs font-mono border-b-2 transition-colors cursor-pointer ${
               activeTab === tab.key
-                ? 'border-[#3ECF8E] text-white'
+                ? 'border-[#dbfcff] text-white'
                 : 'border-transparent text-[#A1A1AA] hover:text-white'
             }`}
           >
@@ -36,11 +36,11 @@ export function RelatedTables({ projectId, tabs, tabData }: Props) {
         ))}
       </div>
 
-      <div className="rounded-lg border border-[#27272A] bg-[#0c0c0f]">
+      <div className="rounded-lg border border-[#353436] bg-[#201f20]">
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
             <thead>
-              <tr className="border-b border-[#27272A] text-[#A1A1AA]">
+              <tr className="border-b border-[#353436] text-[#A1A1AA]">
                 {tabs
                   .find((tab) => tab.key === activeTab)
                   ?.columns.map((col) => (
@@ -62,11 +62,11 @@ export function RelatedTables({ projectId, tabs, tabData }: Props) {
                 </tr>
               )}
               {tabData[activeTab]?.map((row, index) => (
-                <tr key={row.id || index} className="border-b border-[#27272A]/60 last:border-0">
+                <tr key={row.id || index} className="border-b border-[#353436]/60 last:border-0">
                   {tabs
                     .find((tab) => tab.key === activeTab)
                     ?.columns.map((col) => (
-                      <td key={col.key} className="px-4 py-3 text-[#FAFAFA]">
+                      <td key={col.key} className="px-4 py-3 text-[#e5e2e3]">
                         {col.render ? col.render(row[col.key], row) : row[col.key]}
                       </td>
                     ))}

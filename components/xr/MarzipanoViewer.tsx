@@ -15,10 +15,10 @@ const TourViewer = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="absolute inset-0 bg-[#09090B] flex flex-col items-center justify-center gap-2 z-40">
-        <div className="text-xs font-mono text-[#3ECF8E]">Loading 360° Tour…</div>
-        <div className="w-48 h-1 bg-[#27272A] rounded-full overflow-hidden">
-          <div className="h-full bg-[#3ECF8E] transition-all duration-300 rounded-full animate-pulse" style={{ width: '60%' }} />
+      <div className="absolute inset-0 bg-[#131314] flex flex-col items-center justify-center gap-2 z-40">
+        <div className="text-xs font-mono text-[#dbfcff]">Loading 360° Tour…</div>
+        <div className="w-48 h-1 bg-[#353436] rounded-full overflow-hidden">
+          <div className="h-full bg-[#dbfcff] transition-all duration-300 rounded-full animate-pulse" style={{ width: '60%' }} />
         </div>
       </div>
     ),
@@ -114,8 +114,8 @@ export default function MarzipanoViewer({ scene, onHotspotClick }: MarzipanoView
 
   if (!tourScene) {
     return (
-      <div className="absolute inset-0 bg-[#09090B] flex items-center justify-center">
-        <div className="text-xs font-mono text-[#3ECF8E]">Preparing tour…</div>
+      <div className="absolute inset-0 bg-[#131314] flex items-center justify-center">
+        <div className="text-xs font-mono text-[#dbfcff]">Preparing tour…</div>
       </div>
     );
   }

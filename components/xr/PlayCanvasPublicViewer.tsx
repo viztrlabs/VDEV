@@ -172,18 +172,18 @@ export function PlayCanvasPublicViewer({ scene, camera }: PlayCanvasPublicProps)
 
   if (error) {
     return (
-      <div className="absolute inset-0 bg-[#09090B] flex items-center justify-center">
+      <div className="absolute inset-0 bg-[#131314] flex items-center justify-center">
         <div className="text-sm text-red-400 font-mono">{error}</div>
       </div>
     );
   }
 
   return (
-    <div className="relative w-full h-full bg-[#09090B]">
+    <div className="relative w-full h-full bg-[#131314]">
       <div ref={containerRef} className="absolute inset-0" role="region" aria-label="3D Experience" />
       {loading && (
-        <div className="absolute inset-0 bg-[#09090B] flex items-center justify-center z-10">
-          <div className="text-xs font-mono text-[#3ECF8E]">Loading 3D…</div>
+        <div className="absolute inset-0 bg-[#131314] flex items-center justify-center z-10">
+          <div className="text-xs font-mono text-[#dbfcff]">Loading 3D…</div>
         </div>
       )}
     </div>

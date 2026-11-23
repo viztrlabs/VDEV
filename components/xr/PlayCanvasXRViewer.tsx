@@ -168,13 +168,13 @@ export default function PlayCanvasXRViewer() {
   };
 
   return (
-    <div className="relative w-full h-full bg-[#09090B]">
+    <div className="relative w-full h-full bg-[#131314]">
       <div ref={containerRef} className="absolute inset-0" />
 
       {/* Overlay UI */}
-      <div className="absolute top-4 left-4 z-10 bg-[#18181B]/80 backdrop-blur-sm rounded-xl p-4 border border-[#27272A] space-y-3">
+      <div className="absolute top-4 left-4 z-10 bg-[#201f20]/80 backdrop-blur-sm rounded-xl p-4 border border-[#353436] space-y-3">
         <div className="flex items-center gap-2">
-          <div className={`w-8 h-8 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-center ${getStatusColor()}`}>
+          <div className={`w-8 h-8 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-center ${getStatusColor()}`}>
             {getStatusIcon()}
           </div>
           <div>

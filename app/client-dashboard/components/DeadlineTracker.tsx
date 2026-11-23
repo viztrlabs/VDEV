@@ -30,10 +30,10 @@ export default function DeadlineTracker() {
 
   return (
     <section className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#27272A]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#353436]">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <Clock className="w-5 h-5 text-[#3ECF8E]" />
+            <Clock className="w-5 h-5 text-[#dbfcff]" />
             <span>Milestone Schedule & Critical Path Deadlines</span>
           </h2>
           <p className="text-xs text-[#A1A1AA] mt-0.5">
@@ -44,9 +44,9 @@ export default function DeadlineTracker() {
 
       <div className="space-y-3">
         {milestones.map((m, idx) => (
-          <div key={idx} className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div key={idx} className="p-4 rounded-xl bg-[#201f20] border border-[#353436] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] text-[#3ECF8E] shrink-0">
+              <div className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] text-[#dbfcff] shrink-0">
                 <Flag className="w-4 h-4" />
               </div>
               <div>
@@ -68,7 +68,7 @@ export default function DeadlineTracker() {
             <div className="flex items-center gap-3 self-end sm:self-auto">
               <div className="text-right">
                 <div className="text-sm font-mono font-bold text-white">{m.daysRemaining}</div>
-                <div className="text-[10px] font-mono text-[#3ECF8E]">Remaining</div>
+                <div className="text-[10px] font-mono text-[#dbfcff]">Remaining</div>
               </div>
             </div>
           </div>

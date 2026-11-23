@@ -91,14 +91,14 @@ export function IconPicker({ value, onChange, onClose }: IconPickerProps) {
     : ICON_CATEGORIES[activeCategory]?.icons || [];
 
   return (
-    <div className="absolute z-50 top-full left-0 mt-1 w-80 bg-[#09090B] border border-[#27272A] rounded-lg shadow-xl p-3">
+    <div className="absolute z-50 top-full left-0 mt-1 w-80 bg-[#131314] border border-[#353436] rounded-lg shadow-xl p-3">
       <div className="flex items-center gap-2 mb-3">
         <input
           type="text"
           placeholder="Search icons..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-white placeholder:text-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+          className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-white placeholder:text-[#71717A] focus:outline-none focus:border-[#dbfcff]"
         />
         <button onClick={onClose} className="text-[#71717A] hover:text-white text-xs">✕</button>
       </div>
@@ -110,7 +110,7 @@ export function IconPicker({ value, onChange, onClose }: IconPickerProps) {
               key={key}
               onClick={() => setActiveCategory(key)}
               className={`px-2 py-0.5 rounded text-[10px] font-mono ${
-                activeCategory === key ? 'bg-[#3ECF8E]/20 text-[#3ECF8E]' : 'bg-[#18181B] text-[#A1A1AA] hover:text-white'
+                activeCategory === key ? 'bg-[#dbfcff]/20 text-[#dbfcff]' : 'bg-[#201f20] text-[#A1A1AA] hover:text-white'
               }`}
             >
               {cat.name}
@@ -126,8 +126,8 @@ export function IconPicker({ value, onChange, onClose }: IconPickerProps) {
             <button
               key={ic.id}
               onClick={() => { onChange(ic.id); onClose(); }}
-              className={`p-2 rounded hover:bg-[#27272A] group relative ${
-                value === ic.id ? 'bg-[#3ECF8E]/20 ring-1 ring-[#3ECF8E]' : ''
+              className={`p-2 rounded hover:bg-[#353436] group relative ${
+                value === ic.id ? 'bg-[#dbfcff]/20 ring-1 ring-[#dbfcff]' : ''
               }`}
               title={ic.label}
             >

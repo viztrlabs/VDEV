@@ -237,9 +237,9 @@ export default function Pano2VrPackageEditor({ experienceId }: { experienceId: s
   const pct = state.total > 0 ? Math.round((state.uploaded / state.total) * 100) : 0;
 
   return (
-    <div className="rounded-xl border border-[#27272A] bg-[#111113] p-5 space-y-4">
+    <div className="rounded-xl border border-[#353436] bg-[#111113] p-5 space-y-4">
       <div className="flex items-center gap-2">
-        <Package className="w-4 h-4 text-[#3ECF8E]" />
+        <Package className="w-4 h-4 text-[#dbfcff]" />
         <h3 className="text-sm font-bold text-white">Pano2VR Tour Package</h3>
       </div>
       <p className="text-[11px] text-zinc-500 leading-relaxed">
@@ -302,7 +302,7 @@ export default function Pano2VrPackageEditor({ experienceId }: { experienceId: s
             </div>
           )}
           <div className={`flex items-center gap-2 text-xs ${state.phase === 'error' ? 'text-red-300' : 'text-zinc-400'}`}>
-            {state.phase === 'done' && <CheckCircle2 className="w-4 h-4 text-[#3ECF8E]" />}
+            {state.phase === 'done' && <CheckCircle2 className="w-4 h-4 text-[#dbfcff]" />}
             {state.phase === 'error' && <AlertCircle className="w-4 h-4 text-red-400" />}
             {busy && <Loader2 className="w-4 h-4 animate-spin text-[#00F0FF]" />}
             <span>

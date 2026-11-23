@@ -2,8 +2,8 @@ import type { TourHotspot } from '@/lib/tourClientStore';
 
 // Literal class strings only — Tailwind's JIT scans this file.
 const DOT_CLASS_BY_TYPE: Record<string, string> = {
-  navigation: 'bg-[#3ECF8E]',
-  floor: 'bg-[#3ECF8E]',
+  navigation: 'bg-[#dbfcff]',
+  floor: 'bg-[#dbfcff]',
   info: 'bg-sky-400',
   link: 'bg-amber-500',
   image: 'bg-violet-400',
@@ -53,7 +53,7 @@ export function renderViewerHotspot(hs: TourHotspot, onActivate?: () => void): H
   if (label) {
     const labelEl = document.createElement('div');
     labelEl.className =
-      'viztr-hotspot-label absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-0.5 rounded bg-[#09090B] text-[9px] font-mono text-white whitespace-nowrap';
+      'viztr-hotspot-label absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-0.5 rounded bg-[#131314] text-[9px] font-mono text-white whitespace-nowrap';
     labelEl.textContent = label;
     el.appendChild(labelEl);
   }
@@ -88,7 +88,7 @@ export function renderAlignmentMarker(marker: {
   if (marker.label) {
     const labelEl = document.createElement('div');
     labelEl.className =
-      'absolute top-full left-1/2 -translate-x-1/2 mt-1 px-1.5 py-0.5 rounded bg-[#09090B] text-[9px] font-mono text-amber-300 whitespace-nowrap';
+      'absolute top-full left-1/2 -translate-x-1/2 mt-1 px-1.5 py-0.5 rounded bg-[#131314] text-[9px] font-mono text-amber-300 whitespace-nowrap';
     labelEl.textContent = marker.label;
     el.appendChild(labelEl);
   }

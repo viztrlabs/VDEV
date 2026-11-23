@@ -135,27 +135,27 @@ export default function CollapsibleLeftFilterPanel({
     >
       {/* COLLAPSED STATE ICON STRIP */}
       {!isOpen && (
-        <aside className="w-12 md:w-14 h-full bg-[#18181B] border-r border-[#27272A] flex flex-col items-center py-4 justify-between select-none">
+        <aside className="w-12 md:w-14 h-full bg-[#201f20] border-r border-[#353436] flex flex-col items-center py-4 justify-between select-none">
           <div className="flex flex-col items-center gap-4">
             <button
               onClick={onToggle}
-              className="p-2.5 rounded-xl bg-[#27272A] hover:bg-[#3ECF8E]/20 text-[#A1A1AA] hover:text-[#3ECF8E] transition-colors cursor-pointer"
+              className="p-2.5 rounded-xl bg-[#353436] hover:bg-[#dbfcff]/20 text-[#A1A1AA] hover:text-[#dbfcff] transition-colors cursor-pointer"
               title="Expand Filter & Categorization Side Panel (Click to open)"
               aria-label="Expand Filter & Categorization Side Panel"
             >
-              <ChevronRight className="w-4 h-4 text-[#3ECF8E]" />
+              <ChevronRight className="w-4 h-4 text-[#dbfcff]" />
             </button>
 
-            <div className="w-8 h-px bg-[#27272A]" />
+            <div className="w-8 h-px bg-[#353436]" />
 
             <button
               onClick={onToggle}
-              className="p-2 rounded-lg text-[#A1A1AA] hover:text-white hover:bg-[#27272A] relative transition-colors"
+              className="p-2 rounded-lg text-[#A1A1AA] hover:text-white hover:bg-[#353436] relative transition-colors"
               title="Active Filters"
             >
               <Filter className="w-4 h-4" />
               {activeFilterCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#3ECF8E] text-black text-[9px] font-mono font-bold flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#dbfcff] text-black text-[9px] font-mono font-bold flex items-center justify-center">
                   {activeFilterCount}
                 </span>
               )}
@@ -163,7 +163,7 @@ export default function CollapsibleLeftFilterPanel({
 
             <button
               onClick={onToggle}
-              className="p-2 rounded-lg text-[#A1A1AA] hover:text-white hover:bg-[#27272A] transition-colors"
+              className="p-2 rounded-lg text-[#A1A1AA] hover:text-white hover:bg-[#353436] transition-colors"
               title="Categories & Pipelines"
             >
               <Layers className="w-4 h-4" />
@@ -171,7 +171,7 @@ export default function CollapsibleLeftFilterPanel({
 
             <button
               onClick={onToggle}
-              className="p-2 rounded-lg text-[#A1A1AA] hover:text-white hover:bg-[#27272A] transition-colors"
+              className="p-2 rounded-lg text-[#A1A1AA] hover:text-white hover:bg-[#353436] transition-colors"
               title="Payment & Booking"
             >
               <DollarSign className="w-4 h-4" />
@@ -186,11 +186,11 @@ export default function CollapsibleLeftFilterPanel({
 
       {/* EXPANDED FULL FILTER PANEL */}
       {isOpen && (
-        <aside className="w-80 md:w-84 h-full bg-[#18181B] border-r border-[#27272A] flex flex-col justify-between overflow-hidden shadow-2xl">
+        <aside className="w-80 md:w-84 h-full bg-[#201f20] border-r border-[#353436] flex flex-col justify-between overflow-hidden shadow-2xl">
           {/* HEADER & TOGGLE */}
-          <div className="p-3.5 border-b border-[#27272A] bg-[#141416] flex items-center justify-between">
+          <div className="p-3.5 border-b border-[#353436] bg-[#131314] flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E]">
+              <div className="p-1.5 rounded-lg bg-[#dbfcff]/10 border border-[#dbfcff]/30 text-[#dbfcff]">
                 <SlidersHorizontal className="w-3.5 h-3.5" />
               </div>
               <div>
@@ -208,7 +208,7 @@ export default function CollapsibleLeftFilterPanel({
                 <button
                   type="button"
                   onClick={onResetFilters}
-                  className="px-2 py-1 rounded-md bg-[#27272A] hover:bg-rose-950/80 hover:text-rose-400 text-[10px] font-mono text-[#A1A1AA] flex items-center gap-1 transition-colors cursor-pointer"
+                  className="px-2 py-1 rounded-md bg-[#353436] hover:bg-rose-950/80 hover:text-rose-400 text-[10px] font-mono text-[#A1A1AA] flex items-center gap-1 transition-colors cursor-pointer"
                   title="Reset all filters"
                 >
                   <RotateCcw className="w-3 h-3" />
@@ -218,7 +218,7 @@ export default function CollapsibleLeftFilterPanel({
               <button
                 type="button"
                 onClick={onToggle}
-                className="p-1.5 rounded-md bg-[#27272A] hover:bg-[#3ECF8E]/20 text-[#A1A1AA] hover:text-[#3ECF8E] transition-colors cursor-pointer"
+                className="p-1.5 rounded-md bg-[#353436] hover:bg-[#dbfcff]/20 text-[#A1A1AA] hover:text-[#dbfcff] transition-colors cursor-pointer"
                 title="Collapse Side Panel"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -227,12 +227,12 @@ export default function CollapsibleLeftFilterPanel({
           </div>
 
           {/* TAB BAR: FILTERS VS CATEGORIES */}
-          <div className="flex items-center px-3 pt-2.5 border-b border-[#27272A] bg-[#18181B] gap-2">
+          <div className="flex items-center px-3 pt-2.5 border-b border-[#353436] bg-[#201f20] gap-2">
             <button
               onClick={() => setActiveTab('filter')}
               className={`flex-1 py-1.5 text-xs font-mono font-bold text-center border-b-2 transition-all cursor-pointer ${
                 activeTab === 'filter'
-                  ? 'border-[#3ECF8E] text-[#3ECF8E]'
+                  ? 'border-[#dbfcff] text-[#dbfcff]'
                   : 'border-transparent text-[#71717A] hover:text-[#A1A1AA]'
               }`}
             >
@@ -242,7 +242,7 @@ export default function CollapsibleLeftFilterPanel({
               onClick={() => setActiveTab('categories')}
               className={`flex-1 py-1.5 text-xs font-mono font-bold text-center border-b-2 transition-all cursor-pointer ${
                 activeTab === 'categories'
-                  ? 'border-[#3ECF8E] text-[#3ECF8E]'
+                  ? 'border-[#dbfcff] text-[#dbfcff]'
                   : 'border-transparent text-[#71717A] hover:text-[#A1A1AA]'
               }`}
             >
@@ -266,7 +266,7 @@ export default function CollapsibleLeftFilterPanel({
                       value={filters.searchQuery}
                       onChange={(e) => onFilterChange({ ...filters, searchQuery: e.target.value })}
                       placeholder="e.g. Foster, Apex, VIZTR-882..."
-                      className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                      className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
                     />
                     {filters.searchQuery && (
                       <button
@@ -295,8 +295,8 @@ export default function CollapsibleLeftFilterPanel({
                       onClick={() => onFilterChange({ ...filters, status: 'all' })}
                       className={`px-2 py-1 rounded text-[11px] text-left transition-all cursor-pointer ${
                         filters.status === 'all'
-                          ? 'bg-[#3ECF8E] text-black font-bold'
-                          : 'bg-[#09090B] text-[#A1A1AA] hover:text-white border border-[#27272A]'
+                          ? 'bg-[#dbfcff] text-black font-bold'
+                          : 'bg-[#131314] text-[#A1A1AA] hover:text-white border border-[#353436]'
                       }`}
                     >
                       All ({projects.length})
@@ -312,8 +312,8 @@ export default function CollapsibleLeftFilterPanel({
                           onClick={() => onFilterChange({ ...filters, status: isSelected ? 'all' : st.id })}
                           className={`px-2 py-1 rounded text-[10px] text-left transition-all border cursor-pointer flex items-center justify-between ${
                             isSelected
-                              ? 'bg-[#3ECF8E] text-black border-[#3ECF8E] font-bold'
-                              : 'bg-[#09090B] text-[#A1A1AA] border-[#27272A] hover:border-[#71717A]'
+                              ? 'bg-[#dbfcff] text-black border-[#dbfcff] font-bold'
+                              : 'bg-[#131314] text-[#A1A1AA] border-[#353436] hover:border-[#71717A]'
                           }`}
                         >
                           <span className="flex items-center gap-1.5 truncate">
@@ -343,8 +343,8 @@ export default function CollapsibleLeftFilterPanel({
                       onClick={() => onFilterChange({ ...filters, projectType: 'all' })}
                       className={`w-full px-2 py-1 rounded text-[11px] flex items-center justify-between transition-all cursor-pointer ${
                         filters.projectType === 'all'
-                          ? 'bg-[#3ECF8E] text-black font-bold'
-                          : 'bg-[#09090B] text-[#A1A1AA] hover:text-white border border-[#27272A]'
+                          ? 'bg-[#dbfcff] text-black font-bold'
+                          : 'bg-[#131314] text-[#A1A1AA] hover:text-white border border-[#353436]'
                       }`}
                     >
                       <span>All Disciplines</span>
@@ -361,8 +361,8 @@ export default function CollapsibleLeftFilterPanel({
                           onClick={() => onFilterChange({ ...filters, projectType: isSelected ? 'all' : pt.id })}
                           className={`w-full px-2 py-1 rounded text-[10px] flex items-center justify-between transition-all border cursor-pointer ${
                             isSelected
-                              ? 'bg-[#3ECF8E] text-black border-[#3ECF8E] font-bold'
-                              : 'bg-[#09090B] text-[#A1A1AA] border-[#27272A] hover:border-[#71717A]'
+                              ? 'bg-[#dbfcff] text-black border-[#dbfcff] font-bold'
+                              : 'bg-[#131314] text-[#A1A1AA] border-[#353436] hover:border-[#71717A]'
                           }`}
                         >
                           <span className="flex items-center gap-1.5 truncate">
@@ -380,14 +380,14 @@ export default function CollapsibleLeftFilterPanel({
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <label className="text-[10px] uppercase tracking-wider text-[#A1A1AA] font-bold flex items-center gap-1">
-                      <CreditCard className="w-3 h-3 text-[#3ECF8E]" />
+                      <CreditCard className="w-3 h-3 text-[#dbfcff]" />
                       <span>Payment Status</span>
                     </label>
                   </div>
                   <select
                     value={filters.paymentStatus}
                     onChange={(e) => onFilterChange({ ...filters, paymentStatus: e.target.value as any })}
-                    className="w-full px-2.5 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-2.5 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-xs text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     <option value="all">All Payment Statuses</option>
                     {PAYMENT_STATUSES.map((ps) => (
@@ -401,7 +401,7 @@ export default function CollapsibleLeftFilterPanel({
                 {/* FILTER: BOOKING AMOUNT / BUDGET TIER */}
                 <div className="space-y-1.5">
                   <label className="text-[10px] uppercase tracking-wider text-[#A1A1AA] font-bold flex items-center gap-1">
-                    <DollarSign className="w-3 h-3 text-[#3ECF8E]" />
+                    <DollarSign className="w-3 h-3 text-[#dbfcff]" />
                     <span>Booking Tier</span>
                   </label>
                   <div className="grid grid-cols-2 gap-1">
@@ -417,8 +417,8 @@ export default function CollapsibleLeftFilterPanel({
                         onClick={() => onFilterChange({ ...filters, budgetTier: tier.id as any })}
                         className={`px-2 py-1 rounded text-[10px] text-center border cursor-pointer ${
                           filters.budgetTier === tier.id
-                            ? 'bg-[#3ECF8E] text-black border-[#3ECF8E] font-bold'
-                            : 'bg-[#09090B] text-[#A1A1AA] border-[#27272A] hover:text-white'
+                            ? 'bg-[#dbfcff] text-black border-[#dbfcff] font-bold'
+                            : 'bg-[#131314] text-[#A1A1AA] border-[#353436] hover:text-white'
                         }`}
                       >
                         {tier.label}
@@ -430,13 +430,13 @@ export default function CollapsibleLeftFilterPanel({
                 {/* FILTER: SECTOR / CATEGORY */}
                 <div className="space-y-1.5">
                   <label className="text-[10px] uppercase tracking-wider text-[#A1A1AA] font-bold flex items-center gap-1">
-                    <Building className="w-3 h-3 text-[#3ECF8E]" />
+                    <Building className="w-3 h-3 text-[#dbfcff]" />
                     <span>Sector / Category</span>
                   </label>
                   <select
                     value={filters.category}
                     onChange={(e) => onFilterChange({ ...filters, category: e.target.value })}
-                    className="w-full px-2.5 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-2.5 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-xs text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     <option value="all">All Sectors</option>
                     {CATEGORIES.map((cat) => (
@@ -451,7 +451,7 @@ export default function CollapsibleLeftFilterPanel({
 
             {activeTab === 'categories' && (
               <div className="space-y-2">
-                <div className="flex items-center justify-between pb-1.5 border-b border-[#27272A]">
+                <div className="flex items-center justify-between pb-1.5 border-b border-[#353436]">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-[#A1A1AA]">
                     Filtered Commissions ({filteredList.length})
                   </span>
@@ -459,12 +459,12 @@ export default function CollapsibleLeftFilterPanel({
                 </div>
 
                 {filteredList.length === 0 ? (
-                  <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] text-center space-y-2 text-[#71717A]">
+                  <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] text-center space-y-2 text-[#71717A]">
                     <AlertCircle className="w-5 h-5 text-amber-400 mx-auto" />
                     <p className="text-[11px]">No projects match your active filter criteria.</p>
                     <button
                       onClick={onResetFilters}
-                      className="text-xs text-[#3ECF8E] underline hover:text-[#3ECF8E]/80"
+                      className="text-xs text-[#dbfcff] underline hover:text-[#dbfcff]/80"
                     >
                       Clear all filters
                     </button>
@@ -480,8 +480,8 @@ export default function CollapsibleLeftFilterPanel({
                           onClick={() => onSelectProject(project.id)}
                           className={`w-full p-2.5 rounded-xl border text-left transition-all flex items-start gap-2.5 cursor-pointer ${
                             isSelected
-                              ? 'bg-[#09090B] border-[#3ECF8E] ring-1 ring-[#3ECF8E]/50'
-                              : 'bg-[#09090B]/60 border-[#27272A] hover:border-[#71717A] hover:bg-[#09090B]'
+                              ? 'bg-[#131314] border-[#dbfcff] ring-1 ring-[#dbfcff]/50'
+                              : 'bg-[#131314]/60 border-[#353436] hover:border-[#71717A] hover:bg-[#131314]'
                           }`}
                         >
                           <div className="relative w-11 h-11 rounded-lg overflow-hidden shrink-0 bg-black">
@@ -506,10 +506,10 @@ export default function CollapsibleLeftFilterPanel({
 
                           <div className="flex-1 min-w-0 space-y-1">
                             <div className="flex items-center justify-between">
-                              <span className="text-[10px] font-bold text-[#3ECF8E] truncate">
+                              <span className="text-[10px] font-bold text-[#dbfcff] truncate">
                                 {project.id}
                               </span>
-                              <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#27272A] text-white flex items-center gap-1">
+                              <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#353436] text-white flex items-center gap-1">
                                 {project.status === 'Complete' && <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400" />}
                                 {project.status === 'Work in Progress' && <Clock className="w-2.5 h-2.5 text-sky-400" />}
                                 {project.status === 'Client Review' && <Eye className="w-2.5 h-2.5 text-amber-400" />}
@@ -523,7 +523,7 @@ export default function CollapsibleLeftFilterPanel({
                             </h4>
                             <div className="flex items-center justify-between text-[9px] text-[#A1A1AA]">
                               <span className="truncate">{project.clientCompany}</span>
-                              <span className="text-[#3ECF8E] font-medium font-mono" suppressHydrationWarning>
+                              <span className="text-[#dbfcff] font-medium font-mono" suppressHydrationWarning>
                                 ${project.bookingAmount.toLocaleString('en-US')}
                               </span>
                             </div>
@@ -538,9 +538,9 @@ export default function CollapsibleLeftFilterPanel({
           </div>
 
           {/* BOTTOM STATUS FOOTER */}
-          <div className="p-3 border-t border-[#27272A] bg-[#141416] flex items-center justify-between text-[10px] font-mono text-[#71717A]">
+          <div className="p-3 border-t border-[#353436] bg-[#131314] flex items-center justify-between text-[10px] font-mono text-[#71717A]">
             <span className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#3ECF8E] animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#dbfcff] animate-pulse" />
               <span>Role: {userRole}</span>
             </span>
             <span className="text-white font-bold">

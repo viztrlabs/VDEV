@@ -15,8 +15,8 @@ interface HotspotPopupProps {
 
 export function HotspotPopup({ hotspot, onClose }: HotspotPopupProps) {
   return (
-    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-[min(92vw,420px)] bg-[#09090B]/95 backdrop-blur rounded-xl border border-[#27272A] shadow-2xl overflow-hidden max-h-[70vh] flex flex-col">
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#27272A]">
+    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-[min(92vw,420px)] bg-[#131314]/95 backdrop-blur rounded-xl border border-[#353436] shadow-2xl overflow-hidden max-h-[70vh] flex flex-col">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#353436]">
         <div className="text-xs font-mono font-bold text-white truncate">{hotspot.title}</div>
         <button onClick={onClose} className="text-[#71717A] hover:text-white text-xs px-1 cursor-pointer" aria-label="Close popup">
           ✕
@@ -32,7 +32,7 @@ export function HotspotPopup({ hotspot, onClose }: HotspotPopupProps) {
               <button
                 key={src + i}
                 onClick={() => window.open(src, '_blank', 'noopener,noreferrer')}
-                className="block aspect-video w-full rounded-lg overflow-hidden border border-[#27272A] cursor-pointer"
+                className="block aspect-video w-full rounded-lg overflow-hidden border border-[#353436] cursor-pointer"
                 aria-label={`Open photo ${i + 1} in new tab`}
               >
                 <img
@@ -49,7 +49,7 @@ export function HotspotPopup({ hotspot, onClose }: HotspotPopupProps) {
             href={hotspot.externalUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#3ECF8E] text-black text-xs font-mono font-bold"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#dbfcff] text-black text-xs font-mono font-bold"
           >
             {hotspot.type === 'link' ? 'Open Link' : 'Learn more'} <ExternalLink className="w-3.5 h-3.5" />
           </a>

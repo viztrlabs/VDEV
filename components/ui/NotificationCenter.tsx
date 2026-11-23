@@ -54,18 +54,18 @@ export default function NotificationCenter() {
       <button
         id="notification-center-trigger"
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 rounded-full bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+        className="relative p-2 rounded-full bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
         aria-label="Notification Center"
         title="Project Notifications & Alerts"
       >
         {desktopNotificationsEnabled ? (
-          <Bell className="w-4 h-4 text-[#3ECF8E]" />
+          <Bell className="w-4 h-4 text-[#dbfcff]" />
         ) : (
           <BellOff className="w-4 h-4 text-[#71717A]" />
         )}
 
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#3ECF8E] text-[9px] font-mono font-bold text-black ring-2 ring-[#09090B]">
+          <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#dbfcff] text-[9px] font-mono font-bold text-black ring-2 ring-[#131314]">
             {unreadCount}
           </span>
         )}
@@ -75,14 +75,14 @@ export default function NotificationCenter() {
       {isOpen && (
         <div
           id="notification-center-dropdown"
-          className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-[#18181B] border border-[#27272A] shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+          className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-[#201f20] border border-[#353436] shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-150"
         >
           {/* HEADER */}
-          <div className="p-3.5 border-b border-[#27272A] flex items-center justify-between bg-[#18181B]">
+          <div className="p-3.5 border-b border-[#353436] flex items-center justify-between bg-[#201f20]">
             <div className="flex items-center gap-2">
               <span className="font-display font-bold text-xs text-white">Live Project Notifications</span>
               {unreadCount > 0 && (
-                <span className="px-1.5 py-0.5 rounded bg-[#3ECF8E]/20 text-[#3ECF8E] text-[10px] font-mono font-bold">
+                <span className="px-1.5 py-0.5 rounded bg-[#dbfcff]/20 text-[#dbfcff] text-[10px] font-mono font-bold">
                   {unreadCount} new
                 </span>
               )}
@@ -92,22 +92,22 @@ export default function NotificationCenter() {
               <button
                 onClick={() => setSoundAlerts(!soundAlertsEnabled)}
                 title={soundAlertsEnabled ? 'Sound enabled' : 'Sound muted'}
-                className="p-1 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                className="p-1 rounded hover:bg-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
               >
-                {soundAlertsEnabled ? <Volume2 className="w-3.5 h-3.5 text-[#3ECF8E]" /> : <VolumeX className="w-3.5 h-3.5 text-[#71717A]" />}
+                {soundAlertsEnabled ? <Volume2 className="w-3.5 h-3.5 text-[#dbfcff]" /> : <VolumeX className="w-3.5 h-3.5 text-[#71717A]" />}
               </button>
 
               <button
                 onClick={() => toggleDesktopNotifications()}
                 title={desktopNotificationsEnabled ? 'Desktop notifications ON' : 'Desktop notifications OFF'}
-                className="p-1 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                className="p-1 rounded hover:bg-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
               >
-                {desktopNotificationsEnabled ? <BellRing className="w-3.5 h-3.5 text-[#3ECF8E]" /> : <BellOff className="w-3.5 h-3.5 text-[#71717A]" />}
+                {desktopNotificationsEnabled ? <BellRing className="w-3.5 h-3.5 text-[#dbfcff]" /> : <BellOff className="w-3.5 h-3.5 text-[#71717A]" />}
               </button>
 
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                className="p-1 rounded hover:bg-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -115,14 +115,14 @@ export default function NotificationCenter() {
           </div>
 
           {/* QUICK TOGGLE BANNER */}
-          <div className="px-3.5 py-2 bg-[#09090B] border-b border-[#27272A] flex items-center justify-between text-[11px] font-mono">
+          <div className="px-3.5 py-2 bg-[#131314] border-b border-[#353436] flex items-center justify-between text-[11px] font-mono">
             <span className="text-[#A1A1AA]">Desktop Push:</span>
             <button
               onClick={() => toggleDesktopNotifications()}
               className={`px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors ${
                 desktopNotificationsEnabled
-                  ? 'bg-[#3ECF8E]/20 text-[#3ECF8E] border border-[#3ECF8E]/40'
-                  : 'bg-[#27272A] text-[#71717A]'
+                  ? 'bg-[#dbfcff]/20 text-[#dbfcff] border border-[#dbfcff]/40'
+                  : 'bg-[#353436] text-[#71717A]'
               }`}
             >
               {desktopNotificationsEnabled ? 'Active (Click to Pause)' : 'Paused (Click to Enable)'}
@@ -130,7 +130,7 @@ export default function NotificationCenter() {
           </div>
 
           {/* NOTIFICATION FEED */}
-          <div className="max-h-72 overflow-y-auto divide-y divide-[#27272A]/60">
+          <div className="max-h-72 overflow-y-auto divide-y divide-[#353436]/60">
             {notificationsList.length === 0 ? (
               <div className="p-8 text-center space-y-2">
                 <BellOff className="w-6 h-6 text-[#71717A] mx-auto" />
@@ -142,7 +142,7 @@ export default function NotificationCenter() {
                   key={notif.id}
                   onClick={() => markNotificationAsRead(notif.id)}
                   className={`p-3 text-xs font-mono transition-colors flex items-start gap-2.5 cursor-pointer ${
-                    notif.read ? 'bg-[#18181B]/40 hover:bg-[#18181B]' : 'bg-[#18181B] hover:bg-[#27272A]/40'
+                    notif.read ? 'bg-[#201f20]/40 hover:bg-[#201f20]' : 'bg-[#201f20] hover:bg-[#353436]/40'
                   }`}
                 >
                   <div className="mt-0.5 shrink-0">
@@ -152,7 +152,7 @@ export default function NotificationCenter() {
                       </div>
                     )}
                     {notif.type === 'milestone_ready' && (
-                      <div className="w-6 h-6 rounded-lg bg-emerald-950/60 border border-emerald-800/60 flex items-center justify-center text-[#3ECF8E]">
+                      <div className="w-6 h-6 rounded-lg bg-emerald-950/60 border border-emerald-800/60 flex items-center justify-center text-[#dbfcff]">
                         <FileCheck2 className="w-3.5 h-3.5" />
                       </div>
                     )}
@@ -177,7 +177,7 @@ export default function NotificationCenter() {
                       <Link
                         href={notif.actionUrl}
                         onClick={() => setIsOpen(false)}
-                        className="inline-flex items-center gap-1 text-[10px] text-[#3ECF8E] hover:underline pt-0.5"
+                        className="inline-flex items-center gap-1 text-[10px] text-[#dbfcff] hover:underline pt-0.5"
                       >
                         <span>Open Commission View</span>
                         <ExternalLink className="w-2.5 h-2.5" />
@@ -186,7 +186,7 @@ export default function NotificationCenter() {
                   </div>
 
                   {!notif.read && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#3ECF8E] shrink-0 mt-1.5" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#dbfcff] shrink-0 mt-1.5" />
                   )}
                 </div>
               ))
@@ -194,7 +194,7 @@ export default function NotificationCenter() {
           </div>
 
           {/* FOOTER ACTIONS */}
-          <div className="p-2.5 border-t border-[#27272A] bg-[#09090B] flex items-center justify-between text-[10px] font-mono">
+          <div className="p-2.5 border-t border-[#353436] bg-[#131314] flex items-center justify-between text-[10px] font-mono">
             {notificationsList.length > 0 && (
               <button
                 onClick={clearAllNotifications}
@@ -208,7 +208,7 @@ export default function NotificationCenter() {
             <Link
               href="/client-dashboard"
               onClick={() => setIsOpen(false)}
-              className="text-[#3ECF8E] hover:underline flex items-center gap-1 ml-auto"
+              className="text-[#dbfcff] hover:underline flex items-center gap-1 ml-auto"
             >
               <span>Manage Alerts Center →</span>
             </Link>

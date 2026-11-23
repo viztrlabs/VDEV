@@ -143,9 +143,9 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
   return (
     <div className="space-y-6">
       {/* BANNER */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#18181B] via-[#121214] to-[#09090B] border border-[#27272A] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#201f20] via-[#131314] to-[#131314] border border-[#353436] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase tracking-wider">
             <Box className="w-4 h-4" />
             <span>CORE SYSTEM 02 • XR LINK GENERATOR</span>
           </div>
@@ -161,7 +161,7 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
           <button
             type="button"
             onClick={() => setIsCreating(true)}
-            className="px-4 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#3ECF8E]/90 text-black font-mono font-bold text-xs flex items-center gap-2 shadow-lg shadow-[#3ECF8E]/20 transition-all cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#dbfcff]/90 text-black font-mono font-bold text-xs flex items-center gap-2 shadow-lg shadow-[#dbfcff]/20 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Generate New XR Token</span>
@@ -173,7 +173,7 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* LEFT COLUMN: ACTIVE TOKENS LIST (5 Cols) */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="p-4 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3">
+          <div className="p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-mono font-bold text-[#A1A1AA] uppercase">
                 Tokens Registry ({filteredTokens.length})
@@ -183,7 +183,7 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                   type="button"
                   onClick={() => setFilterStatus('all')}
                   className={`px-2 py-0.5 rounded cursor-pointer ${
-                    filterStatus === 'all' ? 'bg-[#3ECF8E] text-black font-bold' : 'text-[#A1A1AA] bg-[#09090B]'
+                    filterStatus === 'all' ? 'bg-[#dbfcff] text-black font-bold' : 'text-[#A1A1AA] bg-[#131314]'
                   }`}
                 >
                   All
@@ -192,7 +192,7 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                   type="button"
                   onClick={() => setFilterStatus('active')}
                   className={`px-2 py-0.5 rounded cursor-pointer ${
-                    filterStatus === 'active' ? 'bg-[#3ECF8E] text-black font-bold' : 'text-[#A1A1AA] bg-[#09090B]'
+                    filterStatus === 'active' ? 'bg-[#dbfcff] text-black font-bold' : 'text-[#A1A1AA] bg-[#131314]'
                   }`}
                 >
                   Active
@@ -201,7 +201,7 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                   type="button"
                   onClick={() => setFilterStatus('revoked')}
                   className={`px-2 py-0.5 rounded cursor-pointer ${
-                    filterStatus === 'revoked' ? 'bg-[#3ECF8E] text-black font-bold' : 'text-[#A1A1AA] bg-[#09090B]'
+                    filterStatus === 'revoked' ? 'bg-[#dbfcff] text-black font-bold' : 'text-[#A1A1AA] bg-[#131314]'
                   }`}
                 >
                   Revoked
@@ -220,12 +220,12 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                   onClick={() => setSelectedToken(tok)}
                   className={`p-4 rounded-xl border transition-all cursor-pointer text-left ${
                     isSelected
-                      ? 'bg-[#27272A]/80 border-[#3ECF8E] shadow-md shadow-[#3ECF8E]/10'
-                      : 'bg-[#18181B] border-[#27272A] hover:border-[#71717A]'
+                      ? 'bg-[#353436]/80 border-[#dbfcff] shadow-md shadow-[#dbfcff]/10'
+                      : 'bg-[#201f20] border-[#353436] hover:border-[#71717A]'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2 mb-1.5">
-                    <span className="text-[10px] font-mono font-bold text-[#3ECF8E] truncate max-w-[200px]">
+                    <span className="text-[10px] font-mono font-bold text-[#dbfcff] truncate max-w-[200px]">
                       {tok.token}
                     </span>
                     <span
@@ -248,9 +248,9 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                     Project: {tok.projectName} ({tok.projectId})
                   </div>
 
-                  <div className="mt-3 flex items-center justify-between text-[9px] font-mono text-[#71717A] border-t border-[#27272A] pt-2">
+                  <div className="mt-3 flex items-center justify-between text-[9px] font-mono text-[#71717A] border-t border-[#353436] pt-2">
                     <span className="flex items-center gap-1">
-                      {tok.experienceType === 'webxr' && <Box className="w-3 h-3 text-[#3ECF8E]" />}
+                      {tok.experienceType === 'webxr' && <Box className="w-3 h-3 text-[#dbfcff]" />}
                       {tok.experienceType === 'webar' && <Smartphone className="w-3 h-3 text-sky-400" />}
                       {tok.experienceType === 'vr_tour' && <Headset className="w-3 h-3 text-purple-400" />}
                       <span className="uppercase">{tok.experienceType}</span>
@@ -269,11 +269,11 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
         {selectedToken && (
           <div className="lg:col-span-7 space-y-5">
             {/* TOKEN DETAILS CARD */}
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#27272A] pb-4">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#353436] pb-4">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-xs font-mono">
-                    <span className="text-[#3ECF8E] font-bold">TOKEN: {selectedToken.token}</span>
+                    <span className="text-[#dbfcff] font-bold">TOKEN: {selectedToken.token}</span>
                     {selectedToken.requiresPasscode && (
                       <span className="px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-400 border border-amber-800 text-[9px] flex items-center gap-1">
                         <Lock className="w-2.5 h-2.5" />
@@ -311,7 +311,7 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
               </div>
 
               {/* QUICK SHARE LINK BAR */}
-              <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
+              <div className="p-3 rounded-xl bg-[#131314] border border-[#353436] space-y-2">
                 <div className="flex items-center justify-between text-[10px] font-mono text-[#71717A]">
                   <span>PUBLIC CLIENT XR LINK</span>
                   <span>1-Click Launch Ready</span>
@@ -321,12 +321,12 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                     type="text"
                     readOnly
                     value={activeLink}
-                    className="flex-1 px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-xs font-mono text-[#3ECF8E] select-all focus:outline-none"
+                    className="flex-1 px-3 py-1.5 rounded-lg bg-[#201f20] border border-[#353436] text-xs font-mono text-[#dbfcff] select-all focus:outline-none"
                   />
                   <button
                     type="button"
                     onClick={() => handleCopyLink(selectedToken)}
-                    className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="px-3 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     {copiedTokenId === selectedToken.id ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                     <span>{copiedTokenId === selectedToken.id ? 'Copied' : 'Copy'}</span>
@@ -335,7 +335,7 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                   <Link
                     href={`/xr/view?token=${selectedToken.token}`}
                     target="_blank"
-                    className="p-2 rounded-lg bg-[#27272A] hover:bg-[#3f3f46] text-white transition-colors"
+                    className="p-2 rounded-lg bg-[#353436] hover:bg-[#3f3f46] text-white transition-colors"
                     title="Launch in New Tab"
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
@@ -351,23 +351,23 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                     Mapped Spatial Parameters
                   </h4>
                   <div className="space-y-2 text-xs font-mono">
-                    <div className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-between">
+                    <div className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-between">
                       <span className="text-[#71717A]">Geometry Asset:</span>
                       <span className="text-white font-bold truncate max-w-[180px]">{selectedToken.modelUrl}</span>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-between">
+                    <div className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-between">
                       <span className="text-[#71717A]">Target Format:</span>
-                      <span className="text-[#3ECF8E] uppercase font-bold">{selectedToken.modelFormat} (Draco)</span>
+                      <span className="text-[#dbfcff] uppercase font-bold">{selectedToken.modelFormat} (Draco)</span>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-between">
+                    <div className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-between">
                       <span className="text-[#71717A]">Experience Mode:</span>
                       <span className="text-white uppercase font-bold">{selectedToken.experienceType}</span>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-between">
+                    <div className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-between">
                       <span className="text-[#71717A]">Lighting / Sky:</span>
                       <span className="text-white capitalize">{selectedToken.environmentPreset} HDRI</span>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-between">
+                    <div className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-between">
                       <span className="text-[#71717A]">Access Expiry:</span>
                       <span className="text-white">
                         {selectedToken.expiresAt ? new Date(selectedToken.expiresAt).toLocaleDateString() : 'Permanent'}
@@ -378,7 +378,7 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                   <button
                     type="button"
                     onClick={() => openModelViewer(selectedToken.modelUrl, selectedToken.name)}
-                    className="w-full py-2 rounded-xl bg-[#27272A] hover:bg-[#3ECF8E] hover:text-black text-white font-mono font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                    className="w-full py-2 rounded-xl bg-[#353436] hover:bg-[#dbfcff] hover:text-black text-white font-mono font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
                   >
                     <Box className="w-4 h-4" />
                     <span>Inspect Mapped 3D Geometry</span>
@@ -386,8 +386,8 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                 </div>
 
                 {/* Live QR Code (5 Cols) */}
-                <div className="sm:col-span-5 p-4 rounded-xl bg-[#09090B] border border-[#27272A] flex flex-col items-center justify-center text-center space-y-3">
-                  <div className="text-[10px] font-mono text-[#3ECF8E] font-bold uppercase flex items-center gap-1">
+                <div className="sm:col-span-5 p-4 rounded-xl bg-[#131314] border border-[#353436] flex flex-col items-center justify-center text-center space-y-3">
+                  <div className="text-[10px] font-mono text-[#dbfcff] font-bold uppercase flex items-center gap-1">
                     <QrCode className="w-3 h-3" />
                     <span>Instant Mobile AR Scan</span>
                   </div>
@@ -443,9 +443,9 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
       {/* GENERATE TOKEN MODAL */}
       {isCreating && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#18181B] border border-[#27272A] rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
-              <div className="flex items-center gap-2 text-[#3ECF8E] font-mono font-bold text-xs uppercase">
+          <div className="bg-[#201f20] border border-[#353436] rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#353436] pb-3">
+              <div className="flex items-center gap-2 text-[#dbfcff] font-mono font-bold text-xs uppercase">
                 <Box className="w-4 h-4" />
                 <span>Generate Autonomous WebXR / AR Token</span>
               </div>
@@ -467,7 +467,7 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                   value={newTokenData.name}
                   onChange={(e) => setNewTokenData({ ...newTokenData, name: e.target.value })}
                   placeholder="e.g. The Apex Tower - VIP Client Walkthrough"
-                  className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                  className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                 />
               </div>
 
@@ -477,7 +477,7 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                   <select
                     value={newTokenData.projectId}
                     onChange={(e) => setNewTokenData({ ...newTokenData, projectId: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     {projects.map((p) => (
                       <option key={p.id} value={p.id}>
@@ -492,7 +492,7 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                   <select
                     value={newTokenData.experienceType}
                     onChange={(e) => setNewTokenData({ ...newTokenData, experienceType: e.target.value as any })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     <option value="webxr">WebXR Interactive 3D</option>
                     <option value="webar">WebAR Apple QuickLook</option>
@@ -507,7 +507,7 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                   <select
                     value={newTokenData.modelUrl}
                     onChange={(e) => setNewTokenData({ ...newTokenData, modelUrl: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     <option value="/models/apex-tower-v3-draco.glb">Apex Tower Draco (.glb)</option>
                     <option value="/models/nordic-monolith-hull.glb">Nordic Monolith Residence (.glb)</option>
@@ -520,7 +520,7 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                   <select
                     value={newTokenData.environmentPreset}
                     onChange={(e) => setNewTokenData({ ...newTokenData, environmentPreset: e.target.value as any })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     <option value="sunset">Twilight Sunset 8K</option>
                     <option value="studio">Neutral Studio PBR</option>
@@ -536,7 +536,7 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                   <select
                     value={newTokenData.expiryDays}
                     onChange={(e) => setNewTokenData({ ...newTokenData, expiryDays: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     <option value="1">24 Hours</option>
                     <option value="7">7 Days</option>
@@ -552,23 +552,23 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                     value={newTokenData.maxViews}
                     onChange={(e) => setNewTokenData({ ...newTokenData, maxViews: e.target.value })}
                     placeholder="e.g. 500"
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   />
                 </div>
               </div>
 
               {/* Passcode Protection Toggle */}
-              <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
+              <div className="p-3 rounded-xl bg-[#131314] border border-[#353436] space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-white font-bold flex items-center gap-1.5">
-                    <Lock className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                    <Lock className="w-3.5 h-3.5 text-[#dbfcff]" />
                     <span>Require Client PIN Passcode</span>
                   </span>
                   <input
                     type="checkbox"
                     checked={newTokenData.requiresPasscode}
                     onChange={(e) => setNewTokenData({ ...newTokenData, requiresPasscode: e.target.checked })}
-                    className="w-4 h-4 accent-[#3ECF8E]"
+                    className="w-4 h-4 accent-[#dbfcff]"
                   />
                 </div>
                 {newTokenData.requiresPasscode && (
@@ -577,22 +577,22 @@ export default function XRLinkGenerator({ projects }: XRLinkGeneratorProps) {
                     value={newTokenData.passcode}
                     onChange={(e) => setNewTokenData({ ...newTokenData, passcode: e.target.value })}
                     placeholder="Enter 4-digit PIN (e.g. 8820)"
-                    className="w-full px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full px-3 py-1.5 rounded-lg bg-[#201f20] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                   />
                 )}
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#27272A]">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#353436]">
                 <button
                   type="button"
                   onClick={() => setIsCreating(false)}
-                  className="px-4 py-2 rounded-lg bg-[#27272A] text-white hover:bg-[#3f3f46] transition-colors"
+                  className="px-4 py-2 rounded-lg bg-[#353436] text-white hover:bg-[#3f3f46] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-lg bg-[#3ECF8E] text-black font-bold hover:bg-[#34b27b] transition-colors"
+                  className="px-5 py-2 rounded-lg bg-[#dbfcff] text-black font-bold hover:bg-[#34b27b] transition-colors"
                 >
                   Generate Token & QR
                 </button>

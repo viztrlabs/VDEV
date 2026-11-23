@@ -370,7 +370,7 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
       const cam = cameraRef.current;
 
       // Clear background
-      ctx.fillStyle = '#09090b';
+      ctx.fillStyle = '#131314';
       ctx.fillRect(0, 0, width, height);
 
       // Draw Perspective Ground Grid
@@ -443,8 +443,8 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
           ctx.arc(proj.x, proj.y, radius, 0, Math.PI * 2);
 
           if (pt.selected) {
-            ctx.fillStyle = '#3ecf8e';
-            ctx.shadowColor = '#3ecf8e';
+            ctx.fillStyle = '#dbfcff';
+            ctx.shadowColor = '#dbfcff';
             ctx.shadowBlur = 6;
           } else {
             ctx.fillStyle = `rgba(${pt.r}, ${pt.g}, ${pt.b}, 0.85)`;
@@ -516,7 +516,7 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
     <div
       ref={containerRef}
       id="splat-editor-container"
-      className={`w-full h-full relative overflow-hidden bg-[#09090B] select-none ${className}`}
+      className={`w-full h-full relative overflow-hidden bg-[#131314] select-none ${className}`}
     >
       {/* Hidden File Input for .ply/.splat import */}
       <input
@@ -541,8 +541,8 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
       {/* Top Splat Processing Pipeline & Asset Bar */}
       <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-20">
         {/* Left: Preset & Asset Loader */}
-        <div className="flex items-center gap-2 pointer-events-auto bg-[#121216]/85 backdrop-blur-md p-1.5 rounded-xl border border-[#27272a] shadow-xl">
-          <span className="text-[11px] font-mono font-bold text-[#3ecf8e] px-2 flex items-center gap-1.5">
+        <div className="flex items-center gap-2 pointer-events-auto bg-[#131314]/85 backdrop-blur-md p-1.5 rounded-xl border border-[#353436] shadow-xl">
+          <span className="text-[11px] font-mono font-bold text-[#dbfcff] px-2 flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5" />
             VIZTR SPLAT CORE
           </span>
@@ -556,8 +556,8 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
                 onClick={() => handlePresetChange(p)}
                 className={`px-2.5 py-1 rounded-lg text-[10px] font-mono capitalize transition ${
                   activePreset === p
-                    ? 'bg-[#3ecf8e] text-black font-bold'
-                    : 'text-[#a1a1aa] hover:text-white hover:bg-[#27272a]'
+                    ? 'bg-[#dbfcff] text-black font-bold'
+                    : 'text-[#a1a1aa] hover:text-white hover:bg-[#353436]'
                 }`}
               >
                 {p}
@@ -570,10 +570,10 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
           {/* Import File Button */}
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#27272a] hover:bg-[#3f3f46] text-white text-[10px] font-mono transition"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#353436] hover:bg-[#3f3f46] text-white text-[10px] font-mono transition"
             title="Import .ply / .splat file"
           >
-            <Upload className="w-3 h-3 text-[#3ecf8e]" />
+            <Upload className="w-3 h-3 text-[#dbfcff]" />
             <span>Import</span>
           </button>
         </div>
@@ -581,10 +581,10 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
         {/* Right: Processing Actions & View Toggles */}
         <div className="flex items-center gap-2 pointer-events-auto">
           {/* Processing Tools Menu */}
-          <div className="flex items-center gap-1 bg-[#121216]/85 backdrop-blur-md p-1.5 rounded-xl border border-[#27272a] shadow-xl">
+          <div className="flex items-center gap-1 bg-[#131314]/85 backdrop-blur-md p-1.5 rounded-xl border border-[#353436] shadow-xl">
             <button
               onClick={handleCleanFloaters}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#18181b] hover:bg-[#27272a] text-[#a1a1aa] hover:text-white text-[10px] font-mono border border-[#27272a] transition"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#201f20] hover:bg-[#353436] text-[#a1a1aa] hover:text-white text-[10px] font-mono border border-[#353436] transition"
               title="Clean outlier floaters"
             >
               <Filter className="w-3 h-3 text-amber-400" />
@@ -593,16 +593,16 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
 
             <button
               onClick={handleCropSelection}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#18181b] hover:bg-[#27272a] text-[#a1a1aa] hover:text-white text-[10px] font-mono border border-[#27272a] transition"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#201f20] hover:bg-[#353436] text-[#a1a1aa] hover:text-white text-[10px] font-mono border border-[#353436] transition"
               title="Crop to selected points"
             >
-              <Scissors className="w-3 h-3 text-[#3ecf8e]" />
+              <Scissors className="w-3 h-3 text-[#dbfcff]" />
               <span>Crop</span>
             </button>
 
             <button
               onClick={handleCompress}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#18181b] hover:bg-[#27272a] text-[#a1a1aa] hover:text-white text-[10px] font-mono border border-[#27272a] transition"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#201f20] hover:bg-[#353436] text-[#a1a1aa] hover:text-white text-[10px] font-mono border border-[#353436] transition"
               title="Compress splat density"
             >
               <Sliders className="w-3 h-3 text-[#6366f1]" />
@@ -614,7 +614,7 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
             {/* Export Menu */}
             <button
               onClick={() => handleExport('splat')}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#3ecf8e] hover:bg-[#34b27b] text-black text-[10px] font-mono font-bold transition shadow-md shadow-[#3ecf8e]/20"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black text-[10px] font-mono font-bold transition shadow-md shadow-[#dbfcff]/20"
               title="Export as .splat file"
             >
               <Download className="w-3 h-3" />
@@ -623,13 +623,13 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
           </div>
 
           {/* Grid & Gaussian Visibility Toggles */}
-          <div className="flex items-center gap-1 bg-[#121216]/85 backdrop-blur-md p-1.5 rounded-xl border border-[#27272a]">
+          <div className="flex items-center gap-1 bg-[#131314]/85 backdrop-blur-md p-1.5 rounded-xl border border-[#353436]">
             <button
               onClick={toggleGrid}
               className={`p-1.5 rounded-lg border text-xs transition ${
                 viewSettings.showGrid
-                  ? 'bg-[#3ecf8e]/15 text-[#3ecf8e] border-[#3ecf8e]/40'
-                  : 'bg-[#18181b] text-[#71717a] border-[#27272a] hover:text-white'
+                  ? 'bg-[#dbfcff]/15 text-[#dbfcff] border-[#dbfcff]/40'
+                  : 'bg-[#201f20] text-[#71717a] border-[#353436] hover:text-white'
               }`}
               title="Toggle Ground Grid"
             >
@@ -639,8 +639,8 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
               onClick={toggleGaussians}
               className={`p-1.5 rounded-lg border text-xs transition ${
                 viewSettings.showGaussians
-                  ? 'bg-[#3ecf8e]/15 text-[#3ecf8e] border-[#3ecf8e]/40'
-                  : 'bg-[#18181b] text-[#71717a] border-[#27272a] hover:text-white'
+                  ? 'bg-[#dbfcff]/15 text-[#dbfcff] border-[#dbfcff]/40'
+                  : 'bg-[#201f20] text-[#71717a] border-[#353436] hover:text-white'
               }`}
               title="Toggle Gaussian Points"
             >
@@ -651,7 +651,7 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
       </div>
 
       {/* Floating Tool Palette (Left Side) */}
-      <div className="absolute left-3 top-1/2 -translate-y-1/2 flex flex-col gap-1 bg-[#121216]/85 backdrop-blur-md p-1.5 rounded-xl border border-[#27272a] z-20 shadow-xl">
+      <div className="absolute left-3 top-1/2 -translate-y-1/2 flex flex-col gap-1 bg-[#131314]/85 backdrop-blur-md p-1.5 rounded-xl border border-[#353436] z-20 shadow-xl">
         {PRIMARY_TOOLS.map((toolId) => (
           <button
             key={toolId}
@@ -659,8 +659,8 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
             title={`${toolId.toUpperCase()} (${Object.entries(TOOL_SHORTCUTS).find(([, t]) => t === toolId)?.[0]?.toUpperCase() || ''})`}
             className={`p-2 rounded-lg text-xs transition flex items-center justify-center ${
               activeTool === toolId
-                ? 'bg-[#3ecf8e] text-black shadow-md shadow-[#3ecf8e]/25 font-bold'
-                : 'text-[#a1a1aa] hover:text-white hover:bg-[#27272a]'
+                ? 'bg-[#dbfcff] text-black shadow-md shadow-[#dbfcff]/25 font-bold'
+                : 'text-[#a1a1aa] hover:text-white hover:bg-[#353436]'
             }`}
           >
             {TOOL_ICONS[toolId] || <MousePointer className="w-3.5 h-3.5" />}
@@ -668,7 +668,7 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
         ))}
 
         {/* Splat Point Size Adjuster */}
-        <div className="pt-2 mt-1 border-t border-[#27272a] flex flex-col items-center gap-1">
+        <div className="pt-2 mt-1 border-t border-[#353436] flex flex-col items-center gap-1">
           <span className="text-[8px] font-mono text-[#71717a]">SIZE</span>
           <input
             type="range"
@@ -677,7 +677,7 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
             step="0.5"
             value={splatPointSize}
             onChange={(e) => setSplatPointSize(parseFloat(e.target.value))}
-            className="w-12 accent-[#3ecf8e] cursor-pointer"
+            className="w-12 accent-[#dbfcff] cursor-pointer"
             title="Adjust Gaussian Splat Point Scale"
           />
         </div>
@@ -685,7 +685,7 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
 
       {/* Notification Toast */}
       {notification && (
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-[#121216]/95 border border-[#3ecf8e]/50 text-[#3ecf8e] text-xs font-mono px-4 py-2 rounded-xl shadow-2xl z-30 flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-150">
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-[#131314]/95 border border-[#dbfcff]/50 text-[#dbfcff] text-xs font-mono px-4 py-2 rounded-xl shadow-2xl z-30 flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-150">
           <Check className="w-3.5 h-3.5" />
           <span>{notification}</span>
         </div>
@@ -694,9 +694,9 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
       {/* Bottom Telemetry & Status HUD */}
       <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10 font-mono text-[11px]">
         {/* Left: Splat Telemetry */}
-        <div className="flex items-center gap-3 bg-[#121216]/85 backdrop-blur-md px-3 py-1.5 rounded-lg border border-[#27272a] pointer-events-auto">
-          <span className="flex items-center gap-1.5 text-[#3ecf8e] font-semibold">
-            <Activity className="w-3.5 h-3.5 text-[#3ecf8e]" />
+        <div className="flex items-center gap-3 bg-[#131314]/85 backdrop-blur-md px-3 py-1.5 rounded-lg border border-[#353436] pointer-events-auto">
+          <span className="flex items-center gap-1.5 text-[#dbfcff] font-semibold">
+            <Activity className="w-3.5 h-3.5 text-[#dbfcff]" />
             {totalSplatsCount} Gaussians
           </span>
           <span className="text-[#3f3f46]">|</span>
@@ -708,7 +708,7 @@ export function SplatEditorCanvas({ className = '' }: SplatEditorCanvasProps) {
         </div>
 
         {/* Right: Interaction hints */}
-        <div className="bg-[#121216]/85 backdrop-blur-md px-3 py-1.5 rounded-lg border border-[#27272a] text-[#71717a] text-[10px]">
+        <div className="bg-[#131314]/85 backdrop-blur-md px-3 py-1.5 rounded-lg border border-[#353436] text-[#71717a] text-[10px]">
           Left-drag: Orbit · Right/Shift-drag: Pan · Wheel: Zoom · Click: Select Splats
         </div>
       </div>

@@ -55,7 +55,7 @@ function EditorHeaderBase({
   validationIssueCount = 0,
 }: EditorHeaderProps) {
   return (
-    <header className="flex items-center justify-between gap-3 px-4 py-2 border-b border-[#27272A] bg-[#09090B]">
+    <header className="flex items-center justify-between gap-3 px-4 py-2 border-b border-[#353436] bg-[#131314]">
       <div className="flex items-center gap-2">
         {onToggleLeft && (
           <button
@@ -63,25 +63,25 @@ function EditorHeaderBase({
             className="p-1.5 rounded hover:bg-white/5"
             title={leftOpen ? 'Hide Left Panel' : 'Show Left Panel'}
           >
-            <PanelLeftOpen className={`w-4 h-4 ${leftOpen ? 'text-[#3ECF8E]' : 'text-[#71717A]'}`} />
+            <PanelLeftOpen className={`w-4 h-4 ${leftOpen ? 'text-[#dbfcff]' : 'text-[#71717A]'}`} />
           </button>
         )}
-        <div className="h-4 w-px bg-[#27272A]" />
+        <div className="h-4 w-px bg-[#353436]" />
         <Link
           href="/xr-world/virtual-tour"
-          className="flex items-center gap-1.5 text-sm font-bold font-mono text-[#3ECF8E] hover:opacity-90 shrink-0"
+          className="flex items-center gap-1.5 text-sm font-bold font-mono text-[#dbfcff] hover:opacity-90 shrink-0"
           aria-label="VizTR home"
         >
           <span
-            className="inline-flex w-6 h-6 rounded-md bg-gradient-to-br from-[#3ECF8E] to-cyan-500 items-center justify-center text-[10px] font-extrabold text-black"
+            className="inline-flex w-6 h-6 rounded-md bg-gradient-to-br from-[#dbfcff] to-cyan-500 items-center justify-center text-[10px] font-extrabold text-black"
             aria-hidden="true"
           >
             V
           </span>
           VizTR
         </Link>
-        <div className="h-4 w-px bg-[#27272A]" />
-        <span className="text-xs font-mono font-bold text-[#3ECF8E]">360° TOUR EDITOR</span>
+        <div className="h-4 w-px bg-[#353436]" />
+        <span className="text-xs font-mono font-bold text-[#dbfcff]">360° TOUR EDITOR</span>
         <span className="text-[10px] font-mono text-[#52525B]">&bull;</span>
         <span className="text-[10px] font-mono text-[#52525B]">{roomsCount} rooms</span>
         <span className="text-[10px] font-mono text-[#52525B]">&bull;</span>
@@ -90,7 +90,7 @@ function EditorHeaderBase({
 
       <div className="flex items-center gap-1.5">
         {saved ? (
-          <span className="hidden md:flex items-center gap-1 text-[10px] font-mono text-[#3ECF8E]">
+          <span className="hidden md:flex items-center gap-1 text-[10px] font-mono text-[#dbfcff]">
             <CheckCircle2 className="w-3.5 h-3.5" /> Saved
           </span>
         ) : (
@@ -119,7 +119,7 @@ function EditorHeaderBase({
         >
           <Redo2 className="w-3.5 h-3.5" />
         </button>
-        <div className="h-4 w-px bg-[#27272A]" />
+        <div className="h-4 w-px bg-[#353436]" />
         {onNewTour && (
           <button
             type="button"
@@ -156,12 +156,12 @@ function EditorHeaderBase({
             <FolderDown className="w-3.5 h-3.5" />
           </button>
         )}
-        <div className="h-4 w-px bg-[#27272A]" />
+        <div className="h-4 w-px bg-[#353436]" />
         <button
           type="button"
           onClick={onSave}
           disabled={saving}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#27272A] hover:bg-[#3F3F46] text-xs font-mono disabled:opacity-50"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#353436] hover:bg-[#3F3F46] text-xs font-mono disabled:opacity-50"
         >
           {saving ? (
             <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -174,7 +174,7 @@ function EditorHeaderBase({
           <button
             type="button"
             onClick={onValidate}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#27272A] hover:bg-[#3F3F46] text-xs font-mono relative"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#353436] hover:bg-[#3F3F46] text-xs font-mono relative"
             title="Validate tour"
             aria-label="Validate tour"
           >
@@ -191,7 +191,7 @@ function EditorHeaderBase({
           <button
             type="button"
             onClick={onPreviewLive}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#18181B] border border-[#27272A] hover:bg-[#27272A] text-xs font-mono text-white"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#201f20] border border-[#353436] hover:bg-[#353436] text-xs font-mono text-white"
             title="Preview live tour in new tab"
           >
             <ExternalLink className="w-3.5 h-3.5" />
@@ -202,7 +202,7 @@ function EditorHeaderBase({
           type="button"
           onClick={onPublish}
           disabled={publishing}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#3ECF8E] hover:bg-[#34BF7D] text-black text-xs font-mono font-bold disabled:opacity-50"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#dbfcff] hover:bg-[#34BF7D] text-black text-xs font-mono font-bold disabled:opacity-50"
         >
           {publishing ? (
             <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -217,7 +217,7 @@ function EditorHeaderBase({
             className="p-1.5 rounded hover:bg-white/5"
             title={rightOpen ? 'Hide Right Panel' : 'Show Right Panel'}
           >
-            <PanelRightOpen className={`w-4 h-4 ${rightOpen ? 'text-[#3ECF8E]' : 'text-[#71717A]'}`} />
+            <PanelRightOpen className={`w-4 h-4 ${rightOpen ? 'text-[#dbfcff]' : 'text-[#71717A]'}`} />
           </button>
         )}
       </div>

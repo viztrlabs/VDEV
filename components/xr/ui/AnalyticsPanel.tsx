@@ -41,9 +41,9 @@ export default function AnalyticsPanel({ className = '' }: { className?: string 
   }, [recordPerf, track, triangles]);
 
   return (
-    <div className={`absolute bottom-4 right-4 z-40 w-60 rounded-xl bg-[#18181B]/85 backdrop-blur-sm border border-[#27272A] p-3 space-y-2 ${className}`}>
+    <div className={`absolute bottom-4 right-4 z-40 w-60 rounded-xl bg-[#201f20]/85 backdrop-blur-sm border border-[#353436] p-3 space-y-2 ${className}`}>
       <div className="flex items-center gap-2">
-        <Activity className="w-3.5 h-3.5 text-[#3ECF8E]" />
+        <Activity className="w-3.5 h-3.5 text-[#dbfcff]" />
         <span className="text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA]">Telemetry</span>
       </div>
 
@@ -61,13 +61,13 @@ export default function AnalyticsPanel({ className = '' }: { className?: string 
       </div>
 
       {recommendations.length > 0 ? (
-        <div className="space-y-1.5 pt-1 border-t border-[#27272A]">
+        <div className="space-y-1.5 pt-1 border-t border-[#353436]">
           <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase text-[#A1A1AA]">
             <Sparkles className="w-3 h-3 text-[#F59E0B]" /> AI Insights
           </div>
           {recommendations.map((r) => (
             <div key={r.id} className="text-[10px] text-[#D4D4D8] leading-snug">
-              <span className="text-[#3ECF8E]">›</span> {r.title}
+              <span className="text-[#dbfcff]">›</span> {r.title}
               <span className="text-[#71717A]"> ({Math.round(r.confidence * 100)}%)</span>
             </div>
           ))}

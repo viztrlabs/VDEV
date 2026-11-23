@@ -97,7 +97,7 @@ export function EngineInspectorPanel() {
 
   if (!selectedEntity) {
     return (
-      <div className="h-full w-full flex flex-col items-center justify-center p-6 text-center bg-[#0e0e11] border-l border-[#27272a]">
+      <div className="h-full w-full flex flex-col items-center justify-center p-6 text-center bg-[#0e0e11] border-l border-[#353436]">
         <Crosshair className="w-8 h-8 text-[#3f3f46] mb-2 animate-pulse" />
         <h4 className="text-xs font-mono font-medium text-[#a1a1aa] mb-1">No Entity Selected</h4>
         <p className="text-[10px] font-mono text-[#71717a] max-w-[200px]">
@@ -153,11 +153,11 @@ export function EngineInspectorPanel() {
   };
 
   return (
-    <div className="h-full w-full bg-[#0e0e11] border-l border-[#27272a] flex flex-col overflow-y-auto text-white">
+    <div className="h-full w-full bg-[#0e0e11] border-l border-[#353436] flex flex-col overflow-y-auto text-white">
       {/* Header */}
-      <div className="p-4 border-b border-[#27272a] flex items-center justify-between">
+      <div className="p-4 border-b border-[#353436] flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Box className="w-4 h-4 text-[#3ecf8e]" />
+          <Box className="w-4 h-4 text-[#dbfcff]" />
           <div>
             <h3 className="text-xs font-mono font-bold text-white leading-tight">
               {selectedEntity.name}
@@ -172,14 +172,14 @@ export function EngineInspectorPanel() {
           <button
             onClick={focusEntity}
             title="Focus Camera (F)"
-            className="p-1.5 rounded text-[#a1a1aa] hover:text-white hover:bg-[#27272a] transition text-xs"
+            className="p-1.5 rounded text-[#a1a1aa] hover:text-white hover:bg-[#353436] transition text-xs"
           >
             <Crosshair className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={() => setEntityVisibility(selectedEntity.id, !selectedEntity.visible)}
             title={selectedEntity.visible ? 'Hide Entity' : 'Show Entity'}
-            className="p-1.5 rounded text-[#a1a1aa] hover:text-white hover:bg-[#27272a] transition text-xs"
+            className="p-1.5 rounded text-[#a1a1aa] hover:text-white hover:bg-[#353436] transition text-xs"
           >
             {selectedEntity.visible ? (
               <Eye className="w-3.5 h-3.5" />
@@ -194,7 +194,7 @@ export function EngineInspectorPanel() {
         {/* Transform Section */}
         <div>
           <div className="flex items-center gap-1.5 text-[11px] font-mono font-semibold text-[#a1a1aa] mb-3">
-            <Layers className="w-3.5 h-3.5 text-[#3ecf8e]" />
+            <Layers className="w-3.5 h-3.5 text-[#dbfcff]" />
             <span>TRANSFORM</span>
           </div>
 
@@ -206,7 +206,7 @@ export function EngineInspectorPanel() {
                 {(['x', 'y', 'z'] as const).map((axis) => (
                   <div
                     key={axis}
-                    className="flex items-center bg-[#18181b] rounded border border-[#27272a] px-2 py-1"
+                    className="flex items-center bg-[#201f20] rounded border border-[#353436] px-2 py-1"
                   >
                     <span className="text-[10px] font-mono font-bold text-[#71717a] uppercase mr-1.5">
                       {axis}
@@ -234,7 +234,7 @@ export function EngineInspectorPanel() {
                 {(['x', 'y', 'z'] as const).map((axis) => (
                   <div
                     key={axis}
-                    className="flex items-center bg-[#18181b] rounded border border-[#27272a] px-2 py-1"
+                    className="flex items-center bg-[#201f20] rounded border border-[#353436] px-2 py-1"
                   >
                     <span className="text-[10px] font-mono font-bold text-[#71717a] uppercase mr-1.5">
                       {axis}
@@ -260,7 +260,7 @@ export function EngineInspectorPanel() {
                 {(['x', 'y', 'z'] as const).map((axis) => (
                   <div
                     key={axis}
-                    className="flex items-center bg-[#18181b] rounded border border-[#27272a] px-2 py-1"
+                    className="flex items-center bg-[#201f20] rounded border border-[#353436] px-2 py-1"
                   >
                     <span className="text-[10px] font-mono font-bold text-[#71717a] uppercase mr-1.5">
                       {axis}
@@ -283,9 +283,9 @@ export function EngineInspectorPanel() {
 
         {/* Material & PBR Section */}
         {selectedMaterial && (
-          <div className="border-t border-[#27272a] pt-4">
+          <div className="border-t border-[#353436] pt-4">
             <div className="flex items-center gap-1.5 text-[11px] font-mono font-semibold text-[#a1a1aa] mb-3">
-              <Palette className="w-3.5 h-3.5 text-[#3ecf8e]" />
+              <Palette className="w-3.5 h-3.5 text-[#dbfcff]" />
               <span>PBR MATERIAL ({selectedMaterial.name || selectedMaterial.id})</span>
             </div>
 
@@ -300,7 +300,7 @@ export function EngineInspectorPanel() {
                     onChange={(e) =>
                       updateMaterial(selectedMaterial.id, { color: e.target.value })
                     }
-                    className="w-7 h-7 rounded border border-[#27272a] bg-transparent cursor-pointer p-0"
+                    className="w-7 h-7 rounded border border-[#353436] bg-transparent cursor-pointer p-0"
                   />
                   <input
                     type="text"
@@ -308,7 +308,7 @@ export function EngineInspectorPanel() {
                     onChange={(e) =>
                       updateMaterial(selectedMaterial.id, { color: e.target.value })
                     }
-                    className="flex-1 bg-[#18181b] rounded border border-[#27272a] px-2.5 py-1 text-xs font-mono text-white focus:outline-none"
+                    className="flex-1 bg-[#201f20] rounded border border-[#353436] px-2.5 py-1 text-xs font-mono text-white focus:outline-none"
                   />
                 </div>
               </div>
@@ -332,7 +332,7 @@ export function EngineInspectorPanel() {
                       roughness: parseFloat(e.target.value),
                     })
                   }
-                  className="w-full accent-[#3ecf8e] h-1.5 bg-[#27272a] rounded cursor-pointer"
+                  className="w-full accent-[#dbfcff] h-1.5 bg-[#353436] rounded cursor-pointer"
                 />
               </div>
 
@@ -355,7 +355,7 @@ export function EngineInspectorPanel() {
                       metalness: parseFloat(e.target.value),
                     })
                   }
-                  className="w-full accent-[#3ecf8e] h-1.5 bg-[#27272a] rounded cursor-pointer"
+                  className="w-full accent-[#dbfcff] h-1.5 bg-[#353436] rounded cursor-pointer"
                 />
               </div>
 
@@ -368,7 +368,7 @@ export function EngineInspectorPanel() {
                   onChange={(e) =>
                     updateMaterial(selectedMaterial.id, { wireframe: e.target.checked })
                   }
-                  className="accent-[#3ecf8e] rounded cursor-pointer w-4 h-4"
+                  className="accent-[#dbfcff] rounded cursor-pointer w-4 h-4"
                 />
               </div>
             </div>

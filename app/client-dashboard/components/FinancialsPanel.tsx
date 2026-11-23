@@ -30,10 +30,10 @@ export default function FinancialsPanel() {
 
   return (
     <section className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#27272A]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#353436]">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <CreditCard className="w-5 h-5 text-[#3ECF8E]" />
+            <CreditCard className="w-5 h-5 text-[#dbfcff]" />
             <span>Commission Financials & Invoices</span>
           </h2>
           <p className="text-xs text-[#A1A1AA] mt-0.5">
@@ -43,17 +43,17 @@ export default function FinancialsPanel() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+        <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436]">
           <div className="text-[10px] font-mono uppercase text-[#A1A1AA]">Total Commission Value</div>
           <div className="text-2xl font-bold text-white mt-1">$48,700.00</div>
-          <div className="text-[11px] font-mono text-[#3ECF8E] mt-1">Full Scope Production</div>
+          <div className="text-[11px] font-mono text-[#dbfcff] mt-1">Full Scope Production</div>
         </div>
-        <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+        <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436]">
           <div className="text-[10px] font-mono uppercase text-[#A1A1AA]">Paid to Date</div>
           <div className="text-2xl font-bold text-emerald-400 mt-1">$32,700.00</div>
           <div className="text-[11px] font-mono text-[#A1A1AA] mt-1">67.1% Cleared</div>
         </div>
-        <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A]">
+        <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436]">
           <div className="text-[10px] font-mono uppercase text-[#A1A1AA]">Current Balance Due</div>
           <div className="text-2xl font-bold text-amber-400 mt-1">$16,000.00</div>
           <div className="text-[11px] font-mono text-[#A1A1AA] mt-1">Milestone 03 in review</div>
@@ -62,9 +62,9 @@ export default function FinancialsPanel() {
 
       <div className="space-y-3">
         {invoices.map((inv) => (
-          <div key={inv.id} className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div key={inv.id} className="p-4 rounded-xl bg-[#201f20] border border-[#353436] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[#3ECF8E] shrink-0">
+              <div className="p-2 rounded-lg bg-[#131314] border border-[#353436] text-[#dbfcff] shrink-0">
                 <FileText className="w-4 h-4" />
               </div>
               <div>
@@ -89,7 +89,7 @@ export default function FinancialsPanel() {
               </span>
               <button
                 type="button"
-                className="p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
                 title="Download PDF Invoice"
               >
                 <Download className="w-3.5 h-3.5" />

@@ -40,7 +40,7 @@ function NumberInput({
         min={min}
         max={max}
         step={step}
-        className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-xs text-[#E4E4E7] font-mono focus:outline-none focus:border-[#3ECF8E]"
+        className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-xs text-[#E4E4E7] font-mono focus:outline-none focus:border-[#dbfcff]"
       />
     </label>
   );
@@ -103,7 +103,7 @@ export default function AlignmentControls() {
   );
 
   return (
-    <div className="p-3 border-b border-[#27272A]">
+    <div className="p-3 border-b border-[#353436]">
       <h4 className="text-xs font-semibold text-[#E4E4E7] mb-3 font-mono">Transform</h4>
 
       {/* Translation */}
@@ -132,7 +132,7 @@ export default function AlignmentControls() {
       <div className="flex gap-2">
         <button
           onClick={resetAlignment}
-          className="flex items-center gap-1 px-2 py-1.5 rounded bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA] text-xs font-mono"
+          className="flex items-center gap-1 px-2 py-1.5 rounded bg-[#201f20] hover:bg-[#353436] text-[#A1A1AA] text-xs font-mono"
         >
           <RotateCcw size={12} />
           Reset

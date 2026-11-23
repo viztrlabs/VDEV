@@ -556,7 +556,7 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         .section-header {
           grid-column: 1 / -1;
           padding: 24px;
-          border-bottom: 1px solid #27272A;
+          border-bottom: 1px solid #353436;
         }
 
         .section-header h2 {
@@ -580,8 +580,8 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         }
 
         .file-tree-sidebar {
-          background: #18181B;
-          border: 1px solid #27272A;
+          background: #201f20;
+          border: 1px solid #353436;
           border-radius: 12px;
           display: flex;
           flex-direction: column;
@@ -589,7 +589,7 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
 
         .sidebar-header {
           padding: 16px;
-          border-bottom: 1px solid #27272A;
+          border-bottom: 1px solid #353436;
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -606,7 +606,7 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
           align-items: center;
           gap: 6px;
           padding: 6px 12px;
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
           border: none;
           border-radius: 6px;
@@ -622,7 +622,7 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
 
         .create-folder-form {
           padding: 16px;
-          border-top: 1px solid #27272A;
+          border-top: 1px solid #353436;
           display: flex;
           gap: 8px;
         }
@@ -630,8 +630,8 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         .folder-input {
           flex: 1;
           padding: 8px 12px;
-          background: #09090B;
-          border: 1px solid #27272A;
+          background: #131314;
+          border: 1px solid #353436;
           border-radius: 6px;
           color: #FFFFFF;
           font-size: 14px;
@@ -639,7 +639,7 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
 
         .folder-input:focus {
           outline: none;
-          border-color: #3ECF8E;
+          border-color: #dbfcff;
         }
 
         .folder-actions {
@@ -659,7 +659,7 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         }
 
         .confirm-folder-btn {
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
         }
 
@@ -668,18 +668,18 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         }
 
         .cancel-folder-btn {
-          background: #27272A;
+          background: #353436;
           color: #FFFFFF;
         }
 
         .cancel-folder-btn:hover {
-          background: #3a3a3d;
+          background: #3a393a;
         }
 
         .tree-content {
           padding: 8px;
-          border-bottom: 1px solid #27272A;
-          background: #09090B;
+          border-bottom: 1px solid #353436;
+          background: #131314;
         }
 
         .breadcrumb-item {
@@ -707,12 +707,12 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         }
 
         .breadcrumb-link:hover {
-          background: #27272A;
+          background: #353436;
           color: #FFFFFF;
         }
 
         .breadcrumb-link.active {
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
         }
 
@@ -734,12 +734,12 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         }
 
         .tree-item:hover {
-          background: #27272A;
+          background: #353436;
         }
 
         .tree-item.selected {
-          background: #3ECF8E20;
-          border-left: 3px solid #3ECF8E;
+          background: #dbfcff20;
+          border-left: 3px solid #dbfcff;
         }
 
         .tree-item-icon {
@@ -787,7 +787,7 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
 
         .tree-action-btn {
           padding: 4px;
-          background: #27272A;
+          background: #353436;
           border: none;
           border-radius: 4px;
           color: #FFFFFF;
@@ -801,7 +801,7 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         }
 
         .tree-action-btn:hover {
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
         }
 
@@ -814,8 +814,8 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         }
 
         .file-details-panel {
-          background: #18181B;
-          border: 1px solid #27272A;
+          background: #201f20;
+          border: 1px solid #353436;
           border-radius: 12px;
           padding: 24px;
           overflow-y: auto;
@@ -841,8 +841,8 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         }
 
         .detail-preview {
-          background: #09090B;
-          border: 1px solid #27272A;
+          background: #131314;
+          border: 1px solid #353436;
           border-radius: 8px;
           padding: 40px;
           display: flex;
@@ -885,7 +885,7 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         }
 
         .action-btn.primary {
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
         }
 
@@ -894,12 +894,12 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         }
 
         .action-btn.secondary {
-          background: #27272A;
+          background: #353436;
           color: #FFFFFF;
         }
 
         .action-btn.secondary:hover {
-          background: #3a3a3d;
+          background: #3a393a;
         }
 
         .action-btn.danger {
@@ -926,8 +926,8 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
           justify-content: space-between;
           align-items: center;
           padding: 16px 24px;
-          background: #18181B;
-          border: 1px solid #27272A;
+          background: #201f20;
+          border: 1px solid #353436;
           border-radius: 12px;
           margin-bottom: 24px;
         }
@@ -942,8 +942,8 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
           align-items: center;
           gap: 8px;
           padding: 8px 16px;
-          background: #27272A;
-          border: 1px solid #3a3a3d;
+          background: #353436;
+          border: 1px solid #3a393a;
           border-radius: 6px;
           color: #FFFFFF;
           cursor: pointer;
@@ -952,8 +952,8 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         }
 
         .toolbar-btn:hover {
-          background: #3a3a3d;
-          border-color: #3ECF8E;
+          background: #3a393a;
+          border-color: #dbfcff;
         }
 
         .toolbar-btn:disabled {
@@ -972,8 +972,8 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
           align-items: center;
           gap: 8px;
           padding: 8px 12px;
-          background: #27272A;
-          border: 1px solid #3a3a3d;
+          background: #353436;
+          border: 1px solid #3a393a;
           border-radius: 6px;
         }
 
@@ -992,8 +992,8 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
 
         .view-btn {
           padding: 6px 12px;
-          background: #27272A;
-          border: 1px solid #3a3a3d;
+          background: #353436;
+          border: 1px solid #3a393a;
           border-radius: 4px;
           color: #A1A1AA;
           cursor: pointer;
@@ -1002,9 +1002,9 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         }
 
         .view-btn.active {
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
-          border-color: #3ECF8E;
+          border-color: #dbfcff;
         }
 
         .upload-dialog-overlay {
@@ -1021,8 +1021,8 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         }
 
         .upload-dialog {
-          background: #18181B;
-          border: 1px solid #27272A;
+          background: #201f20;
+          border: 1px solid #353436;
           border-radius: 16px;
           padding: 32px;
           width: 500px;
@@ -1036,7 +1036,7 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         }
 
         .upload-area {
-          border: 2px dashed #3a3a3d;
+          border: 2px dashed #3a393a;
           border-radius: 12px;
           padding: 40px 20px;
           margin-bottom: 24px;
@@ -1045,8 +1045,8 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         }
 
         .upload-area:hover {
-          border-color: #3ECF8E;
-          background: #3ECF8E10;
+          border-color: #dbfcff;
+          background: #dbfcff10;
         }
 
         .upload-placeholder {
@@ -1062,7 +1062,7 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
 
         .close-upload-btn {
           padding: 12px 24px;
-          background: #27272A;
+          background: #353436;
           border: none;
           border-radius: 8px;
           color: #FFFFFF;
@@ -1071,7 +1071,7 @@ export default function FileManagement({ projectId, initialFiles = [] }: FileMan
         }
 
         .close-upload-btn:hover {
-          background: #3a3a3d;
+          background: #3a393a;
         }
 
         @media (max-width: 768px) {

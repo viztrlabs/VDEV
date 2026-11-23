@@ -191,10 +191,10 @@ function buildDiscoveryForm() {
   return (
     <div className="space-y-6">
       {/* Top Banner & Quick Actions */}
-      <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+      <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div className="space-y-1.5">
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded bg-[#3ECF8E]/20 text-[#3ECF8E] text-[10px] font-mono font-bold uppercase border border-[#3ECF8E]/40">
+            <span className="px-2.5 py-0.5 rounded bg-[#dbfcff]/20 text-[#dbfcff] text-[10px] font-mono font-bold uppercase border border-[#dbfcff]/40">
               Direct Client Intake
             </span>
             <span className="text-xs font-mono text-[#71717A]">
@@ -213,9 +213,9 @@ function buildDiscoveryForm() {
           <Link
             href="/discovery"
             target="_blank"
-            className="px-4 py-2 rounded-xl bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white flex items-center gap-2 transition-colors"
+            className="px-4 py-2 rounded-xl bg-[#131314] hover:bg-[#353436] border border-[#353436] text-xs font-mono text-white flex items-center gap-2 transition-colors"
           >
-            <Eye className="w-3.5 h-3.5 text-[#3ECF8E]" />
+            <Eye className="w-3.5 h-3.5 text-[#dbfcff]" />
             <span>Open Public Form</span>
             <ExternalLink className="w-3 h-3 text-[#71717A]" />
           </Link>
@@ -223,7 +223,7 @@ function buildDiscoveryForm() {
           <button
             type="button"
             onClick={handleCopyLink}
-            className="px-4 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center gap-2 transition-all shadow-lg shadow-[#3ECF8E]/20 cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center gap-2 transition-all shadow-lg shadow-[#dbfcff]/20 cursor-pointer"
           >
             {copiedLink ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
             <span>{copiedLink ? 'Link Copied' : 'Copy Direct Share Link'}</span>
@@ -232,15 +232,15 @@ function buildDiscoveryForm() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex items-center justify-between border-b border-[#27272A] pb-2">
+      <div className="flex items-center justify-between border-b border-[#353436] pb-2">
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={() => setActiveTab('submissions')}
             className={`px-4 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === 'submissions'
-                ? 'bg-[#27272A] text-[#3ECF8E] border border-[#3ECF8E]/40'
-                : 'text-[#A1A1AA] hover:text-white hover:bg-[#18181B]'
+                ? 'bg-[#353436] text-[#dbfcff] border border-[#dbfcff]/40'
+                : 'text-[#A1A1AA] hover:text-white hover:bg-[#201f20]'
             }`}
           >
             <FileCheck className="w-4 h-4" />
@@ -252,8 +252,8 @@ function buildDiscoveryForm() {
             onClick={() => setActiveTab('send-link')}
             className={`px-4 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === 'send-link'
-                ? 'bg-[#27272A] text-[#3ECF8E] border border-[#3ECF8E]/40'
-                : 'text-[#A1A1AA] hover:text-white hover:bg-[#18181B]'
+                ? 'bg-[#353436] text-[#dbfcff] border border-[#dbfcff]/40'
+                : 'text-[#A1A1AA] hover:text-white hover:bg-[#201f20]'
             }`}
           >
             <Send className="w-4 h-4" />
@@ -265,8 +265,8 @@ function buildDiscoveryForm() {
             onClick={() => setActiveTab('google-script')}
             className={`px-4 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === 'google-script'
-                ? 'bg-[#27272A] text-[#3ECF8E] border border-[#3ECF8E]/40'
-                : 'text-[#A1A1AA] hover:text-white hover:bg-[#18181B]'
+                ? 'bg-[#353436] text-[#dbfcff] border border-[#dbfcff]/40'
+                : 'text-[#A1A1AA] hover:text-white hover:bg-[#201f20]'
             }`}
           >
             <Code2 className="w-4 h-4" />
@@ -278,8 +278,8 @@ function buildDiscoveryForm() {
             onClick={() => setActiveTab('intake-form')}
             className={`px-4 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === 'intake-form'
-                ? 'bg-[#27272A] text-[#3ECF8E] border border-[#3ECF8E]/40'
-                : 'text-[#A1A1AA] hover:text-white hover:bg-[#18181B]'
+                ? 'bg-[#353436] text-[#dbfcff] border border-[#dbfcff]/40'
+                : 'text-[#A1A1AA] hover:text-white hover:bg-[#201f20]'
             }`}
           >
             <FileText className="w-4 h-4" />
@@ -290,7 +290,7 @@ function buildDiscoveryForm() {
         <button
           type="button"
           onClick={fetchSubmissions}
-          className="p-2 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+          className="p-2 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
           title="Refresh submissions"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -311,8 +311,8 @@ function buildDiscoveryForm() {
                     onClick={() => setFilterStatus(st)}
                     className={`px-2.5 py-1 rounded text-[10px] font-mono uppercase font-bold transition-all cursor-pointer border ${
                       filterStatus === st
-                        ? 'bg-[#27272A] text-[#3ECF8E] border-[#3ECF8E]/40'
-                        : 'bg-[#18181B] text-[#71717A] border-[#27272A] hover:text-white'
+                        ? 'bg-[#353436] text-[#dbfcff] border-[#dbfcff]/40'
+                        : 'bg-[#201f20] text-[#71717A] border-[#353436] hover:text-white'
                     }`}
                   >
                     {st.replace('_', ' ')}
@@ -326,7 +326,7 @@ function buildDiscoveryForm() {
             {/* Submissions List */}
             <div className="lg:col-span-1 space-y-3">
               {filteredSubmissions.length === 0 ? (
-                <div className="p-8 rounded-2xl bg-[#18181B] border border-[#27272A] text-center text-xs font-mono text-[#71717A]">
+                <div className="p-8 rounded-2xl bg-[#201f20] border border-[#353436] text-center text-xs font-mono text-[#71717A]">
                   No discovery briefs found in this view.
                 </div>
               ) : (
@@ -338,12 +338,12 @@ function buildDiscoveryForm() {
                       onClick={() => setSelectedSubmission(sub)}
                       className={`p-4 rounded-xl border transition-all cursor-pointer space-y-2.5 ${
                         isSelected
-                          ? 'bg-[#27272A] border-[#3ECF8E] shadow-md shadow-[#3ECF8E]/10'
-                          : 'bg-[#18181B] border-[#27272A] hover:border-[#3f3f46]'
+                          ? 'bg-[#353436] border-[#dbfcff] shadow-md shadow-[#dbfcff]/10'
+                          : 'bg-[#201f20] border-[#353436] hover:border-[#3f3f46]'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-mono text-[#3ECF8E] font-bold">
+                        <span className="text-[10px] font-mono text-[#dbfcff] font-bold">
                           {sub.id}
                         </span>
                         <span
@@ -365,7 +365,7 @@ function buildDiscoveryForm() {
                         <div className="text-[10px] font-mono text-[#71717A] mt-0.5">{sub.contactEmail}</div>
                       </div>
 
-                      <div className="pt-2 border-t border-[#27272A] flex items-center justify-between text-[10px] font-mono text-[#71717A]">
+                      <div className="pt-2 border-t border-[#353436] flex items-center justify-between text-[10px] font-mono text-[#71717A]">
                         <span>Budget: {sub.budgetRange}</span>
                         <span>{new Date(sub.createdAt).toLocaleDateString()}</span>
                       </div>
@@ -378,11 +378,11 @@ function buildDiscoveryForm() {
             {/* Detailed Submission Viewer */}
             <div className="lg:col-span-2">
               {selectedSubmission ? (
-                <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#27272A]">
+                <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#353436]">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono font-bold text-[#3ECF8E]">
+                        <span className="text-xs font-mono font-bold text-[#dbfcff]">
                           {selectedSubmission.id}
                         </span>
                         <span className="text-[10px] font-mono text-[#71717A]">
@@ -401,7 +401,7 @@ function buildDiscoveryForm() {
                       <button
                         type="button"
                         onClick={() => window.print()}
-                        className="p-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-white transition-colors cursor-pointer"
+                        className="p-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-white transition-colors cursor-pointer"
                         title="Print Discovery Brief"
                       >
                         <Printer className="w-4 h-4" />
@@ -410,7 +410,7 @@ function buildDiscoveryForm() {
                       <button
                         type="button"
                         onClick={() => handleConvertToProject(selectedSubmission)}
-                        className="px-3.5 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                        className="px-3.5 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
                       >
                         <Sparkles className="w-3.5 h-3.5" />
                         <span>Create Project & Access Code</span>
@@ -421,14 +421,14 @@ function buildDiscoveryForm() {
                   {/* Section Details */}
                   <div className="space-y-4 text-xs">
                     {/* B. The Pain Point */}
-                    <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
+                    <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-2">
                       <div className="text-[10px] font-mono uppercase text-amber-400 font-bold">
                         B. The Core Pain Point
                       </div>
                       <div className="text-white font-medium leading-relaxed">
                         {selectedSubmission.specificProblem}
                       </div>
-                      <div className="pt-2 border-t border-[#27272A] text-[11px] text-[#A1A1AA] grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div className="pt-2 border-t border-[#353436] text-[11px] text-[#A1A1AA] grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <div>
                           <strong className="text-white">Current Process:</strong> {selectedSubmission.currentSolution}
                         </div>
@@ -439,7 +439,7 @@ function buildDiscoveryForm() {
                     </div>
 
                     {/* C. Desired Outcome */}
-                    <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
+                    <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-2">
                       <div className="text-[10px] font-mono uppercase text-sky-400 font-bold">
                         C. 3-Month Desired Outcome & Success Metric
                       </div>
@@ -447,14 +447,14 @@ function buildDiscoveryForm() {
                         {selectedSubmission.threeMonthOutcome}
                       </div>
                       {selectedSubmission.successMetric && (
-                        <div className="text-[11px] font-mono text-[#3ECF8E]">
+                        <div className="text-[11px] font-mono text-[#dbfcff]">
                           Target Metric: {selectedSubmission.successMetric}
                         </div>
                       )}
                     </div>
 
                     {/* D & E. Solution Scope & Features */}
-                    <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-3">
+                    <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-3">
                       <div className="text-[10px] font-mono uppercase text-purple-400 font-bold">
                         D & E. Solution Scope & Feature Requirements
                       </div>
@@ -462,7 +462,7 @@ function buildDiscoveryForm() {
                         {selectedSubmission.solutionTypes.map((type) => (
                           <span
                             key={type}
-                            className="px-2.5 py-1 rounded-md bg-[#18181B] border border-[#27272A] text-white text-[11px] font-mono"
+                            className="px-2.5 py-1 rounded-md bg-[#201f20] border border-[#353436] text-white text-[11px] font-mono"
                           >
                             ✓ {type}
                           </span>
@@ -474,7 +474,7 @@ function buildDiscoveryForm() {
                     </div>
 
                     {/* F. Constraints & Governance */}
-                    <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div>
                         <div className="text-[10px] font-mono uppercase text-[#71717A]">Budget Range</div>
                         <div className="text-emerald-400 font-bold font-mono mt-0.5">
@@ -497,7 +497,7 @@ function buildDiscoveryForm() {
 
                     {/* G. References & Context */}
                     {(selectedSubmission.referencesLiked || selectedSubmission.referencesAvoided) && (
-                      <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
+                      <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-2">
                         <div className="text-[10px] font-mono uppercase text-rose-400 font-bold">
                           G. Benchmark References
                         </div>
@@ -516,7 +516,7 @@ function buildDiscoveryForm() {
                   </div>
                 </div>
               ) : (
-                <div className="p-12 rounded-2xl bg-[#18181B] border border-[#27272A] text-center space-y-3">
+                <div className="p-12 rounded-2xl bg-[#201f20] border border-[#353436] text-center space-y-3">
                   <FileText className="w-8 h-8 text-[#71717A] mx-auto" />
                   <h4 className="text-sm font-bold text-white">Select a Discovery Brief</h4>
                   <p className="text-xs text-[#A1A1AA] max-w-sm mx-auto">
@@ -532,8 +532,8 @@ function buildDiscoveryForm() {
       {/* TAB 2: DIRECT CLIENT INVITE GENERATOR */}
       {activeTab === 'send-link' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
-            <div className="space-y-1 pb-3 border-b border-[#27272A]">
+          <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
+            <div className="space-y-1 pb-3 border-b border-[#353436]">
               <h3 className="text-base font-bold text-white font-serif">
                 Customize Direct Client Link
               </h3>
@@ -552,7 +552,7 @@ function buildDiscoveryForm() {
                   value={inviteClientName}
                   onChange={(e) => setInviteClientName(e.target.value)}
                   placeholder="e.g. Foster & Partners Studio"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
                 />
               </div>
 
@@ -565,7 +565,7 @@ function buildDiscoveryForm() {
                   value={inviteClientEmail}
                   onChange={(e) => setInviteClientEmail(e.target.value)}
                   placeholder="e.g. a.wright@fosterpartners.com"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
                 />
               </div>
 
@@ -578,16 +578,16 @@ function buildDiscoveryForm() {
                   value={inviteClientPhone}
                   onChange={(e) => setInviteClientPhone(e.target.value)}
                   placeholder="e.g. +442079460912"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
                 />
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
+            <div className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] space-y-2">
               <span className="text-[10px] font-mono uppercase text-[#71717A]">
                 Generated Customized URL:
               </span>
-              <div className="text-xs font-mono text-[#3ECF8E] break-all">
+              <div className="text-xs font-mono text-[#dbfcff] break-all">
                 {getDiscoveryUrl()}
               </div>
             </div>
@@ -596,16 +596,16 @@ function buildDiscoveryForm() {
               <button
                 type="button"
                 onClick={handleCopyLink}
-                className="py-2.5 px-3 rounded-xl bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                className="py-2.5 px-3 rounded-xl bg-[#131314] hover:bg-[#353436] border border-[#353436] text-xs font-mono text-white flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               >
-                <Copy className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                <Copy className="w-3.5 h-3.5 text-[#dbfcff]" />
                 <span>Copy Link</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleSendEmail}
-                className="py-2.5 px-3 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                className="py-2.5 px-3 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               >
                 <Mail className="w-3.5 h-3.5" />
                 <span>Send Email</span>
@@ -622,24 +622,24 @@ function buildDiscoveryForm() {
             </div>
           </div>
 
-          <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4 flex flex-col justify-between">
+          <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4 flex flex-col justify-between">
             <div className="space-y-3">
-              <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E]">
+              <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff]">
                 <Sparkles className="w-4 h-4" />
                 <span>Email Pitch Template Preview</span>
               </div>
-              <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] text-xs font-mono text-[#A1A1AA] leading-relaxed space-y-2">
+              <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] text-xs font-mono text-[#A1A1AA] leading-relaxed space-y-2">
                 <div className="text-white font-bold">
                   Subject: Project Discovery & Proposal Intake — VizTR Studio
                 </div>
-                <div className="pt-2 border-t border-[#27272A] text-[11px] text-zinc-300">
+                <div className="pt-2 border-t border-[#353436] text-[11px] text-zinc-300">
                   Hi {inviteClientName || '[Client Name]'},
                   <br /><br />
                   Before we kick off your architectural / digital production commission with VizTR, we want to deeply understand your specific problem and business objectives.
                   <br /><br />
                   Please fill out our short New Client Discovery Form here:
                   <br />
-                  <span className="text-[#3ECF8E]">{getDiscoveryUrl()}</span>
+                  <span className="text-[#dbfcff]">{getDiscoveryUrl()}</span>
                   <br /><br />
                   This directly shapes your technical proposal, milestones, and delivery timeline.
                   <br /><br />
@@ -649,8 +649,8 @@ function buildDiscoveryForm() {
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-[#71717A] flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-[#3ECF8E] shrink-0" />
+            <div className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-[#71717A] flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-[#dbfcff] shrink-0" />
               <span>Submissions automatically notify the Super Admin and appear in your inbox.</span>
             </div>
           </div>
@@ -659,8 +659,8 @@ function buildDiscoveryForm() {
 
       {/* TAB 3: GOOGLE APPS SCRIPT CODE & FORM BUILDER */}
       {activeTab === 'google-script' && (
-        <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#27272A]">
+        <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#353436]">
             <div>
               <h3 className="text-base font-bold text-white font-serif">
                 Google Apps Script Auto-Builder Code
@@ -675,7 +675,7 @@ function buildDiscoveryForm() {
                 href="https://script.google.com"
                 target="_blank"
                 rel="noreferrer"
-                className="px-3.5 py-2 rounded-xl bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white flex items-center gap-1.5 transition-colors"
+                className="px-3.5 py-2 rounded-xl bg-[#131314] hover:bg-[#353436] border border-[#353436] text-xs font-mono text-white flex items-center gap-1.5 transition-colors"
               >
                 <span>Open script.google.com</span>
                 <ExternalLink className="w-3 h-3 text-[#71717A]" />
@@ -684,7 +684,7 @@ function buildDiscoveryForm() {
               <button
                 type="button"
                 onClick={handleCopyScript}
-                className="px-4 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-[#3ECF8E]/20 cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-[#dbfcff]/20 cursor-pointer"
               >
                 {copiedScript ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedScript ? 'Script Copied' : 'Copy Apps Script'}</span>
@@ -692,7 +692,7 @@ function buildDiscoveryForm() {
             </div>
           </div>
 
-          <pre className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] text-xs font-mono text-zinc-300 overflow-x-auto max-h-[480px] leading-relaxed">
+          <pre className="p-4 rounded-xl bg-[#131314] border border-[#353436] text-xs font-mono text-zinc-300 overflow-x-auto max-h-[480px] leading-relaxed">
             {APPS_SCRIPT_CODE}
           </pre>
         </div>

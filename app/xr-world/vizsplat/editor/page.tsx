@@ -8,7 +8,7 @@ import { notifyEditorSave } from '@/lib/editor-sync';
 
 const SplatEditorCanvas = dynamic(
   () => import('@/components/editor/splat/SplatEditorCanvas'),
-  { ssr: false, loading: () => <div className="h-full flex items-center justify-center text-[#3ECF8E] text-xs font-mono">Loading Splat Editor…</div> },
+  { ssr: false, loading: () => <div className="h-full flex items-center justify-center text-[#dbfcff] text-xs font-mono">Loading Splat Editor…</div> },
 );
 
 interface SplatConfig {
@@ -217,8 +217,8 @@ export default function GaussianSplatEditorPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#09090B] text-white">
-      <div className="px-4 sm:px-6 py-3 border-b border-[#27272A] flex items-center justify-between">
+    <div className="min-h-screen bg-[#131314] text-white">
+      <div className="px-4 sm:px-6 py-3 border-b border-[#353436] flex items-center justify-between">
         <div>
           <h1 className="text-sm font-mono font-bold text-white">Gaussian Splat Editor</h1>
           <p className="text-[10px] font-mono text-[#71717A]">WebGPU-powered 3D Gaussian splatting editor</p>
@@ -226,7 +226,7 @@ export default function GaussianSplatEditorPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => saveToVizTR()}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#3ECF8E]/40 bg-[#3ECF8E]/15 text-[10px] font-mono font-semibold text-[#3ECF8E] hover:bg-[#3ECF8E]/25 transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#dbfcff]/40 bg-[#dbfcff]/15 text-[10px] font-mono font-semibold text-[#dbfcff] hover:bg-[#dbfcff]/25 transition"
           >
             <span>Save to VizTR</span>
           </button>
@@ -241,11 +241,11 @@ export default function GaussianSplatEditorPage() {
           </div>
         )}
 
-        <div className="rounded border border-[#27272A] bg-[#0F0F11] overflow-hidden">
+        <div className="rounded border border-[#353436] bg-[#131314] overflow-hidden">
           <div className="h-[70vh]">
             {!ready && !error && (
-              <div className="h-full flex items-center justify-center gap-2 text-[#3ECF8E]">
-                <div className="w-5 h-5 border-2 border-[#3ECF8E] border-t-transparent rounded-full animate-spin" />
+              <div className="h-full flex items-center justify-center gap-2 text-[#dbfcff]">
+                <div className="w-5 h-5 border-2 border-[#dbfcff] border-t-transparent rounded-full animate-spin" />
                 <span className="text-xs font-mono">Loading editor…</span>
               </div>
             )}
@@ -254,15 +254,15 @@ export default function GaussianSplatEditorPage() {
         </div>
 
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="rounded border border-[#27272A] bg-[#0F0F11] p-4">
+          <div className="rounded border border-[#353436] bg-[#131314] p-4">
             <div className="text-[10px] font-mono text-[#71717A]">Renderer</div>
             <div className="text-xs font-mono text-white">WebGPU</div>
           </div>
-          <div className="rounded border border-[#27272A] bg-[#0F0F11] p-4">
+          <div className="rounded border border-[#353436] bg-[#131314] p-4">
             <div className="text-[10px] font-mono text-[#71717A]">Status</div>
             <div className="text-xs font-mono text-white">{ready ? 'Ready' : error ? 'Error' : 'Loading'}</div>
           </div>
-          <div className="rounded border border-[#27272A] bg-[#0F0F11] p-4">
+          <div className="rounded border border-[#353436] bg-[#131314] p-4">
             <div className="text-[10px] font-mono text-[#71717A]">Environment</div>
             <div className="text-xs font-mono text-white">{process.env.NODE_ENV === 'production' ? 'Production' : 'Development'}</div>
           </div>

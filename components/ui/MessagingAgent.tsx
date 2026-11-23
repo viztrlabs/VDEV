@@ -310,17 +310,17 @@ export function MessagingAgent({ hidden = false }: MessagingAgentProps) {
   const humanMode = mode === 'human';
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100] w-80 sm:w-96 flex flex-col rounded-2xl overflow-hidden bg-[#0A0A0B]/95 backdrop-blur-2xl border border-white/10 shadow-2xl animate-in slide-in-from-bottom-8 duration-300">
+    <div className="fixed bottom-6 right-6 z-[100] w-80 sm:w-96 flex flex-col rounded-2xl overflow-hidden bg-[#131314]/95 backdrop-blur-2xl border border-white/10 shadow-2xl animate-in slide-in-from-bottom-8 duration-300">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-gradient-to-r from-[#00F0FF]/10 to-transparent">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-[#00F0FF]/20 flex items-center justify-center">
-            {humanMode ? <UserRound className="w-4 h-4 text-[#42CF8B]" /> : <Bot className="w-4 h-4 text-[#00F0FF]" />}
+            {humanMode ? <UserRound className="w-4 h-4 text-[#54de99]" /> : <Bot className="w-4 h-4 text-[#00F0FF]" />}
           </div>
           <div className="flex flex-col">
             <span className="text-sm font-bold text-white tracking-wide">VIZTR Agent</span>
-            <span className={`text-[10px] font-mono flex items-center gap-1 ${humanMode ? 'text-amber-300' : 'text-[#42CF8B]'}`}>
-              <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${humanMode ? 'bg-amber-300' : 'bg-[#42CF8B]'}`} />
+            <span className={`text-[10px] font-mono flex items-center gap-1 ${humanMode ? 'text-amber-300' : 'text-[#54de99]'}`}>
+              <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${humanMode ? 'bg-amber-300' : 'bg-[#54de99]'}`} />
               {humanMode ? 'Specialist connected' : aiEnabled ? 'AI assistant · Online' : 'AI auto-reply paused'}
             </span>
           </div>
@@ -367,7 +367,7 @@ export function MessagingAgent({ hidden = false }: MessagingAgentProps) {
               if (isSystem) {
                 return (
                   <div key={msg.id} className="self-center max-w-[92%] text-center">
-                    <p className="text-[10px] font-mono text-[#42CF8B]/90 bg-[#42CF8B]/5 border border-[#42CF8B]/15 rounded-full px-3 py-1">
+                    <p className="text-[10px] font-mono text-[#54de99]/90 bg-[#54de99]/5 border border-[#54de99]/15 rounded-full px-3 py-1">
                       {msg.text}
                     </p>
                   </div>
@@ -380,7 +380,7 @@ export function MessagingAgent({ hidden = false }: MessagingAgentProps) {
                     msg.sender === 'user'
                       ? 'self-end bg-[#00F0FF]/20 border border-[#00F0FF]/30 text-white rounded-br-sm'
                       : msg.sender === 'agent'
-                        ? 'self-start bg-[#42CF8B]/10 border border-[#42CF8B]/25 text-zinc-200 rounded-bl-sm'
+                        ? 'self-start bg-[#54de99]/10 border border-[#54de99]/25 text-zinc-200 rounded-bl-sm'
                         : 'self-start bg-white/5 border border-white/10 text-zinc-300 rounded-bl-sm'
                   }`}
                 >
@@ -398,7 +398,7 @@ export function MessagingAgent({ hidden = false }: MessagingAgentProps) {
             })}
 
             {leadPrompt && (
-              <form onSubmit={handleLeadSubmit} className="self-start w-full bg-[#42CF8B]/5 border border-[#42CF8B]/20 rounded-xl p-3 space-y-2">
+              <form onSubmit={handleLeadSubmit} className="self-start w-full bg-[#54de99]/5 border border-[#54de99]/20 rounded-xl p-3 space-y-2">
                 <p className="text-[11px] text-zinc-300 font-mono">
                   A specialist is joining. Leave your details so they can help faster.
                 </p>
@@ -406,20 +406,20 @@ export function MessagingAgent({ hidden = false }: MessagingAgentProps) {
                   value={leadName}
                   onChange={(e) => setLeadName(e.target.value)}
                   placeholder="Your name"
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#42CF8B]/50"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#54de99]/50"
                 />
                 <input
                   type="email"
                   value={leadEmail}
                   onChange={(e) => setLeadEmail(e.target.value)}
                   placeholder="you@company.com"
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#42CF8B]/50"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#54de99]/50"
                 />
                 <div className="flex gap-2">
                   <button
                     type="submit"
                     disabled={leadSaving || (!leadName.trim() && !leadEmail.trim())}
-                    className="flex-1 py-1.5 rounded-lg bg-[#42CF8B] text-black text-[11px] font-bold font-mono disabled:opacity-50"
+                    className="flex-1 py-1.5 rounded-lg bg-[#54de99] text-black text-[11px] font-bold font-mono disabled:opacity-50"
                   >
                     {leadSaving ? 'Saving…' : 'Send details'}
                   </button>

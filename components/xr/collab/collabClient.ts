@@ -41,7 +41,7 @@ export interface CollabClientOptions {
   reconnect?: boolean;
 }
 
-const PALETTE = ['#3ECF8E', '#6366F1', '#F59E0B', '#EC4899', '#06B6D4', '#A855F7'];
+const PALETTE = ['#dbfcff', '#6366F1', '#F59E0B', '#EC4899', '#06B6D4', '#A855F7'];
 
 function pickColor(seed: string): string {
   let h = 0;

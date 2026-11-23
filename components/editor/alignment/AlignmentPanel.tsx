@@ -39,7 +39,7 @@ export default function AlignmentPanel({ projectId, experienceId, onAlignmentSav
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-[#27272A] bg-[#0c0c0f]">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-[#353436] bg-[#201f20]">
         <div className="flex items-center gap-2">
           <h3 className="text-sm font-semibold text-[#E4E4E7] font-mono">Alignment Mode</h3>
           {alignmentDirty && (
@@ -53,7 +53,7 @@ export default function AlignmentPanel({ projectId, experienceId, onAlignmentSav
           {onAlignmentSave && (
             <button
               onClick={handleSaveAlignment}
-              className="flex items-center gap-1 px-2 py-1 rounded bg-[#3ECF8E]/10 text-[#3ECF8E] text-xs font-mono border border-[#3ECF8E]/30 hover:bg-[#3ECF8E]/20"
+              className="flex items-center gap-1 px-2 py-1 rounded bg-[#dbfcff]/10 text-[#dbfcff] text-xs font-mono border border-[#dbfcff]/30 hover:bg-[#dbfcff]/20"
             >
               <Save size={12} />
               Save Alignment
@@ -70,7 +70,7 @@ export default function AlignmentPanel({ projectId, experienceId, onAlignmentSav
         </div>
 
         {/* Right sidebar: controls + landmarks */}
-        <div className="w-72 border-l border-[#27272A] overflow-y-auto flex flex-col">
+        <div className="w-72 border-l border-[#353436] overflow-y-auto flex flex-col">
           <AlignmentControls />
           <div className="flex-1">
             <LandmarkManager />

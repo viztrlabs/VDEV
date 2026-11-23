@@ -27,10 +27,10 @@ export default function MeetingsManager() {
 
   return (
     <section className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#27272A]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#353436]">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-[#3ECF8E]" />
+            <Calendar className="w-5 h-5 text-[#dbfcff]" />
             <span>Design Reviews & Director Meetings</span>
           </h2>
           <p className="text-xs text-[#A1A1AA] mt-0.5">
@@ -41,14 +41,14 @@ export default function MeetingsManager() {
 
       <div className="space-y-4">
         {upcomingMeetings.map((m) => (
-          <div key={m.id} className="p-4 sm:p-5 rounded-xl bg-[#18181B] border border-[#27272A] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div key={m.id} className="p-4 sm:p-5 rounded-xl bg-[#201f20] border border-[#353436] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-start gap-3.5">
-              <div className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] text-[#3ECF8E] shrink-0 mt-0.5">
+              <div className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] text-[#dbfcff] shrink-0 mt-0.5">
                 <Video className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="text-xs sm:text-sm font-bold text-white">{m.title}</h3>
-                <div className="text-xs font-mono text-[#3ECF8E] mt-0.5 flex items-center gap-2">
+                <div className="text-xs font-mono text-[#dbfcff] mt-0.5 flex items-center gap-2">
                   <span>{m.date}</span>
                   <span>•</span>
                   <span>{m.time}</span>
@@ -65,7 +65,7 @@ export default function MeetingsManager() {
                 href={m.meetLink}
                 target="_blank"
                 rel="noreferrer"
-                className="px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <span>Join Google Meet</span>
                 <ExternalLink className="w-3 h-3" />

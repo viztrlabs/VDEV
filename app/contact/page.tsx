@@ -27,15 +27,15 @@ export default function ContactPage() {
               className="hero-bg-image object-cover object-center render-lighting-enhanced"
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/40 to-[#0A0A0B]/65 pointer-events-none z-20" />
-          <div className="absolute inset-0 bg-radial from-transparent via-[#0A0A0B]/25 to-[#0A0A0B]/80 pointer-events-none z-20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#131314] via-[#131314]/40 to-[#131314]/65 pointer-events-none z-20" />
+          <div className="absolute inset-0 bg-radial from-transparent via-[#131314]/25 to-[#131314]/80 pointer-events-none z-20" />
         </div>
 
         {/* TOP AREA: Clears floating header & hosts Eyebrow Badge (No directory breadcrumbs) */}
         <div className="relative z-20 w-full pt-16 sm:pt-20 shrink-0 flex justify-center px-2 sm:px-4">
-          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#0A0A0B] shadow-2xl transition-all border border-[#1E293B] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#42CF8B] animate-pulse shrink-0" />
-            <span className="font-bold text-[#42CF8B] tracking-wider uppercase shrink-0">INQUIRIES & COMMISSIONS</span>
+          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#131314] shadow-2xl transition-all border border-[#3b494b] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#54de99] animate-pulse shrink-0" />
+            <span className="font-bold text-[#54de99] tracking-wider uppercase shrink-0">INQUIRIES & COMMISSIONS</span>
             <span className="opacity-40 shrink-0">|</span>
             <span className="opacity-80 shrink-0">24-Hour Itemized Scope Proposal</span>
           </div>
@@ -51,7 +51,7 @@ export default function ContactPage() {
             Direct Visual Director Access & Itemized Scope Proposals
           </p>
 
-          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]">
+          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#e5e2e3]">
             Directly connect with our visual directors and spatial engineers to receive an itemized proposal, timeline, and milestone schedule within 24 hours.
           </p>
 
@@ -68,9 +68,9 @@ export default function ContactPage() {
             <Link
               href="/book-consultation"
               id="hero-secondary-cta"
-              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#1E293B] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#1E293B]"
+              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#3b494b] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#3b494b]"
             >
-              <Compass className="w-4 h-4 text-[#42CF8B]" />
+              <Compass className="w-4 h-4 text-[#54de99]" />
               <span>Book Strategy Session</span>
             </Link>
           </div>
@@ -86,7 +86,7 @@ export default function ContactPage() {
                   if (target) target.scrollIntoView({ behavior: 'smooth' });
                   else window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
                 }}
-                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0A0A0B] text-[#FAFAFA] text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-sm hover:bg-[#131314] border border-[#1E293B]"
+                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#131314] text-[#e5e2e3] text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-sm hover:bg-[#131314] border border-[#3b494b]"
                 aria-label="Scroll down to explore"
               >
                 <span>Scroll to explore</span>
@@ -98,16 +98,16 @@ export default function ContactPage() {
       </section>
 
       {/* FORM & LOCATIONS SPLIT */}
-      <section id="contact-brief" className="py-20 px-6 max-w-[1280px] mx-auto bg-[#0A0A0B]">
+      <section id="contact-brief" className="py-20 px-6 max-w-[1280px] mx-auto bg-[#131314]">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           
           {/* CONTACT FORM CONTAINER (7 Cols) */}
-          <div className="lg:col-span-7 p-8 sm:p-10 rounded-[2rem] bg-[#131314] border border-[#1E293B] shadow-sm space-y-6">
+          <div className="lg:col-span-7 p-8 sm:p-10 rounded-[2rem] bg-[#131314] border border-[#3b494b] shadow-sm space-y-6">
             <div className="space-y-1">
               <span className="text-xs font-bold uppercase tracking-wider text-rose-500">
                 Architectural Brief Submission
               </span>
-              <h2 className="text-2xl font-bold text-[#FAFAFA] font-display">
+              <h2 className="text-2xl font-bold text-[#e5e2e3] font-display">
                 Tell Us About Your Development
               </h2>
               <p className="text-xs text-[#B9CACB]">
@@ -120,8 +120,8 @@ export default function ContactPage() {
 
           {/* STUDIO CONTACT DETAILS & GLOBAL HUBS (5 Cols) */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="p-8 rounded-[2rem] bg-[#131314] text-white border border-[#1E293B] space-y-6 shadow-sm">
-              <h3 className="text-lg font-bold font-display text-[#FAFAFA]">Direct Communications</h3>
+            <div className="p-8 rounded-[2rem] bg-[#131314] text-white border border-[#3b494b] space-y-6 shadow-sm">
+              <h3 className="text-lg font-bold font-display text-[#e5e2e3]">Direct Communications</h3>
               
               <div className="space-y-4 text-xs">
                 <div className="flex items-start gap-3.5">
@@ -153,29 +153,29 @@ export default function ContactPage() {
             </div>
 
             {/* GLOBAL OFFICES CARD */}
-            <div className="p-8 rounded-[2rem] bg-[#131314] border border-[#1E293B] space-y-5 shadow-sm">
-              <h3 className="text-base font-bold text-[#FAFAFA] font-display">
+            <div className="p-8 rounded-[2rem] bg-[#131314] border border-[#3b494b] space-y-5 shadow-sm">
+              <h3 className="text-base font-bold text-[#e5e2e3] font-display">
                 Studio Office Locations
               </h3>
 
-              <div className="space-y-4 text-xs divide-y divide-[#1E293B]">
+              <div className="space-y-4 text-xs divide-y divide-[#3b494b]">
                 <div className="pt-2 first:pt-0">
-                  <div className="font-bold text-[#FAFAFA]">New York (Americas)</div>
+                  <div className="font-bold text-[#e5e2e3]">New York (Americas)</div>
                   <p className="text-[#B9CACB]">450 Lexington Ave, 32nd Floor, New York, NY 10017</p>
                 </div>
 
                 <div className="pt-3">
-                  <div className="font-bold text-[#FAFAFA]">London (Europe HQ)</div>
+                  <div className="font-bold text-[#e5e2e3]">London (Europe HQ)</div>
                   <p className="text-[#B9CACB]">22 Bishopsgate, Level 18, London EC2N 4BQ</p>
                 </div>
 
                 <div className="pt-3">
-                  <div className="font-bold text-[#FAFAFA]">Dubai (Middle East)</div>
+                  <div className="font-bold text-[#e5e2e3]">Dubai (Middle East)</div>
                   <p className="text-[#B9CACB]">DIFC Gate Precinct Building 4, Dubai, UAE</p>
                 </div>
 
                 <div className="pt-3">
-                  <div className="font-bold text-[#FAFAFA]">Tokyo (XR Lab)</div>
+                  <div className="font-bold text-[#e5e2e3]">Tokyo (XR Lab)</div>
                   <p className="text-[#B9CACB]">Roppongi Hills Mori Tower 24F, Minato-ku, Tokyo</p>
                 </div>
               </div>

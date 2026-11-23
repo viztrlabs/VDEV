@@ -67,7 +67,7 @@ export default function LiveSiteEditor() {
 
   if (!page) {
     return (
-      <div className="rounded-2xl bg-[#131314] border border-[#27272A] p-6 text-sm text-zinc-400">
+      <div className="rounded-2xl bg-[#131314] border border-[#353436] p-6 text-sm text-zinc-400">
         No site pages are available to edit yet.
       </div>
     );
@@ -75,11 +75,11 @@ export default function LiveSiteEditor() {
 
   return (
     <div className="space-y-4" id="live-site-editor">
-      <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-[#131314] border border-[#27272A]">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-[#131314] border border-[#353436]">
         <div className="flex items-center gap-2">
-          <MonitorPlay className="w-5 h-5 text-[#3ECF8E]" />
+          <MonitorPlay className="w-5 h-5 text-[#dbfcff]" />
           <h2 className="text-base font-bold text-white">Live Site Editor</h2>
-          <span className="px-2 py-0.5 rounded-full bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] text-[10px] font-mono font-bold">
+          <span className="px-2 py-0.5 rounded-full bg-[#dbfcff]/10 border border-[#dbfcff]/30 text-[#dbfcff] text-[10px] font-mono font-bold">
             SPLIT VIEW
           </span>
         </div>
@@ -88,8 +88,8 @@ export default function LiveSiteEditor() {
             onClick={() => setPreviewOn((v) => !v)}
             className={`px-3 py-1.5 rounded-lg text-xs font-mono flex items-center gap-1.5 cursor-pointer border ${
               previewOn
-                ? 'bg-[#3ECF8E]/15 border-[#3ECF8E]/40 text-[#3ECF8E]'
-                : 'bg-[#18181B] border-[#27272A] text-zinc-400'
+                ? 'bg-[#dbfcff]/15 border-[#dbfcff]/40 text-[#dbfcff]'
+                : 'bg-[#201f20] border-[#353436] text-zinc-400'
             }`}
           >
             {previewOn ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
@@ -97,7 +97,7 @@ export default function LiveSiteEditor() {
           </button>
           {previewOn && (
             <>
-              <div className="flex items-center rounded-lg border border-[#27272A] overflow-hidden">
+              <div className="flex items-center rounded-lg border border-[#353436] overflow-hidden">
                 {(
                   [
                     ['desktop', Monitor],
@@ -110,8 +110,8 @@ export default function LiveSiteEditor() {
                     onClick={() => setDevice(mode)}
                     className={`px-2 py-1.5 cursor-pointer ${
                       device === mode
-                        ? 'bg-[#27272A] text-white'
-                        : 'bg-[#18181B] text-zinc-500 hover:text-zinc-300'
+                        ? 'bg-[#353436] text-white'
+                        : 'bg-[#201f20] text-zinc-500 hover:text-zinc-300'
                     }`}
                     title={mode}
                   >
@@ -121,7 +121,7 @@ export default function LiveSiteEditor() {
               </div>
               <button
                 onClick={() => setPreviewNonce((n) => n + 1)}
-                className="px-2.5 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-zinc-300 hover:text-white text-xs cursor-pointer"
+                className="px-2.5 py-1.5 rounded-lg bg-[#201f20] border border-[#353436] text-zinc-300 hover:text-white text-xs cursor-pointer"
                 title="Refresh preview"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
@@ -132,7 +132,7 @@ export default function LiveSiteEditor() {
             href={`${page.route}?cms-preview=1`}
             target="_blank"
             rel="noreferrer"
-            className="px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-zinc-300 hover:text-white text-xs font-mono flex items-center gap-1.5"
+            className="px-3 py-1.5 rounded-lg bg-[#201f20] border border-[#353436] text-zinc-300 hover:text-white text-xs font-mono flex items-center gap-1.5"
           >
             <ExternalLink className="w-3.5 h-3.5" />
             <span>Open preview in new tab</span>
@@ -143,7 +143,7 @@ export default function LiveSiteEditor() {
               setPreviewNonce((n) => n + 1);
               showToast('Draft reset to site defaults.', 'info');
             }}
-            className="px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-zinc-300 hover:text-white text-xs font-mono flex items-center gap-1.5 cursor-pointer"
+            className="px-3 py-1.5 rounded-lg bg-[#201f20] border border-[#353436] text-zinc-300 hover:text-white text-xs font-mono flex items-center gap-1.5 cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Reset Draft</span>
@@ -154,7 +154,7 @@ export default function LiveSiteEditor() {
               setPreviewNonce((n) => n + 1);
               showToast('Published! The live site now reflects your changes.', 'success');
             }}
-            className="px-3.5 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black text-xs font-bold font-mono flex items-center gap-1.5 cursor-pointer shadow-md"
+            className="px-3.5 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black text-xs font-bold font-mono flex items-center gap-1.5 cursor-pointer shadow-md"
           >
             <Save className="w-3.5 h-3.5" />
             <span>Publish</span>
@@ -171,8 +171,8 @@ export default function LiveSiteEditor() {
                 onClick={() => setPage(p.id)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold cursor-pointer ${
                   p.id === pageId
-                    ? 'bg-[#3ECF8E] text-black'
-                    : 'bg-[#18181B] text-[#A1A1AA] hover:text-white border border-[#27272A]'
+                    ? 'bg-[#dbfcff] text-black'
+                    : 'bg-[#201f20] text-[#A1A1AA] hover:text-white border border-[#353436]'
                 }`}
               >
                 {p.label}
@@ -180,7 +180,7 @@ export default function LiveSiteEditor() {
             ))}
           </div>
 
-          <div className="rounded-2xl bg-[#131314] border border-[#27272A] divide-y divide-[#1E293B] max-h-[420px] overflow-y-auto">
+          <div className="rounded-2xl bg-[#131314] border border-[#353436] divide-y divide-[#3b494b] max-h-[420px] overflow-y-auto">
             {page.sections.map((s, idx) => {
               const listFields = s.fields.filter(
                 (field): field is SiteListField => field.kind === 'list',
@@ -189,8 +189,8 @@ export default function LiveSiteEditor() {
                 <div key={s.id}>
                   <div
                     data-testid="section-row"
-                    className={`flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-[#18181B] ${
-                      selectedSectionId === s.id ? 'bg-[#18181B] border-l-2 border-[#3ECF8E]' : ''
+                    className={`flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-[#201f20] ${
+                      selectedSectionId === s.id ? 'bg-[#201f20] border-l-2 border-[#dbfcff]' : ''
                     }`}
                     onClick={() => setSelectedSectionId(s.id)}
                   >
@@ -226,7 +226,7 @@ export default function LiveSiteEditor() {
                   {listFields.map((field) => (
                     <div
                       key={field.id}
-                      className="flex items-center justify-between gap-2 px-3 py-1.5 bg-[#131314] border-t border-[#1E293B]/60"
+                      className="flex items-center justify-between gap-2 px-3 py-1.5 bg-[#131314] border-t border-[#3b494b]/60"
                     >
                       <span className="text-[10px] text-zinc-500 font-mono truncate">
                         {s.name} · {field.label}
@@ -248,7 +248,7 @@ export default function LiveSiteEditor() {
         </div>
 
         {previewOn && (
-          <div className="rounded-2xl bg-[#131314] border border-[#27272A] p-3 min-w-0">
+          <div className="rounded-2xl bg-[#131314] border border-[#353436] p-3 min-w-0">
             <div
               className="mx-auto transition-all duration-300"
               style={{ width: DEVICE_WIDTH[device], maxWidth: '100%' }}
@@ -257,7 +257,7 @@ export default function LiveSiteEditor() {
                 key={`${page.id}-${previewNonce}`}
                 src={`${page.route}?cms-preview=1`}
                 title="live-site-preview"
-                className="w-full h-[70vh] rounded-xl border border-[#27272A] bg-black"
+                className="w-full h-[70vh] rounded-xl border border-[#353436] bg-black"
               />
             </div>
           </div>
@@ -294,8 +294,8 @@ function SectionFieldEditor({
 }) {
   const draftStore = useSiteContentDraftStore;
   return (
-    <div className="rounded-2xl bg-[#131314] border border-[#27272A] p-4 space-y-3">
-      <h3 className="text-xs font-bold text-[#3ECF8E] uppercase tracking-widest flex items-center gap-1.5">
+    <div className="rounded-2xl bg-[#131314] border border-[#353436] p-4 space-y-3">
+      <h3 className="text-xs font-bold text-[#dbfcff] uppercase tracking-widest flex items-center gap-1.5">
         <Type className="w-3.5 h-3.5" />
         {section.name} — Fields
       </h3>
@@ -309,7 +309,7 @@ function SectionFieldEditor({
           <div
             key={field.id}
             data-testid="list-field-summary"
-            className="flex items-center justify-between gap-2 rounded-lg border border-[#27272A] bg-[#18181B] px-3 py-2"
+            className="flex items-center justify-between gap-2 rounded-lg border border-[#353436] bg-[#201f20] px-3 py-2"
           >
             <span className="text-[11px] text-zinc-400 font-mono">{field.label}</span>
             <span className="flex items-center gap-2">
@@ -322,7 +322,7 @@ function SectionFieldEditor({
             <span className="text-[11px] text-zinc-400 font-mono flex items-center gap-1.5">
               {field.label}
               {field.rich && (
-                <span className="text-[9px] uppercase tracking-wider text-[#3ECF8E]/70 border border-[#3ECF8E]/30 rounded px-1">
+                <span className="text-[9px] uppercase tracking-wider text-[#dbfcff]/70 border border-[#dbfcff]/30 rounded px-1">
                   HTML
                 </span>
               )}
@@ -335,7 +335,7 @@ function SectionFieldEditor({
                 onChange={(e) =>
                   draftStore.getState().updateTextField(pageId, section.id, field.id, e.target.value)
                 }
-                className="w-full px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-xs text-white font-mono"
+                className="w-full px-3 py-2 rounded-lg bg-[#201f20] border border-[#353436] text-xs text-white font-mono"
               />
             ) : (
               <input
@@ -345,7 +345,7 @@ function SectionFieldEditor({
                 onChange={(e) =>
                   draftStore.getState().updateTextField(pageId, section.id, field.id, e.target.value)
                 }
-                className="w-full px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-xs text-white"
+                className="w-full px-3 py-2 rounded-lg bg-[#201f20] border border-[#353436] text-xs text-white"
               />
             )}
           </label>
@@ -362,7 +362,7 @@ function SectionFieldEditor({
                 <img
                   src={field.urls[0]}
                   alt={field.label}
-                  className="w-14 h-10 object-cover rounded-lg border border-[#27272A]"
+                  className="w-14 h-10 object-cover rounded-lg border border-[#353436]"
                 />
               ) : (
                 <div className="w-14 h-10 rounded-lg border border-dashed border-[#3F3F46] flex items-center justify-center text-[9px] text-zinc-500">
@@ -371,7 +371,7 @@ function SectionFieldEditor({
               )}
               <button
                 onClick={() => onOpenPicker(section.id, field)}
-                className="px-2.5 py-1.5 rounded-lg bg-[#27272A] hover:bg-[#3F3F46] text-zinc-200 text-[11px] font-mono cursor-pointer"
+                className="px-2.5 py-1.5 rounded-lg bg-[#353436] hover:bg-[#3F3F46] text-zinc-200 text-[11px] font-mono cursor-pointer"
               >
                 Choose media
               </button>
@@ -389,7 +389,7 @@ function SectionFieldEditor({
                   <button
                     onClick={() => draftStore.getState().removeMediaUrl(pageId, section.id, field.id, index)}
                     aria-label={`Remove media URL ${index + 1}`}
-                    className="p-1.5 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-[#27272A] cursor-pointer"
+                    className="p-1.5 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-[#353436] cursor-pointer"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -397,7 +397,7 @@ function SectionFieldEditor({
               ))}
               <button
                 onClick={() => draftStore.getState().addMediaUrl(pageId, section.id, field.id, '')}
-                className="px-2.5 py-1.5 rounded-lg bg-[#18181B] border border-dashed border-[#3F3F46] hover:border-[#3ECF8E]/50 text-zinc-300 text-[11px] font-mono flex items-center gap-1 cursor-pointer"
+                className="px-2.5 py-1.5 rounded-lg bg-[#201f20] border border-dashed border-[#3F3F46] hover:border-[#dbfcff]/50 text-zinc-300 text-[11px] font-mono flex items-center gap-1 cursor-pointer"
               >
                 <Plus className="w-3 h-3" />
                 <span>Add URL</span>
@@ -424,8 +424,8 @@ function SectionFieldEditor({
                   }
                   className={`px-2 py-1 rounded text-[10px] font-mono uppercase cursor-pointer border ${
                     field.mediaType === t
-                      ? 'bg-[#3ECF8E]/15 border-[#3ECF8E]/40 text-[#3ECF8E]'
-                      : 'bg-[#18181B] border-[#27272A] text-zinc-500'
+                      ? 'bg-[#dbfcff]/15 border-[#dbfcff]/40 text-[#dbfcff]'
+                      : 'bg-[#201f20] border-[#353436] text-zinc-500'
                   }`}
                 >
                   {t}
@@ -472,7 +472,7 @@ function MediaUrlInput({
           commit();
         }
       }}
-      className="w-full px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-xs text-white placeholder:text-zinc-500"
+      className="w-full px-3 py-2 rounded-lg bg-[#201f20] border border-[#353436] text-xs text-white placeholder:text-zinc-500"
     />
   );
 }

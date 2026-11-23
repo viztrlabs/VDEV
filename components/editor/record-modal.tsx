@@ -29,7 +29,7 @@ function FieldInput({ field, value, onChange }: { field: Field; value: any; onCh
       <select
         value={value ?? ''}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1.5 text-[11px] font-mono text-white"
+        className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1.5 text-[11px] font-mono text-white"
       >
         <option value="">—</option>
         {(field.options || []).map((opt) => (
@@ -48,7 +48,7 @@ function FieldInput({ field, value, onChange }: { field: Field; value: any; onCh
         onChange={(e) => onChange(e.target.value)}
         rows={3}
         placeholder={field.placeholder}
-        className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1.5 text-[11px] font-mono text-white resize-none"
+        className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1.5 text-[11px] font-mono text-white resize-none"
       />
     );
   }
@@ -66,7 +66,7 @@ function FieldInput({ field, value, onChange }: { field: Field; value: any; onCh
         }}
         rows={4}
         placeholder="{}"
-        className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1.5 text-[11px] font-mono text-white resize-none"
+        className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1.5 text-[11px] font-mono text-white resize-none"
       />
     );
   }
@@ -76,7 +76,7 @@ function FieldInput({ field, value, onChange }: { field: Field; value: any; onCh
       <button
         type="button"
         onClick={() => onChange(!value)}
-        className={`w-9 h-5 rounded-full relative transition-colors ${value ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'}`}
+        className={`w-9 h-5 rounded-full relative transition-colors ${value ? 'bg-[#dbfcff]' : 'bg-[#353436]'}`}
       >
         <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${value ? 'left-4' : 'left-0.5'}`} />
       </button>
@@ -89,7 +89,7 @@ function FieldInput({ field, value, onChange }: { field: Field; value: any; onCh
       value={value ?? ''}
       onChange={(e) => (field.type === 'number' ? onChange(Number(e.target.value)) : onChange(e.target.value))}
       placeholder={field.placeholder}
-      className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1.5 text-[11px] font-mono text-white"
+      className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1.5 text-[11px] font-mono text-white"
     />
   );
 }
@@ -99,7 +99,7 @@ export function RecordModal({ open, title, mode, fields, initialValues, onChange
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="w-full max-w-xl rounded-xl border border-[#27272A] bg-[#0c0c0f] p-4 space-y-3">
+      <div className="w-full max-w-xl rounded-xl border border-[#353436] bg-[#201f20] p-4 space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-xs font-mono font-bold text-white">{title}</h3>
           <button type="button" onClick={onClose} className="text-[#A1A1AA] hover:text-white text-[10px] font-mono">
@@ -117,14 +117,14 @@ export function RecordModal({ open, title, mode, fields, initialValues, onChange
           ))}
         </div>
         <div className="flex items-center justify-end gap-2 pt-1">
-          <button type="button" onClick={onClose} className="px-2.5 py-1.5 rounded border border-[#27272A] bg-[#09090B] text-[10px] font-mono text-[#A1A1AA] hover:text-white">
+          <button type="button" onClick={onClose} className="px-2.5 py-1.5 rounded border border-[#353436] bg-[#131314] text-[10px] font-mono text-[#A1A1AA] hover:text-white">
             Cancel
           </button>
           <button
             type="button"
             onClick={onSubmit}
             disabled={submitting}
-            className="px-2.5 py-1.5 rounded border border-[#3ECF8E]/40 bg-[#3ECF8E]/15 text-[10px] font-mono text-[#3ECF8E] hover:bg-[#3ECF8E]/25 disabled:opacity-60"
+            className="px-2.5 py-1.5 rounded border border-[#dbfcff]/40 bg-[#dbfcff]/15 text-[10px] font-mono text-[#dbfcff] hover:bg-[#dbfcff]/25 disabled:opacity-60"
           >
             {submitting ? 'Saving…' : mode === 'create' ? 'Create' : 'Save'}
           </button>

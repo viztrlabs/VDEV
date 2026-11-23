@@ -160,7 +160,7 @@ export default function XRViewer({
     >
       <div
         ref={setContainerRef}
-        className={`relative w-full h-[600px] rounded-2xl overflow-hidden bg-black border border-[#27272A] shadow-2xl ${className}`}
+        className={`relative w-full h-[600px] rounded-2xl overflow-hidden bg-black border border-[#353436] shadow-2xl ${className}`}
       >
         {/* Cinematic Entry sequence */}
         <CinematicEntry
@@ -184,10 +184,10 @@ export default function XRViewer({
         {/* Advanced rendering toggle */}
         <button
           onClick={toggleAdvancedLighting}
-          className="absolute top-4 left-4 z-30 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-black/80 hover:bg-white/10 border border-white/10 text-[#FAFAFA] text-xs transition-colors cursor-pointer"
+          className="absolute top-4 left-4 z-30 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-black/80 hover:bg-white/10 border border-white/10 text-[#e5e2e3] text-xs transition-colors cursor-pointer"
           title="Toggle advanced lighting & post-processing"
         >
-          <Sparkles className={`w-3.5 h-3.5 ${advancedLighting ? 'text-[#3ECF8E]' : 'text-[#71717A]'}`} />
+          <Sparkles className={`w-3.5 h-3.5 ${advancedLighting ? 'text-[#dbfcff]' : 'text-[#71717A]'}`} />
           <span>Advanced Render: {advancedLighting ? 'ON' : 'OFF'}</span>
         </button>
 
@@ -215,8 +215,8 @@ export default function XRViewer({
       </div>
 
       {/* Bottom Scene Name Pill */}
-      <div className="absolute bottom-4 left-4 z-30 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md border border-white/10 text-xs font-mono text-[#FAFAFA] flex items-center gap-2">
-        <span className="w-2 h-2 rounded-full bg-[#3ECF8E] animate-pulse" />
+      <div className="absolute bottom-4 left-4 z-30 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md border border-white/10 text-xs font-mono text-[#e5e2e3] flex items-center gap-2">
+        <span className="w-2 h-2 rounded-full bg-[#dbfcff] animate-pulse" />
         <span>Scene: {activeScene.name}</span>
       </div>
     </div>

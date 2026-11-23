@@ -71,10 +71,10 @@ export default function PlayCanvasEngineDashboardTile() {
   };
 
   return (
-    <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-4">
+    <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436] space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className={`w-8 h-8 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-center ${getStatusColor()}`}>
+          <div className={`w-8 h-8 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-center ${getStatusColor()}`}>
             {getStatusIcon()}
           </div>
           <div>
@@ -88,21 +88,21 @@ export default function PlayCanvasEngineDashboardTile() {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] space-y-1">
+        <div className="p-3 rounded-lg bg-[#131314] border border-[#353436] space-y-1">
           <div className="text-[10px] text-[#71717A] font-mono">WEBXR SUPPORT</div>
           <div className={`text-xs font-bold ${status.isVRSupported || status.isARSupported ? 'text-green-400' : 'text-[#71717A]'}`}>
             VR: {status.isVRSupported ? 'YES' : 'NO'} | AR: {status.isARSupported ? 'YES' : 'NO'}
           </div>
         </div>
-        <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] space-y-1">
+        <div className="p-3 rounded-lg bg-[#131314] border border-[#353436] space-y-1">
           <div className="text-[10px] text-[#71717A] font-mono">ACTIVE MODE</div>
           <div className="text-xs font-bold text-white capitalize">{status.activeMode}</div>
         </div>
-        <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] space-y-1">
+        <div className="p-3 rounded-lg bg-[#131314] border border-[#353436] space-y-1">
           <div className="text-[10px] text-[#71717A] font-mono">PERFORMANCE</div>
           <div className="text-xs font-bold text-white">FPS: {status.fps}</div>
         </div>
-        <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A] space-y-1">
+        <div className="p-3 rounded-lg bg-[#131314] border border-[#353436] space-y-1">
           <div className="text-[10px] text-[#71717A] font-mono">GEOMETRY</div>
           <div className="text-xs font-bold text-white">
             DC: {status.drawCalls} | Tris: {status.triangles}
@@ -116,7 +116,7 @@ export default function PlayCanvasEngineDashboardTile() {
         </div>
       )}
 
-      <div className="pt-2 border-t border-[#27272A]">
+      <div className="pt-2 border-t border-[#353436]">
         <div className="text-[10px] text-[#71717A] font-mono">STATUS: {status.isInitialized ? 'Ready for XR sessions' : 'Waiting for initialization'}</div>
       </div>
     </div>

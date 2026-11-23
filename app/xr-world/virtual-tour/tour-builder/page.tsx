@@ -20,7 +20,7 @@ function TourBuilderPageInner() {
 
 export default function TourBuilderPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#09090B]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#131314]" />}>
       <TourBuilderPageInner />
     </Suspense>
   );

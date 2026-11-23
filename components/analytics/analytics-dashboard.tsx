@@ -16,7 +16,7 @@ type SparklineProps = {
   color?: string;
 };
 
-export function Sparkline({ values, width = 120, height = 32, color = '#3ECF8E' }: SparklineProps) {
+export function Sparkline({ values, width = 120, height = 32, color = '#dbfcff' }: SparklineProps) {
   const path = useMemo(() => {
     if (!values.length) return '';
     const max = Math.max(...values, 1);
@@ -51,9 +51,9 @@ type MetricCardProps = {
   color?: string;
 };
 
-export function MetricCard({ title, value, unit = '', trend, color = '#3ECF8E' }: MetricCardProps) {
+export function MetricCard({ title, value, unit = '', trend, color = '#dbfcff' }: MetricCardProps) {
   return (
-    <div className="rounded border border-[#27272A] bg-[#0F0F11] p-4">
+    <div className="rounded border border-[#353436] bg-[#131314] p-4">
       <div className="text-[10px] font-mono text-[#71717A]">{title}</div>
       <div className="flex items-end gap-3">
         <div className="text-xl font-mono text-white">
@@ -126,25 +126,25 @@ export function AnalyticsDashboard({ events }: AnalyticsDashboardProps) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <MetricCard title="Events (24h)" value={stats.eventCount} color="#3ECF8E" />
+        <MetricCard title="Events (24h)" value={stats.eventCount} color="#dbfcff" />
         <MetricCard title="Perf Samples" value={stats.perfCount} trend={stats.fpsValues} color="#60A5FA" />
         <MetricCard title="Recommendations" value={stats.recCount} color="#F472B6" />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="rounded border border-[#27272A] bg-[#0F0F11] p-4">
+        <div className="rounded border border-[#353436] bg-[#131314] p-4">
           <div className="text-[10px] font-mono text-[#71717A]">Sessions (24h)</div>
           <div className="text-xl font-mono text-white">{stats.sessions}</div>
         </div>
-        <div className="rounded border border-[#27272A] bg-[#0F0F11] p-4">
+        <div className="rounded border border-[#353436] bg-[#131314] p-4">
           <div className="text-[10px] font-mono text-[#71717A]">Errors</div>
           <div className="text-xl font-mono text-rose-300">{stats.errors}</div>
         </div>
-        <div className="rounded border border-[#27272A] bg-[#0F0F11] p-4">
+        <div className="rounded border border-[#353436] bg-[#131314] p-4">
           <div className="text-[10px] font-mono text-[#71717A]">Warnings</div>
           <div className="text-xl font-mono text-amber-300">{stats.warnings}</div>
         </div>
-        <div className="rounded border border-[#27272A] bg-[#0F0F11] p-4">
+        <div className="rounded border border-[#353436] bg-[#131314] p-4">
           <div className="text-[10px] font-mono text-[#71717A]">Avg Memory</div>
           <div className="text-xl font-mono text-white">
             {stats.memoryValues.length ? Math.round(stats.memoryValues.reduce((a, b) => a + b, 0) / stats.memoryValues.length) : 0}
@@ -154,7 +154,7 @@ export function AnalyticsDashboard({ events }: AnalyticsDashboardProps) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="rounded border border-[#27272A] bg-[#0F0F11] p-4">
+        <div className="rounded border border-[#353436] bg-[#131314] p-4">
           <div className="text-[11px] font-mono text-[#A1A1AA] mb-2">Event Types</div>
           <div className="space-y-1">
             {Object.entries(stats.typeBuckets).map(([key, value]) => (
@@ -168,7 +168,7 @@ export function AnalyticsDashboard({ events }: AnalyticsDashboardProps) {
             )}
           </div>
         </div>
-        <div className="rounded border border-[#27272A] bg-[#0F0F11] p-4">
+        <div className="rounded border border-[#353436] bg-[#131314] p-4">
           <div className="text-[11px] font-mono text-[#A1A1AA] mb-2">Kind Distribution</div>
           <div className="space-y-1">
             {Object.entries(stats.kindBuckets).map(([key, value]) => (
@@ -184,8 +184,8 @@ export function AnalyticsDashboard({ events }: AnalyticsDashboardProps) {
         </div>
       </div>
 
-      <div className="rounded border border-[#27272A] bg-[#0F0F11]">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#27272A]">
+      <div className="rounded border border-[#353436] bg-[#131314]">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-[#353436]">
           <div>
             <div className="text-[11px] font-mono text-[#A1A1AA]">Recent Activity</div>
             <div className="text-[10px] font-mono text-[#71717A]">Last {recent.length} items from local ingestion</div>
@@ -201,7 +201,7 @@ export function AnalyticsDashboard({ events }: AnalyticsDashboardProps) {
               a.click();
               URL.revokeObjectURL(url);
             }}
-            className="px-2 py-1 rounded border border-[#27272A] bg-[#09090B] text-[10px] font-mono text-[#A1A1AA] hover:text-white"
+            className="px-2 py-1 rounded border border-[#353436] bg-[#131314] text-[10px] font-mono text-[#A1A1AA] hover:text-white"
           >
             Export JSON
           </button>
@@ -218,7 +218,7 @@ export function AnalyticsDashboard({ events }: AnalyticsDashboardProps) {
             </thead>
             <tbody>
               {recent.map((row, idx) => (
-                <tr key={`${row.kind}-${row.ts}-${idx}`} className="border-t border-[#27272A]">
+                <tr key={`${row.kind}-${row.ts}-${idx}`} className="border-t border-[#353436]">
                   <td className="px-3 py-2 text-white">{formatDate(row.ts)}</td>
                   <td className="px-3 py-2 capitalize">{row.kind}</td>
                   <td className="px-3 py-2">{row.sessionId}</td>

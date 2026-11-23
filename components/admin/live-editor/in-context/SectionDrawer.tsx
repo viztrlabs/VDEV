@@ -18,7 +18,7 @@ const PADDING_OPTIONS = ['none', 'sm', 'md', 'lg'] as const;
 type PlaybackKey = 'autoplay' | 'muted' | 'loop';
 
 const inputClass =
-  'w-full rounded-lg border border-[#27272A] bg-[#18181B] px-2.5 py-1.5 text-xs text-white placeholder:text-zinc-500 focus:border-[#3ECF8E] focus:outline-none';
+  'w-full rounded-lg border border-[#353436] bg-[#201f20] px-2.5 py-1.5 text-xs text-white placeholder:text-zinc-500 focus:border-[#dbfcff] focus:outline-none';
 
 interface PickerTarget {
   fieldId: string;
@@ -63,7 +63,7 @@ function TextFieldEditor({ pageId, sectionId, field, label }: TextFieldEditorPro
           data-cms-rich="true"
           onBlur={(event) => commit(sanitizeRichText(event.currentTarget.innerHTML))}
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(field.value) }}
-          className="min-h-[64px] w-full rounded-lg border border-[#27272A] bg-[#18181B] px-2.5 py-1.5 text-xs leading-relaxed text-white focus:border-[#3ECF8E] focus:outline-none"
+          className="min-h-[64px] w-full rounded-lg border border-[#353436] bg-[#201f20] px-2.5 py-1.5 text-xs leading-relaxed text-white focus:border-[#dbfcff] focus:outline-none"
         />
         <select
           id={`${controlId}-align`}
@@ -146,7 +146,7 @@ function MediaFieldEditor({ pageId, sectionId, field, label, onChoose }: MediaFi
         {rows.map((url, index) => (
           <div
             key={`${field.id}-${index}`}
-            className="space-y-1.5 rounded-lg border border-[#27272A] bg-[#0E0E0F] p-2"
+            className="space-y-1.5 rounded-lg border border-[#353436] bg-[#0E0E0F] p-2"
           >
             <input
               type="text"
@@ -163,7 +163,7 @@ function MediaFieldEditor({ pageId, sectionId, field, label, onChoose }: MediaFi
                 type="button"
                 aria-label={`Choose media for ${label} ${index + 1}`}
                 onClick={() => onChoose(field, index)}
-                className="rounded border border-[#27272A] px-2 py-1 font-bold text-[#3ECF8E] hover:border-[#3ECF8E]"
+                className="rounded border border-[#353436] px-2 py-1 font-bold text-[#dbfcff] hover:border-[#dbfcff]"
               >
                 Choose media
               </button>
@@ -172,7 +172,7 @@ function MediaFieldEditor({ pageId, sectionId, field, label, onChoose }: MediaFi
                 aria-label={`Move ${label} ${index + 1} up`}
                 disabled={index === 0}
                 onClick={() => store.moveMediaUrl(pageId, sectionId, field.id, index, index - 1)}
-                className="rounded border border-[#27272A] px-2 py-1 text-zinc-300 hover:border-[#3ECF8E] disabled:opacity-40"
+                className="rounded border border-[#353436] px-2 py-1 text-zinc-300 hover:border-[#dbfcff] disabled:opacity-40"
               >
                 Move up
               </button>
@@ -181,7 +181,7 @@ function MediaFieldEditor({ pageId, sectionId, field, label, onChoose }: MediaFi
                 aria-label={`Move ${label} ${index + 1} down`}
                 disabled={index === rows.length - 1}
                 onClick={() => store.moveMediaUrl(pageId, sectionId, field.id, index, index + 1)}
-                className="rounded border border-[#27272A] px-2 py-1 text-zinc-300 hover:border-[#3ECF8E] disabled:opacity-40"
+                className="rounded border border-[#353436] px-2 py-1 text-zinc-300 hover:border-[#dbfcff] disabled:opacity-40"
               >
                 Move down
               </button>
@@ -189,7 +189,7 @@ function MediaFieldEditor({ pageId, sectionId, field, label, onChoose }: MediaFi
                 type="button"
                 aria-label={`Remove ${label} ${index + 1}`}
                 onClick={() => store.removeMediaUrl(pageId, sectionId, field.id, index)}
-                className="rounded border border-[#27272A] px-2 py-1 text-rose-300 hover:border-rose-400"
+                className="rounded border border-[#353436] px-2 py-1 text-rose-300 hover:border-rose-400"
               >
                 Remove
               </button>
@@ -200,7 +200,7 @@ function MediaFieldEditor({ pageId, sectionId, field, label, onChoose }: MediaFi
       <button
         type="button"
         onClick={() => store.addMediaUrl(pageId, sectionId, field.id, '')}
-        className="rounded border border-[#27272A] px-2 py-1 text-[10px] font-bold text-zinc-200 hover:border-[#3ECF8E] hover:text-white"
+        className="rounded border border-[#353436] px-2 py-1 text-[10px] font-bold text-zinc-200 hover:border-[#dbfcff] hover:text-white"
       >
         Add URL
       </button>
@@ -231,7 +231,7 @@ function ListFieldEditor({ pageId, sectionId, field, label }: ListFieldEditorPro
           return (
             <div
               key={item.id}
-              className="space-y-1.5 rounded-lg border border-[#27272A] bg-[#0E0E0F] p-2"
+              className="space-y-1.5 rounded-lg border border-[#353436] bg-[#0E0E0F] p-2"
             >
               <div className="flex items-center justify-between gap-2">
                 <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
@@ -243,7 +243,7 @@ function ListFieldEditor({ pageId, sectionId, field, label }: ListFieldEditorPro
                     aria-label={`Move ${itemName} up`}
                     disabled={!canReorder || index === 0}
                     onClick={() => store.moveListItem(pageId, sectionId, field.id, item.id, 'up')}
-                    className="rounded border border-[#27272A] px-1.5 py-0.5 text-zinc-300 hover:border-[#3ECF8E] disabled:opacity-40"
+                    className="rounded border border-[#353436] px-1.5 py-0.5 text-zinc-300 hover:border-[#dbfcff] disabled:opacity-40"
                   >
                     Move up
                   </button>
@@ -252,7 +252,7 @@ function ListFieldEditor({ pageId, sectionId, field, label }: ListFieldEditorPro
                     aria-label={`Move ${itemName} down`}
                     disabled={!canReorder || index === field.items.length - 1}
                     onClick={() => store.moveListItem(pageId, sectionId, field.id, item.id, 'down')}
-                    className="rounded border border-[#27272A] px-1.5 py-0.5 text-zinc-300 hover:border-[#3ECF8E] disabled:opacity-40"
+                    className="rounded border border-[#353436] px-1.5 py-0.5 text-zinc-300 hover:border-[#dbfcff] disabled:opacity-40"
                   >
                     Move down
                   </button>
@@ -261,7 +261,7 @@ function ListFieldEditor({ pageId, sectionId, field, label }: ListFieldEditorPro
                     aria-label={`Remove ${itemName}`}
                     disabled={!canRemove}
                     onClick={() => store.removeListItem(pageId, sectionId, field.id, item.id)}
-                    className="rounded border border-[#27272A] px-1.5 py-0.5 text-rose-300 hover:border-rose-400 disabled:opacity-40"
+                    className="rounded border border-[#353436] px-1.5 py-0.5 text-rose-300 hover:border-rose-400 disabled:opacity-40"
                   >
                     Remove
                   </button>
@@ -293,7 +293,7 @@ function ListFieldEditor({ pageId, sectionId, field, label }: ListFieldEditorPro
                           data-cms-rich="true"
                           onBlur={(event) => commit(sanitizeRichText(event.currentTarget.innerHTML))}
                           dangerouslySetInnerHTML={{ __html: sanitizeRichText(value) }}
-                          className="min-h-[56px] w-full rounded-lg border border-[#27272A] bg-[#18181B] px-2.5 py-1.5 text-xs leading-relaxed text-white focus:border-[#3ECF8E] focus:outline-none"
+                          className="min-h-[56px] w-full rounded-lg border border-[#353436] bg-[#201f20] px-2.5 py-1.5 text-xs leading-relaxed text-white focus:border-[#dbfcff] focus:outline-none"
                         />
                       </div>
                     );
@@ -334,7 +334,7 @@ function ListFieldEditor({ pageId, sectionId, field, label }: ListFieldEditorPro
         type="button"
         disabled={!canAdd}
         onClick={() => store.addListItem(pageId, sectionId, field.id)}
-        className="rounded border border-[#27272A] px-2 py-1 text-[10px] font-bold text-[#3ECF8E] hover:border-[#3ECF8E] disabled:opacity-40"
+        className="rounded border border-[#353436] px-2 py-1 text-[10px] font-bold text-[#dbfcff] hover:border-[#dbfcff] disabled:opacity-40"
       >
         {`Add ${itemLabel}`}
       </button>
@@ -395,7 +395,7 @@ export default function SectionDrawer() {
     <aside
       data-testid="section-drawer"
       aria-label={`${section.name} settings`}
-      className="fixed inset-y-0 right-0 z-[80] flex h-full w-full max-w-sm flex-col gap-4 overflow-y-auto border-l border-[#27272A] bg-[#131314] p-4 text-white shadow-2xl"
+      className="fixed inset-y-0 right-0 z-[80] flex h-full w-full max-w-sm flex-col gap-4 overflow-y-auto border-l border-[#353436] bg-[#131314] p-4 text-white shadow-2xl"
     >
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-sm font-bold">Section settings</h2>
@@ -403,7 +403,7 @@ export default function SectionDrawer() {
           type="button"
           aria-label="Close drawer"
           onClick={closeDrawer}
-          className="rounded border border-[#27272A] px-2 py-1 text-[10px] text-zinc-400 hover:border-[#3ECF8E] hover:text-white"
+          className="rounded border border-[#353436] px-2 py-1 text-[10px] text-zinc-400 hover:border-[#dbfcff] hover:text-white"
         >
           Close
         </button>
@@ -419,7 +419,7 @@ export default function SectionDrawer() {
             aria-label="Visible"
             checked={section.isVisible}
             onChange={() => store.toggleSection(HOME_PAGE_ID, section.id)}
-            className="h-3.5 w-3.5 accent-[#3ECF8E]"
+            className="h-3.5 w-3.5 accent-[#dbfcff]"
           />
           Visible
         </label>
@@ -468,7 +468,7 @@ export default function SectionDrawer() {
                       media: { ...mediaStyle, [key]: event.target.checked },
                     })
                   }
-                  className="h-3.5 w-3.5 accent-[#3ECF8E]"
+                  className="h-3.5 w-3.5 accent-[#dbfcff]"
                 />
                 {label}
               </label>

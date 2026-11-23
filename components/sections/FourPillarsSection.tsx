@@ -17,7 +17,7 @@ const PILLAR_ICONS: Record<string, React.ComponentType<{ className?: string }>> 
 };
 
 const STAGE_STATUS_COLORS: Record<string, string> = {
-  modeling: 'text-[#42CF8B]',
+  modeling: 'text-[#54de99]',
   visualization: 'text-[#F59E0B]',
   'xr-experience': 'text-[#00F0FF]',
 };
@@ -87,16 +87,16 @@ export default function FourPillarsSection() {
   return (
     <section
       id="four-pillars-section"
-      className="py-20 px-4 sm:px-6 bg-[#0A0A0B] text-white border-y border-[#1E293B] relative overflow-hidden"
+      className="py-20 px-4 sm:px-6 bg-[#131314] text-white border-y border-[#3b494b] relative overflow-hidden"
     >
       <div className="max-w-[1400px] mx-auto relative z-10">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-2 mb-3">
-            <span className="w-2 h-2 rounded-full bg-[#42CF8B] animate-pulse" />
-            <CmsText fieldId="eyebrow" value={eyebrow} className="text-[11px] font-bold uppercase tracking-widest text-[#42CF8B]"/>
+            <span className="w-2 h-2 rounded-full bg-[#54de99] animate-pulse" />
+            <CmsText fieldId="eyebrow" value={eyebrow} className="text-[11px] font-bold uppercase tracking-widest text-[#54de99]"/>
           </div>
-          <CmsText fieldId="heading" value={heading} as="h2" className="text-3xl sm:text-4xl font-display font-extrabold tracking-tight text-[#FAFAFA] mb-4"/>
+          <CmsText fieldId="heading" value={heading} as="h2" className="text-3xl sm:text-4xl font-display font-extrabold tracking-tight text-[#e5e2e3] mb-4"/>
           <CmsText fieldId="subheading" value={subheading} as="p" rich className="text-sm sm:text-base text-[#B9CACB] max-w-2xl mx-auto"/>
         </div>
 
@@ -108,7 +108,7 @@ export default function FourPillarsSection() {
               <Link
                 key={pillar.id}
                 href={pillar.href}
-                className="group relative p-6 rounded-[1.5rem] bg-[#131314] border border-[#1E293B] hover:border-[#42CF8B]/40 transition-all duration-300 flex flex-col items-center text-center shadow-sm hover:shadow-lg hover:shadow-[#42CF8B]/5"
+                className="group relative p-6 rounded-[1.5rem] bg-[#131314] border border-[#3b494b] hover:border-[#54de99]/40 transition-all duration-300 flex flex-col items-center text-center shadow-sm hover:shadow-lg hover:shadow-[#54de99]/5"
               >
                 {/* Number */}
                 <CmsText fieldId="number" listFieldId="pillars" itemId={pillar.id} value={pillar.number} className="text-[10px] font-mono font-bold text-[#71717A] tracking-widest mb-4"/>
@@ -119,7 +119,7 @@ export default function FourPillarsSection() {
                 </div>
 
                 {/* Title */}
-                <CmsText fieldId="title" listFieldId="pillars" itemId={pillar.id} value={pillar.title} as="h3" className="text-lg font-display font-bold text-[#FAFAFA] mb-1"/>
+                <CmsText fieldId="title" listFieldId="pillars" itemId={pillar.id} value={pillar.title} as="h3" className="text-lg font-display font-bold text-[#e5e2e3] mb-1"/>
 
                 {/* Verb */}
                 <CmsText fieldId="verb" listFieldId="pillars" itemId={pillar.id} value={pillar.verb} as="p" className={`text-sm font-semibold ${pillar.color} mb-3`}/>
@@ -128,7 +128,7 @@ export default function FourPillarsSection() {
                 <CmsText fieldId="description" listFieldId="pillars" itemId={pillar.id} value={pillar.description} as="p" rich className="text-xs text-[#B9CACB] leading-relaxed mb-5"/>
 
                 {/* CTA */}
-                <div className="mt-auto flex items-center gap-1.5 text-xs font-bold text-[#FAFAFA] group-hover:text-[#42CF8B] transition-colors">
+                <div className="mt-auto flex items-center gap-1.5 text-xs font-bold text-[#e5e2e3] group-hover:text-[#54de99] transition-colors">
                   <CmsText fieldId="pillarCtaLabel" value={pillarCtaLabel}/>
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -139,13 +139,13 @@ export default function FourPillarsSection() {
 
         {/* Project Hub Preview Card */}
         <div className="mt-12 max-w-md mx-auto">
-          <div className="p-5 rounded-2xl bg-[#131314] border border-[#1E293B]">
+          <div className="p-5 rounded-2xl bg-[#131314] border border-[#3b494b]">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-[#F59E0B]/10 flex items-center justify-center">
                 <BarChart3 className="w-5 h-5 text-[#F59E0B]" />
               </div>
               <div>
-                <CmsText fieldId="previewProjectName" value={previewProjectName} as="p" className="text-sm font-bold text-[#FAFAFA]"/>
+                <CmsText fieldId="previewProjectName" value={previewProjectName} as="p" className="text-sm font-bold text-[#e5e2e3]"/>
                 <CmsText fieldId="previewProjectId" value={previewProjectId} as="p" className="text-[10px] font-mono text-[#71717A]"/>
               </div>
             </div>
@@ -155,7 +155,7 @@ export default function FourPillarsSection() {
                   <CmsText fieldId="label" listFieldId="previewStages" itemId={stage.id} value={stage.label} className="text-xs text-[#B9CACB]"/>
                   {stage.id === 'visualization' ? (
                     <div className="flex items-center gap-2">
-                      <div className="w-16 h-1.5 bg-[#27272A] rounded-full overflow-hidden">
+                      <div className="w-16 h-1.5 bg-[#353436] rounded-full overflow-hidden">
                         <div className="h-full bg-[#F59E0B] rounded-full" style={{ width: previewProgressValue }} />
                       </div>
                       <span className="text-xs font-mono text-[#F59E0B]">{stageStatus(stage.id, stage.status)}</span>
@@ -166,7 +166,7 @@ export default function FourPillarsSection() {
                 </div>
               ))}
             </div>
-            <div className="pt-3 border-t border-[#1E293B] flex items-center justify-between">
+            <div className="pt-3 border-t border-[#3b494b] flex items-center justify-between">
               <CmsText fieldId="previewLastUpdate" value={previewLastUpdate} className="text-[10px] font-mono text-[#71717A]"/>
               <Link
                 href="/track-project"

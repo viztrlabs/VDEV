@@ -170,7 +170,7 @@ export default function HotspotLayer({
             className="absolute bottom-20 left-1/2 -translate-x-1/2 z-40 max-w-lg w-[92vw] p-5 rounded-3xl bg-[var(--glass-bg)] border border-[var(--glass-border)] backdrop-blur-2xl shadow-2xl font-mono pointer-events-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-3 border-b border-[#27272A] pb-3">
+            <div className="flex items-start justify-between gap-3 border-b border-[#353436] pb-3">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <span
@@ -181,7 +181,7 @@ export default function HotspotLayer({
                     {activeHotspot.type === 'room_link' ? '🚪 Room Portal Link' : `📐 ${activeHotspot.category}`}
                   </span>
                   {activeHotspot.isCustom && (
-                    <span className="text-[9px] font-mono text-[#3ECF8E] bg-[#3ECF8E]/10 px-1.5 py-0.2 rounded border border-[#3ECF8E]/30">
+                    <span className="text-[9px] font-mono text-[#dbfcff] bg-[#dbfcff]/10 px-1.5 py-0.2 rounded border border-[#dbfcff]/30">
                       Custom User Hotspot
                     </span>
                   )}
@@ -194,7 +194,7 @@ export default function HotspotLayer({
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => onEditHotspot(activeHotspot)}
-                  className="p-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg bg-[#201f20] hover:bg-[#353436] text-zinc-400 hover:text-white transition-colors cursor-pointer"
                   title="Edit Hotspot Parameters"
                 >
                   <Edit2 className="w-3.5 h-3.5" />
@@ -202,7 +202,7 @@ export default function HotspotLayer({
 
                 <button
                   onClick={() => onDeleteHotspot(activeHotspot.id)}
-                  className="p-1.5 rounded-lg bg-[#18181B] hover:bg-rose-950 text-zinc-400 hover:text-rose-400 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg bg-[#201f20] hover:bg-rose-950 text-zinc-400 hover:text-rose-400 transition-colors cursor-pointer"
                   title="Delete Hotspot"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -210,7 +210,7 @@ export default function HotspotLayer({
 
                 <button
                   onClick={() => onHotspotClick(null as any)}
-                  className="p-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg bg-[#201f20] hover:bg-[#353436] text-zinc-400 hover:text-white transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -222,12 +222,12 @@ export default function HotspotLayer({
             </p>
 
             {activeHotspot.type === 'image' && activeHotspot.mediaUrl && (
-              <div className="mt-3 rounded-xl overflow-hidden border border-[#27272A]">
+              <div className="mt-3 rounded-xl overflow-hidden border border-[#353436]">
                 <img src={activeHotspot.mediaUrl} alt={activeHotspot.title} className="w-full object-cover max-h-56" />
               </div>
             )}
             {activeHotspot.type === 'video' && activeHotspot.mediaUrl && (
-              <div className="mt-3 rounded-xl overflow-hidden border border-[#27272A] aspect-video bg-black">
+              <div className="mt-3 rounded-xl overflow-hidden border border-[#353436] aspect-video bg-black">
                 {/youtube\.com|youtu\.be|vimeo\.com/i.test(activeHotspot.mediaUrl) ? (
                   <iframe
                     src={activeHotspot.mediaUrl}
@@ -242,7 +242,7 @@ export default function HotspotLayer({
               </div>
             )}
             {activeHotspot.type === 'info' && activeHotspot.article && (
-              <div className="mt-3 p-3 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-zinc-300 leading-relaxed whitespace-pre-wrap">
+              <div className="mt-3 p-3 rounded-xl bg-[#131314] border border-[#353436] text-xs text-zinc-300 leading-relaxed whitespace-pre-wrap">
                 {activeHotspot.article}
               </div>
             )}
@@ -258,7 +258,7 @@ export default function HotspotLayer({
                 href={activeHotspot.externalUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shadow-lg"
+                className="mt-4 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shadow-lg"
               >
                 <ExternalLink className="w-4 h-4" />
                 <span>Open Link</span>
@@ -266,9 +266,9 @@ export default function HotspotLayer({
             )}
 
             {activeHotspot.specs && activeHotspot.specs.length > 0 && (
-              <div className="mt-3 pt-3 border-t border-[#27272A] grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <div className="mt-3 pt-3 border-t border-[#353436] grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {activeHotspot.specs.map((s, idx) => (
-                  <div key={idx} className="p-2 rounded-xl bg-[#09090B] border border-[#27272A] space-y-0.5">
+                  <div key={idx} className="p-2 rounded-xl bg-[#131314] border border-[#353436] space-y-0.5">
                     <div className="text-[9px] text-[#71717A] uppercase">{s.label}</div>
                     <div className="text-[11px] font-bold text-white truncate">{s.value}</div>
                   </div>
@@ -286,7 +286,7 @@ export default function HotspotLayer({
                     activeHotspot.targetYaw
                   )
                 }
-                className="mt-4 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shadow-lg"
+                className="mt-4 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shadow-lg"
               >
                 <DoorOpen className="w-4 h-4" />
                 <span>Teleport to {activeHotspot.targetRoomName || 'Destination Room'}</span>
@@ -308,16 +308,16 @@ export default function HotspotLayer({
             className="absolute top-0 right-0 bottom-0 w-full sm:w-96 bg-[var(--glass-bg)] border-l border-[var(--glass-border)] z-40 p-5 flex flex-col justify-between font-mono shadow-2xl pointer-events-auto overflow-y-auto backdrop-blur-xl"
           >
             <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+              <div className="flex items-center justify-between border-b border-[#353436] pb-3">
                 <div className="flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-[#3ECF8E]" />
+                  <Layers className="w-4 h-4 text-[#dbfcff]" />
                   <h3 className="text-sm font-bold text-white uppercase tracking-wider">
                     Room Hotspots ({currentHotspots.length})
                   </h3>
                 </div>
                 <button
                   onClick={() => onSetHotspotDrawerOpen(false)}
-                  className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-[#18181B]"
+                  className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-[#201f20]"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -346,7 +346,7 @@ export default function HotspotLayer({
                     return (
                       <div
                         key={hp.id}
-                        className="p-3 rounded-xl bg-[#18181B] border border-[#27272A] hover:border-white/20 transition-all space-y-2 group"
+                        className="p-3 rounded-xl bg-[#201f20] border border-[#353436] hover:border-white/20 transition-all space-y-2 group"
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex items-center gap-2 min-w-0">
@@ -364,22 +364,22 @@ export default function HotspotLayer({
                           <div className="flex items-center gap-1 shrink-0">
                             <button
                               onClick={() => onFocusHotspot(hp)}
-                              className="p-1 rounded bg-[#09090B] hover:bg-[#27272A] text-zinc-300 hover:text-white text-[10px] flex items-center gap-1 cursor-pointer"
+                              className="p-1 rounded bg-[#131314] hover:bg-[#353436] text-zinc-300 hover:text-white text-[10px] flex items-center gap-1 cursor-pointer"
                               title="Look at this hotspot in 360 view"
                             >
-                              <Eye className="w-3 h-3 text-[#3ECF8E]" />
+                              <Eye className="w-3 h-3 text-[#dbfcff]" />
                               <span>Look</span>
                             </button>
                             <button
                               onClick={() => onEditHotspot(hp)}
-                              className="p-1 rounded bg-[#09090B] hover:bg-[#27272A] text-zinc-400 hover:text-white cursor-pointer"
+                              className="p-1 rounded bg-[#131314] hover:bg-[#353436] text-zinc-400 hover:text-white cursor-pointer"
                               title="Edit"
                             >
                               <Edit2 className="w-3 h-3" />
                             </button>
                             <button
                               onClick={() => onDeleteHotspot(hp.id)}
-                              className="p-1 rounded bg-[#09090B] hover:bg-rose-950 text-zinc-400 hover:text-rose-400 cursor-pointer"
+                              className="p-1 rounded bg-[#131314] hover:bg-rose-950 text-zinc-400 hover:text-rose-400 cursor-pointer"
                               title="Delete"
                             >
                               <Trash2 className="w-3 h-3" />
@@ -397,18 +397,18 @@ export default function HotspotLayer({
               </div>
             </div>
 
-            <div className="pt-4 border-t border-[#27272A] space-y-2">
+            <div className="pt-4 border-t border-[#353436] space-y-2">
               <button
                 onClick={onExportTour}
-                className="w-full py-1.5 rounded-xl bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-xs text-zinc-300 hover:text-white flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-full py-1.5 rounded-xl bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-xs text-zinc-300 hover:text-white flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <Copy className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                <Copy className="w-3.5 h-3.5 text-[#dbfcff]" />
                 <span>Export Tour Config JSON</span>
               </button>
 
               <button
                 onClick={onResetTour}
-                className="w-full py-1.5 rounded-xl bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-xs text-[#71717A] hover:text-white flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-full py-1.5 rounded-xl bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-xs text-[#71717A] hover:text-white flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Reset to Default Scene Hotspots</span>
@@ -433,7 +433,7 @@ export default function HotspotLayer({
               className="w-full max-w-xl rounded-3xl bg-[var(--glass-bg)] border border-[var(--glass-border)] shadow-2xl p-6 space-y-5 max-h-[90vh] overflow-y-auto backdrop-blur-xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+              <div className="flex items-center justify-between border-b border-[#353436] pb-3">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-xl bg-rose-600 text-white flex items-center justify-center">
                     <Sparkles className="w-4 h-4" />
@@ -450,7 +450,7 @@ export default function HotspotLayer({
 
                 <button
                   onClick={() => onSetConfigModalOpen(false)}
-                  className="p-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] text-[#71717A] hover:text-white"
+                  className="p-1.5 rounded-lg bg-[#201f20] hover:bg-[#353436] text-[#71717A] hover:text-white"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -467,11 +467,11 @@ export default function HotspotLayer({
                       onClick={() => onSetFormType('metadata')}
                       className={`p-3 rounded-2xl border flex items-center gap-2.5 transition-all cursor-pointer ${
                         formType === 'metadata'
-                          ? 'bg-[#18181B] border-[#3ECF8E] text-white font-bold'
-                          : 'bg-[#09090B] border-[#27272A] text-[#71717A] hover:text-white'
+                          ? 'bg-[#201f20] border-[#dbfcff] text-white font-bold'
+                          : 'bg-[#131314] border-[#353436] text-[#71717A] hover:text-white'
                       }`}
                     >
-                      <Info className="w-4 h-4 text-[#3ECF8E]" />
+                      <Info className="w-4 h-4 text-[#dbfcff]" />
                       <div className="text-left">
                         <div className="text-xs">Metadata & Specs</div>
                         <div className="text-[9px] text-[#71717A] font-normal">
@@ -485,8 +485,8 @@ export default function HotspotLayer({
                       onClick={() => onSetFormType('room_link')}
                       className={`p-3 rounded-2xl border flex items-center gap-2.5 transition-all cursor-pointer ${
                         formType === 'room_link'
-                          ? 'bg-[#18181B] border-rose-500 text-white font-bold'
-                          : 'bg-[#09090B] border-[#27272A] text-[#71717A] hover:text-white'
+                          ? 'bg-[#201f20] border-rose-500 text-white font-bold'
+                          : 'bg-[#131314] border-[#353436] text-[#71717A] hover:text-white'
                       }`}
                     >
                       <DoorOpen className="w-4 h-4 text-rose-400" />
@@ -514,7 +514,7 @@ export default function HotspotLayer({
                         ? 'e.g., Proceed to Cantilever Terrace'
                         : 'e.g., Bookmatched Calacatta Gold Marble'
                     }
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-white text-xs placeholder:text-[#71717A] focus:border-[#3ECF8E] outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-white text-xs placeholder:text-[#71717A] focus:border-[#dbfcff] outline-none"
                   />
                 </div>
 
@@ -528,7 +528,7 @@ export default function HotspotLayer({
                         <select
                           value={formCategory}
                           onChange={(e) => onSetFormCategory(e.target.value as HotspotCategory)}
-                          className="w-full px-3 py-2 rounded-xl bg-[#09090B] border border-[#27272A] text-white text-xs outline-none cursor-pointer"
+                          className="w-full px-3 py-2 rounded-xl bg-[#131314] border border-[#353436] text-white text-xs outline-none cursor-pointer"
                         >
                           <option value="material">Material (PBR Texture)</option>
                           <option value="furniture">Furniture & FF&E</option>
@@ -546,7 +546,7 @@ export default function HotspotLayer({
                         <select
                           value={formIcon}
                           onChange={(e) => onSetFormIcon(e.target.value)}
-                          className="w-full px-3 py-2 rounded-xl bg-[#09090B] border border-[#27272A] text-white text-xs outline-none cursor-pointer"
+                          className="w-full px-3 py-2 rounded-xl bg-[#131314] border border-[#353436] text-white text-xs outline-none cursor-pointer"
                         >
                           <option value="sparkles">Sparkles / Hero</option>
                           <option value="palette">Palette / Texture</option>
@@ -568,7 +568,7 @@ export default function HotspotLayer({
                         <button
                           type="button"
                           onClick={() => onSetFormSpecs([...formSpecs, { label: '', value: '' }])}
-                          className="text-[10px] text-[#3ECF8E] hover:underline flex items-center gap-1 cursor-pointer"
+                          className="text-[10px] text-[#dbfcff] hover:underline flex items-center gap-1 cursor-pointer"
                         >
                           <Plus className="w-3 h-3" />
                           <span>Add Spec Field</span>
@@ -587,7 +587,7 @@ export default function HotspotLayer({
                                 onSetFormSpecs(updated);
                               }}
                               placeholder="Spec Label (e.g. Origin)"
-                              className="w-1/3 px-2.5 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-white text-[11px] placeholder:text-[#71717A] outline-none"
+                              className="w-1/3 px-2.5 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-white text-[11px] placeholder:text-[#71717A] outline-none"
                             />
                             <input
                               type="text"
@@ -598,7 +598,7 @@ export default function HotspotLayer({
                                 onSetFormSpecs(updated);
                               }}
                               placeholder="Spec Value (e.g. Carrara, Italy)"
-                              className="flex-1 px-2.5 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-white text-[11px] placeholder:text-[#71717A] outline-none"
+                              className="flex-1 px-2.5 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-white text-[11px] placeholder:text-[#71717A] outline-none"
                             />
                             {formSpecs.length > 1 && (
                               <button
@@ -617,7 +617,7 @@ export default function HotspotLayer({
                 )}
 
                 {formType === 'room_link' && (
-                  <div className="space-y-3 p-3.5 rounded-2xl bg-[#09090B] border border-[#27272A]">
+                  <div className="space-y-3 p-3.5 rounded-2xl bg-[#131314] border border-[#353436]">
                     <div className="space-y-1.5">
                       <label className="text-[10px] text-[#71717A] uppercase font-bold tracking-wider">
                         Destination Room
@@ -625,7 +625,7 @@ export default function HotspotLayer({
                       <select
                         value={formTargetRoomId}
                         onChange={(e) => onSetFormTargetRoomId(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl bg-[#18181B] border border-[#27272A] text-white text-xs outline-none cursor-pointer"
+                        className="w-full px-3 py-2 rounded-xl bg-[#201f20] border border-[#353436] text-white text-xs outline-none cursor-pointer"
                       >
                         {rooms.map((room) => (
                           <option key={room.id} value={room.id}>
@@ -635,14 +635,14 @@ export default function HotspotLayer({
                       </select>
                     </div>
 
-                    <div className="pt-2 border-t border-[#27272A] space-y-1.5">
+                    <div className="pt-2 border-t border-[#353436] space-y-1.5">
                       <div className="text-[10px] text-[#71717A]">Or Link to Custom 360 Panorama URL:</div>
                       <input
                         type="url"
                         value={formCustomPanoramaUrl}
                         onChange={(e) => onSetFormCustomPanoramaUrl(e.target.value)}
                         placeholder="https://... (Equirectangular 360 JPG/PNG)"
-                        className="w-full px-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-white text-xs placeholder:text-[#71717A] outline-none"
+                        className="w-full px-3 py-1.5 rounded-lg bg-[#201f20] border border-[#353436] text-white text-xs placeholder:text-[#71717A] outline-none"
                       />
                     </div>
                   </div>
@@ -657,7 +657,7 @@ export default function HotspotLayer({
                     value={formDescription}
                     onChange={(e) => onSetFormDescription(e.target.value)}
                     placeholder="Provide architectural rationale, material finish notes, or navigation guidance..."
-                    className="w-full px-3.5 py-2 rounded-xl bg-[#09090B] border border-[#27272A] text-white text-xs placeholder:text-[#71717A] outline-none resize-none font-sans"
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#131314] border border-[#353436] text-white text-xs placeholder:text-[#71717A] outline-none resize-none font-sans"
                   />
                 </div>
 
@@ -681,11 +681,11 @@ export default function HotspotLayer({
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-[#27272A] flex items-center justify-end gap-2">
+                <div className="pt-4 border-t border-[#353436] flex items-center justify-end gap-2">
                   <button
                     type="button"
                     onClick={() => onSetConfigModalOpen(false)}
-                    className="px-4 py-2 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-zinc-300 hover:text-white cursor-pointer"
+                    className="px-4 py-2 rounded-xl bg-[#201f20] hover:bg-[#353436] text-zinc-300 hover:text-white cursor-pointer"
                   >
                     Cancel
                   </button>

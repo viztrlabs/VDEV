@@ -34,7 +34,7 @@ function ConstraintRow({
         min={min}
         max={max}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="flex-1 bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+        className="flex-1 bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
       />
       <button
         type="button"
@@ -63,7 +63,7 @@ export default function ViewConstraintsPanel({ value, onChange }: ViewConstraint
   };
 
   return (
-    <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-3 space-y-3">
+    <div className="rounded-xl border border-[#353436] bg-[#201f20] p-3 space-y-3">
       <CollapsibleCardHeader collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)}>
         <Eye className="w-3 h-3" />
         View Constraints
@@ -119,7 +119,7 @@ export default function ViewConstraintsPanel({ value, onChange }: ViewConstraint
             type="number"
             value={local.zoomMin}
             onChange={(e) => set({ zoomMin: Number(e.target.value) })}
-            className="flex-1 bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+            className="flex-1 bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
           />
           <span className="text-[#71717A] text-[10px]">–</span>
           <label className="w-12 text-[10px] font-mono text-[#A1A1AA] text-right">Max</label>
@@ -127,7 +127,7 @@ export default function ViewConstraintsPanel({ value, onChange }: ViewConstraint
             type="number"
             value={local.zoomMax}
             onChange={(e) => set({ zoomMax: Number(e.target.value) })}
-            className="flex-1 bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+            className="flex-1 bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -138,13 +138,13 @@ export default function ViewConstraintsPanel({ value, onChange }: ViewConstraint
             max={180}
             value={local.zoomMax}
             onChange={(e) => set({ zoomMin: Math.min(local.zoomMin, Number(e.target.value)), zoomMax: Number(e.target.value) })}
-            className="flex-1 accent-[#3ECF8E]"
+            className="flex-1 accent-[#dbfcff]"
           />
         </div>
       </div>
 
-      <div className="flex items-center justify-between p-2 rounded bg-[#09090B] border border-[#27272A]">
-        <div className="flex items-center gap-1.5 text-[10px] font-mono text-[#FAFAFA]">
+      <div className="flex items-center justify-between p-2 rounded bg-[#131314] border border-[#353436]">
+        <div className="flex items-center gap-1.5 text-[10px] font-mono text-[#e5e2e3]">
           <Smartphone className="w-3 h-3 text-[#71717A]" />
           Mobile zoom limit
         </div>
@@ -152,7 +152,7 @@ export default function ViewConstraintsPanel({ value, onChange }: ViewConstraint
           type="button"
           onClick={() => set({ mobileZoomEnabled: !local.mobileZoomEnabled })}
           className={`w-9 h-5 rounded-full relative transition-colors ${
-            local.mobileZoomEnabled ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+            local.mobileZoomEnabled ? 'bg-[#dbfcff]' : 'bg-[#353436]'
           }`}
         >
           <span
@@ -166,7 +166,7 @@ export default function ViewConstraintsPanel({ value, onChange }: ViewConstraint
       <button
         type="button"
         onClick={() => onChange(local)}
-        className="w-full flex items-center justify-center gap-1.5 px-2 py-1.5 rounded bg-[#3ECF8E] hover:bg-[#34b876] text-black text-[10px] font-mono font-bold"
+        className="w-full flex items-center justify-center gap-1.5 px-2 py-1.5 rounded bg-[#dbfcff] hover:bg-[#34b876] text-black text-[10px] font-mono font-bold"
       >
         <Save className="w-3.5 h-3.5" />
         Save All

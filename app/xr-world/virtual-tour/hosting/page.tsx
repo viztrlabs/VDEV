@@ -36,9 +36,9 @@ export default function StaticHostingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#09090B] text-white p-4 sm:p-6">
+    <div className="min-h-screen bg-[#131314] text-white p-4 sm:p-6">
       <div className="max-w-3xl mx-auto space-y-4">
-        <h1 className="text-xl font-mono font-bold text-[#3ECF8E] flex items-center gap-2">
+        <h1 className="text-xl font-mono font-bold text-[#dbfcff] flex items-center gap-2">
           <Server className="w-5 h-5" />
           Static Hosting
         </h1>
@@ -46,13 +46,13 @@ export default function StaticHostingPage() {
           Host your 360° virtual tours 100× cheaper than SaaS providers by connecting your own S3 bucket.
         </p>
 
-        <div className="flex items-center gap-1 p-1 rounded-lg bg-[#0c0c0f] border border-[#27272A]">
+        <div className="flex items-center gap-1 p-1 rounded-lg bg-[#201f20] border border-[#353436]">
           <TabBtn id="self" active={tab} setActive={setTab} icon={<Server className="w-3 h-3" />}>Self-hosted</TabBtn>
           <TabBtn id="cloud" active={tab} setActive={setTab} icon={<Cloud className="w-3 h-3" />}>Panoee Cloud</TabBtn>
         </div>
 
         {tab === 'self' && (
-          <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-4 space-y-3">
+          <div className="rounded-xl border border-[#353436] bg-[#201f20] p-4 space-y-3">
             <div className="text-[10px] font-mono text-[#71717A]">
               Your key is stored locally on your browser and never sent anywhere else.
             </div>
@@ -60,7 +60,7 @@ export default function StaticHostingPage() {
               href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html"
               target="_blank"
               rel="noopener noreferrer"
-              className="block text-[10px] font-mono text-[#3ECF8E] hover:underline"
+              className="block text-[10px] font-mono text-[#dbfcff] hover:underline"
             >
               Learn how to get your S3 Credential in 3 minutes →
             </a>
@@ -71,7 +71,7 @@ export default function StaticHostingPage() {
               <select
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
-                className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-white"
+                className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-white"
               >
                 <option value="ap-southeast-1">Asia Pacific (Singapore)</option>
                 <option value="us-west-2">US West (Oregon)</option>
@@ -89,7 +89,7 @@ export default function StaticHostingPage() {
                 value={awsKey}
                 onChange={(e) => setAwsKey(e.target.value)}
                 placeholder="AKIA..."
-                className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-white"
+                className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-white"
               />
             </div>
             <div>
@@ -102,12 +102,12 @@ export default function StaticHostingPage() {
                   value={secretKey}
                   onChange={(e) => setSecretKey(e.target.value)}
                   placeholder="••••••••"
-                  className="flex-1 bg-[#09090B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-white"
+                  className="flex-1 bg-[#131314] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-white"
                 />
                 <button
                   type="button"
                   onClick={() => setShowSecret((v) => !v)}
-                  className="p-1.5 rounded bg-[#27272A] hover:bg-[#3f3f46] text-white"
+                  className="p-1.5 rounded bg-[#353436] hover:bg-[#3f3f46] text-white"
                 >
                   {showSecret ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                 </button>
@@ -121,7 +121,7 @@ export default function StaticHostingPage() {
                 value={bucket}
                 onChange={(e) => setBucket(e.target.value)}
                 placeholder="my-virtual-tours"
-                className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-white"
+                className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-white"
               />
               <p className="text-[9px] font-mono text-[#71717A] mt-0.5">
                 Enter the name of your existing S3 bucket. The bucket must be created by you in your AWS account.
@@ -129,7 +129,7 @@ export default function StaticHostingPage() {
             </div>
             <div className="flex items-center gap-2 pt-2">
               {saved && (
-                <span className="flex items-center gap-1 text-[10px] font-mono text-[#3ECF8E]">
+                <span className="flex items-center gap-1 text-[10px] font-mono text-[#dbfcff]">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   Saved
                 </span>
@@ -137,7 +137,7 @@ export default function StaticHostingPage() {
               <button
                 type="button"
                 onClick={save}
-                className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
+                className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#dbfcff] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
               >
                 <Save className="w-3.5 h-3.5" />
                 Save Credentials
@@ -147,32 +147,32 @@ export default function StaticHostingPage() {
         )}
 
         {tab === 'cloud' && (
-          <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-4 space-y-3">
+          <div className="rounded-xl border border-[#353436] bg-[#201f20] p-4 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm font-mono">Current plan</span>
-              <span className="px-2 py-0.5 rounded bg-[#3ECF8E]/15 text-[#3ECF8E] text-[10px] font-mono">Free</span>
+              <span className="px-2 py-0.5 rounded bg-[#dbfcff]/15 text-[#dbfcff] text-[10px] font-mono">Free</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-mono">Storage used</span>
               <span className="text-sm font-mono">0.02 GB / 5 GB</span>
             </div>
-            <div className="w-full h-2 rounded bg-[#27272A] overflow-hidden">
-              <div className="h-full bg-[#3ECF8E]" style={{ width: '0.4%' }} />
+            <div className="w-full h-2 rounded bg-[#353436] overflow-hidden">
+              <div className="h-full bg-[#dbfcff]" style={{ width: '0.4%' }} />
             </div>
-            <button className="w-full px-3 py-1.5 rounded bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-mono font-bold">
+            <button className="w-full px-3 py-1.5 rounded bg-[#dbfcff] hover:bg-[#34b876] text-black text-xs font-mono font-bold">
               Buy more Storage
             </button>
           </div>
         )}
 
         {/* Cost comparison */}
-        <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-4 space-y-2">
+        <div className="rounded-xl border border-[#353436] bg-[#201f20] p-4 space-y-2">
           <div className="text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA]">
             Cost comparison (per GB / per month at 32 GB)
           </div>
           <table className="w-full text-[10px] font-mono">
             <thead>
-              <tr className="text-[#71717A] border-b border-[#27272A]">
+              <tr className="text-[#71717A] border-b border-[#353436]">
                 <th className="text-left p-1.5">Provider</th>
                 <th className="text-right p-1.5">$/GB</th>
                 <th className="text-right p-1.5">Monthly</th>
@@ -182,8 +182,8 @@ export default function StaticHostingPage() {
               {PRICING.map((p) => (
                 <tr
                   key={p.name}
-                  className={`border-b border-[#18181B] last:border-0 ${
-                    p.highlight ? 'bg-[#3ECF8E]/5 text-[#3ECF8E]' : 'text-white'
+                  className={`border-b border-[#201f20] last:border-0 ${
+                    p.highlight ? 'bg-[#dbfcff]/5 text-[#dbfcff]' : 'text-white'
                   }`}
                 >
                   <td className="p-1.5">{p.name}</td>
@@ -196,7 +196,7 @@ export default function StaticHostingPage() {
         </div>
 
         {/* 3 simple steps */}
-        <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-4 space-y-2">
+        <div className="rounded-xl border border-[#353436] bg-[#201f20] p-4 space-y-2">
           <div className="text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA]">
             3 simple steps
           </div>
@@ -205,8 +205,8 @@ export default function StaticHostingPage() {
             { n: 2, title: 'Connect your AWS Storage', body: 'Using credentials (access key & secret key).' },
             { n: 3, title: 'Upload your 360 Virtual Tours', body: 'Start creating & uploading tours.' },
           ].map((s) => (
-            <div key={s.n} className="flex items-start gap-2 p-2 rounded bg-[#09090B] border border-[#27272A]">
-              <div className="w-6 h-6 rounded-full bg-[#3ECF8E]/15 text-[#3ECF8E] flex items-center justify-center text-xs font-mono font-bold shrink-0">
+            <div key={s.n} className="flex items-start gap-2 p-2 rounded bg-[#131314] border border-[#353436]">
+              <div className="w-6 h-6 rounded-full bg-[#dbfcff]/15 text-[#dbfcff] flex items-center justify-center text-xs font-mono font-bold shrink-0">
                 {s.n}
               </div>
               <div>
@@ -230,7 +230,7 @@ function TabBtn({ id, active, setActive, icon, children }: { id: 'self' | 'cloud
       onClick={() => setActive(id)}
       className={`flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded text-xs font-mono ${
         active === id
-          ? 'bg-[#3ECF8E]/15 text-[#3ECF8E] border border-[#3ECF8E]/30'
+          ? 'bg-[#dbfcff]/15 text-[#dbfcff] border border-[#dbfcff]/30'
           : 'text-[#71717A] hover:text-white border border-transparent'
       }`}
     >

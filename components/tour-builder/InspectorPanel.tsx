@@ -38,7 +38,7 @@ export function InspectorPanel({ roomId }: InspectorPanelProps) {
   if (room) {
     return (
       <div className="h-full overflow-y-auto">
-        <div className="flex items-center justify-between px-3 py-2 border-b border-[#27272A]">
+        <div className="flex items-center justify-between px-3 py-2 border-b border-[#353436]">
           <span className="text-xs font-mono font-bold text-white">ROOM</span>
           <div className="flex items-center gap-1">
             <button
@@ -71,7 +71,7 @@ export function InspectorPanel({ roomId }: InspectorPanelProps) {
             <select
               value={room.type}
               onChange={(e) => updateScene(room.id, { type: e.target.value as any })}
-              className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-white"
+              className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-white"
             >
               <option value="360">360 Panorama</option>
               <option value="3d">3D Scene</option>
@@ -134,7 +134,7 @@ export function InspectorPanel({ roomId }: InspectorPanelProps) {
               const v = getViewportView();
               updateScene(room.id, { initialYaw: v.yaw, initialPitch: v.pitch, initialFov: v.fov });
             }}
-            className="w-full px-2 py-1.5 rounded bg-[#27272A] text-[10px] font-mono text-[#A1A1AA] hover:bg-[#3F3F46] cursor-pointer"
+            className="w-full px-2 py-1.5 rounded bg-[#353436] text-[10px] font-mono text-[#A1A1AA] hover:bg-[#3F3F46] cursor-pointer"
           >
             Reset to Current View
           </button>
@@ -179,7 +179,7 @@ export function InspectorPanel({ roomId }: InspectorPanelProps) {
                 updateScene(room.id, { autorotateEnabled: !room.autorotateEnabled })
               }
               className={`w-8 h-4 rounded-full transition-colors ${
-                room.autorotateEnabled ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+                room.autorotateEnabled ? 'bg-[#dbfcff]' : 'bg-[#353436]'
               }`}
             >
               <div
@@ -223,7 +223,7 @@ export function InspectorPanel({ roomId }: InspectorPanelProps) {
 
   return (
     <div className="h-full overflow-y-auto">
-      <div className="px-3 py-2 border-b border-[#27272A]">
+      <div className="px-3 py-2 border-b border-[#353436]">
         <span className="text-xs font-mono font-bold text-white">TOUR SETTINGS</span>
       </div>
       <Section title="General" icon={Settings}>
@@ -234,7 +234,7 @@ export function InspectorPanel({ roomId }: InspectorPanelProps) {
           <textarea
             value={tourSettings.description}
             onChange={(e) => updateTourSettings({ description: e.target.value })}
-            className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1.5 text-xs text-white placeholder:text-[#71717A] min-h-[60px]"
+            className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1.5 text-xs text-white placeholder:text-[#71717A] min-h-[60px]"
           />
         </Field>
         <Field label="Default FOV">

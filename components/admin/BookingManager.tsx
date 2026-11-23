@@ -266,9 +266,9 @@ export default function BookingManager() {
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
             <Calendar className="w-4 h-4" />
             <span>MEETINGS & BOOKINGS</span>
           </div>
@@ -282,7 +282,7 @@ export default function BookingManager() {
         <button
           type="button"
           onClick={() => setShowCreateModal(true)}
-          className="px-4 py-2.5 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center gap-2 transition-all shadow-lg shadow-[#3ECF8E]/20 cursor-pointer shrink-0"
+          className="px-4 py-2.5 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-semibold text-xs flex items-center gap-2 transition-all shadow-lg shadow-[#dbfcff]/20 cursor-pointer shrink-0"
         >
           <Plus className="w-4 h-4" />
           <span>New Booking</span>
@@ -299,7 +299,7 @@ export default function BookingManager() {
           { label: 'Completed', value: stats.by_status.completed || 0, color: 'text-sky-400' },
           { label: 'Cancelled', value: stats.by_status.cancelled || 0, color: 'text-zinc-400' },
         ].map((stat) => (
-          <div key={stat.label} className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-1">
+          <div key={stat.label} className="p-4 rounded-xl bg-[#201f20] border border-[#353436] space-y-1">
             <div className="text-[10px] font-mono uppercase text-[#71717A] font-bold">{stat.label}</div>
             <div className={`text-xl font-bold font-mono ${stat.color}`}>{stat.value}</div>
           </div>
@@ -307,7 +307,7 @@ export default function BookingManager() {
       </div>
 
       {/* Filters */}
-      <div className="p-4 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3">
+      <div className="p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3">
         <div className="flex flex-col lg:flex-row lg:items-center gap-3">
           <div className="relative flex-1">
             <Search className="w-3.5 h-3.5 text-[#71717A] absolute left-3 top-1/2 -translate-y-1/2" />
@@ -317,14 +317,14 @@ export default function BookingManager() {
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && applyFilters()}
               placeholder="Search by client name, email, company..."
-              className="w-full pl-8 pr-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+              className="w-full pl-8 pr-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
             />
           </div>
           <div className="flex items-center gap-2">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as BookingStatus | 'all')}
-              className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+              className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white focus:outline-none focus:border-[#dbfcff]"
             >
               <option value="all">All Statuses</option>
               {BOOKING_STATUSES.map((s) => (
@@ -334,7 +334,7 @@ export default function BookingManager() {
             <select
               value={serviceTypeFilter}
               onChange={(e) => setServiceTypeFilter(e.target.value as BookingServiceType | 'all')}
-              className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+              className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white focus:outline-none focus:border-[#dbfcff]"
             >
               <option value="all">All Services</option>
               {BOOKING_SERVICE_TYPES.map((t) => (
@@ -345,20 +345,20 @@ export default function BookingManager() {
               type="date"
               value={dateFrom}
               onChange={(e) => setDateFrom(e.target.value)}
-              className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+              className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white focus:outline-none focus:border-[#dbfcff]"
               placeholder="From"
             />
             <input
               type="date"
               value={dateTo}
               onChange={(e) => setDateTo(e.target.value)}
-              className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+              className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white focus:outline-none focus:border-[#dbfcff]"
               placeholder="To"
             />
             <button
               type="button"
               onClick={applyFilters}
-              className="px-3 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Filter className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Apply</span>
@@ -366,7 +366,7 @@ export default function BookingManager() {
             <button
               type="button"
               onClick={handleResetFilters}
-              className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] hover:text-white text-xs font-mono transition-colors cursor-pointer"
+              className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] hover:text-white text-xs font-mono transition-colors cursor-pointer"
             >
               Reset
             </button>
@@ -391,12 +391,12 @@ export default function BookingManager() {
           {bookingsLoading && bookings.length === 0 ? (
             <div className="flex items-center justify-center min-h-[300px]">
               <div className="text-center space-y-3">
-                <div className="w-10 h-10 border-4 border-[#3ECF8E]/30 border-t-[#3ECF8E] rounded-full animate-spin mx-auto" />
+                <div className="w-10 h-10 border-4 border-[#dbfcff]/30 border-t-[#dbfcff] rounded-full animate-spin mx-auto" />
                 <p className="text-xs font-mono text-[#71717A]">Loading bookings...</p>
               </div>
             </div>
           ) : sortedBookings.length === 0 ? (
-            <div className="p-8 rounded-2xl bg-[#18181B] border border-[#27272A] text-center">
+            <div className="p-8 rounded-2xl bg-[#201f20] border border-[#353436] text-center">
               <Calendar className="w-8 h-8 text-[#71717A] mx-auto mb-2" />
               <h4 className="text-sm font-bold text-white">No bookings found</h4>
               <p className="text-xs text-[#A1A1AA] mt-1">Try adjusting your filters or create a new booking.</p>
@@ -412,13 +412,13 @@ export default function BookingManager() {
                     onClick={() => handleSelectBooking(booking)}
                     className={`p-4 rounded-xl border transition-all cursor-pointer space-y-2.5 ${
                       isSelected
-                        ? 'bg-[#27272A] border-[#3ECF8E] shadow-md shadow-[#3ECF8E]/10'
-                        : 'bg-[#18181B] border-[#27272A] hover:border-[#3f3f46]'
+                        ? 'bg-[#353436] border-[#dbfcff] shadow-md shadow-[#dbfcff]/10'
+                        : 'bg-[#201f20] border-[#353436] hover:border-[#3f3f46]'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-mono text-[#3ECF8E] font-bold">
+                        <span className="text-[10px] font-mono text-[#dbfcff] font-bold">
                           {booking.id}
                         </span>
                         <span
@@ -438,7 +438,7 @@ export default function BookingManager() {
                       <div className="text-[10px] font-mono text-[#71717A] mt-0.5">{booking.client_email}</div>
                     </div>
 
-                    <div className="pt-2 border-t border-[#27272A] flex items-center justify-between text-[10px] font-mono text-[#71717A]">
+                    <div className="pt-2 border-t border-[#353436] flex items-center justify-between text-[10px] font-mono text-[#71717A]">
                       <span className="flex items-center gap-1">
                         <Globe className="w-3 h-3" />
                         {booking.service_type}
@@ -458,11 +458,11 @@ export default function BookingManager() {
         {/* Detail Panel */}
         {selectedBooking && (
           <div className="lg:col-span-2">
-            <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#27272A]">
+            <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#353436]">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono font-bold text-[#3ECF8E]">
+                    <span className="text-xs font-mono font-bold text-[#dbfcff]">
                       {selectedBooking.id}
                     </span>
                     <span className="text-[10px] font-mono text-[#71717A]">
@@ -501,14 +501,14 @@ export default function BookingManager() {
                   <button
                     type="button"
                     onClick={() => setEditingBooking(selectedBooking)}
-                    className="px-3 py-2 rounded-xl bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-white text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="px-3 py-2 rounded-xl bg-[#131314] hover:bg-[#353436] border border-[#353436] text-white text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     Edit
                   </button>
                   <button
                     type="button"
                     onClick={() => handleDelete(selectedBooking.id)}
-                    className="p-2 rounded-lg bg-[#09090B] hover:bg-rose-950/40 border border-[#27272A] text-[#A1A1AA] hover:text-rose-400 transition-colors cursor-pointer"
+                    className="p-2 rounded-lg bg-[#131314] hover:bg-rose-950/40 border border-[#353436] text-[#A1A1AA] hover:text-rose-400 transition-colors cursor-pointer"
                     title="Delete booking"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -516,7 +516,7 @@ export default function BookingManager() {
                   <button
                     type="button"
                     onClick={() => setSelectedBooking(null)}
-                    className="p-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                    className="p-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -526,23 +526,23 @@ export default function BookingManager() {
               {/* Booking Details */}
               <div className="space-y-4 text-xs">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
+                  <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-2">
                     <div className="text-[10px] font-mono uppercase text-[#71717A] font-bold">Service Type</div>
                     <div className="text-white font-medium flex items-center gap-2">
-                      <Globe className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                      <Globe className="w-3.5 h-3.5 text-[#dbfcff]" />
                       {selectedBooking.service_type}
                     </div>
                   </div>
-                  <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
+                  <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-2">
                     <div className="text-[10px] font-mono uppercase text-[#71717A] font-bold">Status</div>
                     <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-mono font-bold uppercase border ${STATUS_STYLES[selectedBooking.status].bg} ${STATUS_STYLES[selectedBooking.status].text} ${STATUS_STYLES[selectedBooking.status].border}`}>
                       {selectedBooking.status.replace('_', ' ')}
                     </div>
                   </div>
-                  <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
+                  <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-2">
                     <div className="text-[10px] font-mono uppercase text-[#71717A] font-bold">Preferred Date & Time</div>
                     <div className="text-white font-medium flex items-center gap-2">
-                      <Clock3 className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                      <Clock3 className="w-3.5 h-3.5 text-[#dbfcff]" />
                       {selectedBooking.preferred_date} at {selectedBooking.preferred_time}
                     </div>
                     <div className="text-[11px] text-[#A1A1AA] flex items-center gap-1">
@@ -550,10 +550,10 @@ export default function BookingManager() {
                       {selectedBooking.timezone}
                     </div>
                   </div>
-                  <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
+                  <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-2">
                     <div className="text-[10px] font-mono uppercase text-[#71717A] font-bold">Contact</div>
                     <div className="text-white font-medium flex items-center gap-2">
-                      <Mail className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                      <Mail className="w-3.5 h-3.5 text-[#dbfcff]" />
                       {selectedBooking.client_email}
                     </div>
                     {selectedBooking.client_phone && (
@@ -572,24 +572,24 @@ export default function BookingManager() {
                 </div>
 
                 {selectedBooking.project_description && (
-                  <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
+                  <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-2">
                     <div className="text-[10px] font-mono uppercase text-[#71717A] font-bold">Project Description</div>
                     <div className="text-white text-xs leading-relaxed">{selectedBooking.project_description}</div>
                   </div>
                 )}
 
                 {selectedBooking.message && (
-                  <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
+                  <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-2">
                     <div className="text-[10px] font-mono uppercase text-[#71717A] font-bold">Client Message</div>
                     <div className="text-white text-xs leading-relaxed flex items-start gap-2">
-                      <MessageSquare className="w-3.5 h-3.5 text-[#3ECF8E] mt-0.5 shrink-0" />
+                      <MessageSquare className="w-3.5 h-3.5 text-[#dbfcff] mt-0.5 shrink-0" />
                       {selectedBooking.message}
                     </div>
                   </div>
                 )}
 
                 {selectedBooking.admin_notes && (
-                  <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-2">
+                  <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-2">
                     <div className="text-[10px] font-mono uppercase text-[#71717A] font-bold">Admin Notes</div>
                     <div className="text-white text-xs leading-relaxed">{selectedBooking.admin_notes}</div>
                   </div>
@@ -602,7 +602,7 @@ export default function BookingManager() {
                   </div>
                 )}
 
-                <div className="pt-3 border-t border-[#27272A] flex items-center justify-between text-[10px] font-mono text-[#71717A]">
+                <div className="pt-3 border-t border-[#353436] flex items-center justify-between text-[10px] font-mono text-[#71717A]">
                   <span>Updated: {formatDateTime(selectedBooking.updated_at)}</span>
                   <span>ID: {selectedBooking.id}</span>
                 </div>
@@ -634,7 +634,7 @@ export default function BookingManager() {
       {/* Reject Booking Modal */}
       {rejectingBooking && (
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-          <div className="bg-[#18181B] border border-[#27272A] rounded-2xl p-6 w-full max-w-md space-y-4">
+          <div className="bg-[#201f20] border border-[#353436] rounded-2xl p-6 w-full max-w-md space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-bold text-white font-display">Reject Booking</h3>
               <button onClick={() => setRejectingBooking(null)} className="text-[#A1A1AA] hover:text-white cursor-pointer">
@@ -651,7 +651,7 @@ export default function BookingManager() {
                 onChange={(e) => setRejectionReason(e.target.value)}
                 placeholder="Please provide a reason for rejecting this booking..."
                 rows={4}
-                className="w-full px-3 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] resize-none"
+                className="w-full px-3 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] resize-none"
               />
             </div>
             <div className="space-y-2">
@@ -661,7 +661,7 @@ export default function BookingManager() {
                 onChange={(e) => setAdminNotes(e.target.value)}
                 placeholder="Internal notes..."
                 rows={2}
-                className="w-full px-3 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] resize-none"
+                className="w-full px-3 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] resize-none"
               />
             </div>
             <div className="flex items-center gap-2 pt-2">
@@ -676,7 +676,7 @@ export default function BookingManager() {
               <button
                 type="button"
                 onClick={() => { setRejectingBooking(null); setRejectionReason(''); setAdminNotes(''); }}
-                className="px-4 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-[#A1A1AA] hover:text-white text-xs font-mono transition-colors cursor-pointer"
+                className="px-4 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-[#A1A1AA] hover:text-white text-xs font-mono transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -746,7 +746,7 @@ function BookingFormModal({ title, initialData, onSubmit, onClose }: BookingForm
 
   return (
     <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-      <div className="bg-[#18181B] border border-[#27272A] rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto space-y-5">
+      <div className="bg-[#201f20] border border-[#353436] rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto space-y-5">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold text-white font-display">{title}</h3>
           <button onClick={onClose} className="text-[#A1A1AA] hover:text-white cursor-pointer">
@@ -761,7 +761,7 @@ function BookingFormModal({ title, initialData, onSubmit, onClose }: BookingForm
               <select
                 value={serviceType}
                 onChange={(e) => setServiceType(e.target.value as BookingServiceType)}
-                className="w-full px-3 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-white focus:outline-none focus:border-[#3ECF8E]"
+                className="w-full px-3 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-white focus:outline-none focus:border-[#dbfcff]"
               >
                 {BOOKING_SERVICE_TYPES.map((t) => (
                   <option key={t} value={t}>{t}</option>
@@ -773,7 +773,7 @@ function BookingFormModal({ title, initialData, onSubmit, onClose }: BookingForm
               <select
                 value={timezone}
                 onChange={(e) => setTimezone(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-white focus:outline-none focus:border-[#3ECF8E]"
+                className="w-full px-3 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-white focus:outline-none focus:border-[#dbfcff]"
               >
                 {TIMEZONE_OPTIONS.map((tz) => (
                   <option key={tz} value={tz}>{tz}</option>
@@ -789,7 +789,7 @@ function BookingFormModal({ title, initialData, onSubmit, onClose }: BookingForm
               value={clientName}
               onChange={(e) => setClientName(e.target.value)}
               required
-              className="w-full px-3 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+              className="w-full px-3 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
               placeholder="Full name"
             />
           </div>
@@ -801,7 +801,7 @@ function BookingFormModal({ title, initialData, onSubmit, onClose }: BookingForm
               value={clientEmail}
               onChange={(e) => setClientEmail(e.target.value)}
               required
-              className="w-full px-3 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+              className="w-full px-3 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
               placeholder="client@example.com"
             />
           </div>
@@ -813,7 +813,7 @@ function BookingFormModal({ title, initialData, onSubmit, onClose }: BookingForm
                 type="tel"
                 value={clientPhone}
                 onChange={(e) => setClientPhone(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                className="w-full px-3 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
                 placeholder="+1 555 0123"
               />
             </div>
@@ -823,7 +823,7 @@ function BookingFormModal({ title, initialData, onSubmit, onClose }: BookingForm
                 type="text"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                className="w-full px-3 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
                 placeholder="Acme Inc."
               />
             </div>
@@ -837,7 +837,7 @@ function BookingFormModal({ title, initialData, onSubmit, onClose }: BookingForm
                 value={preferredDate}
                 onChange={(e) => setPreferredDate(e.target.value)}
                 required
-                className="w-full px-3 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-white focus:outline-none focus:border-[#3ECF8E]"
+                className="w-full px-3 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-white focus:outline-none focus:border-[#dbfcff]"
               />
             </div>
             <div className="space-y-1.5">
@@ -847,7 +847,7 @@ function BookingFormModal({ title, initialData, onSubmit, onClose }: BookingForm
                 value={preferredTime}
                 onChange={(e) => setPreferredTime(e.target.value)}
                 required
-                className="w-full px-3 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-white focus:outline-none focus:border-[#3ECF8E]"
+                className="w-full px-3 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-white focus:outline-none focus:border-[#dbfcff]"
               />
             </div>
           </div>
@@ -858,7 +858,7 @@ function BookingFormModal({ title, initialData, onSubmit, onClose }: BookingForm
               value={projectDescription}
               onChange={(e) => setProjectDescription(e.target.value)}
               rows={3}
-              className="w-full px-3 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] resize-none"
+              className="w-full px-3 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] resize-none"
               placeholder="Brief description of the project..."
             />
           </div>
@@ -869,7 +869,7 @@ function BookingFormModal({ title, initialData, onSubmit, onClose }: BookingForm
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={2}
-              className="w-full px-3 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] resize-none"
+              className="w-full px-3 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] resize-none"
               placeholder="Additional message from client..."
             />
           </div>
@@ -878,14 +878,14 @@ function BookingFormModal({ title, initialData, onSubmit, onClose }: BookingForm
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 px-4 py-2.5 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] disabled:opacity-40 text-black font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              className="flex-1 px-4 py-2.5 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] disabled:opacity-40 text-black font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
             >
               {saving ? 'Saving...' : initialData ? 'Update Booking' : 'Create Booking'}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-[#A1A1AA] hover:text-white text-xs font-mono transition-colors cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-[#A1A1AA] hover:text-white text-xs font-mono transition-colors cursor-pointer"
             >
               Cancel
             </button>

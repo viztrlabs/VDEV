@@ -57,13 +57,13 @@ export default function TestimonialsSection() {
 
   return (
     <section id="testimonials-section"className="py-16 px-4 sm:px-6 max-w-[1400px] mx-auto">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-[#1E293B]">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-[#3b494b]">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#42CF8B] animate-pulse"/>
-            <CmsText fieldId="eyebrow" value={eyebrow} className="text-[11px] font-bold uppercase tracking-widest text-[#42CF8B]"/>
+            <span className="w-2 h-2 rounded-full bg-[#54de99] animate-pulse"/>
+            <CmsText fieldId="eyebrow" value={eyebrow} className="text-[11px] font-bold uppercase tracking-widest text-[#54de99]"/>
           </div>
-          <CmsText fieldId="heading" value={heading} as="h2" className="text-2xl sm:text-3xl font-display font-extrabold tracking-tight text-[#FAFAFA]"/>
+          <CmsText fieldId="heading" value={heading} as="h2" className="text-2xl sm:text-3xl font-display font-extrabold tracking-tight text-[#e5e2e3]"/>
         </div>
         <CmsText fieldId="description" value={description} as="p" rich className="text-xs sm:text-sm text-[#B9CACB] max-w-md"/>
       </div>
@@ -73,7 +73,7 @@ export default function TestimonialsSection() {
         {testimonials.map((t) => (
           <div
             key={t.id}
-            className="p-6 rounded-[2rem] bg-[#131314] border border-[#1E293B] hover:border-[#00F0FF]/40 transition-all duration-300 flex flex-col justify-between group shadow-sm"
+            className="p-6 rounded-[2rem] bg-[#131314] border border-[#3b494b] hover:border-[#00F0FF]/40 transition-all duration-300 flex flex-col justify-between group shadow-sm"
           >
             <div className="space-y-3">
               <div className="flex items-center gap-1 text-[#00F0FF]">
@@ -81,13 +81,13 @@ export default function TestimonialsSection() {
                   <Star key={i} className="w-4 h-4 fill-[#00F0FF]"/>
                 ))}
               </div>
-              <p className="text-sm text-[#FAFAFA] leading-relaxed italic">
+              <p className="text-sm text-[#e5e2e3] leading-relaxed italic">
                 &ldquo;<CmsText fieldId="quote" listFieldId="testimonials" itemId={t.id} value={t.quote} rich/>&rdquo;
               </p>
             </div>
 
-            <div className="pt-5 mt-5 border-t border-[#1E293B]">
-              <CmsText fieldId="clientName" listFieldId="testimonials" itemId={t.id} value={t.clientName} as="h4" className="text-sm font-display font-bold text-[#FAFAFA]"/>
+            <div className="pt-5 mt-5 border-t border-[#3b494b]">
+              <CmsText fieldId="clientName" listFieldId="testimonials" itemId={t.id} value={t.clientName} as="h4" className="text-sm font-display font-bold text-[#e5e2e3]"/>
               <CmsText fieldId="role" listFieldId="testimonials" itemId={t.id} value={t.role} as="p" className="text-xs text-[#B9CACB] mt-0.5"/>
             </div>
           </div>
@@ -95,7 +95,7 @@ export default function TestimonialsSection() {
       </div>
 
       {/* STATS ROW */}
-      <div className="p-8 rounded-[2rem] bg-[#131314] text-white border border-[#1E293B] grid grid-cols-2 md:grid-cols-4 gap-6 text-center shadow-xl">
+      <div className="p-8 rounded-[2rem] bg-[#131314] text-white border border-[#3b494b] grid grid-cols-2 md:grid-cols-4 gap-6 text-center shadow-xl">
         {stats.map((s) => (
           <div key={s.id} className="space-y-1">
             <CmsText fieldId="value" listFieldId="stats" itemId={s.id} value={s.value} as="div" className="text-3xl sm:text-4xl font-extrabold font-display text-[#00F0FF]"/>

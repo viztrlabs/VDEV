@@ -14,7 +14,7 @@ interface ShareControlProps {
 }
 
 const BTN_CLASS =
-  'p-2 rounded-lg bg-[#18181B]/70 border border-[#27272A] text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-all cursor-pointer';
+  'p-2 rounded-lg bg-[#201f20]/70 border border-[#353436] text-[#A1A1AA] hover:text-white hover:bg-white/5 transition-all cursor-pointer';
 
 export function ShareControl({ tourId, tourName }: ShareControlProps) {
   const [open, setOpen] = useState(false);
@@ -58,13 +58,13 @@ export function ShareControl({ tourId, tourName }: ShareControlProps) {
       {open && (
         <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/60" onClick={() => setOpen(false)}>
           <div
-            className="bg-[#09090B] border border-[#27272A] rounded-lg p-4 flex flex-col gap-3 min-w-[240px]"
+            className="bg-[#131314] border border-[#353436] rounded-lg p-4 flex flex-col gap-3 min-w-[240px]"
             role="dialog"
             aria-label={`Share ${tourName || 'tour'}`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
-              <div className="text-xs font-mono text-[#3ECF8E]">Share tour</div>
+              <div className="text-xs font-mono text-[#dbfcff]">Share tour</div>
               <button onClick={() => setOpen(false)} className="text-[#71717A] hover:text-white cursor-pointer" aria-label="Close share dialog">
                 <X className="w-4 h-4" />
               </button>
@@ -79,9 +79,9 @@ export function ShareControl({ tourId, tourName }: ShareControlProps) {
             <div className="text-[10px] font-mono text-[#A1A1AA] break-all">{shareUrl}</div>
             <button
               onClick={handleCopy}
-              className="flex items-center justify-center gap-2 px-3 py-1.5 rounded bg-[#27272A] text-white text-xs font-mono hover:bg-[#3F3F46] transition-colors cursor-pointer"
+              className="flex items-center justify-center gap-2 px-3 py-1.5 rounded bg-[#353436] text-white text-xs font-mono hover:bg-[#3F3F46] transition-colors cursor-pointer"
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-[#3ECF8E]" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? <Check className="w-3.5 h-3.5 text-[#dbfcff]" /> : <Copy className="w-3.5 h-3.5" />}
               {copied ? 'Copied' : 'Copy link'}
             </button>
           </div>

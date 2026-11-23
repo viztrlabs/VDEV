@@ -91,30 +91,30 @@ export default function CollapsibleRightInspectorPanel({
     >
       {/* COLLAPSED STATE ICON STRIP */}
       {!isOpen && (
-        <aside className="w-12 md:w-14 h-full bg-[#18181B] border-l border-[#27272A] flex flex-col items-center py-4 justify-between select-none">
+        <aside className="w-12 md:w-14 h-full bg-[#201f20] border-l border-[#353436] flex flex-col items-center py-4 justify-between select-none">
           <div className="flex flex-col items-center gap-4">
             <button
               onClick={onToggle}
-              className="p-2.5 rounded-xl bg-[#27272A] hover:bg-[#3ECF8E]/20 text-[#A1A1AA] hover:text-[#3ECF8E] transition-colors cursor-pointer"
+              className="p-2.5 rounded-xl bg-[#353436] hover:bg-[#dbfcff]/20 text-[#A1A1AA] hover:text-[#dbfcff] transition-colors cursor-pointer"
               title="Expand Hours Monitoring & Pipeline Inspector"
               aria-label="Expand Hours Monitoring & Pipeline Inspector"
             >
-              <ChevronLeft className="w-4 h-4 text-[#3ECF8E]" />
+              <ChevronLeft className="w-4 h-4 text-[#dbfcff]" />
             </button>
 
-            <div className="w-8 h-px bg-[#27272A]" />
+            <div className="w-8 h-px bg-[#353436]" />
 
             <button
               onClick={onToggle}
-              className="p-2 rounded-lg text-[#A1A1AA] hover:text-white hover:bg-[#27272A] relative transition-colors"
+              className="p-2 rounded-lg text-[#A1A1AA] hover:text-white hover:bg-[#353436] relative transition-colors"
               title="Hours Spent & Burn Rate"
             >
-              <Clock className="w-4 h-4 text-[#3ECF8E]" />
+              <Clock className="w-4 h-4 text-[#dbfcff]" />
             </button>
 
             <button
               onClick={onToggle}
-              className="p-2 rounded-lg text-[#A1A1AA] hover:text-white hover:bg-[#27272A] transition-colors"
+              className="p-2 rounded-lg text-[#A1A1AA] hover:text-white hover:bg-[#353436] transition-colors"
               title="Pipeline Stages"
             >
               <Layers className="w-4 h-4 text-sky-400" />
@@ -122,7 +122,7 @@ export default function CollapsibleRightInspectorPanel({
 
             <button
               onClick={onToggle}
-              className="p-2 rounded-lg text-[#A1A1AA] hover:text-white hover:bg-[#27272A] transition-colors"
+              className="p-2 rounded-lg text-[#A1A1AA] hover:text-white hover:bg-[#353436] transition-colors"
               title="Budget Telemetry"
             >
               <DollarSign className="w-4 h-4 text-amber-400" />
@@ -137,11 +137,11 @@ export default function CollapsibleRightInspectorPanel({
 
       {/* EXPANDED FULL RIGHT INSPECTOR PANEL */}
       {isOpen && (
-        <aside className="w-80 md:w-92 h-full bg-[#18181B] border-l border-[#27272A] flex flex-col justify-between overflow-hidden shadow-2xl">
+        <aside className="w-80 md:w-92 h-full bg-[#201f20] border-l border-[#353436] flex flex-col justify-between overflow-hidden shadow-2xl">
           {/* HEADER */}
-          <div className="p-3.5 border-b border-[#27272A] bg-[#141416] flex items-center justify-between">
+          <div className="p-3.5 border-b border-[#353436] bg-[#131314] flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E]">
+              <div className="p-1.5 rounded-lg bg-[#dbfcff]/10 border border-[#dbfcff]/30 text-[#dbfcff]">
                 <Activity className="w-3.5 h-3.5" />
               </div>
               <div className="min-w-0">
@@ -157,7 +157,7 @@ export default function CollapsibleRightInspectorPanel({
             <button
               type="button"
               onClick={onToggle}
-              className="p-1.5 rounded-md bg-[#27272A] hover:bg-[#3ECF8E]/20 text-[#A1A1AA] hover:text-[#3ECF8E] transition-colors cursor-pointer"
+              className="p-1.5 rounded-md bg-[#353436] hover:bg-[#dbfcff]/20 text-[#A1A1AA] hover:text-[#dbfcff] transition-colors cursor-pointer"
               title="Collapse Side Panel"
             >
               <ChevronRight className="w-4 h-4" />
@@ -165,12 +165,12 @@ export default function CollapsibleRightInspectorPanel({
           </div>
 
           {/* TAB BAR: HOURS MONITORING VS PIPELINE */}
-          <div className="flex items-center px-3 pt-2.5 border-b border-[#27272A] bg-[#18181B] gap-2">
+          <div className="flex items-center px-3 pt-2.5 border-b border-[#353436] bg-[#201f20] gap-2">
             <button
               onClick={() => setActiveTab('hours')}
               className={`flex-1 py-1.5 text-xs font-mono font-bold text-center border-b-2 transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                 activeTab === 'hours'
-                  ? 'border-[#3ECF8E] text-[#3ECF8E]'
+                  ? 'border-[#dbfcff] text-[#dbfcff]'
                   : 'border-transparent text-[#71717A] hover:text-[#A1A1AA]'
               }`}
             >
@@ -181,7 +181,7 @@ export default function CollapsibleRightInspectorPanel({
               onClick={() => setActiveTab('pipeline')}
               className={`flex-1 py-1.5 text-xs font-mono font-bold text-center border-b-2 transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                 activeTab === 'pipeline'
-                  ? 'border-[#3ECF8E] text-[#3ECF8E]'
+                  ? 'border-[#dbfcff] text-[#dbfcff]'
                   : 'border-transparent text-[#71717A] hover:text-[#A1A1AA]'
               }`}
             >
@@ -194,17 +194,17 @@ export default function CollapsibleRightInspectorPanel({
           {activeTab === 'hours' && (
             <div className="flex-1 overflow-y-auto p-3.5 space-y-4 text-xs font-mono">
               {/* PRIMARY HOURS BURN GAUGE CARD */}
-              <div className="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A] space-y-3">
+              <div className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] uppercase tracking-wider text-[#A1A1AA] font-bold flex items-center gap-1">
-                    <Clock className="w-3 h-3 text-[#3ECF8E]" />
+                    <Clock className="w-3 h-3 text-[#dbfcff]" />
                     <span>Time & Burn Allocation</span>
                   </span>
                   <span
                     className={`px-1.5 py-0.2 rounded text-[9px] font-bold ${
                       isOverBudget
                         ? 'bg-rose-950/80 text-rose-400 border border-rose-800'
-                        : 'bg-[#3ECF8E]/20 text-[#3ECF8E] border border-[#3ECF8E]/40'
+                        : 'bg-[#dbfcff]/20 text-[#dbfcff] border border-[#dbfcff]/40'
                     }`}
                   >
                     {burnPercent}% Consumed
@@ -212,12 +212,12 @@ export default function CollapsibleRightInspectorPanel({
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="p-2 rounded-lg bg-[#141416] border border-[#27272A]">
+                  <div className="p-2 rounded-lg bg-[#131314] border border-[#353436]">
                     <div className="text-[9px] text-[#71717A]">HOURS LOGGED</div>
                     <div className="text-lg font-bold text-white">{hoursSpent.toFixed(1)} hrs</div>
-                    <div className="text-[9px] text-[#3ECF8E]">@ ${hourlyRate}/hr</div>
+                    <div className="text-[9px] text-[#dbfcff]">@ ${hourlyRate}/hr</div>
                   </div>
-                  <div className="p-2 rounded-lg bg-[#141416] border border-[#27272A]">
+                  <div className="p-2 rounded-lg bg-[#131314] border border-[#353436]">
                     <div className="text-[9px] text-[#71717A]">ESTIMATED BUDGET</div>
                     <div className="text-lg font-bold text-white">{estimatedHours.toFixed(1)} hrs</div>
                     <div className="text-[9px] text-[#A1A1AA]">{remainingHours.toFixed(1)} hrs remaining</div>
@@ -226,10 +226,10 @@ export default function CollapsibleRightInspectorPanel({
 
                 {/* Progress Bar */}
                 <div className="space-y-1">
-                  <div className="h-2 w-full rounded-full bg-[#27272A] overflow-hidden">
+                  <div className="h-2 w-full rounded-full bg-[#353436] overflow-hidden">
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${
-                        burnPercent > 90 ? 'bg-amber-400' : 'bg-[#3ECF8E]'
+                        burnPercent > 90 ? 'bg-amber-400' : 'bg-[#dbfcff]'
                       }`}
                       style={{ width: `${Math.min(burnPercent, 100)}%` }}
                     />
@@ -245,7 +245,7 @@ export default function CollapsibleRightInspectorPanel({
                   <button
                     type="button"
                     onClick={() => setShowLogModal(true)}
-                    className="w-full py-1.5 px-3 rounded-lg bg-[#27272A] hover:bg-[#3ECF8E] hover:text-black text-white text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                    className="w-full py-1.5 px-3 rounded-lg bg-[#353436] hover:bg-[#dbfcff] hover:text-black text-white text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Log Time Entry</span>
@@ -264,7 +264,7 @@ export default function CollapsibleRightInspectorPanel({
                     return (
                       <div
                         key={idx}
-                        className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] space-y-1.5"
+                        className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] space-y-1.5"
                       >
                         <div className="flex items-center justify-between text-[11px]">
                           <span className="text-white font-medium truncate">{disc.discipline}</span>
@@ -272,12 +272,12 @@ export default function CollapsibleRightInspectorPanel({
                             {disc.hours}h <span className="text-[#71717A]">/ {disc.budgetHours}h</span>
                           </span>
                         </div>
-                        <div className="h-1.5 w-full rounded-full bg-[#18181B] overflow-hidden">
+                        <div className="h-1.5 w-full rounded-full bg-[#201f20] overflow-hidden">
                           <div
                             className="h-full rounded-full transition-all"
                             style={{
                               width: `${Math.min(pct, 100)}%`,
-                              backgroundColor: disc.color || '#3ECF8E',
+                              backgroundColor: disc.color || '#dbfcff',
                             }}
                           />
                         </div>
@@ -300,19 +300,19 @@ export default function CollapsibleRightInspectorPanel({
                   {timesheetEntries.map((ts) => (
                     <div
                       key={ts.id}
-                      className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] space-y-1 text-[10px]"
+                      className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] space-y-1 text-[10px]"
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-white flex items-center gap-1">
-                          <User className="w-3 h-3 text-[#3ECF8E]" />
+                          <User className="w-3 h-3 text-[#dbfcff]" />
                           <span>{ts.teamMember}</span>
                         </span>
-                        <span className="px-1.5 py-0.2 rounded bg-[#27272A] text-[#3ECF8E] font-bold">
+                        <span className="px-1.5 py-0.2 rounded bg-[#353436] text-[#dbfcff] font-bold">
                           +{ts.hours} hrs
                         </span>
                       </div>
                       <p className="text-[#A1A1AA] leading-relaxed line-clamp-2">{ts.task}</p>
-                      <div className="flex items-center justify-between text-[9px] text-[#71717A] pt-0.5 border-t border-[#18181B]">
+                      <div className="flex items-center justify-between text-[9px] text-[#71717A] pt-0.5 border-t border-[#201f20]">
                         <span>{ts.stage}</span>
                         <span>{ts.date}</span>
                       </div>
@@ -327,8 +327,8 @@ export default function CollapsibleRightInspectorPanel({
           {activeTab === 'pipeline' && (
             <div className="flex-1 overflow-y-auto p-3.5 space-y-4 text-xs font-mono">
               {/* PIPELINE OVERVIEW BADGE */}
-              <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A] space-y-1.5">
-                <div className="text-[10px] uppercase tracking-wider text-[#3ECF8E] font-bold">
+              <div className="p-3 rounded-xl bg-[#131314] border border-[#353436] space-y-1.5">
+                <div className="text-[10px] uppercase tracking-wider text-[#dbfcff] font-bold">
                   Custom Pipeline Architecture
                 </div>
                 <div className="text-xs font-bold text-white">{pipeline.pipelineType}</div>
@@ -338,7 +338,7 @@ export default function CollapsibleRightInspectorPanel({
               </div>
 
               {/* STAGES TIMELINE */}
-              <div className="space-y-3 relative pl-3 border-l border-[#27272A]">
+              <div className="space-y-3 relative pl-3 border-l border-[#353436]">
                 {pipeline.stages.map((stage, idx) => {
                   const isCompleted = stage.status === 'completed';
                   const isInProgress = stage.status === 'in_progress';
@@ -350,12 +350,12 @@ export default function CollapsibleRightInspectorPanel({
                       <div
                         className={`absolute -left-[19px] top-1 w-3 h-3 rounded-full border-2 ${
                           isCompleted
-                            ? 'bg-[#3ECF8E] border-[#3ECF8E]'
+                            ? 'bg-[#dbfcff] border-[#dbfcff]'
                             : isInProgress
                             ? 'bg-sky-500 border-sky-400 animate-pulse'
                             : isReview
                             ? 'bg-amber-400 border-amber-300'
-                            : 'bg-[#18181B] border-[#71717A]'
+                            : 'bg-[#201f20] border-[#71717A]'
                         }`}
                       />
 
@@ -369,23 +369,23 @@ export default function CollapsibleRightInspectorPanel({
                               ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-800'
                               : isInProgress
                               ? 'bg-sky-950/80 text-sky-400 border border-sky-800'
-                              : 'bg-[#27272A] text-[#71717A]'
+                              : 'bg-[#353436] text-[#71717A]'
                           }`}
                         >
                           {stage.eta}
                         </span>
                       </div>
 
-                      <div className="p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] space-y-1.5">
+                      <div className="p-2.5 rounded-lg bg-[#131314] border border-[#353436] space-y-1.5">
                         <h4 className="text-[11px] font-bold text-white">{stage.title}</h4>
                         <p className="text-[10px] text-[#A1A1AA] leading-relaxed">
                           {stage.description}
                         </p>
 
-                        <div className="flex items-center justify-between text-[9px] text-[#71717A] pt-1 border-t border-[#18181B]">
+                        <div className="flex items-center justify-between text-[9px] text-[#71717A] pt-1 border-t border-[#201f20]">
                           <span>Deliverables: {stage.deliverablesApproved}/{stage.deliverablesCount}</span>
                           {isCompleted ? (
-                            <span className="text-[#3ECF8E] flex items-center gap-0.5">
+                            <span className="text-[#dbfcff] flex items-center gap-0.5">
                               <CheckCircle2 className="w-3 h-3" />
                               Approved
                             </span>
@@ -401,7 +401,7 @@ export default function CollapsibleRightInspectorPanel({
                                 key={dIdx}
                                 className="flex items-center gap-1.5 text-[9px] text-[#A1A1AA]"
                               >
-                                <span className="w-1 h-1 rounded-full bg-[#3ECF8E]" />
+                                <span className="w-1 h-1 rounded-full bg-[#dbfcff]" />
                                 <span className="truncate">{del}</span>
                               </div>
                             ))}
@@ -416,18 +416,18 @@ export default function CollapsibleRightInspectorPanel({
           )}
 
           {/* BOTTOM FOOTER */}
-          <div className="p-3 border-t border-[#27272A] bg-[#141416] flex items-center justify-between text-[10px] font-mono text-[#71717A]">
+          <div className="p-3 border-t border-[#353436] bg-[#131314] flex items-center justify-between text-[10px] font-mono text-[#71717A]">
             <span>Lead: {project.leadArchitect}</span>
-            <span className="text-[#3ECF8E] font-bold">Progress: {project.progress}%</span>
+            <span className="text-[#dbfcff] font-bold">Progress: {project.progress}%</span>
           </div>
 
           {/* TIME ENTRY MODAL */}
           {showLogModal && (
             <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-              <div className="w-full max-w-md bg-[#18181B] border border-[#27272A] rounded-2xl p-5 shadow-2xl space-y-4">
-                <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+              <div className="w-full max-w-md bg-[#201f20] border border-[#353436] rounded-2xl p-5 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between border-b border-[#353436] pb-3">
                   <div className="flex items-center gap-2 text-white font-mono font-bold text-sm">
-                    <Clock className="w-4 h-4 text-[#3ECF8E]" />
+                    <Clock className="w-4 h-4 text-[#dbfcff]" />
                     <span>Log Timesheet Hours · {project.id}</span>
                   </div>
                   <button
@@ -446,7 +446,7 @@ export default function CollapsibleRightInspectorPanel({
                       type="text"
                       value={logMember}
                       onChange={(e) => setLogMember(e.target.value)}
-                      className="w-full px-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                      className="w-full px-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                       required
                     />
                   </div>
@@ -461,7 +461,7 @@ export default function CollapsibleRightInspectorPanel({
                         max="24"
                         value={logHours}
                         onChange={(e) => setLogHours(e.target.value)}
-                        className="w-full px-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                        className="w-full px-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                         required
                       />
                     </div>
@@ -470,7 +470,7 @@ export default function CollapsibleRightInspectorPanel({
                       <select
                         value={logStage}
                         onChange={(e) => setLogStage(e.target.value)}
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E]"
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff]"
                       >
                         {pipeline.stages.map((st) => (
                           <option key={st.stageNumber} value={`Stage ${st.stageNumber}: ${st.title}`}>
@@ -488,22 +488,22 @@ export default function CollapsibleRightInspectorPanel({
                       value={logTask}
                       onChange={(e) => setLogTask(e.target.value)}
                       placeholder="e.g. Optimized WebXR shader pass, resolved lighting bounce artifact on cantilever..."
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#3ECF8E] text-xs resize-none"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#dbfcff] text-xs resize-none"
                       required
                     />
                   </div>
 
-                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#27272A]">
+                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#353436]">
                     <button
                       type="button"
                       onClick={() => setShowLogModal(false)}
-                      className="px-3 py-1.5 rounded-lg bg-[#27272A] hover:bg-[#3F3F46] text-white text-xs"
+                      className="px-3 py-1.5 rounded-lg bg-[#353436] hover:bg-[#3F3F46] text-white text-xs"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#3ECF8E]/90 text-black font-bold text-xs cursor-pointer"
+                      className="px-4 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#dbfcff]/90 text-black font-bold text-xs cursor-pointer"
                     >
                       Save Timesheet Log
                     </button>

@@ -15,7 +15,7 @@ export default function PlayCanvasConfigurator() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeMode, setActiveMode] = useState<'desktop' | 'vr' | 'ar' | 'none'>('desktop');
-  const [materialColor, setMaterialColor] = useState('#3ECF8E'); // default green
+  const [materialColor, setMaterialColor] = useState('#dbfcff'); // default green
   const viewerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -155,7 +155,7 @@ export default function PlayCanvasConfigurator() {
         <h1 className="text-2xl font-bold text-white font-display">PlayCanvas Configurator</h1>
         <button
           onClick={loadScene}
-          className="px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center gap-2 transition-all cursor-pointer"
+          className="px-4 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center gap-2 transition-all cursor-pointer"
         >
           <Box className="w-4 h-4" />
           Load GLTF Scene
@@ -170,7 +170,7 @@ export default function PlayCanvasConfigurator() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Viewer container */}
-        <div className="lg:col-span-2 relative rounded-xl bg-[#09090B] border border-[#27272A] overflow-hidden">
+        <div className="lg:col-span-2 relative rounded-xl bg-[#131314] border border-[#353436] overflow-hidden">
           <div ref={viewerRef} className="w-full h-[500px]" />
           <div className="absolute top-4 left-4 bg-black/70 text-white text-xs font-mono px-2 py-1 rounded">
             Mode: {activeMode.toUpperCase()}
@@ -179,7 +179,7 @@ export default function PlayCanvasConfigurator() {
 
         {/* Controls Panel */}
         <div className="space-y-4">
-          <div className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-3">
+          <div className="p-4 rounded-xl bg-[#201f20] border border-[#353436] space-y-3">
             <h2 className="text-lg font-bold text-white font-display">Controls</h2>
 
             {/* Mode Selection */}
@@ -188,19 +188,19 @@ export default function PlayCanvasConfigurator() {
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => setActiveMode('desktop')}
-                  className={`px-3 py-2 rounded-lg border text-xs font-mono transition-colors cursor-pointer ${activeMode === 'desktop' ? 'bg-[#3ECF8E]/20 border-[#3ECF8E] text-[#3ECF8E]' : 'bg-[#09090B] border-[#27272A] text-[#A1A1AA] hover:text-white'}`}
+                  className={`px-3 py-2 rounded-lg border text-xs font-mono transition-colors cursor-pointer ${activeMode === 'desktop' ? 'bg-[#dbfcff]/20 border-[#dbfcff] text-[#dbfcff]' : 'bg-[#131314] border-[#353436] text-[#A1A1AA] hover:text-white'}`}
                 >
                   <Eye className="w-3 h-3 inline mr-1" /> Desktop
                 </button>
                 <button
                   onClick={() => setActiveMode('vr')}
-                  className={`px-3 py-2 rounded-lg border text-xs font-mono transition-colors cursor-pointer ${activeMode === 'vr' ? 'bg-[#3ECF8E]/20 border-[#3ECF8E] text-[#3ECF8E]' : 'bg-[#09090B] border-[#27272A] text-[#A1A1AA] hover:text-white'}`}
+                  className={`px-3 py-2 rounded-lg border text-xs font-mono transition-colors cursor-pointer ${activeMode === 'vr' ? 'bg-[#dbfcff]/20 border-[#dbfcff] text-[#dbfcff]' : 'bg-[#131314] border-[#353436] text-[#A1A1AA] hover:text-white'}`}
                 >
                   <Box className="w-3 h-3 inline mr-1" /> VR
                 </button>
                 <button
                   onClick={() => setActiveMode('ar')}
-                  className={`px-3 py-2 rounded-lg border text-xs font-mono transition-colors cursor-pointer ${activeMode === 'ar' ? 'bg-[#3ECF8E]/20 border-[#3ECF8E] text-[#3ECF8E]' : 'bg-[#09090B] border-[#27272A] text-[#A1A1AA] hover:text-white'}`}
+                  className={`px-3 py-2 rounded-lg border text-xs font-mono transition-colors cursor-pointer ${activeMode === 'ar' ? 'bg-[#dbfcff]/20 border-[#dbfcff] text-[#dbfcff]' : 'bg-[#131314] border-[#353436] text-[#A1A1AA] hover:text-white'}`}
                 >
                   <EyeOff className="w-3 h-3 inline mr-1" /> AR
                 </button>
@@ -215,26 +215,26 @@ export default function PlayCanvasConfigurator() {
                   type="color"
                   value={materialColor}
                   onChange={(e) => setMaterialColor(e.target.value)}
-                  className="w-8 h-8 rounded border border-[#27272A] cursor-pointer"
+                  className="w-8 h-8 rounded border border-[#353436] cursor-pointer"
                 />
                 <input
                   type="text"
                   value={materialColor}
                   onChange={(e) => setMaterialColor(e.target.value)}
-                  className="flex-1 px-2 py-1 rounded bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                  className="flex-1 px-2 py-1 rounded bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
                 />
               </div>
             </div>
 
             {/* Status Info */}
-            <div className="space-y-2 pt-2 border-t border-[#27272A]">
+            <div className="space-y-2 pt-2 border-t border-[#353436]">
               <div className="flex items-center justify-between text-xs font-mono">
                 <span className="text-[#A1A1AA]">Status:</span>
-                <span className="text-[#3ECF8E]">{gltf ? 'Loaded' : 'Not loaded'}</span>
+                <span className="text-[#dbfcff]">{gltf ? 'Loaded' : 'Not loaded'}</span>
               </div>
               <div className="flex items-center justify-between text-xs font-mono">
                 <span className="text-[#A1A1AA]">Loading:</span>
-                <span className="text-[#3ECF8E]">{isLoading ? 'In progress...' : 'Idle'}</span>
+                <span className="text-[#dbfcff]">{isLoading ? 'In progress...' : 'Idle'}</span>
               </div>
             </div>
           </div>
@@ -243,13 +243,13 @@ export default function PlayCanvasConfigurator() {
           <div className="space-y-2">
             <button
               onClick={() => setActiveMode('vr')}
-              className="w-full px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center gap-2 transition-all cursor-pointer"
+              className="w-full px-4 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center gap-2 transition-all cursor-pointer"
             >
               <Box className="w-4 h-4" /> Enter VR
             </button>
             <button
               onClick={() => setActiveMode('ar')}
-              className="w-full px-4 py-2 rounded-lg bg-[#27272A] hover:bg-[#3ECF8E] hover:text-black border border-[#27272A] text-xs font-mono transition-all cursor-pointer"
+              className="w-full px-4 py-2 rounded-lg bg-[#353436] hover:bg-[#dbfcff] hover:text-black border border-[#353436] text-xs font-mono transition-all cursor-pointer"
             >
               <EyeOff className="w-4 h-4" /> Enter AR
             </button>

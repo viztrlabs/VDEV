@@ -88,7 +88,7 @@ export const PROJECT_MARKUPS_DATA: Record<string, MarkupItem[]> = {
         'Cryptomatte ID passes generated for multi-channel post production'
       ],
       annotations: [
-        { id: 'a1', label: 'Pin #01', color: '#3ECF8E', comment: 'Crown beacon luminescence approved at 115% gain.' },
+        { id: 'a1', label: 'Pin #01', color: '#dbfcff', comment: 'Crown beacon luminescence approved at 115% gain.' },
         { id: 'a2', label: 'Pin #02', color: '#60A5FA', comment: 'Triple glazing low-E reflections balanced against dusk sky.' }
       ],
       ticketId: 'REV-882-FIN'
@@ -258,7 +258,7 @@ export const DEFAULT_MARKUPS_LIST: MarkupItem[] = [
       'Fine-tuned landscaping foliage subsurface scattering shaders'
     ],
     annotations: [
-      { id: 'g1', label: 'Markup #01', color: '#3ECF8E', comment: 'Reflective facade highlights aligned to horizon line.' }
+      { id: 'g1', label: 'Markup #01', color: '#dbfcff', comment: 'Reflective facade highlights aligned to horizon line.' }
     ],
     ticketId: 'REV-GEN-32'
   },
@@ -468,19 +468,19 @@ export default function RevisionHistoryModal({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-          className="hd-card w-full max-w-4xl max-h-[92vh] bg-[#121215] border-[#27272A] shadow-2xl rounded-2xl flex flex-col overflow-hidden text-[#FAFAFA] font-sans"
+          className="hd-card w-full max-w-4xl max-h-[92vh] bg-[#131314] border-[#353436] shadow-2xl rounded-2xl flex flex-col overflow-hidden text-[#e5e2e3] font-sans"
           onClick={(e) => e.stopPropagation()}
         >
           {/* HEADER BAR */}
-          <div className="p-4 sm:p-6 border-b border-[#27272A] bg-[#18181B]/80 flex items-start justify-between gap-4 shrink-0">
+          <div className="p-4 sm:p-6 border-b border-[#353436] bg-[#201f20]/80 flex items-start justify-between gap-4 shrink-0">
             <div className="space-y-1.5 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] text-[11px] font-mono font-bold uppercase tracking-wider">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#dbfcff]/10 border border-[#dbfcff]/30 text-[#dbfcff] text-[11px] font-mono font-bold uppercase tracking-wider">
                   <History className="w-3.5 h-3.5" />
                   <span>Revision History & Markups</span>
                 </span>
                 <span className="text-xs font-mono text-[#71717A]">• {projectId}</span>
-                <span className="px-2 py-0.5 rounded bg-[#27272A] text-[10px] font-mono text-zinc-300 font-semibold">
+                <span className="px-2 py-0.5 rounded bg-[#353436] text-[10px] font-mono text-zinc-300 font-semibold">
                   {displayedMarkups.length} logged events
                 </span>
               </div>
@@ -497,9 +497,9 @@ export default function RevisionHistoryModal({
                 type="button"
                 onClick={handleCopyLog}
                 title="Copy formatted revision log"
-                className="p-2 rounded-lg bg-[#27272A] hover:bg-[#3F3F46] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-mono"
+                className="p-2 rounded-lg bg-[#353436] hover:bg-[#3F3F46] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-mono"
               >
-                <Copy className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                <Copy className="w-3.5 h-3.5 text-[#dbfcff]" />
                 <span className="hidden sm:inline">Export Log</span>
               </button>
 
@@ -508,8 +508,8 @@ export default function RevisionHistoryModal({
                 onClick={() => setShowAddForm(!showAddForm)}
                 className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
                   showAddForm
-                    ? 'bg-[#3ECF8E] text-black border-[#3ECF8E]'
-                    : 'bg-[#18181B] hover:bg-[#27272A] text-white border-[#27272A] hover:border-[#3ECF8E]/50'
+                    ? 'bg-[#dbfcff] text-black border-[#dbfcff]'
+                    : 'bg-[#201f20] hover:bg-[#353436] text-white border-[#353436] hover:border-[#dbfcff]/50'
                 }`}
               >
                 <Plus className="w-3.5 h-3.5" />
@@ -520,7 +520,7 @@ export default function RevisionHistoryModal({
                 type="button"
                 onClick={onClose}
                 aria-label="Close revision history dialog"
-                className="p-2 rounded-lg bg-[#27272A] hover:bg-[#3F3F46] text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                className="p-2 rounded-lg bg-[#353436] hover:bg-[#3F3F46] text-zinc-400 hover:text-white transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -534,12 +534,12 @@ export default function RevisionHistoryModal({
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                className="border-b border-[#27272A] bg-[#09090B] overflow-hidden shrink-0"
+                className="border-b border-[#353436] bg-[#131314] overflow-hidden shrink-0"
               >
                 <form onSubmit={handleAddMarkup} className="p-4 sm:p-6 space-y-4 text-xs font-sans">
-                  <div className="flex items-center justify-between border-b border-[#27272A] pb-2">
+                  <div className="flex items-center justify-between border-b border-[#353436] pb-2">
                     <span className="font-bold text-white text-sm flex items-center gap-2">
-                      <FileEdit className="w-4 h-4 text-[#3ECF8E]" />
+                      <FileEdit className="w-4 h-4 text-[#dbfcff]" />
                       <span>Log Architectural Markup / Change Request</span>
                     </span>
                     <span className="text-[11px] font-mono text-[#71717A]">
@@ -557,7 +557,7 @@ export default function RevisionHistoryModal({
                         value={newTitle}
                         onChange={(e) => setNewTitle(e.target.value)}
                         placeholder="e.g. Adjust curtain wall corner reflectance to 40%"
-                        className="w-full px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-white placeholder-[#71717A] text-xs focus:outline-none focus:border-[#3ECF8E]"
+                        className="w-full px-3 py-2 rounded-lg bg-[#201f20] border border-[#353436] text-white placeholder-[#71717A] text-xs focus:outline-none focus:border-[#dbfcff]"
                       />
                     </div>
 
@@ -568,7 +568,7 @@ export default function RevisionHistoryModal({
                       <select
                         value={newCategory}
                         onChange={(e) => setNewCategory(e.target.value as MarkupItem['category'])}
-                        className="w-full px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-white text-xs focus:outline-none focus:border-[#3ECF8E]"
+                        className="w-full px-3 py-2 rounded-lg bg-[#201f20] border border-[#353436] text-white text-xs focus:outline-none focus:border-[#dbfcff]"
                       >
                         <option value="Markup">Client Markup & Redline</option>
                         <option value="Shader & PBR">Shader & PBR Material</option>
@@ -587,7 +587,7 @@ export default function RevisionHistoryModal({
                       value={newSummary}
                       onChange={(e) => setNewSummary(e.target.value)}
                       placeholder="Describe the architectural reasons, sun angle requirements, or client feedback notes..."
-                      className="w-full px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-white placeholder-[#71717A] text-xs focus:outline-none focus:border-[#3ECF8E]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#201f20] border border-[#353436] text-white placeholder-[#71717A] text-xs focus:outline-none focus:border-[#dbfcff]"
                     />
                   </div>
 
@@ -600,7 +600,7 @@ export default function RevisionHistoryModal({
                       value={newChangesText}
                       onChange={(e) => setNewChangesText(e.target.value)}
                       placeholder="Reflectance boosted from 25% to 45%&#10;Interior lights warmed to 2700K&#10;Zeroed camera keystoning"
-                      className="w-full px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-white placeholder-[#71717A] text-xs focus:outline-none focus:border-[#3ECF8E] font-mono"
+                      className="w-full px-3 py-2 rounded-lg bg-[#201f20] border border-[#353436] text-white placeholder-[#71717A] text-xs focus:outline-none focus:border-[#dbfcff] font-mono"
                     />
                   </div>
 
@@ -608,13 +608,13 @@ export default function RevisionHistoryModal({
                     <button
                       type="button"
                       onClick={() => setShowAddForm(false)}
-                      className="px-3 py-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors text-xs font-semibold"
+                      className="px-3 py-1.5 rounded-lg bg-[#201f20] hover:bg-[#353436] text-[#A1A1AA] hover:text-white transition-colors text-xs font-semibold"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold transition-all text-xs flex items-center gap-1.5 cursor-pointer shadow-sm"
+                      className="px-4 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-bold transition-all text-xs flex items-center gap-1.5 cursor-pointer shadow-sm"
                     >
                       <Send className="w-3.5 h-3.5" />
                       <span>Post Markup to Timeline</span>
@@ -626,7 +626,7 @@ export default function RevisionHistoryModal({
           </AnimatePresence>
 
           {/* SEARCH & CATEGORY FILTER BAR */}
-          <div className="p-3 sm:px-6 sm:py-3 border-b border-[#27272A] bg-[#141417] flex flex-wrap items-center justify-between gap-3 shrink-0">
+          <div className="p-3 sm:px-6 sm:py-3 border-b border-[#353436] bg-[#141417] flex flex-wrap items-center justify-between gap-3 shrink-0">
             {/* Search Input */}
             <div className="relative flex-1 min-w-[200px] max-w-sm">
               <Search className="w-3.5 h-3.5 text-[#71717A] absolute left-3 top-1/2 -translate-y-1/2" />
@@ -635,7 +635,7 @@ export default function RevisionHistoryModal({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search markups, materials, tickets..."
-                className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-white placeholder-[#71717A] text-xs focus:outline-none focus:border-[#3ECF8E]"
+                className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-[#201f20] border border-[#353436] text-white placeholder-[#71717A] text-xs focus:outline-none focus:border-[#dbfcff]"
               />
             </div>
 
@@ -648,8 +648,8 @@ export default function RevisionHistoryModal({
                   onClick={() => setActiveCategory(cat)}
                   className={`px-2.5 py-1 rounded-md text-[11px] font-mono font-semibold transition-all whitespace-nowrap cursor-pointer ${
                     activeCategory === cat
-                      ? 'bg-[#3ECF8E] text-black shadow-sm font-bold'
-                      : 'bg-[#18181B] text-[#A1A1AA] hover:text-white border border-[#27272A] hover:border-[#3ECF8E]/40'
+                      ? 'bg-[#dbfcff] text-black shadow-sm font-bold'
+                      : 'bg-[#201f20] text-[#A1A1AA] hover:text-white border border-[#353436] hover:border-[#dbfcff]/40'
                   }`}
                 >
                   {cat}
@@ -661,10 +661,10 @@ export default function RevisionHistoryModal({
             <button
               type="button"
               onClick={() => setSortOrder(sortOrder === 'newest' ? 'oldest' : 'newest')}
-              className="p-1.5 px-2.5 rounded-md bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white text-xs font-mono flex items-center gap-1.5 cursor-pointer ml-auto"
+              className="p-1.5 px-2.5 rounded-md bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white text-xs font-mono flex items-center gap-1.5 cursor-pointer ml-auto"
               title="Toggle sort order"
             >
-              <ArrowUpDown className="w-3.5 h-3.5 text-[#3ECF8E]" />
+              <ArrowUpDown className="w-3.5 h-3.5 text-[#dbfcff]" />
               <span className="hidden sm:inline">
                 {sortOrder === 'newest' ? 'Newest First' : 'Oldest First'}
               </span>
@@ -675,7 +675,7 @@ export default function RevisionHistoryModal({
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
             {displayedMarkups.length === 0 ? (
               <div className="text-center py-12 space-y-3">
-                <div className="w-12 h-12 rounded-full bg-[#18181B] border border-[#27272A] flex items-center justify-center mx-auto text-[#71717A]">
+                <div className="w-12 h-12 rounded-full bg-[#201f20] border border-[#353436] flex items-center justify-center mx-auto text-[#71717A]">
                   <History className="w-6 h-6" />
                 </div>
                 <h4 className="text-base font-bold text-white font-display">No Markups Found</h4>
@@ -687,13 +687,13 @@ export default function RevisionHistoryModal({
                     setActiveCategory('All');
                     setSearchQuery('');
                   }}
-                  className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] text-black font-bold text-xs"
+                  className="px-3 py-1.5 rounded-lg bg-[#dbfcff] text-black font-bold text-xs"
                 >
                   Reset Filter
                 </button>
               </div>
             ) : (
-              <div className="relative pl-6 sm:pl-8 space-y-8 before:absolute before:left-3 sm:before:left-4 before:top-3 before:bottom-3 before:w-0.5 before:bg-gradient-to-b before:from-[#3ECF8E] before:via-[#27272A] before:to-transparent">
+              <div className="relative pl-6 sm:pl-8 space-y-8 before:absolute before:left-3 sm:before:left-4 before:top-3 before:bottom-3 before:w-0.5 before:bg-gradient-to-b before:from-[#dbfcff] before:via-[#353436] before:to-transparent">
                 {displayedMarkups.map((item, index) => {
                   const isApproved = item.status === 'Approved';
                   const isUnderReview = item.status === 'Under Review' || item.status === 'Active';
@@ -710,10 +710,10 @@ export default function RevisionHistoryModal({
                       <div
                         className={`absolute -left-6 sm:-left-8 top-1.5 w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 flex items-center justify-center z-10 transition-transform group-hover:scale-110 ${
                           isApproved
-                            ? 'bg-[#09090B] border-[#3ECF8E] text-[#3ECF8E] shadow-[0_0_12px_rgba(62,207,142,0.4)]'
+                            ? 'bg-[#131314] border-[#dbfcff] text-[#dbfcff] shadow-[0_0_12px_rgba(62,207,142,0.4)]'
                             : isUnderReview
-                            ? 'bg-[#09090B] border-amber-500 text-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.3)]'
-                            : 'bg-[#09090B] border-[#71717A] text-[#71717A]'
+                            ? 'bg-[#131314] border-amber-500 text-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.3)]'
+                            : 'bg-[#131314] border-[#71717A] text-[#71717A]'
                         }`}
                       >
                         {isApproved ? (
@@ -726,15 +726,15 @@ export default function RevisionHistoryModal({
                       </div>
 
                       {/* MARKUP CARD */}
-                      <div className="hd-card p-4 sm:p-5 bg-[#18181B]/80 hover:bg-[#18181B] border-[#27272A] hover:border-[#3ECF8E]/50 rounded-xl space-y-4 transition-all shadow-md">
+                      <div className="hd-card p-4 sm:p-5 bg-[#201f20]/80 hover:bg-[#201f20] border-[#353436] hover:border-[#dbfcff]/50 rounded-xl space-y-4 transition-all shadow-md">
                         {/* CARD TOP META */}
-                        <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[#27272A] pb-3">
+                        <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[#353436] pb-3">
                           <div className="space-y-1">
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="font-display font-bold text-white text-base">
                                 {item.versionLabel}
                               </span>
-                              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-[#09090B] border border-[#27272A] text-[#3ECF8E]">
+                              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-[#131314] border border-[#353436] text-[#dbfcff]">
                                 {item.category}
                               </span>
                               <span
@@ -771,9 +771,9 @@ export default function RevisionHistoryModal({
                         </div>
 
                         {/* AUTHOR & DISCIPLINE BAR */}
-                        <div className="flex items-center justify-between text-xs bg-[#09090B]/60 p-2.5 rounded-lg border border-[#27272A]">
+                        <div className="flex items-center justify-between text-xs bg-[#131314]/60 p-2.5 rounded-lg border border-[#353436]">
                           <div className="flex items-center gap-2.5">
-                            <div className="w-6 h-6 rounded-full bg-[#3ECF8E]/20 border border-[#3ECF8E]/40 text-[#3ECF8E] font-bold text-[10px] flex items-center justify-center shrink-0">
+                            <div className="w-6 h-6 rounded-full bg-[#dbfcff]/20 border border-[#dbfcff]/40 text-[#dbfcff] font-bold text-[10px] flex items-center justify-center shrink-0">
                               {item.author.avatarInitials}
                             </div>
                             <div>
@@ -787,7 +787,7 @@ export default function RevisionHistoryModal({
                           </div>
 
                           {item.resolution && (
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#18181B] text-[#A1A1AA] border border-[#27272A]">
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#201f20] text-[#A1A1AA] border border-[#353436]">
                               {item.resolution}
                             </span>
                           )}
@@ -806,7 +806,7 @@ export default function RevisionHistoryModal({
                         {/* THUMBNAIL & KEY CHANGES GRID */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
                           {item.imageUrl && (
-                            <div className="relative rounded-lg overflow-hidden border border-[#27272A] bg-black aspect-video group/img">
+                            <div className="relative rounded-lg overflow-hidden border border-[#353436] bg-black aspect-video group/img">
                               <Image
                                 src={item.imageUrl}
                                 alt={item.title}
@@ -832,7 +832,7 @@ export default function RevisionHistoryModal({
                                   key={cIdx}
                                   className="flex items-start gap-2 text-zinc-300"
                                 >
-                                  <span className="w-1.5 h-1.5 rounded-full bg-[#3ECF8E] mt-1.5 shrink-0" />
+                                  <span className="w-1.5 h-1.5 rounded-full bg-[#dbfcff] mt-1.5 shrink-0" />
                                   <span>{change}</span>
                                 </li>
                               ))}
@@ -844,10 +844,10 @@ export default function RevisionHistoryModal({
                                 {item.annotations.map((ann) => (
                                   <span
                                     key={ann.id}
-                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono bg-[#09090B] border border-[#27272A] text-zinc-300"
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono bg-[#131314] border border-[#353436] text-zinc-300"
                                     title={ann.comment}
                                   >
-                                    <Pin className="w-3 h-3 text-[#3ECF8E]" />
+                                    <Pin className="w-3 h-3 text-[#dbfcff]" />
                                     <strong className="text-white">{ann.label}:</strong> {ann.comment}
                                   </span>
                                 ))}
@@ -864,16 +864,16 @@ export default function RevisionHistoryModal({
           </div>
 
           {/* FOOTER ACTION BAR */}
-          <div className="p-4 border-t border-[#27272A] bg-[#18181B] flex items-center justify-between gap-3 shrink-0">
+          <div className="p-4 border-t border-[#353436] bg-[#201f20] flex items-center justify-between gap-3 shrink-0">
             <div className="flex items-center gap-2 text-xs text-[#71717A] font-mono">
-              <Shield className="w-3.5 h-3.5 text-[#3ECF8E]" />
+              <Shield className="w-3.5 h-3.5 text-[#dbfcff]" />
               <span>Immutable audit trail secured with cryptographic timestamp.</span>
             </div>
 
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-lg bg-[#27272A] hover:bg-[#3F3F46] text-white text-xs font-semibold transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-lg bg-[#353436] hover:bg-[#3F3F46] text-white text-xs font-semibold transition-colors cursor-pointer"
             >
               Close
             </button>

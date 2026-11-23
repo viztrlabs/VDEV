@@ -325,7 +325,7 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
 
             {loading ? (
               <div className="no-feedback">
-                <div className="w-5 h-5 border-2 border-[#3ECF8E] border-t-transparent rounded-full animate-spin mb-2" />
+                <div className="w-5 h-5 border-2 border-[#dbfcff] border-t-transparent rounded-full animate-spin mb-2" />
                 <p>Loading feedback...</p>
               </div>
             ) : filteredFeedbacks.length === 0 ? (
@@ -464,8 +464,8 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
         }
 
         .asset-selection {
-          background: #18181B;
-          border: 1px solid #27272A;
+          background: #201f20;
+          border: 1px solid #353436;
           border-radius: 12px;
           padding: 20px;
         }
@@ -481,20 +481,20 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
           align-items: center;
           gap: 12px;
           padding: 12px;
-          background: #09090B;
-          border: 1px solid #27272A;
+          background: #131314;
+          border: 1px solid #353436;
           border-radius: 8px;
           cursor: pointer;
           transition: all 0.2s;
         }
 
         .asset-card:hover {
-          border-color: #3ECF8E;
+          border-color: #dbfcff;
           background: #131315;
         }
 
         .asset-card.selected {
-          border-color: #3ECF8E;
+          border-color: #dbfcff;
           background: #1a1a1d;
         }
 
@@ -503,7 +503,7 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
           height: 48px;
           border-radius: 6px;
           overflow: hidden;
-          background: #27272A;
+          background: #353436;
         }
 
         .asset-thumbnail img {
@@ -525,7 +525,7 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
 
         .asset-name {
           font-weight: 500;
-          color: #FAFAFA;
+          color: #e5e2e3;
           display: block;
           margin-bottom: 4px;
         }
@@ -536,8 +536,8 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
         }
 
         .feedback-tools {
-          background: #18181B;
-          border: 1px solid #27272A;
+          background: #201f20;
+          border: 1px solid #353436;
           border-radius: 12px;
           padding: 20px;
           display: flex;
@@ -556,7 +556,7 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
           align-items: center;
           gap: 8px;
           padding: 8px 16px;
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
           border: none;
           border-radius: 6px;
@@ -583,8 +583,8 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
         }
 
         .feedback-form {
-          background: #18181B;
-          border: 1px solid #27272A;
+          background: #201f20;
+          border: 1px solid #353436;
           border-radius: 12px;
           padding: 24px;
           width: 400px;
@@ -606,10 +606,10 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
         .form-group select {
           width: 100%;
           padding: 12px;
-          background: #09090B;
-          border: 1px solid #27272A;
+          background: #131314;
+          border: 1px solid #353436;
           border-radius: 6px;
-          color: #FAFAFA;
+          color: #e5e2e3;
           font-size: 14px;
         }
 
@@ -630,16 +630,16 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
         }
 
         .cancel-btn {
-          background: #27272A;
-          color: #FAFAFA;
+          background: #353436;
+          color: #e5e2e3;
         }
 
         .cancel-btn:hover {
-          background: #3a3a3d;
+          background: #3a393a;
         }
 
         .save-btn {
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
         }
 
@@ -672,8 +672,8 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
 
         .filter-tab {
           padding: 6px 12px;
-          background: #27272A;
-          border: 1px solid #3a3a3d;
+          background: #353436;
+          border: 1px solid #3a393a;
           border-radius: 4px;
           color: #A1A1AA;
           cursor: pointer;
@@ -682,9 +682,9 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
         }
 
         .filter-tab.active {
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
-          border-color: #3ECF8E;
+          border-color: #dbfcff;
         }
 
         .count {
@@ -711,8 +711,8 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
         }
 
         .feedback-item {
-          background: #09090B;
-          border: 1px solid #27272A;
+          background: #131314;
+          border: 1px solid #353436;
           border-radius: 8px;
           padding: 16px;
         }
@@ -765,7 +765,7 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
         }
 
         .resolve-btn {
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
         }
 
@@ -796,7 +796,7 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
         .resolution-form {
           margin-top: 16px;
           padding-top: 16px;
-          border-top: 1px solid #27272A;
+          border-top: 1px solid #353436;
         }
 
         .resolution-actions {
@@ -814,18 +814,18 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
         }
 
         .resolution-actions button:first-child {
-          background: #3ECF8E;
+          background: #dbfcff;
           color: #000000;
         }
 
         .resolution-actions button:last-child {
-          background: #27272A;
-          color: #FAFAFA;
+          background: #353436;
+          color: #e5e2e3;
         }
 
         .asset-preview {
-          background: #18181B;
-          border: 1px solid #27272A;
+          background: #201f20;
+          border: 1px solid #353436;
           border-radius: 12px;
           padding: 20px;
         }
@@ -833,7 +833,7 @@ export default function VisualFeedbackSystem({ projectId, assets }: VisualFeedba
         .preview-container {
           position: relative;
           margin-top: 16px;
-          background: #09090B;
+          background: #131314;
           border-radius: 8px;
           overflow: hidden;
           aspect-ratio: 16/9;
@@ -853,7 +853,7 @@ n          object-fit: cover;
         }
 
         .overlay-marker {
-          color: #3ECF8E;
+          color: #dbfcff;
           filter: drop-shadow(0 0 4px rgba(62, 207, 142, 0.5));
         }
 
@@ -864,8 +864,8 @@ n          object-fit: cover;
           transform: translateX(-50%);
           margin-bottom: 8px;
           padding: 8px 12px;
-          background: #09090B;
-          border: 1px solid #27272A;
+          background: #131314;
+          border: 1px solid #353436;
           border-radius: 6px;
           font-size: 11px;
           white-space: nowrap;

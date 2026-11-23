@@ -29,14 +29,14 @@ export default function PlayCanvasShowcasePage() {
       {/* 1. HERO PRESENTATION AREA (Full Landing Page Presentation Aspect Ratio) */}
       <section
         id="hero-section"
-        className="relative w-full h-screen min-h-[680px] flex flex-col justify-between items-center overflow-hidden text-white select-none transition-colors duration-300 bg-[#09090B]"
+        className="relative w-full h-screen min-h-[680px] flex flex-col justify-between items-center overflow-hidden text-white select-none transition-colors duration-300 bg-[#131314]"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-950/30 via-[#09090B] to-[#09090B] pointer-events-none z-0" />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-950/30 via-[#131314] to-[#131314] pointer-events-none z-0" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))_from-purple-500/10_via-transparent_to-transparent] pointer-events-none z-0" />
 
         {/* TOP AREA: Clears floating header & hosts Eyebrow Badge */}
         <div className="relative z-20 w-full pt-16 sm:pt-20 shrink-0 flex justify-center px-2 sm:px-4">
-          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#0A0A0B] shadow-2xl transition-all border border-[#1E293B] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
+          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-[#131314] shadow-2xl transition-all border border-[#3b494b] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
             <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-purple-500 animate-pulse shrink-0" />
             <span className="font-bold text-purple-400 tracking-wider uppercase shrink-0">PlayCanvas WebXR Engine</span>
           </div>
@@ -48,9 +48,9 @@ export default function PlayCanvasShowcasePage() {
             Real-Time <span className="text-purple-400">PlayCanvas</span> WebXR Runtime
           </h1>
 
-          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]">
+          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#e5e2e3]">
             Native WebXR engine with{' '}
-            <code className="font-mono text-[#3ECF8E] px-1.5 py-0.5 rounded bg-[#18181B] border border-[#27272A]">
+            <code className="font-mono text-[#dbfcff] px-1.5 py-0.5 rounded bg-[#201f20] border border-[#353436]">
               @playcanvas/pc
             </code>{' '}
             . Real-time GLTF loading, material editing, GPU-accelerated rendering. Access immersive 3D experiences directly in browser — zero install, runs any device.
@@ -68,7 +68,7 @@ export default function PlayCanvasShowcasePage() {
 
             <Link
               href="/xr-world"
-              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#1E293B] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#1E293B]"
+              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#3b494b] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#3b494b]"
             >
               <Globe className="w-4 h-4 text-purple-400" />
               <span>Back World Hub</span>
@@ -79,7 +79,7 @@ export default function PlayCanvasShowcasePage() {
             <div className="sm:block">
               <Link
                 href="/xr-world"
-                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0A0A0B] text-[#FAFAFA] text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-sm hover:bg-[#131314] border border-[#1E293B]"
+                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#131314] text-[#e5e2e3] text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-sm hover:bg-[#131314] border border-[#3b494b]"
               >
                 <span>Scroll to explore</span>
                 <ChevronRight className="w-3.5 h-3.5 text-purple-400 animate-bounce" />
@@ -96,12 +96,12 @@ export default function PlayCanvasShowcasePage() {
             <Box className="w-5 h-5 text-purple-400" />
             <span className="font-mono font-bold text-white">PlayCanvas Engine</span>
           </div>
-          <div className="flex items-center gap-1 bg-[#18181B] border border-[#27272A] rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-[#201f20] border border-[#353436] rounded-lg p-1">
             <button
               onClick={() => setActiveView('viewer')}
               className={`px-4 py-2 rounded-md text-sm font-mono transition-colors ${
                 activeView === 'viewer'
-                  ? 'bg-[#3ECF8E] text-black'
+                  ? 'bg-[#dbfcff] text-black'
                   : 'text-[#A1A1AA] hover:text-white'
               }`}
             >
@@ -111,7 +111,7 @@ export default function PlayCanvasShowcasePage() {
               onClick={() => setActiveView('configurator')}
               className={`px-4 py-2 rounded-md text-sm font-mono transition-colors ${
                 activeView === 'configurator'
-                  ? 'bg-[#3ECF8E] text-black'
+                  ? 'bg-[#dbfcff] text-black'
                   : 'text-[#A1A1AA] hover:text-white'
               }`}
             >
@@ -130,8 +130,8 @@ export default function PlayCanvasShowcasePage() {
               {/* LEFT PANEL Scene Info Controls */}
               <div className="lg:col-span-1 space-y-6">
                 {/* Engine Status Card */}
-                <div className="bg-[#18181B] border border-[#27272A] rounded-2xl p-6 space-y-4">
-                  <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+                <div className="bg-[#201f20] border border-[#353436] rounded-2xl p-6 space-y-4">
+                  <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
                     <CheckCircle2 className="w-4 h-4" />
                     <span>Engine Status</span>
                   </div>
@@ -141,8 +141,8 @@ export default function PlayCanvasShowcasePage() {
                     mode, FPS, draw calls, and triangle count.
                   </p>
 
-                  <div className="space-y-3 pt-2 border-t border-[#27272A]">
-                    <div className="flex items-center gap-3 p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
+                  <div className="space-y-3 pt-2 border-t border-[#353436]">
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-[#131314] border border-[#353436]">
                       <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500/30 to-purple-600/30 flex items-center justify-center flex-shrink-0">
                         <Box className="w-5 h-5 text-purple-400" />
                       </div>
@@ -152,7 +152,7 @@ export default function PlayCanvasShowcasePage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-[#131314] border border-[#353436]">
                       <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-rose-500/30 to-rose-600/30 flex items-center justify-center flex-shrink-0">
                         <Activity className="w-5 h-5 text-rose-400" />
                       </div>
@@ -162,7 +162,7 @@ export default function PlayCanvasShowcasePage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-[#131314] border border-[#353436]">
                       <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500/30 to-cyan-600/30 flex items-center justify-center flex-shrink-0">
                         <Download className="w-5 h-5 text-cyan-400" />
                       </div>
@@ -175,8 +175,8 @@ export default function PlayCanvasShowcasePage() {
                 </div>
 
                 {/* Technical Specs Card */}
-                <div className="bg-[#18181B] border border-[#27272A] rounded-2xl p-6 space-y-4">
-                  <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+                <div className="bg-[#201f20] border border-[#353436] rounded-2xl p-6 space-y-4">
+                  <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
                     <Settings className="w-4 h-4" />
                     <span>Engine Capabilities</span>
                   </div>
@@ -191,7 +191,7 @@ export default function PlayCanvasShowcasePage() {
                       { icon: Download, label: 'Zero Install', desc: 'Runs any modern browser WebXR' },
                     ].map((item, i) => (
                       <div key={i} className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-center flex-shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-center flex-shrink-0">
                           <item.icon className="w-4 h-4 text-purple-400" />
                         </div>
                         <div>
@@ -204,7 +204,7 @@ export default function PlayCanvasShowcasePage() {
                 </div>
 
                 {/* CTA Card */}
-                <div className="bg-gradient-to-br from-purple-950/60 via-[#18181B] to-[#09090B] border border-purple-500/50 rounded-2xl p-6 space-y-4">
+                <div className="bg-gradient-to-br from-purple-950/60 via-[#201f20] to-[#131314] border border-purple-500/50 rounded-2xl p-6 space-y-4">
                   <div className="flex items-center gap-2 text-xs font-mono text-purple-400 font-bold uppercase">
                     <Sparkles className="w-4 h-4" />
                     <span>XR Integration Ready</span>
@@ -231,16 +231,16 @@ export default function PlayCanvasShowcasePage() {
 
               {/* RIGHT PANEL Viewer */}
               <div className="lg:col-span-2">
-                <div className="bg-[#18181B] border border-[#27272A] rounded-2xl overflow-hidden">
+                <div className="bg-[#201f20] border border-[#353436] rounded-2xl overflow-hidden">
                   {/* Viewer Header */}
-                  <div className="px-4 py-3 border-b border-[#27272A] flex items-center justify-between">
+                  <div className="px-4 py-3 border-b border-[#353436] flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Box className="w-5 h-5 text-purple-400" />
                       <span className="font-mono font-bold text-white">PlayCanvas XR Viewer</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs font-mono text-[#71717A]">
-                      <span className="px-2 py-0.5 rounded bg-[#09090B] border border-[#27272A]">WebGL2</span>
-                      <span className="px-2 py-0.5 rounded bg-[#09090B] border border-[#27272A]">@playcanvas/pc v1.81</span>
+                      <span className="px-2 py-0.5 rounded bg-[#131314] border border-[#353436]">WebGL2</span>
+                      <span className="px-2 py-0.5 rounded bg-[#131314] border border-[#353436]">@playcanvas/pc v1.81</span>
                     </div>
                   </div>
 
@@ -248,11 +248,11 @@ export default function PlayCanvasShowcasePage() {
                   <div className="relative h-[600px] w-full">
                     <Suspense
                       fallback={
-                        <div className="absolute inset-0 flex items-center justify-center bg-[#09090B]">
+                        <div className="absolute inset-0 flex items-center justify-center bg-[#131314]">
                           <div className="text-center space-y-3">
                             <Loader2 className="w-8 h-8 text-purple-400 animate-spin mx-auto" />
                             <p className="text-sm font-mono text-[#71717A]">Initializing PlayCanvas Engine...</p>
-                            <p className="text-[10px] text-[#3ECF8E]">Loading @playcanvas/pc WASM module</p>
+                            <p className="text-[10px] text-[#dbfcff]">Loading @playcanvas/pc WASM module</p>
                           </div>
                         </div>
                       }
@@ -268,17 +268,17 @@ export default function PlayCanvasShowcasePage() {
           <>
             {/* CONFIGURATOR VIEW */}
             <div className="space-y-6">
-              <div className="bg-[#18181B] border border-[#27272A] rounded-2xl p-6">
+              <div className="bg-[#201f20] border border-[#353436] rounded-2xl p-6">
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-bold text-white font-display">PlayCanvas Configurator</h2>
-                  <span className="px-3 py-1 rounded-full bg-[#3ECF8E]/20 border border-[#3ECF8E]/40 text-[#3ECF8E] text-xs font-mono font-bold">
+                  <span className="px-3 py-1 rounded-full bg-[#dbfcff]/20 border border-[#dbfcff]/40 text-[#dbfcff] text-xs font-mono font-bold">
                     GLTF Material Editor
                   </span>
                 </div>
               </div>
               <Suspense
                 fallback={
-                  <div className="bg-[#18181B] border border-[#27272A] rounded-2xl p-12 text-center">
+                  <div className="bg-[#201f20] border border-[#353436] rounded-2xl p-12 text-center">
                     <Loader2 className="w-8 h-8 text-purple-400 animate-spin mx-auto mb-3" />
                     <p className="text-sm font-mono text-[#71717A]">Loading PlayCanvas Configurator...</p>
                   </div>
@@ -291,7 +291,7 @@ export default function PlayCanvasShowcasePage() {
         )}
 
         {/* FOOTER INFO */}
-        <section className="py-12 px-6 border-t border-[#27272A] mt-16">
+        <section className="py-12 px-6 border-t border-[#353436] mt-16">
           <div className="max-w-[1400px] mx-auto">
             <div className="grid md:grid-cols-3 gap-8 text-center md:text-left">
               <div className="space-y-2">
@@ -300,7 +300,7 @@ export default function PlayCanvasShowcasePage() {
                 <p className="text-sm text-[#71717A] font-mono">PlayCanvas @playcanvas/pc v1.81</p>
               </div>
               <div className="space-y-2">
-                <Sparkles className="w-10 h-10 text-[#3ECF8E] mx-auto md:mx-0" />
+                <Sparkles className="w-10 h-10 text-[#dbfcff] mx-auto md:mx-0" />
                 <h4 className="font-bold text-white">Runtime</h4>
                 <p className="text-sm text-[#71717A] font-mono">WebGL2 WASM Three.js r167</p>
               </div>

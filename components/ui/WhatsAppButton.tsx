@@ -60,7 +60,7 @@ export function WhatsAppButton({
 
       {/* Chat panel (expanded) */}
       {isOpen && (
-        <div className="w-80 sm:w-96 flex flex-col rounded-2xl overflow-hidden bg-[#0A0A0B]/95 backdrop-blur-2xl border border-white/10 shadow-2xl animate-in slide-in-from-bottom-8 duration-300">
+        <div className="w-80 sm:w-96 flex flex-col rounded-2xl overflow-hidden bg-[#131314]/95 backdrop-blur-2xl border border-white/10 shadow-2xl animate-in slide-in-from-bottom-8 duration-300">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-gradient-to-r from-[#25D366]/10 to-transparent">
             <div className="flex items-center gap-2">
@@ -69,8 +69,8 @@ export function WhatsAppButton({
               </div>
               <div className="flex flex-col">
                 <span className="text-sm font-bold text-white">VizTR Support</span>
-                <span className="text-[10px] text-[#42CF8B] font-mono flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#42CF8B] animate-pulse" />
+                <span className="text-[10px] text-[#54de99] font-mono flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#54de99] animate-pulse" />
                   Online
                 </span>
               </div>

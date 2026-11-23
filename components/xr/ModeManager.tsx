@@ -67,7 +67,7 @@ export default function ModeManager() {
                 px-3 py-1.5 rounded-lg text-xs font-mono flex items-center gap-1.5
                 transition-all cursor-pointer relative
                 ${isActive
-                  ? 'bg-[#3ECF8E] text-black font-bold shadow-md shadow-[#3ECF8E]/20'
+                  ? 'bg-[#dbfcff] text-black font-bold shadow-md shadow-[#dbfcff]/20'
                   : isDisabled
                   ? 'text-[#71717A] cursor-not-allowed opacity-50'
                   : 'text-[#A1A1AA] hover:text-white hover:bg-white/5'}
@@ -87,9 +87,9 @@ export default function ModeManager() {
             </button>
 
             {/* Tooltip */}
-            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[#18181B] border border-[#27272A] rounded text-[9px] font-mono text-[#A1A1AA] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap min-w-[120px]">
+            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[#201f20] border border-[#353436] rounded text-[9px] font-mono text-[#A1A1AA] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap min-w-[120px]">
               {m.engine}
-              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#18181B]"></div>
+              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#201f20]"></div>
             </div>
           </div>
         );

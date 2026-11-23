@@ -109,16 +109,16 @@ export default function SuperAdminCMSManager() {
   return (
     <div className="space-y-6" id="super-admin-cms-workspace">
       {/* HEADER SECTION */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-[#18181B] via-[#151518] to-[#121214] border border-[#27272A] shadow-xl">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-[#201f20] via-[#151518] to-[#131314] border border-[#353436] shadow-xl">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#3ECF8E]/20 border border-[#3ECF8E]/40 flex items-center justify-center text-[#3ECF8E]">
+            <div className="w-7 h-7 rounded-lg bg-[#dbfcff]/20 border border-[#dbfcff]/40 flex items-center justify-center text-[#dbfcff]">
               <Shield className="w-4 h-4" />
             </div>
             <h2 className="text-xl font-bold font-display text-white">
               Super Admin Content Management Engine
             </h2>
-            <span className="px-2 py-0.5 rounded-full bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 text-[#3ECF8E] text-[10px] font-mono font-bold">
+            <span className="px-2 py-0.5 rounded-full bg-[#dbfcff]/10 border border-[#dbfcff]/30 text-[#dbfcff] text-[10px] font-mono font-bold">
               CMS v3.0 ACTIVE
             </span>
           </div>
@@ -136,7 +136,7 @@ export default function SuperAdminCMSManager() {
                 showToast('Reset CMS to default architectural presets.', 'info');
               }
             }}
-            className="px-3 py-1.5 rounded-lg bg-[#27272A]/70 hover:bg-[#27272A] border border-[#3F3F46] text-zinc-300 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="px-3 py-1.5 rounded-lg bg-[#353436]/70 hover:bg-[#353436] border border-[#3F3F46] text-zinc-300 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
             title="Reset to initial studio configuration"
           >
             <RefreshCw className="w-3.5 h-3.5" />
@@ -146,7 +146,7 @@ export default function SuperAdminCMSManager() {
           <Link
             href="/"
             target="_blank"
-            className="px-3.5 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black text-xs font-bold font-mono flex items-center gap-1.5 transition-all shadow-md cursor-pointer"
+            className="px-3.5 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black text-xs font-bold font-mono flex items-center gap-1.5 transition-all shadow-md cursor-pointer"
           >
             <Eye className="w-3.5 h-3.5" />
             <span>Live Website Preview</span>
@@ -155,7 +155,7 @@ export default function SuperAdminCMSManager() {
       </div>
 
       {/* HORIZONTAL TAB NAVIGATION */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-[#27272A] scrollbar-thin">
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-[#353436] scrollbar-thin">
         {[
           { id: 'pages', label: 'Pages & Templates', icon: FileText, count: cms.pages.length },
           { id: 'blog', label: 'Blog Posts', icon: BookOpen, count: cms.blogPosts.length },
@@ -178,8 +178,8 @@ export default function SuperAdminCMSManager() {
               }}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-mono font-semibold transition-all shrink-0 cursor-pointer ${
                 isActive
-                  ? 'bg-[#3ECF8E] text-black shadow-lg shadow-[#3ECF8E]/20'
-                  : 'bg-[#18181B] text-[#A1A1AA] hover:text-white hover:bg-[#27272A] border border-[#27272A]'
+                  ? 'bg-[#dbfcff] text-black shadow-lg shadow-[#dbfcff]/20'
+                  : 'bg-[#201f20] text-[#A1A1AA] hover:text-white hover:bg-[#353436] border border-[#353436]'
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
@@ -187,7 +187,7 @@ export default function SuperAdminCMSManager() {
               {typeof tab.count === 'number' && (
                 <span
                   className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                    isActive ? 'bg-black/20 text-black' : 'bg-[#27272A] text-[#A1A1AA]'
+                    isActive ? 'bg-black/20 text-black' : 'bg-[#353436] text-[#A1A1AA]'
                   }`}
                 >
                   {tab.count}
@@ -203,7 +203,7 @@ export default function SuperAdminCMSManager() {
       {/* ========================================================================= */}
       {activeTab === 'pages' && (
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#18181B] p-3 rounded-xl border border-[#27272A]">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#201f20] p-3 rounded-xl border border-[#353436]">
             <div className="relative w-full sm:w-72">
               <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717A]" />
               <input
@@ -211,7 +211,7 @@ export default function SuperAdminCMSManager() {
                 placeholder="Search pages, slugs or SEO titles..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#09090B] border border-[#27272A] rounded-lg pl-9 pr-3 py-1.5 text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] font-mono"
+                className="w-full bg-[#131314] border border-[#353436] rounded-lg pl-9 pr-3 py-1.5 text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] font-mono"
               />
             </div>
 
@@ -240,7 +240,7 @@ export default function SuperAdminCMSManager() {
                   });
                   setPageModalOpen(true);
                 }}
-                className="px-3.5 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3.5 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Create New Page</span>
@@ -249,9 +249,9 @@ export default function SuperAdminCMSManager() {
           </div>
 
           {/* Quick Template Picker Bar */}
-          <div className="p-3 bg-[#14171F] rounded-xl border border-[#27272A] flex items-center gap-2 flex-wrap">
+          <div className="p-3 bg-[#14171F] rounded-xl border border-[#353436] flex items-center gap-2 flex-wrap">
             <span className="text-[11px] font-mono font-bold text-[#A1A1AA] flex items-center gap-1">
-              <FolderOpen className="w-3.5 h-3.5 text-[#3ECF8E]" />
+              <FolderOpen className="w-3.5 h-3.5 text-[#dbfcff]" />
               <span>Load Page as Template:</span>
             </span>
             {[
@@ -271,19 +271,19 @@ export default function SuperAdminCMSManager() {
                     showToast(`Created new page from template: "${tmpl.label}"`, 'success');
                   }
                 }}
-                className="px-2.5 py-1 rounded-md bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/40 text-xs text-zinc-300 hover:text-white transition-all font-mono flex items-center gap-1"
+                className="px-2.5 py-1 rounded-md bg-[#201f20] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff]/40 text-xs text-zinc-300 hover:text-white transition-all font-mono flex items-center gap-1"
               >
-                <Copy className="w-3 h-3 text-[#3ECF8E]" />
+                <Copy className="w-3 h-3 text-[#dbfcff]" />
                 <span>{tmpl.label}</span>
               </button>
             ))}
           </div>
 
           {/* Pages Table */}
-          <div className="rounded-xl border border-[#27272A] overflow-hidden bg-[#18181B]">
+          <div className="rounded-xl border border-[#353436] overflow-hidden bg-[#201f20]">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs font-mono">
-                <thead className="bg-[#0D0F14] text-[#A1A1AA] uppercase text-[10px] tracking-wider border-b border-[#27272A]">
+                <thead className="bg-[#0D0F14] text-[#A1A1AA] uppercase text-[10px] tracking-wider border-b border-[#353436]">
                   <tr>
                     <th className="py-3 px-4">Page Title & Summary</th>
                     <th className="py-3 px-4">Slug / URL Path</th>
@@ -293,7 +293,7 @@ export default function SuperAdminCMSManager() {
                     <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#27272A]">
+                <tbody className="divide-y divide-[#353436]">
                   {cms.pages
                     .filter(
                       (p) =>
@@ -309,7 +309,7 @@ export default function SuperAdminCMSManager() {
                             {page.contentSummary}
                           </div>
                           {page.templateName && (
-                            <span className="inline-block mt-1 text-[9px] px-1.5 py-0.2 rounded bg-[#09090B] text-cyan-400 border border-cyan-900/50">
+                            <span className="inline-block mt-1 text-[9px] px-1.5 py-0.2 rounded bg-[#131314] text-cyan-400 border border-cyan-900/50">
                               Template: {page.templateName}
                             </span>
                           )}
@@ -317,7 +317,7 @@ export default function SuperAdminCMSManager() {
 
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-1.5">
-                            <span className="text-[#3ECF8E] font-bold">{page.slug}</span>
+                            <span className="text-[#dbfcff] font-bold">{page.slug}</span>
                             <button
                               onClick={() => handleCopy(`https://viztr.studio${page.slug}`, 'URL')}
                               className="text-[#71717A] hover:text-white p-0.5"
@@ -353,7 +353,7 @@ export default function SuperAdminCMSManager() {
                             <div className="flex items-center gap-1.5 text-[11px]">
                               {page.seo.metaTitle && page.seo.metaDescription ? (
                                 <>
-                                  <CheckCircle2 className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-[#dbfcff]" />
                                   <span className="text-zinc-300">SEO Configured</span>
                                 </>
                               ) : (
@@ -379,7 +379,7 @@ export default function SuperAdminCMSManager() {
                             <Link
                               href={page.slug}
                               target="_blank"
-                              className="p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] text-zinc-300 hover:text-white border border-[#27272A]"
+                              className="p-1.5 rounded-lg bg-[#131314] hover:bg-[#353436] text-zinc-300 hover:text-white border border-[#353436]"
                               title="Preview Page"
                             >
                               <ExternalLink className="w-3.5 h-3.5" />
@@ -390,7 +390,7 @@ export default function SuperAdminCMSManager() {
                                 setEditingPage(page);
                                 setPageModalOpen(true);
                               }}
-                              className="p-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] text-[#3ECF8E] hover:text-emerald-300 border border-[#27272A]"
+                              className="p-1.5 rounded-lg bg-[#131314] hover:bg-[#353436] text-[#dbfcff] hover:text-emerald-300 border border-[#353436]"
                               title="Edit Page & SEO"
                             >
                               <Edit3 className="w-3.5 h-3.5" />
@@ -403,7 +403,7 @@ export default function SuperAdminCMSManager() {
                                   showToast('Page deleted.', 'info');
                                 }
                               }}
-                              className="p-1.5 rounded-lg bg-[#09090B] hover:bg-rose-950 text-[#71717A] hover:text-rose-400 border border-[#27272A]"
+                              className="p-1.5 rounded-lg bg-[#131314] hover:bg-rose-950 text-[#71717A] hover:text-rose-400 border border-[#353436]"
                               title="Delete Page"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
@@ -424,7 +424,7 @@ export default function SuperAdminCMSManager() {
       {/* ========================================================================= */}
       {activeTab === 'blog' && (
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#18181B] p-3 rounded-xl border border-[#27272A]">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#201f20] p-3 rounded-xl border border-[#353436]">
             <div className="relative w-full sm:w-72">
               <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717A]" />
               <input
@@ -432,7 +432,7 @@ export default function SuperAdminCMSManager() {
                 placeholder="Search blog articles..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#09090B] border border-[#27272A] rounded-lg pl-9 pr-3 py-1.5 text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] font-mono"
+                className="w-full bg-[#131314] border border-[#353436] rounded-lg pl-9 pr-3 py-1.5 text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] font-mono"
               />
             </div>
 
@@ -462,7 +462,7 @@ export default function SuperAdminCMSManager() {
                 });
                 setBlogModalOpen(true);
               }}
-              className="px-3.5 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Write New Article</span>
@@ -480,10 +480,10 @@ export default function SuperAdminCMSManager() {
               .map((post) => (
                 <div
                   key={post.id}
-                  className="rounded-xl bg-[#18181B] border border-[#27272A] overflow-hidden flex flex-col justify-between hover:border-[#3ECF8E]/40 transition-all group"
+                  className="rounded-xl bg-[#201f20] border border-[#353436] overflow-hidden flex flex-col justify-between hover:border-[#dbfcff]/40 transition-all group"
                 >
                   <div>
-                    <div className="relative h-44 w-full bg-[#09090B]">
+                    <div className="relative h-44 w-full bg-[#131314]">
                         {post.image ? (
                           <Image
                             src={post.image}
@@ -498,7 +498,7 @@ export default function SuperAdminCMSManager() {
                           </div>
                         )}
                       <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
-                        <span className="px-2 py-0.5 rounded bg-black/80 backdrop-blur-md text-[#3ECF8E] text-[10px] font-mono font-bold border border-[#3ECF8E]/30">
+                        <span className="px-2 py-0.5 rounded bg-black/80 backdrop-blur-md text-[#dbfcff] text-[10px] font-mono font-bold border border-[#dbfcff]/30">
                           {post.category}
                         </span>
                         {post.featured && (
@@ -531,13 +531,13 @@ export default function SuperAdminCMSManager() {
                       <p className="text-xs text-[#A1A1AA] line-clamp-2 leading-relaxed">
                         {post.excerpt}
                       </p>
-                      <div className="text-[10px] font-mono text-[#3ECF8E]">
+                      <div className="text-[10px] font-mono text-[#dbfcff]">
                         Slug: /blog/{post.slug}
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-4 pt-0 border-t border-[#27272A]/60 flex items-center justify-between mt-2">
+                  <div className="p-4 pt-0 border-t border-[#353436]/60 flex items-center justify-between mt-2">
                     <span className="text-[11px] text-[#71717A] font-mono">{post.author}</span>
                     <div className="flex items-center gap-1.5">
                       <button
@@ -545,7 +545,7 @@ export default function SuperAdminCMSManager() {
                           setEditingBlog(post);
                           setBlogModalOpen(true);
                         }}
-                        className="p-1.5 rounded bg-[#09090B] hover:bg-[#27272A] text-[#3ECF8E] border border-[#27272A]"
+                        className="p-1.5 rounded bg-[#131314] hover:bg-[#353436] text-[#dbfcff] border border-[#353436]"
                         title="Edit Article"
                       >
                         <Edit3 className="w-3.5 h-3.5" />
@@ -557,7 +557,7 @@ export default function SuperAdminCMSManager() {
                             showToast('Blog article deleted.', 'info');
                           }
                         }}
-                        className="p-1.5 rounded bg-[#09090B] hover:bg-rose-950 text-[#71717A] hover:text-rose-400 border border-[#27272A]"
+                        className="p-1.5 rounded bg-[#131314] hover:bg-rose-950 text-[#71717A] hover:text-rose-400 border border-[#353436]"
                         title="Delete Article"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -575,7 +575,7 @@ export default function SuperAdminCMSManager() {
       {/* ========================================================================= */}
       {activeTab === 'services' && (
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#18181B] p-3 rounded-xl border border-[#27272A]">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#201f20] p-3 rounded-xl border border-[#353436]">
             <div className="text-xs text-[#A1A1AA] font-mono">
               Manage Studio & XR Pipeline service offerings, pricing tiers, and capabilities.
             </div>
@@ -603,7 +603,7 @@ export default function SuperAdminCMSManager() {
                 });
                 setServiceModalOpen(true);
               }}
-              className="px-3.5 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Add Service Offering</span>
@@ -614,11 +614,11 @@ export default function SuperAdminCMSManager() {
             {cms.services.map((service) => (
               <div
                 key={service.id}
-                className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4 hover:border-[#3ECF8E]/40 transition-all"
+                className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4 hover:border-[#dbfcff]/40 transition-all"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1">
-                    <span className="px-2 py-0.5 rounded bg-[#09090B] text-[#3ECF8E] text-[10px] font-mono font-bold border border-[#3ECF8E]/30">
+                    <span className="px-2 py-0.5 rounded bg-[#131314] text-[#dbfcff] text-[10px] font-mono font-bold border border-[#dbfcff]/30">
                       {service.heroBadge}
                     </span>
                     <h3 className="text-base font-bold font-display text-white mt-1">
@@ -635,7 +635,7 @@ export default function SuperAdminCMSManager() {
                         setEditingService(service);
                         setServiceModalOpen(true);
                       }}
-                      className="p-1.5 rounded bg-[#09090B] hover:bg-[#27272A] text-[#3ECF8E] border border-[#27272A]"
+                      className="p-1.5 rounded bg-[#131314] hover:bg-[#353436] text-[#dbfcff] border border-[#353436]"
                     >
                       <Edit3 className="w-3.5 h-3.5" />
                     </button>
@@ -646,7 +646,7 @@ export default function SuperAdminCMSManager() {
                           showToast('Service deleted.', 'info');
                         }
                       }}
-                      className="p-1.5 rounded bg-[#09090B] hover:bg-rose-950 text-[#71717A] hover:text-rose-400 border border-[#27272A]"
+                      className="p-1.5 rounded bg-[#131314] hover:bg-rose-950 text-[#71717A] hover:text-rose-400 border border-[#353436]"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -654,10 +654,10 @@ export default function SuperAdminCMSManager() {
                 </div>
 
                 {/* Specs Grid */}
-                <div className="grid grid-cols-2 gap-2 p-2.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono">
+                <div className="grid grid-cols-2 gap-2 p-2.5 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono">
                   <div>
                     <span className="text-[#71717A] text-[10px] block">Starting Rate:</span>
-                    <span className="text-[#3ECF8E] font-bold">{service.priceStartingFrom}</span>
+                    <span className="text-[#dbfcff] font-bold">{service.priceStartingFrom}</span>
                   </div>
                   <div>
                     <span className="text-[#71717A] text-[10px] block">Turnaround:</span>
@@ -673,7 +673,7 @@ export default function SuperAdminCMSManager() {
                   <ul className="text-xs text-zinc-300 space-y-1">
                     {service.deliverables.slice(0, 3).map((d, i) => (
                       <li key={i} className="flex items-center gap-1.5 text-[11px]">
-                        <CheckCircle2 className="w-3 h-3 text-[#3ECF8E] shrink-0" />
+                        <CheckCircle2 className="w-3 h-3 text-[#dbfcff] shrink-0" />
                         <span className="truncate">{d}</span>
                       </li>
                     ))}
@@ -690,7 +690,7 @@ export default function SuperAdminCMSManager() {
       {/* ========================================================================= */}
       {activeTab === 'projects' && (
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#18181B] p-3 rounded-xl border border-[#27272A]">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#201f20] p-3 rounded-xl border border-[#353436]">
             <div className="text-xs text-[#A1A1AA] font-mono">
               Manage showcase master portfolio projects, high-res galleries, and 3D Draco models.
             </div>
@@ -720,7 +720,7 @@ export default function SuperAdminCMSManager() {
                 });
                 setProjectModalOpen(true);
               }}
-              className="px-3.5 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Add Portfolio Project</span>
@@ -731,10 +731,10 @@ export default function SuperAdminCMSManager() {
             {cms.projects.map((project) => (
               <div
                 key={project.id}
-                className="rounded-xl bg-[#18181B] border border-[#27272A] overflow-hidden group hover:border-[#3ECF8E]/40 transition-all flex flex-col justify-between"
+                className="rounded-xl bg-[#201f20] border border-[#353436] overflow-hidden group hover:border-[#dbfcff]/40 transition-all flex flex-col justify-between"
               >
                 <div>
-                  <div className="relative h-48 w-full bg-[#09090B]">
+                  <div className="relative h-48 w-full bg-[#131314]">
                     <Image
                       src={project.coverImage}
                       alt={project.title}
@@ -743,7 +743,7 @@ export default function SuperAdminCMSManager() {
                       referrerPolicy="no-referrer"
                     />
                     <div className="absolute top-2.5 left-2.5">
-                      <span className="px-2 py-0.5 rounded bg-black/80 backdrop-blur-md text-[#3ECF8E] text-[10px] font-mono font-bold border border-[#3ECF8E]/30">
+                      <span className="px-2 py-0.5 rounded bg-black/80 backdrop-blur-md text-[#dbfcff] text-[10px] font-mono font-bold border border-[#dbfcff]/30">
                         {project.category} · {project.year}
                       </span>
                     </div>
@@ -754,7 +754,7 @@ export default function SuperAdminCMSManager() {
                     <h3 className="font-bold text-sm text-white font-display line-clamp-1">
                       {project.title}
                     </h3>
-                    <div className="text-xs text-[#3ECF8E] font-mono font-semibold">
+                    <div className="text-xs text-[#dbfcff] font-mono font-semibold">
                       {project.client}
                     </div>
                     <p className="text-xs text-[#A1A1AA] line-clamp-2 mt-1">
@@ -763,7 +763,7 @@ export default function SuperAdminCMSManager() {
                   </div>
                 </div>
 
-                <div className="p-4 pt-0 border-t border-[#27272A]/60 flex items-center justify-between mt-3">
+                <div className="p-4 pt-0 border-t border-[#353436]/60 flex items-center justify-between mt-3">
                   <span className="text-[10px] font-mono text-[#71717A]">
                     {project.gallery.length} Images {project.model3dUrl ? '· 3D Model' : ''}
                   </span>
@@ -773,7 +773,7 @@ export default function SuperAdminCMSManager() {
                         setEditingProject(project);
                         setProjectModalOpen(true);
                       }}
-                      className="p-1.5 rounded bg-[#09090B] hover:bg-[#27272A] text-[#3ECF8E] border border-[#27272A]"
+                      className="p-1.5 rounded bg-[#131314] hover:bg-[#353436] text-[#dbfcff] border border-[#353436]"
                     >
                       <Edit3 className="w-3.5 h-3.5" />
                     </button>
@@ -784,7 +784,7 @@ export default function SuperAdminCMSManager() {
                           showToast('Project deleted.', 'info');
                         }
                       }}
-                      className="p-1.5 rounded bg-[#09090B] hover:bg-rose-950 text-[#71717A] hover:text-rose-400 border border-[#27272A]"
+                      className="p-1.5 rounded bg-[#131314] hover:bg-rose-950 text-[#71717A] hover:text-rose-400 border border-[#353436]"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -801,7 +801,7 @@ export default function SuperAdminCMSManager() {
       {/* ========================================================================= */}
       {activeTab === 'testimonials' && (
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#18181B] p-3 rounded-xl border border-[#27272A]">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#201f20] p-3 rounded-xl border border-[#353436]">
             <div className="text-xs text-[#A1A1AA] font-mono">
               Manage client social proof, executive quotes, star ratings, and toggle visibility.
             </div>
@@ -819,7 +819,7 @@ export default function SuperAdminCMSManager() {
                 });
                 setTestimonialModalOpen(true);
               }}
-              className="px-3.5 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Add Testimonial</span>
@@ -832,8 +832,8 @@ export default function SuperAdminCMSManager() {
                 key={test.id}
                 className={`p-4 rounded-xl border transition-all flex flex-col justify-between space-y-3 ${
                   test.isVisible
-                    ? 'bg-[#18181B] border-[#27272A]'
-                    : 'bg-[#121214] border-zinc-800 opacity-60'
+                    ? 'bg-[#201f20] border-[#353436]'
+                    : 'bg-[#131314] border-zinc-800 opacity-60'
                 }`}
               >
                 <div className="space-y-2">
@@ -863,7 +863,7 @@ export default function SuperAdminCMSManager() {
                   </p>
                 </div>
 
-                <div className="pt-2 border-t border-[#27272A] flex items-center justify-between">
+                <div className="pt-2 border-t border-[#353436] flex items-center justify-between">
                   <div>
                     <div className="font-bold text-white text-xs font-display">{test.clientName}</div>
                     <div className="text-[10px] text-[#A1A1AA] font-mono">
@@ -877,7 +877,7 @@ export default function SuperAdminCMSManager() {
                         setEditingTestimonial(test);
                         setTestimonialModalOpen(true);
                       }}
-                      className="p-1 rounded bg-[#09090B] hover:bg-[#27272A] text-[#3ECF8E] border border-[#27272A]"
+                      className="p-1 rounded bg-[#131314] hover:bg-[#353436] text-[#dbfcff] border border-[#353436]"
                     >
                       <Edit3 className="w-3.5 h-3.5" />
                     </button>
@@ -888,7 +888,7 @@ export default function SuperAdminCMSManager() {
                           showToast('Testimonial removed.', 'info');
                         }
                       }}
-                      className="p-1 rounded bg-[#09090B] hover:bg-rose-950 text-[#71717A] hover:text-rose-400 border border-[#27272A]"
+                      className="p-1 rounded bg-[#131314] hover:bg-rose-950 text-[#71717A] hover:text-rose-400 border border-[#353436]"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -908,9 +908,9 @@ export default function SuperAdminCMSManager() {
           {/* Top 3 Config Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             {/* 1. PALETTE CUSTOMIZER */}
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
               <div className="flex items-center gap-2">
-                <Palette className="w-4 h-4 text-[#3ECF8E]" />
+                <Palette className="w-4 h-4 text-[#dbfcff]" />
                 <h3 className="font-bold text-sm text-white font-display">
                   Color Palette Customizer
                 </h3>
@@ -923,7 +923,7 @@ export default function SuperAdminCMSManager() {
                 <div>
                   <label className="text-[11px] text-[#A1A1AA] flex items-center justify-between mb-1">
                     <span>Primary Accent Color</span>
-                    <span className="text-[#3ECF8E] font-bold">
+                    <span className="text-[#dbfcff] font-bold">
                       {cms.themeCustomization.colorPalette.primary}
                     </span>
                   </label>
@@ -939,7 +939,7 @@ export default function SuperAdminCMSManager() {
                           },
                         })
                       }
-                      className="w-8 h-8 rounded border border-[#27272A] bg-transparent cursor-pointer"
+                      className="w-8 h-8 rounded border border-[#353436] bg-transparent cursor-pointer"
                     />
                     <input
                       type="text"
@@ -952,7 +952,7 @@ export default function SuperAdminCMSManager() {
                           },
                         })
                       }
-                      className="flex-1 bg-[#09090B] border border-[#27272A] rounded px-2.5 py-1 text-xs text-white"
+                      className="flex-1 bg-[#131314] border border-[#353436] rounded px-2.5 py-1 text-xs text-white"
                     />
                   </div>
                 </div>
@@ -976,7 +976,7 @@ export default function SuperAdminCMSManager() {
                           },
                         })
                       }
-                      className="w-8 h-8 rounded border border-[#27272A] bg-transparent cursor-pointer"
+                      className="w-8 h-8 rounded border border-[#353436] bg-transparent cursor-pointer"
                     />
                     <input
                       type="text"
@@ -989,7 +989,7 @@ export default function SuperAdminCMSManager() {
                           },
                         })
                       }
-                      className="flex-1 bg-[#09090B] border border-[#27272A] rounded px-2.5 py-1 text-xs text-white"
+                      className="flex-1 bg-[#131314] border border-[#353436] rounded px-2.5 py-1 text-xs text-white"
                     />
                   </div>
                 </div>
@@ -1013,7 +1013,7 @@ export default function SuperAdminCMSManager() {
                           },
                         })
                       }
-                      className="w-8 h-8 rounded border border-[#27272A] bg-transparent cursor-pointer"
+                      className="w-8 h-8 rounded border border-[#353436] bg-transparent cursor-pointer"
                     />
                     <input
                       type="text"
@@ -1026,7 +1026,7 @@ export default function SuperAdminCMSManager() {
                           },
                         })
                       }
-                      className="flex-1 bg-[#09090B] border border-[#27272A] rounded px-2.5 py-1 text-xs text-white"
+                      className="flex-1 bg-[#131314] border border-[#353436] rounded px-2.5 py-1 text-xs text-white"
                     />
                   </div>
                 </div>
@@ -1034,9 +1034,9 @@ export default function SuperAdminCMSManager() {
             </div>
 
             {/* 2. TYPOGRAPHY PAIRINGS */}
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
               <div className="flex items-center gap-2">
-                <FileCode className="w-4 h-4 text-[#3ECF8E]" />
+                <FileCode className="w-4 h-4 text-[#dbfcff]" />
                 <h3 className="font-bold text-sm text-white font-display">
                   Typography & Font Pairings
                 </h3>
@@ -1060,7 +1060,7 @@ export default function SuperAdminCMSManager() {
                         },
                       })
                     }
-                    className="w-full bg-[#09090B] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full bg-[#131314] border border-[#353436] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     <option value="Space Grotesk">Space Grotesk (Default CAD Monospace)</option>
                     <option value="Cabinet Grotesk">Cabinet Grotesk (Modern Architectural)</option>
@@ -1085,7 +1085,7 @@ export default function SuperAdminCMSManager() {
                         },
                       })
                     }
-                    className="w-full bg-[#09090B] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full bg-[#131314] border border-[#353436] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     <option value="Plus Jakarta Sans">Plus Jakarta Sans (Crisp Body)</option>
                     <option value="Inter">Inter (Standard Enterprise)</option>
@@ -1108,7 +1108,7 @@ export default function SuperAdminCMSManager() {
                         },
                       })
                     }
-                    className="w-full bg-[#09090B] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full bg-[#131314] border border-[#353436] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     <option value="High (1.333)">High Contrast (Perfect Fourth 1.333)</option>
                     <option value="Medium (1.25)">Medium Contrast (Major Third 1.250)</option>
@@ -1119,9 +1119,9 @@ export default function SuperAdminCMSManager() {
             </div>
 
             {/* 3. LAYOUT PRESETS */}
-            <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+            <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
               <div className="flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4 text-[#3ECF8E]" />
+                <SlidersHorizontal className="w-4 h-4 text-[#dbfcff]" />
                 <h3 className="font-bold text-sm text-white font-display">
                   Layout Density Presets
                 </h3>
@@ -1155,13 +1155,13 @@ export default function SuperAdminCMSManager() {
                       }}
                       className={`w-full p-3 rounded-xl text-left border transition-all cursor-pointer ${
                         isSelected
-                          ? 'bg-[#09090B] border-[#3ECF8E] text-white font-bold'
-                          : 'bg-[#09090B]/60 border-[#27272A] text-zinc-400 hover:text-white'
+                          ? 'bg-[#131314] border-[#dbfcff] text-white font-bold'
+                          : 'bg-[#131314]/60 border-[#353436] text-zinc-400 hover:text-white'
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <span>{mode.id}</span>
-                        {isSelected && <Check className="w-3.5 h-3.5 text-[#3ECF8E]" />}
+                        {isSelected && <Check className="w-3.5 h-3.5 text-[#dbfcff]" />}
                       </div>
                       <p className="text-[10px] text-[#71717A] mt-1 font-normal">
                         {mode.desc}
@@ -1174,11 +1174,11 @@ export default function SuperAdminCMSManager() {
           </div>
 
           {/* SECTION REORDERING & VISIBILITY TOGGLE ENGINE */}
-          <div className="p-5 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#27272A] pb-3">
+          <div className="p-5 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#353436] pb-3">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-[#3ECF8E]" />
+                  <Layers className="w-4 h-4 text-[#dbfcff]" />
                   <h3 className="font-bold text-sm text-white font-display">
                     Homepage Section Order & Visibility Controller
                   </h3>
@@ -1188,7 +1188,7 @@ export default function SuperAdminCMSManager() {
                 </p>
               </div>
 
-              <div className="text-xs font-mono text-[#3ECF8E] bg-[#09090B] px-3 py-1 rounded-lg border border-[#27272A]">
+              <div className="text-xs font-mono text-[#dbfcff] bg-[#131314] px-3 py-1 rounded-lg border border-[#353436]">
                 {cms.themeCustomization.sectionOrder.filter((s) => s.isVisible).length} /{' '}
                 {cms.themeCustomization.sectionOrder.length} Active Sections
               </div>
@@ -1200,12 +1200,12 @@ export default function SuperAdminCMSManager() {
                   key={section.id}
                   className={`p-3 rounded-xl border flex items-center justify-between transition-all ${
                     section.isVisible
-                      ? 'bg-[#09090B] border-[#27272A] hover:border-[#3ECF8E]/40'
-                      : 'bg-[#09090B]/40 border-zinc-800 opacity-50'
+                      ? 'bg-[#131314] border-[#353436] hover:border-[#dbfcff]/40'
+                      : 'bg-[#131314]/40 border-zinc-800 opacity-50'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded bg-[#18181B] text-[#A1A1AA] text-xs font-mono font-bold flex items-center justify-center border border-[#27272A]">
+                    <span className="w-6 h-6 rounded bg-[#201f20] text-[#A1A1AA] text-xs font-mono font-bold flex items-center justify-center border border-[#353436]">
                       {idx + 1}
                     </span>
                     <div>
@@ -1220,7 +1220,7 @@ export default function SuperAdminCMSManager() {
 
                   <div className="flex items-center gap-2">
                     {/* Move Up / Down Buttons */}
-                    <div className="flex items-center gap-1 bg-[#18181B] p-1 rounded-lg border border-[#27272A]">
+                    <div className="flex items-center gap-1 bg-[#201f20] p-1 rounded-lg border border-[#353436]">
                       <button
                         disabled={idx === 0}
                         onClick={() => cms.reorderSections(idx, idx - 1)}
@@ -1247,7 +1247,7 @@ export default function SuperAdminCMSManager() {
                       }}
                       className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
                         section.isVisible
-                          ? 'bg-emerald-950 text-[#3ECF8E] border border-emerald-800 hover:bg-emerald-900'
+                          ? 'bg-emerald-950 text-[#dbfcff] border border-emerald-800 hover:bg-emerald-900'
                           : 'bg-zinc-800 text-zinc-400 border border-zinc-700 hover:bg-zinc-700'
                       }`}
                     >
@@ -1276,7 +1276,7 @@ export default function SuperAdminCMSManager() {
       {/* ========================================================================= */}
       {activeTab === 'navigation' && (
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#18181B] p-3 rounded-xl border border-[#27272A]">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#201f20] p-3 rounded-xl border border-[#353436]">
             <div className="text-xs text-[#A1A1AA] font-mono">
               Configure Header and Footer navigation menus, dropdown hierarchy, badges, and targets.
             </div>
@@ -1294,7 +1294,7 @@ export default function SuperAdminCMSManager() {
                 });
                 setNavModalOpen(true);
               }}
-              className="px-3.5 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Add Navigation Link</span>
@@ -1305,11 +1305,11 @@ export default function SuperAdminCMSManager() {
             {cms.navigationMenu.map((item, idx) => (
               <div
                 key={item.id}
-                className="p-4 rounded-xl bg-[#18181B] border border-[#27272A] space-y-3 hover:border-[#3ECF8E]/40 transition-all"
+                className="p-4 rounded-xl bg-[#201f20] border border-[#353436] space-y-3 hover:border-[#dbfcff]/40 transition-all"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1 bg-[#09090B] p-1 rounded-lg border border-[#27272A]">
+                    <div className="flex items-center gap-1 bg-[#131314] p-1 rounded-lg border border-[#353436]">
                       <button
                         disabled={idx === 0}
                         onClick={() => cms.reorderNavItems(idx, idx - 1)}
@@ -1332,7 +1332,7 @@ export default function SuperAdminCMSManager() {
                           {item.label}
                         </span>
                         {item.badge && (
-                          <span className="px-1.5 py-0.2 rounded bg-[#09090B] text-[#3ECF8E] text-[9px] font-mono border border-[#3ECF8E]/30">
+                          <span className="px-1.5 py-0.2 rounded bg-[#131314] text-[#dbfcff] text-[9px] font-mono border border-[#dbfcff]/30">
                             {item.badge}
                           </span>
                         )}
@@ -1340,7 +1340,7 @@ export default function SuperAdminCMSManager() {
                           <span className="text-[10px] text-zinc-500 font-mono">(External)</span>
                         )}
                       </div>
-                      <span className="text-xs text-[#3ECF8E] font-mono">{item.url}</span>
+                      <span className="text-xs text-[#dbfcff] font-mono">{item.url}</span>
                     </div>
                   </div>
 
@@ -1362,7 +1362,7 @@ export default function SuperAdminCMSManager() {
                         setEditingNav(item);
                         setNavModalOpen(true);
                       }}
-                      className="p-1.5 rounded bg-[#09090B] hover:bg-[#27272A] text-[#3ECF8E] border border-[#27272A]"
+                      className="p-1.5 rounded bg-[#131314] hover:bg-[#353436] text-[#dbfcff] border border-[#353436]"
                     >
                       <Edit3 className="w-3.5 h-3.5" />
                     </button>
@@ -1374,7 +1374,7 @@ export default function SuperAdminCMSManager() {
                           showToast('Navigation item deleted.', 'info');
                         }
                       }}
-                      className="p-1.5 rounded bg-[#09090B] hover:bg-rose-950 text-[#71717A] hover:text-rose-400 border border-[#27272A]"
+                      className="p-1.5 rounded bg-[#131314] hover:bg-rose-950 text-[#71717A] hover:text-rose-400 border border-[#353436]"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -1383,7 +1383,7 @@ export default function SuperAdminCMSManager() {
 
                 {/* Submenu Children preview */}
                 {item.children && item.children.length > 0 && (
-                  <div className="pl-6 pt-2 border-t border-[#27272A] space-y-1.5">
+                  <div className="pl-6 pt-2 border-t border-[#353436] space-y-1.5">
                     <span className="text-[10px] font-mono text-[#71717A] uppercase font-bold">
                       Submenu Dropdown Items ({item.children.length})
                     </span>
@@ -1391,16 +1391,16 @@ export default function SuperAdminCMSManager() {
                       {item.children.map((child) => (
                         <div
                           key={child.id}
-                          className="p-2 rounded bg-[#09090B] border border-[#27272A] text-xs font-mono flex items-center justify-between"
+                          className="p-2 rounded bg-[#131314] border border-[#353436] text-xs font-mono flex items-center justify-between"
                         >
                           <div>
                             <div className="font-bold text-white text-[11px]">{child.label}</div>
-                            <div className="text-[10px] text-[#3ECF8E] truncate max-w-[140px]">
+                            <div className="text-[10px] text-[#dbfcff] truncate max-w-[140px]">
                               {child.url}
                             </div>
                           </div>
                           {child.badge && (
-                            <span className="text-[8px] px-1 rounded bg-[#18181B] text-cyan-400 border border-cyan-800">
+                            <span className="text-[8px] px-1 rounded bg-[#201f20] text-cyan-400 border border-cyan-800">
                               {child.badge}
                             </span>
                           )}
@@ -1420,7 +1420,7 @@ export default function SuperAdminCMSManager() {
       {/* ========================================================================= */}
       {activeTab === 'media' && (
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#18181B] p-3 rounded-xl border border-[#27272A]">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#201f20] p-3 rounded-xl border border-[#353436]">
             <div className="relative w-full sm:w-72">
               <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717A]" />
               <input
@@ -1428,21 +1428,21 @@ export default function SuperAdminCMSManager() {
                 placeholder="Search assets, formats, tags..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#09090B] border border-[#27272A] rounded-lg pl-9 pr-3 py-1.5 text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] font-mono"
+                className="w-full bg-[#131314] border border-[#353436] rounded-lg pl-9 pr-3 py-1.5 text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] font-mono"
               />
             </div>
 
             <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-              <div className="flex items-center bg-[#09090B] p-1 rounded-lg border border-[#27272A]">
+              <div className="flex items-center bg-[#131314] p-1 rounded-lg border border-[#353436]">
                 <button
                   onClick={() => setMediaViewMode('grid')}
-                  className={`p-1.5 rounded ${mediaViewMode === 'grid' ? 'bg-[#3ECF8E] text-black font-bold' : 'text-zinc-400'}`}
+                  className={`p-1.5 rounded ${mediaViewMode === 'grid' ? 'bg-[#dbfcff] text-black font-bold' : 'text-zinc-400'}`}
                 >
                   <LayoutGrid className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => setMediaViewMode('table')}
-                  className={`p-1.5 rounded ${mediaViewMode === 'table' ? 'bg-[#3ECF8E] text-black font-bold' : 'text-zinc-400'}`}
+                  className={`p-1.5 rounded ${mediaViewMode === 'table' ? 'bg-[#dbfcff] text-black font-bold' : 'text-zinc-400'}`}
                 >
                   <List className="w-3.5 h-3.5" />
                 </button>
@@ -1450,7 +1450,7 @@ export default function SuperAdminCMSManager() {
 
               <button
                 onClick={() => setUploadMediaModalOpen(true)}
-                className="px-3.5 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3.5 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <Upload className="w-3.5 h-3.5" />
                 <span>Upload Media Asset</span>
@@ -1471,10 +1471,10 @@ export default function SuperAdminCMSManager() {
                 .map((item) => (
                   <div
                     key={item.id}
-                    className="rounded-xl bg-[#18181B] border border-[#27272A] overflow-hidden flex flex-col justify-between hover:border-[#3ECF8E]/40 transition-all group"
+                    className="rounded-xl bg-[#201f20] border border-[#353436] overflow-hidden flex flex-col justify-between hover:border-[#dbfcff]/40 transition-all group"
                   >
                     <div>
-                      <div className="relative h-40 w-full bg-[#09090B] flex items-center justify-center">
+                      <div className="relative h-40 w-full bg-[#131314] flex items-center justify-center">
                         {item.type === 'image' ? (
                           <Image
                             src={item.url}
@@ -1496,7 +1496,7 @@ export default function SuperAdminCMSManager() {
                         )}
 
                         <div className="absolute top-2 left-2 flex items-center gap-1">
-                          <span className="px-1.5 py-0.5 rounded bg-black/80 backdrop-blur-md text-[#3ECF8E] text-[9px] font-mono font-bold border border-[#3ECF8E]/30">
+                          <span className="px-1.5 py-0.5 rounded bg-black/80 backdrop-blur-md text-[#dbfcff] text-[9px] font-mono font-bold border border-[#dbfcff]/30">
                             {item.format}
                           </span>
                           {item.isPlaceholder && (
@@ -1519,7 +1519,7 @@ export default function SuperAdminCMSManager() {
                           {item.tags.map((tag, i) => (
                             <span
                               key={i}
-                              className="text-[9px] px-1 rounded bg-[#09090B] text-[#A1A1AA] border border-[#27272A]"
+                              className="text-[9px] px-1 rounded bg-[#131314] text-[#A1A1AA] border border-[#353436]"
                             >
                               #{tag}
                             </span>
@@ -1528,10 +1528,10 @@ export default function SuperAdminCMSManager() {
                       </div>
                     </div>
 
-                    <div className="p-3 pt-0 border-t border-[#27272A]/60 flex items-center justify-between mt-2">
+                    <div className="p-3 pt-0 border-t border-[#353436]/60 flex items-center justify-between mt-2">
                       <button
                         onClick={() => handleCopy(item.url, 'CDN URL')}
-                        className="text-[10px] text-[#3ECF8E] font-mono font-bold hover:underline flex items-center gap-1"
+                        className="text-[10px] text-[#dbfcff] font-mono font-bold hover:underline flex items-center gap-1"
                       >
                         <Copy className="w-3 h-3" />
                         <span>Copy URL</span>
@@ -1551,7 +1551,7 @@ export default function SuperAdminCMSManager() {
                           className={`p-1.5 rounded text-xs font-mono ${
                             item.isPlaceholder
                               ? 'bg-amber-950 text-amber-400 hover:bg-amber-900 border border-amber-800'
-                              : 'bg-[#09090B] text-zinc-400 hover:text-white border border-[#27272A]'
+                              : 'bg-[#131314] text-zinc-400 hover:text-white border border-[#353436]'
                           }`}
                           title={item.isPlaceholder ? 'Restore original asset' : 'Replace with standard placeholder asset'}
                         >
@@ -1565,7 +1565,7 @@ export default function SuperAdminCMSManager() {
                               showToast('Media asset removed.', 'info');
                             }
                           }}
-                          className="p-1.5 rounded bg-[#09090B] hover:bg-rose-950 text-[#71717A] hover:text-rose-400 border border-[#27272A]"
+                          className="p-1.5 rounded bg-[#131314] hover:bg-rose-950 text-[#71717A] hover:text-rose-400 border border-[#353436]"
                           title="Delete media"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -1579,9 +1579,9 @@ export default function SuperAdminCMSManager() {
 
           {/* Media Table View */}
           {mediaViewMode === 'table' && (
-            <div className="rounded-xl border border-[#27272A] overflow-hidden bg-[#18181B]">
+            <div className="rounded-xl border border-[#353436] overflow-hidden bg-[#201f20]">
               <table className="w-full text-left text-xs font-mono">
-                <thead className="bg-[#0D0F14] text-[#A1A1AA] uppercase text-[10px] border-b border-[#27272A]">
+                <thead className="bg-[#0D0F14] text-[#A1A1AA] uppercase text-[10px] border-b border-[#353436]">
                   <tr>
                     <th className="py-3 px-4">Asset Name</th>
                     <th className="py-3 px-4">Type & Format</th>
@@ -1591,13 +1591,13 @@ export default function SuperAdminCMSManager() {
                     <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#27272A]">
+                <tbody className="divide-y divide-[#353436]">
                   {cms.mediaLibrary.map((item) => (
                     <tr key={item.id} className="hover:bg-[#1F2128]">
                       <td className="py-3 px-4 font-bold text-white max-w-xs truncate">
                         {item.name}
                       </td>
-                      <td className="py-3 px-4 text-[#3ECF8E]">{item.format}</td>
+                      <td className="py-3 px-4 text-[#dbfcff]">{item.format}</td>
                       <td className="py-3 px-4 text-zinc-300">
                         {(item.sizeBytes / (1024 * 1024)).toFixed(1)} MB
                       </td>
@@ -1616,20 +1616,20 @@ export default function SuperAdminCMSManager() {
                       <td className="py-3 px-4 text-right space-x-1.5">
                         <button
                           onClick={() => handleCopy(item.url, 'URL')}
-                          className="p-1 rounded bg-[#09090B] text-[#3ECF8E] border border-[#27272A]"
+                          className="p-1 rounded bg-[#131314] text-[#dbfcff] border border-[#353436]"
                         >
                           <Copy className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => cms.replaceWithPlaceholder(item.id)}
-                          className="p-1 rounded bg-[#09090B] text-zinc-300 border border-[#27272A]"
+                          className="p-1 rounded bg-[#131314] text-zinc-300 border border-[#353436]"
                           title="Replace with placeholder"
                         >
                           <RefreshCw className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => cms.deleteMediaItem(item.id)}
-                          className="p-1 rounded bg-[#09090B] text-rose-400 border border-[#27272A]"
+                          className="p-1 rounded bg-[#131314] text-rose-400 border border-[#353436]"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -1648,7 +1648,7 @@ export default function SuperAdminCMSManager() {
       {/* ========================================================================= */}
       {activeTab === 'social' && (
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#18181B] p-3 rounded-xl border border-[#27272A]">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#201f20] p-3 rounded-xl border border-[#353436]">
             <div className="text-xs text-[#A1A1AA] font-mono">
               Manage social networks displayed across Footer, Header, and Studio Contact channels.
             </div>
@@ -1664,7 +1664,7 @@ export default function SuperAdminCMSManager() {
                 });
                 setSocialModalOpen(true);
               }}
-              className="px-3.5 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Add Social Channel</span>
@@ -1677,20 +1677,20 @@ export default function SuperAdminCMSManager() {
                 key={link.id}
                 className={`p-4 rounded-xl border transition-all flex flex-col justify-between space-y-3 ${
                   link.isVisible
-                    ? 'bg-[#18181B] border-[#27272A]'
-                    : 'bg-[#121214] border-zinc-800 opacity-60'
+                    ? 'bg-[#201f20] border-[#353436]'
+                    : 'bg-[#131314] border-zinc-800 opacity-60'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-center text-[#3ECF8E] font-bold text-xs">
+                    <div className="w-8 h-8 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-center text-[#dbfcff] font-bold text-xs">
                       {link.platform.charAt(0)}
                     </div>
                     <div>
                       <div className="font-bold text-sm text-white font-display">
                         {link.platform}
                       </div>
-                      <div className="text-[11px] text-[#3ECF8E] font-mono truncate max-w-[160px]">
+                      <div className="text-[11px] text-[#dbfcff] font-mono truncate max-w-[160px]">
                         {link.handle}
                       </div>
                     </div>
@@ -1703,7 +1703,7 @@ export default function SuperAdminCMSManager() {
                     }}
                     className={`px-2.5 py-1 rounded text-xs font-mono font-bold flex items-center gap-1 transition-colors cursor-pointer ${
                       link.isVisible
-                        ? 'bg-emerald-950 text-[#3ECF8E] border border-emerald-800 hover:bg-emerald-900'
+                        ? 'bg-emerald-950 text-[#dbfcff] border border-emerald-800 hover:bg-emerald-900'
                         : 'bg-zinc-800 text-zinc-400 border border-zinc-700 hover:bg-zinc-700'
                     }`}
                   >
@@ -1716,8 +1716,8 @@ export default function SuperAdminCMSManager() {
                   {link.url}
                 </div>
 
-                <div className="pt-2 border-t border-[#27272A] flex items-center justify-between">
-                  <div className="flex items-center gap-1 bg-[#09090B] p-1 rounded-lg border border-[#27272A]">
+                <div className="pt-2 border-t border-[#353436] flex items-center justify-between">
+                  <div className="flex items-center gap-1 bg-[#131314] p-1 rounded-lg border border-[#353436]">
                     <button
                       disabled={idx === 0}
                       onClick={() => cms.reorderSocialLinks(idx, idx - 1)}
@@ -1739,7 +1739,7 @@ export default function SuperAdminCMSManager() {
                       href={link.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="p-1.5 rounded bg-[#09090B] hover:bg-[#27272A] text-zinc-300 hover:text-white border border-[#27272A]"
+                      className="p-1.5 rounded bg-[#131314] hover:bg-[#353436] text-zinc-300 hover:text-white border border-[#353436]"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
@@ -1748,7 +1748,7 @@ export default function SuperAdminCMSManager() {
                         setEditingSocial(link);
                         setSocialModalOpen(true);
                       }}
-                      className="p-1.5 rounded bg-[#09090B] hover:bg-[#27272A] text-[#3ECF8E] border border-[#27272A]"
+                      className="p-1.5 rounded bg-[#131314] hover:bg-[#353436] text-[#dbfcff] border border-[#353436]"
                     >
                       <Edit3 className="w-3.5 h-3.5" />
                     </button>
@@ -1759,7 +1759,7 @@ export default function SuperAdminCMSManager() {
                           showToast('Social link removed.', 'info');
                         }
                       }}
-                      className="p-1.5 rounded bg-[#09090B] hover:bg-rose-950 text-[#71717A] hover:text-rose-400 border border-[#27272A]"
+                      className="p-1.5 rounded bg-[#131314] hover:bg-rose-950 text-[#71717A] hover:text-rose-400 border border-[#353436]"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -1776,10 +1776,10 @@ export default function SuperAdminCMSManager() {
       {/* ========================================================================= */}
       {pageModalOpen && editingPage && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#18181B] border border-[#27272A] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 space-y-5 shadow-2xl text-white font-mono">
-            <div className="flex items-center justify-between border-b border-[#27272A] pb-4">
+          <div className="bg-[#201f20] border border-[#353436] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 space-y-5 shadow-2xl text-white font-mono">
+            <div className="flex items-center justify-between border-b border-[#353436] pb-4">
               <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-[#3ECF8E]" />
+                <FileText className="w-5 h-5 text-[#dbfcff]" />
                 <h3 className="text-base font-bold font-display text-white">
                   {editingPage.id ? 'Edit Page & SEO Metadata' : 'Create New Page'}
                 </h3>
@@ -1805,7 +1805,7 @@ export default function SuperAdminCMSManager() {
                       slug: editingPage.id ? editingPage.slug : `/${e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`,
                     })
                   }
-                  className="w-full bg-[#09090B] border border-[#27272A] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#3ECF8E]"
+                  className="w-full bg-[#131314] border border-[#353436] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#dbfcff]"
                   placeholder="e.g. Luxury Penthouse Visualizations"
                 />
               </div>
@@ -1817,7 +1817,7 @@ export default function SuperAdminCMSManager() {
                     type="text"
                     value={editingPage.slug}
                     onChange={(e) => setEditingPage({ ...editingPage, slug: e.target.value })}
-                    className="w-full bg-[#09090B] border border-[#27272A] rounded-lg px-3 py-2 text-[#3ECF8E] focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full bg-[#131314] border border-[#353436] rounded-lg px-3 py-2 text-[#dbfcff] focus:outline-none focus:border-[#dbfcff]"
                     placeholder="/custom-path"
                   />
                 </div>
@@ -1829,7 +1829,7 @@ export default function SuperAdminCMSManager() {
                     onChange={(e) =>
                       setEditingPage({ ...editingPage, status: e.target.value as any })
                     }
-                    className="w-full bg-[#09090B] border border-[#27272A] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#3ECF8E]"
+                    className="w-full bg-[#131314] border border-[#353436] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#dbfcff]"
                   >
                     <option value="draft">Draft (Private)</option>
                     <option value="published">Published (Live Index)</option>
@@ -1844,14 +1844,14 @@ export default function SuperAdminCMSManager() {
                   rows={2}
                   value={editingPage.contentSummary}
                   onChange={(e) => setEditingPage({ ...editingPage, contentSummary: e.target.value })}
-                  className="w-full bg-[#09090B] border border-[#27272A] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#3ECF8E]"
+                  className="w-full bg-[#131314] border border-[#353436] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#dbfcff]"
                   placeholder="Brief overview of the architectural page purpose..."
                 />
               </div>
 
               {/* SEO CONTROLS FIELDSET */}
-              <div className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] space-y-3">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[#3ECF8E]">
+              <div className="p-4 rounded-xl bg-[#131314] border border-[#353436] space-y-3">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-[#dbfcff]">
                   <Globe className="w-4 h-4" />
                   <span>SEO & Metadata Controls</span>
                 </div>
@@ -1869,7 +1869,7 @@ export default function SuperAdminCMSManager() {
                         seo: { ...editingPage.seo, metaTitle: e.target.value },
                       })
                     }
-                    className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-1.5 text-xs text-white"
+                    className="w-full bg-[#201f20] border border-[#353436] rounded px-3 py-1.5 text-xs text-white"
                     placeholder="e.g. 8K Luxury Architectural CGI | VizTR Studio"
                   />
                 </div>
@@ -1887,7 +1887,7 @@ export default function SuperAdminCMSManager() {
                         seo: { ...editingPage.seo, metaDescription: e.target.value },
                       })
                     }
-                    className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-1.5 text-xs text-white"
+                    className="w-full bg-[#201f20] border border-[#353436] rounded px-3 py-1.5 text-xs text-white"
                     placeholder="Concise overview for search engine result snippets..."
                   />
                 </div>
@@ -1908,18 +1908,18 @@ export default function SuperAdminCMSManager() {
                         },
                       })
                     }
-                    className="w-full bg-[#18181B] border border-[#27272A] rounded px-3 py-1.5 text-xs text-white"
+                    className="w-full bg-[#201f20] border border-[#353436] rounded px-3 py-1.5 text-xs text-white"
                     placeholder="exterior rendering, 3d archviz, webxr"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#27272A]">
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#353436]">
               <button
                 type="button"
                 onClick={() => setPageModalOpen(false)}
-                className="px-4 py-2 rounded-lg bg-[#27272A] text-white text-xs font-bold"
+                className="px-4 py-2 rounded-lg bg-[#353436] text-white text-xs font-bold"
               >
                 Cancel
               </button>
@@ -1939,7 +1939,7 @@ export default function SuperAdminCMSManager() {
                   }
                   setPageModalOpen(false);
                 }}
-                className="px-5 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black text-xs font-bold flex items-center gap-1.5"
+                className="px-5 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black text-xs font-bold flex items-center gap-1.5"
               >
                 <Save className="w-3.5 h-3.5" />
                 <span>Save Page & SEO</span>
@@ -1954,8 +1954,8 @@ export default function SuperAdminCMSManager() {
       {/* ========================================================================= */}
       {blogModalOpen && editingBlog && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#18181B] border border-[#27272A] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 space-y-4 shadow-2xl text-white font-mono">
-            <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+          <div className="bg-[#201f20] border border-[#353436] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 space-y-4 shadow-2xl text-white font-mono">
+            <div className="flex items-center justify-between border-b border-[#353436] pb-3">
               <h3 className="text-base font-bold font-display text-white">
                 {editingBlog.id ? 'Edit Blog Article' : 'Write New Article'}
               </h3>
@@ -1971,7 +1971,7 @@ export default function SuperAdminCMSManager() {
                   type="text"
                   value={editingBlog.title}
                   onChange={(e) => setEditingBlog({ ...editingBlog, title: e.target.value })}
-                  className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-white"
+                  className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-white"
                 />
               </div>
 
@@ -1982,7 +1982,7 @@ export default function SuperAdminCMSManager() {
                     type="text"
                     value={editingBlog.category}
                     onChange={(e) => setEditingBlog({ ...editingBlog, category: e.target.value })}
-                    className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-white"
+                    className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-white"
                   />
                 </div>
                 <div>
@@ -1991,7 +1991,7 @@ export default function SuperAdminCMSManager() {
                     type="text"
                     value={editingBlog.slug}
                     onChange={(e) => setEditingBlog({ ...editingBlog, slug: e.target.value })}
-                    className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-[#3ECF8E]"
+                    className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-[#dbfcff]"
                   />
                 </div>
               </div>
@@ -2002,7 +2002,7 @@ export default function SuperAdminCMSManager() {
                   type="text"
                   value={editingBlog.image}
                   onChange={(e) => setEditingBlog({ ...editingBlog, image: e.target.value })}
-                  className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-white"
+                  className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-white"
                 />
               </div>
 
@@ -2012,7 +2012,7 @@ export default function SuperAdminCMSManager() {
                   rows={2}
                   value={editingBlog.excerpt}
                   onChange={(e) => setEditingBlog({ ...editingBlog, excerpt: e.target.value })}
-                  className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-white"
+                  className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-white"
                 />
               </div>
 
@@ -2022,15 +2022,15 @@ export default function SuperAdminCMSManager() {
                   rows={6}
                   value={editingBlog.content.join('\n')}
                   onChange={(e) => setEditingBlog({ ...editingBlog, content: e.target.value.split('\n') })}
-                  className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-white font-mono text-xs"
+                  className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-white font-mono text-xs"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-[#27272A]">
+            <div className="flex justify-end gap-2 pt-3 border-t border-[#353436]">
               <button
                 onClick={() => setBlogModalOpen(false)}
-                className="px-4 py-2 rounded bg-[#27272A] text-white text-xs font-bold"
+                className="px-4 py-2 rounded bg-[#353436] text-white text-xs font-bold"
               >
                 Cancel
               </button>
@@ -2045,7 +2045,7 @@ export default function SuperAdminCMSManager() {
                   }
                   setBlogModalOpen(false);
                 }}
-                className="px-5 py-2 rounded bg-[#3ECF8E] text-black text-xs font-bold"
+                className="px-5 py-2 rounded bg-[#dbfcff] text-black text-xs font-bold"
               >
                 Save Article
               </button>
@@ -2059,8 +2059,8 @@ export default function SuperAdminCMSManager() {
       {/* ========================================================================= */}
       {serviceModalOpen && editingService && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#18181B] border border-[#27272A] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 space-y-4 shadow-2xl text-white font-mono">
-            <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+          <div className="bg-[#201f20] border border-[#353436] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 space-y-4 shadow-2xl text-white font-mono">
+            <div className="flex items-center justify-between border-b border-[#353436] pb-3">
               <h3 className="text-base font-bold font-display text-white">
                 {editingService.id ? 'Edit Service Offering' : 'Add Service'}
               </h3>
@@ -2076,7 +2076,7 @@ export default function SuperAdminCMSManager() {
                   type="text"
                   value={editingService.name}
                   onChange={(e) => setEditingService({ ...editingService, name: e.target.value })}
-                  className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-white"
+                  className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-white"
                 />
               </div>
 
@@ -2087,7 +2087,7 @@ export default function SuperAdminCMSManager() {
                     type="text"
                     value={editingService.heroBadge}
                     onChange={(e) => setEditingService({ ...editingService, heroBadge: e.target.value })}
-                    className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-[#3ECF8E]"
+                    className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-[#dbfcff]"
                   />
                 </div>
                 <div>
@@ -2096,7 +2096,7 @@ export default function SuperAdminCMSManager() {
                     type="text"
                     value={editingService.priceStartingFrom}
                     onChange={(e) => setEditingService({ ...editingService, priceStartingFrom: e.target.value })}
-                    className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-white"
+                    className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-white"
                   />
                 </div>
               </div>
@@ -2107,7 +2107,7 @@ export default function SuperAdminCMSManager() {
                   type="text"
                   value={editingService.tagline}
                   onChange={(e) => setEditingService({ ...editingService, tagline: e.target.value })}
-                  className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-white"
+                  className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-white"
                 />
               </div>
 
@@ -2117,15 +2117,15 @@ export default function SuperAdminCMSManager() {
                   rows={3}
                   value={editingService.description}
                   onChange={(e) => setEditingService({ ...editingService, description: e.target.value })}
-                  className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-white"
+                  className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-white"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-[#27272A]">
+            <div className="flex justify-end gap-2 pt-3 border-t border-[#353436]">
               <button
                 onClick={() => setServiceModalOpen(false)}
-                className="px-4 py-2 rounded bg-[#27272A] text-white text-xs font-bold"
+                className="px-4 py-2 rounded bg-[#353436] text-white text-xs font-bold"
               >
                 Cancel
               </button>
@@ -2140,7 +2140,7 @@ export default function SuperAdminCMSManager() {
                   }
                   setServiceModalOpen(false);
                 }}
-                className="px-5 py-2 rounded bg-[#3ECF8E] text-black text-xs font-bold"
+                className="px-5 py-2 rounded bg-[#dbfcff] text-black text-xs font-bold"
               >
                 Save Service
               </button>
@@ -2154,8 +2154,8 @@ export default function SuperAdminCMSManager() {
       {/* ========================================================================= */}
       {testimonialModalOpen && editingTestimonial && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#18181B] border border-[#27272A] rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl text-white font-mono">
-            <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+          <div className="bg-[#201f20] border border-[#353436] rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl text-white font-mono">
+            <div className="flex items-center justify-between border-b border-[#353436] pb-3">
               <h3 className="text-base font-bold font-display text-white">
                 {editingTestimonial.id ? 'Edit Testimonial' : 'Add Testimonial'}
               </h3>
@@ -2171,7 +2171,7 @@ export default function SuperAdminCMSManager() {
                   type="text"
                   value={editingTestimonial.clientName}
                   onChange={(e) => setEditingTestimonial({ ...editingTestimonial, clientName: e.target.value })}
-                  className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-white"
+                  className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-white"
                 />
               </div>
 
@@ -2182,7 +2182,7 @@ export default function SuperAdminCMSManager() {
                     type="text"
                     value={editingTestimonial.role}
                     onChange={(e) => setEditingTestimonial({ ...editingTestimonial, role: e.target.value })}
-                    className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-white"
+                    className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-white"
                   />
                 </div>
                 <div>
@@ -2191,7 +2191,7 @@ export default function SuperAdminCMSManager() {
                     type="text"
                     value={editingTestimonial.company}
                     onChange={(e) => setEditingTestimonial({ ...editingTestimonial, company: e.target.value })}
-                    className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-white"
+                    className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-white"
                   />
                 </div>
               </div>
@@ -2202,7 +2202,7 @@ export default function SuperAdminCMSManager() {
                   rows={3}
                   value={editingTestimonial.quote}
                   onChange={(e) => setEditingTestimonial({ ...editingTestimonial, quote: e.target.value })}
-                  className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-white"
+                  className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-white"
                 />
               </div>
 
@@ -2211,7 +2211,7 @@ export default function SuperAdminCMSManager() {
                 <select
                   value={editingTestimonial.rating}
                   onChange={(e) => setEditingTestimonial({ ...editingTestimonial, rating: Number(e.target.value) })}
-                  className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-amber-400 font-bold"
+                  className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-amber-400 font-bold"
                 >
                   <option value={5}>★★★★★ (5 Stars)</option>
                   <option value={4}>★★★★☆ (4 Stars)</option>
@@ -2220,10 +2220,10 @@ export default function SuperAdminCMSManager() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-[#27272A]">
+            <div className="flex justify-end gap-2 pt-3 border-t border-[#353436]">
               <button
                 onClick={() => setTestimonialModalOpen(false)}
-                className="px-4 py-2 rounded bg-[#27272A] text-white text-xs font-bold"
+                className="px-4 py-2 rounded bg-[#353436] text-white text-xs font-bold"
               >
                 Cancel
               </button>
@@ -2238,7 +2238,7 @@ export default function SuperAdminCMSManager() {
                   }
                   setTestimonialModalOpen(false);
                 }}
-                className="px-5 py-2 rounded bg-[#3ECF8E] text-black text-xs font-bold"
+                className="px-5 py-2 rounded bg-[#dbfcff] text-black text-xs font-bold"
               >
                 Save Testimonial
               </button>
@@ -2252,8 +2252,8 @@ export default function SuperAdminCMSManager() {
       {/* ========================================================================= */}
       {socialModalOpen && editingSocial && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#18181B] border border-[#27272A] rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl text-white font-mono">
-            <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+          <div className="bg-[#201f20] border border-[#353436] rounded-2xl w-full max-w-md p-5 space-y-4 shadow-2xl text-white font-mono">
+            <div className="flex items-center justify-between border-b border-[#353436] pb-3">
               <h3 className="text-base font-bold font-display text-white">
                 {editingSocial.id ? 'Edit Social Channel' : 'Add Social Network'}
               </h3>
@@ -2268,7 +2268,7 @@ export default function SuperAdminCMSManager() {
                 <select
                   value={editingSocial.platform}
                   onChange={(e) => setEditingSocial({ ...editingSocial, platform: e.target.value as any })}
-                  className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-white"
+                  className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-white"
                 >
                   {['Instagram', 'LinkedIn', 'Twitter', 'YouTube', 'GitHub', 'ArtStation', 'Behance', 'Discord', 'Facebook', 'Pinterest', 'Vimeo'].map((p) => (
                     <option key={p} value={p}>
@@ -2284,7 +2284,7 @@ export default function SuperAdminCMSManager() {
                   type="text"
                   value={editingSocial.url}
                   onChange={(e) => setEditingSocial({ ...editingSocial, url: e.target.value })}
-                  className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-[#3ECF8E]"
+                  className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-[#dbfcff]"
                   placeholder="https://instagram.com/viztr_official"
                 />
               </div>
@@ -2295,16 +2295,16 @@ export default function SuperAdminCMSManager() {
                   type="text"
                   value={editingSocial.handle}
                   onChange={(e) => setEditingSocial({ ...editingSocial, handle: e.target.value })}
-                  className="w-full bg-[#09090B] border border-[#27272A] rounded px-3 py-2 text-white"
+                  className="w-full bg-[#131314] border border-[#353436] rounded px-3 py-2 text-white"
                   placeholder="@viztr.studio"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-[#27272A]">
+            <div className="flex justify-end gap-2 pt-3 border-t border-[#353436]">
               <button
                 onClick={() => setSocialModalOpen(false)}
-                className="px-4 py-2 rounded bg-[#27272A] text-white text-xs font-bold"
+                className="px-4 py-2 rounded bg-[#353436] text-white text-xs font-bold"
               >
                 Cancel
               </button>
@@ -2319,7 +2319,7 @@ export default function SuperAdminCMSManager() {
                   }
                   setSocialModalOpen(false);
                 }}
-                className="px-5 py-2 rounded bg-[#3ECF8E] text-black text-xs font-bold"
+                className="px-5 py-2 rounded bg-[#dbfcff] text-black text-xs font-bold"
               >
                 Save Social Link
               </button>
@@ -2333,10 +2333,10 @@ export default function SuperAdminCMSManager() {
       {/* ========================================================================= */}
       {uploadMediaModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#18181B] border border-[#27272A] rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl text-white font-mono">
-            <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+          <div className="bg-[#201f20] border border-[#353436] rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-2xl text-white font-mono">
+            <div className="flex items-center justify-between border-b border-[#353436] pb-3">
               <div className="flex items-center gap-2">
-                <Upload className="w-5 h-5 text-[#3ECF8E]" />
+                <Upload className="w-5 h-5 text-[#dbfcff]" />
                 <h3 className="text-base font-bold font-display text-white">
                   Upload Media Asset to CDN
                 </h3>
@@ -2347,8 +2347,8 @@ export default function SuperAdminCMSManager() {
             </div>
 
             {/* Drag and drop target */}
-            <div className="p-8 border-2 border-dashed border-[#27272A] hover:border-[#3ECF8E] rounded-xl text-center space-y-3 bg-[#09090B]/60 transition-colors cursor-pointer">
-              <div className="w-12 h-12 rounded-full bg-[#3ECF8E]/10 border border-[#3ECF8E]/40 flex items-center justify-center mx-auto text-[#3ECF8E]">
+            <div className="p-8 border-2 border-dashed border-[#353436] hover:border-[#dbfcff] rounded-xl text-center space-y-3 bg-[#131314]/60 transition-colors cursor-pointer">
+              <div className="w-12 h-12 rounded-full bg-[#dbfcff]/10 border border-[#dbfcff]/40 flex items-center justify-center mx-auto text-[#dbfcff]">
                 <ImageIcon className="w-6 h-6" />
               </div>
               <div>
@@ -2361,10 +2361,10 @@ export default function SuperAdminCMSManager() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-[#27272A]">
+            <div className="flex justify-end gap-2 pt-3 border-t border-[#353436]">
               <button
                 onClick={() => setUploadMediaModalOpen(false)}
-                className="px-4 py-2 rounded bg-[#27272A] text-white text-xs font-bold"
+                className="px-4 py-2 rounded bg-[#353436] text-white text-xs font-bold"
               >
                 Cancel
               </button>
@@ -2385,7 +2385,7 @@ export default function SuperAdminCMSManager() {
                   showToast('Uploaded asset to VizTR Cloud CDN.', 'success');
                   setUploadMediaModalOpen(false);
                 }}
-                className="px-5 py-2 rounded bg-[#3ECF8E] text-black text-xs font-bold flex items-center gap-1.5"
+                className="px-5 py-2 rounded bg-[#dbfcff] text-black text-xs font-bold flex items-center gap-1.5"
               >
                 <Check className="w-3.5 h-3.5" />
                 <span>Simulate Complete Upload</span>

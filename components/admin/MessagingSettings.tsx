@@ -190,9 +190,9 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
   return (
     <div className="space-y-6">
       {/* BANNER */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#18181B] via-[#121214] to-[#09090B] border border-[#27272A] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#201f20] via-[#131314] to-[#131314] border border-[#353436] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase tracking-wider">
             <MessageSquare className="w-4 h-4" />
             <span>CORE SYSTEM 05 • MESSAGING & SOCIAL CONNECTORS</span>
           </div>
@@ -201,14 +201,14 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
           </h2>
           <p className="text-xs text-[#A1A1AA] max-w-2xl">
             Configure Telegram (free, instant) and reserve WhatsApp (official Cloud API — requires Meta verification).
-            Keys stored in browser (localStorage) and exported as <code className="text-[#3ECF8E]">.env.local</code> for deployment.
+            Keys stored in browser (localStorage) and exported as <code className="text-[#dbfcff]">.env.local</code> for deployment.
           </p>
         </div>
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={copySnippet}
-            className="px-4 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center gap-2 transition-all cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center gap-2 transition-all cursor-pointer"
           >
             {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
             <span>{copied ? 'Copied' : 'Copy .env.local'}</span>
@@ -217,10 +217,10 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
       </div>
 
       {/* TELEGRAM WEBHOOK MANAGEMENT */}
-      <div className="p-4 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+      <div className="p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Bot className="w-4 h-4 text-[#3ECF8E]" />
+            <Bot className="w-4 h-4 text-[#dbfcff]" />
             <span className="text-sm font-bold text-white font-display">Telegram Webhook Manager</span>
           </div>
         </div>
@@ -234,12 +234,12 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
               value={webhookUrl}
               onChange={(e) => setWebhookUrl(e.target.value)}
               placeholder="https://trainer-exercises-smithsonian-lead.trycloudflare.com"
-              className="flex-1 px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+              className="flex-1 px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
             />
             <button
               onClick={registerWebhook}
               disabled={!webhookUrl || !credentials.find((c) => c.key === 'TELEGRAM_BOT_TOKEN')?.value || !credentials.find((c) => c.key === 'TELEGRAM_WEBHOOK_SECRET')?.value}
-              className="px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] disabled:opacity-40 text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] disabled:opacity-40 text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Zap className="w-3.5 h-3.5" />
               <span>Register Webhook</span>
@@ -247,14 +247,14 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
             <button
               onClick={checkWebhookInfo}
               disabled={!credentials.find((c) => c.key === 'TELEGRAM_BOT_TOKEN')?.value}
-              className="px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] hover:text-white disabled:opacity-40 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] hover:text-white disabled:opacity-40 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>Check Status</span>
             </button>
           </div>
           <p className="text-[10px] text-[#71717A]">
-            After running <code className="bg-[#09090B] px-1 rounded">cloudflared tunnel --url http://localhost:3000</code>, paste the <strong>https://*.trycloudflare.com</strong> URL here and click Register.
+            After running <code className="bg-[#131314] px-1 rounded">cloudflared tunnel --url http://localhost:3000</code>, paste the <strong>https://*.trycloudflare.com</strong> URL here and click Register.
           </p>
         </div>
 
@@ -272,16 +272,16 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
         )}
 
         {/* Bot Connection Test */}
-        <div className="pt-4 border-t border-[#27272A] flex items-center justify-between">
+        <div className="pt-4 border-t border-[#353436] flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Wifi className="w-4 h-4 text-[#3ECF8E]" />
+            <Wifi className="w-4 h-4 text-[#dbfcff]" />
             <span className="text-sm font-bold text-white font-display">Bot Connection Test</span>
           </div>
           <button
             type="button"
             onClick={testTelegramBot}
             disabled={!credentials.find((c) => c.key === 'TELEGRAM_BOT_TOKEN')?.value}
-            className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] disabled:opacity-40 text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="px-3 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] disabled:opacity-40 text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <Wifi className="w-3.5 h-3.5" />
             <span>Test Bot</span>
@@ -313,14 +313,14 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
           return (
             <div
               key={field.key}
-              className={`p-4 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3 ${isReserved ? 'opacity-60' : ''}`}
+              className={`p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3 ${isReserved ? 'opacity-60' : ''}`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   {field.key.includes('TELEGRAM') ? (
-                    <Bot className="w-4 h-4 text-[#3ECF8E]" />
+                    <Bot className="w-4 h-4 text-[#dbfcff]" />
                   ) : (
-                    <ShieldCheck className="w-4 h-4 text-[#3ECF8E]" />
+                    <ShieldCheck className="w-4 h-4 text-[#dbfcff]" />
                   )}
                   <span className="text-sm font-bold text-white font-display">
                     {field.label} {isReserved && (
@@ -348,7 +348,7 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
                   placeholder={field.placeholder}
                   onChange={(e) => handleChange(field.key, e.target.value)}
                   disabled={isReserved}
-                  className={`flex-1 px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] ${
+                  className={`flex-1 px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] ${
                     isReserved ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 />
@@ -356,7 +356,7 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
                   type="button"
                   onClick={() => toggleReveal(field.key)}
                   disabled={isReserved}
-                  className={`p-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer ${
+                  className={`p-2 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer ${
                     isReserved ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                   title={isRevealed ? 'Hide' : 'Reveal'}
@@ -370,7 +370,7 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
                   type="button"
                   onClick={() => commit(field)}
                   disabled={!draftVal || isReserved}
-                  className={`px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] disabled:opacity-40 text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${isReserved ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`px-3 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] disabled:opacity-40 text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${isReserved ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>Save</span>
@@ -379,7 +379,7 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
                   <button
                     type="button"
                     onClick={() => resetCredential(field.key)}
-                    className="px-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] hover:text-rose-400 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="px-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] hover:text-rose-400 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                     <span>Clear</span>
@@ -404,7 +404,7 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
       </div>
 
       {/* EXPORTED SNIPPET PREVIEW */}
-      <div className="p-4 rounded-2xl bg-[#09090B] border border-[#27272A]">
+      <div className="p-4 rounded-2xl bg-[#131314] border border-[#353436]">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-mono font-bold text-[#A1A1AA] uppercase">
             .env.local snippet (paste into Vercel / deployment)
@@ -412,7 +412,7 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
           <button
             type="button"
             onClick={copySnippet}
-            className="text-[10px] font-mono text-[#3ECF8E] hover:underline flex items-center gap-1 cursor-pointer"
+            className="text-[10px] font-mono text-[#dbfcff] hover:underline flex items-center gap-1 cursor-pointer"
           >
             <Copy className="w-3 h-3" /> Copy all
           </button>
@@ -423,86 +423,86 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
       </div>
 
       {/* QUICK START GUIDE */}
-      <details className="group p-4 rounded-2xl bg-[#18181B] border border-[#27272A]">
+      <details className="group p-4 rounded-2xl bg-[#201f20] border border-[#353436]">
         <summary className="flex items-center gap-2 cursor-pointer list-none text-sm font-bold text-white font-display">
-          <KeyRound className="w-4 h-4 text-[#3ECF8E]" />
+          <KeyRound className="w-4 h-4 text-[#dbfcff]" />
           Quick Start: Activate Telegram in 3 Steps
         </summary>
         <div className="mt-4 space-y-3 text-xs text-[#A1A1AA] font-mono leading-relaxed">
-          <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
-            <div className="flex items-center gap-2 mb-2 text-[#3ECF8E] font-bold">1.</div>
-            <p>Open Telegram → search <code className="bg-[#09090B] px-1 rounded">@BotFather</code> → send <code className="bg-[#09090B] px-1 rounded">/newbot</code> → name it → copy the token.</p>
+          <div className="p-3 rounded-lg bg-[#131314] border border-[#353436]">
+            <div className="flex items-center gap-2 mb-2 text-[#dbfcff] font-bold">1.</div>
+            <p>Open Telegram → search <code className="bg-[#131314] px-1 rounded">@BotFather</code> → send <code className="bg-[#131314] px-1 rounded">/newbot</code> → name it → copy the token.</p>
           </div>
-          <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
-            <div className="flex items-center gap-2 mb-2 text-[#3ECF8E] font-bold">2.</div>
-            <p>Paste the token into <strong>Telegram Bot Token</strong> above. Generate a secret: <code className="bg-[#09090B] px-1 rounded">openssl rand -hex 32</code> → paste into <strong>Telegram Webhook Secret</strong>.</p>
+          <div className="p-3 rounded-lg bg-[#131314] border border-[#353436]">
+            <div className="flex items-center gap-2 mb-2 text-[#dbfcff] font-bold">2.</div>
+            <p>Paste the token into <strong>Telegram Bot Token</strong> above. Generate a secret: <code className="bg-[#131314] px-1 rounded">openssl rand -hex 32</code> → paste into <strong>Telegram Webhook Secret</strong>.</p>
           </div>
-          <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
-            <div className="flex items-center gap-2 mb-2 text-[#3ECF8E] font-bold">3.</div>
+          <div className="p-3 rounded-lg bg-[#131314] border border-[#353436]">
+            <div className="flex items-center gap-2 mb-2 text-[#dbfcff] font-bold">3.</div>
             <p>Run tunnel, paste URL above, click Register:</p>
-            <pre className="text-[10px] mt-1 whitespace-pre-wrap bg-[#18181B] p-2 rounded border border-[#27272A]">
+            <pre className="text-[10px] mt-1 whitespace-pre-wrap bg-[#201f20] p-2 rounded border border-[#353436]">
 {`cloudflared tunnel --url http://localhost:3000`}
             </pre>
-            <p className="mt-1">Paste the <code className="bg-[#09090B] px-1 rounded">https://*.trycloudflare.com</code> URL in the Webhook Manager above → click <strong>Register Webhook</strong>.</p>
+            <p className="mt-1">Paste the <code className="bg-[#131314] px-1 rounded">https://*.trycloudflare.com</code> URL in the Webhook Manager above → click <strong>Register Webhook</strong>.</p>
           </div>
         </div>
       </details>
 
       {/* COMPLETE GUIDE */}
-      <details className="group p-4 rounded-2xl bg-[#18181B] border border-[#27272A]" open={showFullGuide}>
+      <details className="group p-4 rounded-2xl bg-[#201f20] border border-[#353436]" open={showFullGuide}>
         <summary className="flex items-center gap-2 cursor-pointer list-none text-sm font-bold text-white font-display" onClick={() => setShowFullGuide(!showFullGuide)}>
-          <FileText className="w-4 h-4 text-[#3ECF8E]" />
+          <FileText className="w-4 h-4 text-[#dbfcff]" />
           Complete Telegram Bot Setup Guide
           {showFullGuide ? <ChevronUp className="w-4 h-4 ml-auto text-[#71717A]" /> : <ChevronDown className="w-4 h-4 ml-auto text-[#71717A]" />}
         </summary>
         <div className="mt-4 space-y-4 text-xs text-[#A1A1AA] font-mono leading-relaxed">
           
           {/* Prerequisites */}
-          <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
+          <div className="p-3 rounded-lg bg-[#131314] border border-[#353436]">
             <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
-              <Zap className="w-4 h-4 text-[#3ECF8E]" /> Prerequisites
+              <Zap className="w-4 h-4 text-[#dbfcff]" /> Prerequisites
             </h4>
             <ul className="space-y-1 list-disc list-inside">
               <li>Node.js 18+ installed</li>
               <li>Cloudflare account (for cloudflared) — free at dash.cloudflare.com</li>
               <li>Telegram app installed</li>
-              <li>VizTR dev server running (<code className="bg-[#18181B] px-1 rounded">pnpm run dev:all</code>)</li>
+              <li>VizTR dev server running (<code className="bg-[#201f20] px-1 rounded">pnpm run dev:all</code>)</li>
             </ul>
           </div>
 
           {/* Step 1: Create Bot */}
-          <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
+          <div className="p-3 rounded-lg bg-[#131314] border border-[#353436]">
             <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
-              <Bot className="w-4 h-4 text-[#3ECF8E]" /> 1. Create Telegram Bot
+              <Bot className="w-4 h-4 text-[#dbfcff]" /> 1. Create Telegram Bot
             </h4>
             <ol className="space-y-1 list-decimal list-inside">
-              <li>Open Telegram → search <code className="bg-[#18181B] px-1 rounded">@BotFather</code></li>
-              <li>Send <code className="bg-[#18181B] px-1 rounded">/newbot</code></li>
+              <li>Open Telegram → search <code className="bg-[#201f20] px-1 rounded">@BotFather</code></li>
+              <li>Send <code className="bg-[#201f20] px-1 rounded">/newbot</code></li>
               <li>Name: <code>VizTR Assistant</code> | Username: <code>viztr_bot</code> (must end in _bot)</li>
-              <li>Copy the token: <code className="bg-[#18181B] px-1 rounded">123456:ABC-DEF...</code></li>
+              <li>Copy the token: <code className="bg-[#201f20] px-1 rounded">123456:ABC-DEF...</code></li>
               <li>Paste into <strong>Telegram Bot Token</strong> field above → Save</li>
             </ol>
           </div>
 
           {/* Step 2: Generate Secret */}
-          <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
+          <div className="p-3 rounded-lg bg-[#131314] border border-[#353436]">
             <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
-              <KeyRound className="w-4 h-4 text-[#3ECF8E]" /> 2. Generate Webhook Secret
+              <KeyRound className="w-4 h-4 text-[#dbfcff]" /> 2. Generate Webhook Secret
             </h4>
             <ol className="space-y-1 list-decimal list-inside">
-              <li>Run: <code className="bg-[#18181B] px-1 rounded">openssl rand -hex 32</code></li>
-              <li>Copy output (e.g. <code className="bg-[#18181B] px-1 rounded">f0b93542221b5ce017c7452dd5412e708822081bfa052719c2bcca538a5715ecE</code>)</li>
+              <li>Run: <code className="bg-[#201f20] px-1 rounded">openssl rand -hex 32</code></li>
+              <li>Copy output (e.g. <code className="bg-[#201f20] px-1 rounded">f0b93542221b5ce017c7452dd5412e708822081bfa052719c2bcca538a5715ecE</code>)</li>
               <li>Paste into <strong>Telegram Webhook Secret</strong> field above → Save</li>
             </ol>
           </div>
 
           {/* Step 3: Start Tunnel */}
-          <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
+          <div className="p-3 rounded-lg bg-[#131314] border border-[#353436]">
             <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
-              <Terminal className="w-4 h-4 text-[#3ECF8E]" /> 3. Start Cloudflare Tunnel
+              <Terminal className="w-4 h-4 text-[#dbfcff]" /> 3. Start Cloudflare Tunnel
             </h4>
             <p className="mb-2">In a <strong>new terminal</strong> (keep dev server running in first terminal):</p>
-            <pre className="text-[10px] whitespace-pre-wrap bg-[#18181B] p-2 rounded border border-[#27272A] mb-2">
+            <pre className="text-[10px] whitespace-pre-wrap bg-[#201f20] p-2 rounded border border-[#353436] mb-2">
 {`# Install cloudflared (one-time)
 # Windows: winget install Cloudflare.cloudflared
 # Mac: brew install cloudflared
@@ -516,9 +516,9 @@ cloudflared tunnel --url http://localhost:3000`}
           </div>
 
           {/* Step 4: Verify */}
-          <div className="p-3 rounded-lg bg-[#09090B] border border-[#27272A]">
+          <div className="p-3 rounded-lg bg-[#131314] border border-[#353436]">
             <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-[#3ECF8E]" /> 4. Verify & Test
+              <CheckCircle2 className="w-4 h-4 text-[#dbfcff]" /> 4. Verify & Test
             </h4>
             <ol className="space-y-1 list-decimal list-inside">
               <li>Click <strong>Check Status</strong> → should show your tunnel URL</li>
@@ -534,9 +534,9 @@ cloudflared tunnel --url http://localhost:3000`}
             </h4>
             <p className="mb-2">Cloudflare tunnels change URL on restart. For production:</p>
             <ol className="space-y-1 list-decimal list-inside text-[10px]">
-              <li>Deploy to Vercel (permanent <code className="bg-[#18181B] px-1 rounded">https://your-app.vercel.app</code>)</li>
+              <li>Deploy to Vercel (permanent <code className="bg-[#201f20] px-1 rounded">https://your-app.vercel.app</code>)</li>
               <li>Add all env vars in Vercel Dashboard (see .env.example)</li>
-              <li>Register webhook with Vercel URL: <code className="bg-[#18181B] px-1 rounded">https://your-app.vercel.app/api/messaging/telegram?secret_token=YOUR_SECRET</code></li>
+              <li>Register webhook with Vercel URL: <code className="bg-[#201f20] px-1 rounded">https://your-app.vercel.app/api/messaging/telegram?secret_token=YOUR_SECRET</code></li>
             </ol>
           </div>
 

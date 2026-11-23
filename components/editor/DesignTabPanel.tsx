@@ -37,16 +37,16 @@ function ToggleRow({
   description?: string;
 }) {
   return (
-    <div className="flex items-center justify-between p-2 rounded bg-[#09090B] border border-[#27272A]">
+    <div className="flex items-center justify-between p-2 rounded bg-[#131314] border border-[#353436]">
       <div>
-        <div className="text-[10px] font-mono text-[#FAFAFA]">{label}</div>
+        <div className="text-[10px] font-mono text-[#e5e2e3]">{label}</div>
         {description && <div className="text-[9px] text-[#71717A]">{description}</div>}
       </div>
       <button
         type="button"
         onClick={() => onChange(!value)}
         className={`w-9 h-5 rounded-full relative transition-colors shrink-0 ${
-          value ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+          value ? 'bg-[#dbfcff]' : 'bg-[#353436]'
         }`}
       >
         <span
@@ -91,12 +91,12 @@ export default function DesignTabPanel({ value, onChange, onSave, saved }: Desig
   return (
     <div className="max-w-2xl mx-auto space-y-4 p-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-mono font-bold text-[#3ECF8E] flex items-center gap-2">
+        <h2 className="text-sm font-mono font-bold text-[#dbfcff] flex items-center gap-2">
           <Palette className="w-4 h-4" />
           Design — Branding & Theme
         </h2>
         {saved && (
-          <span className="flex items-center gap-1 text-[10px] font-mono text-[#3ECF8E]">
+          <span className="flex items-center gap-1 text-[10px] font-mono text-[#dbfcff]">
             <CheckCircle2 className="w-3.5 h-3.5" />
             Saved
           </span>
@@ -118,8 +118,8 @@ export default function DesignTabPanel({ value, onChange, onSave, saved }: Desig
                 onClick={() => set({ preset: p.id as VtedThemePreset })}
                 className={`p-2.5 rounded-lg border text-left transition-all ${
                   active
-                    ? 'bg-[#3ECF8E]/15 border-[#3ECF8E]/50 text-[#3ECF8E]'
-                    : 'bg-[#09090B] border-[#27272A] text-[#A1A1AA] hover:text-white'
+                    ? 'bg-[#dbfcff]/15 border-[#dbfcff]/50 text-[#dbfcff]'
+                    : 'bg-[#131314] border-[#353436] text-[#A1A1AA] hover:text-white'
                 }`}
               >
                 <div className="text-[11px] font-mono font-bold">{p.name}</div>
@@ -139,18 +139,18 @@ export default function DesignTabPanel({ value, onChange, onSave, saved }: Desig
           <div className="flex items-center gap-1.5">
             <input
               type="color"
-              value={(local.primaryColor || '#3ECF8E').slice(0, 7)}
+              value={(local.primaryColor || '#dbfcff').slice(0, 7)}
               onChange={(e) => set({ primaryColor: e.target.value })}
-              className="w-10 h-8 bg-transparent border border-[#27272A] rounded"
+              className="w-10 h-8 bg-transparent border border-[#353436] rounded"
             />
             <input
               value={local.primaryColor || ''}
               onChange={(e) => set({ primaryColor: e.target.value })}
-              placeholder="#3ECF8E"
-              className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+              placeholder="#dbfcff"
+              className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
             />
           </div>
-          <p className="text-[9px] text-[#71717A] mt-0.5">Supports hex + alpha (e.g. #3ECF8E50)</p>
+          <p className="text-[9px] text-[#71717A] mt-0.5">Supports hex + alpha (e.g. #dbfcff50)</p>
         </div>
         <div>
           <label className="block text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA] mb-1">
@@ -159,15 +159,15 @@ export default function DesignTabPanel({ value, onChange, onSave, saved }: Desig
           <div className="flex items-center gap-1.5">
             <input
               type="color"
-              value={(local.textColor || '#FAFAFA').slice(0, 7)}
+              value={(local.textColor || '#e5e2e3').slice(0, 7)}
               onChange={(e) => set({ textColor: e.target.value })}
-              className="w-10 h-8 bg-transparent border border-[#27272A] rounded"
+              className="w-10 h-8 bg-transparent border border-[#353436] rounded"
             />
             <input
               value={local.textColor || ''}
               onChange={(e) => set({ textColor: e.target.value })}
-              placeholder="#FAFAFA"
-              className="flex-1 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+              placeholder="#e5e2e3"
+              className="flex-1 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
             />
           </div>
         </div>
@@ -183,7 +183,7 @@ export default function DesignTabPanel({ value, onChange, onSave, saved }: Desig
           <select
             value={local.primaryFont || 'Inter'}
             onChange={(e) => set({ primaryFont: e.target.value })}
-            className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-white"
+            className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-white"
           >
             {FONT_OPTIONS.map((f) => (
               <option key={f}>{f}</option>
@@ -198,7 +198,7 @@ export default function DesignTabPanel({ value, onChange, onSave, saved }: Desig
           <select
             value={local.secondaryFont || 'Inter'}
             onChange={(e) => set({ secondaryFont: e.target.value })}
-            className="w-full bg-[#18181B] border border-[#27272A] rounded px-2 py-1.5 text-xs font-mono text-white"
+            className="w-full bg-[#201f20] border border-[#353436] rounded px-2 py-1.5 text-xs font-mono text-white"
           >
             {FONT_OPTIONS.map((f) => (
               <option key={f}>{f}</option>
@@ -267,16 +267,16 @@ export default function DesignTabPanel({ value, onChange, onSave, saved }: Desig
       </div>
 
       {/* Live preview chip */}
-      <div className="rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3">
+      <div className="rounded-lg border border-[#353436] bg-[#201f20] p-3">
         <div className="text-[10px] font-mono uppercase tracking-wider text-[#71717A] mb-2 flex items-center gap-1">
-          <Sparkles className="w-3 h-3 text-[#3ECF8E]" />
+          <Sparkles className="w-3 h-3 text-[#dbfcff]" />
           Preview
         </div>
         <div
           className="rounded-md p-3"
           style={{
-            background: local.primaryColor || '#3ECF8E',
-            color: local.textColor || '#FAFAFA',
+            background: local.primaryColor || '#dbfcff',
+            color: local.textColor || '#e5e2e3',
             fontFamily: local.primaryFont || 'Inter',
           }}
         >
@@ -290,7 +290,7 @@ export default function DesignTabPanel({ value, onChange, onSave, saved }: Desig
       <button
         type="button"
         onClick={onSave}
-        className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
+        className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
       >
         <Save className="w-3.5 h-3.5" />
         Save Branding

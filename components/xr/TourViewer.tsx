@@ -110,9 +110,9 @@ export default function TourViewer({
 
   if (engine.error) {
     return (
-      <div className="absolute inset-0 bg-[#09090B] flex flex-col items-center justify-center gap-3 z-40">
+      <div className="absolute inset-0 bg-[#131314] flex flex-col items-center justify-center gap-3 z-40">
         <div className="text-sm text-red-400 font-mono">{engine.error}</div>
-        <button onClick={engine.reload} className="text-xs px-3 py-1.5 rounded bg-[#27272A] text-white hover:bg-[#3F3F46] cursor-pointer">
+        <button onClick={engine.reload} className="text-xs px-3 py-1.5 rounded bg-[#353436] text-white hover:bg-[#3F3F46] cursor-pointer">
           Retry
         </button>
       </div>
@@ -129,10 +129,10 @@ export default function TourViewer({
       />
 
       {engine.loading && (
-        <div className="absolute inset-0 bg-[#09090B] flex flex-col items-center justify-center gap-2 z-40">
-          <div className="text-xs font-mono text-[#3ECF8E]">Loading 360°…</div>
-          <div className="w-48 h-1 bg-[#27272A] rounded-full overflow-hidden">
-            <div className="h-full bg-[#3ECF8E] transition-all duration-300 rounded-full animate-pulse" style={{ width: `${engine.progress * 100}%` }} />
+        <div className="absolute inset-0 bg-[#131314] flex flex-col items-center justify-center gap-2 z-40">
+          <div className="text-xs font-mono text-[#dbfcff]">Loading 360°…</div>
+          <div className="w-48 h-1 bg-[#353436] rounded-full overflow-hidden">
+            <div className="h-full bg-[#dbfcff] transition-all duration-300 rounded-full animate-pulse" style={{ width: `${engine.progress * 100}%` }} />
           </div>
         </div>
       )}
@@ -164,7 +164,7 @@ export default function TourViewer({
         </>
       )}
 
-      <div className="absolute bottom-4 left-4 z-10 bg-[#09090B]/70 backdrop-blur-sm rounded-lg px-3 py-2 border border-[#27272A]">
+      <div className="absolute bottom-4 left-4 z-10 bg-[#131314]/70 backdrop-blur-sm rounded-lg px-3 py-2 border border-[#353436]">
         <div className="text-xs font-mono text-[#A1A1AA]">{scene.name}</div>
       </div>
     </div>

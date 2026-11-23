@@ -126,16 +126,16 @@ export default function FileDownloads({ projectId, files, onTrackEvent }: FileDo
 
   return (
     <div className="space-y-4">
-      <div className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-4">
+      <div className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Download className="w-4 h-4 text-[#3ECF8E]" />
+            <Download className="w-4 h-4 text-[#dbfcff]" />
             <h3 className="text-sm font-bold text-white">Project Files</h3>
           </div>
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="px-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white focus:outline-none focus:border-[#3ECF8E]"
+            className="px-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white focus:outline-none focus:border-[#dbfcff]"
           >
             {fileTypes.map((t) => (
               <option key={t} value={t}>
@@ -146,7 +146,7 @@ export default function FileDownloads({ projectId, files, onTrackEvent }: FileDo
         </div>
 
         {filteredFiles.length === 0 ? (
-          <div className="p-8 rounded-xl bg-[#09090B] border border-[#27272A] text-center">
+          <div className="p-8 rounded-xl bg-[#131314] border border-[#353436] text-center">
             <Lock className="w-8 h-8 text-[#71717A] mx-auto mb-2" />
             <h4 className="text-sm font-bold text-white">No files available</h4>
             <p className="text-xs text-[#A1A1AA] mt-1">Files will appear here when uploaded to this project.</p>
@@ -161,11 +161,11 @@ export default function FileDownloads({ projectId, files, onTrackEvent }: FileDo
               return (
                 <div
                   key={file.id}
-                  className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] hover:border-[#3f3f46] transition-all group"
+                  className="p-4 rounded-xl bg-[#131314] border border-[#353436] hover:border-[#3f3f46] transition-all group"
                 >
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className={`p-2 rounded-lg bg-[#18181B] border border-[#27272A] shrink-0 ${color}`}>
+                      <div className={`p-2 rounded-lg bg-[#201f20] border border-[#353436] shrink-0 ${color}`}>
                         <Icon className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
@@ -183,7 +183,7 @@ export default function FileDownloads({ projectId, files, onTrackEvent }: FileDo
                     <div className="flex items-center gap-2 shrink-0">
                       <button
                         onClick={() => handleView(file)}
-                        className="p-2 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                        className="p-2 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
                         title="View file"
                       >
                         <Eye className="w-3.5 h-3.5" />
@@ -191,7 +191,7 @@ export default function FileDownloads({ projectId, files, onTrackEvent }: FileDo
                       <button
                         onClick={() => handleDownload(file)}
                         disabled={isDownloading}
-                        className="px-3 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] disabled:opacity-40 text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                        className="px-3 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] disabled:opacity-40 text-black font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
                       >
                         {isDownloading ? (
                           <>

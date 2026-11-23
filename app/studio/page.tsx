@@ -30,15 +30,15 @@ export default function StudioHubPage() {
               className="hero-bg-image object-cover object-center render-lighting-enhanced"
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/40 to-[#0A0A0B]/65 pointer-events-none z-20" />
-          <div className="absolute inset-0 bg-radial from-transparent via-[#0A0A0B]/25 to-[#0A0A0B]/80 pointer-events-none z-20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#131314] via-[#131314]/40 to-[#131314]/65 pointer-events-none z-20" />
+          <div className="absolute inset-0 bg-radial from-transparent via-[#131314]/25 to-[#131314]/80 pointer-events-none z-20" />
         </div>
 
         {/* TOP AREA: Clears floating header & hosts Eyebrow Badge */}
         <div className="relative z-20 w-full pt-16 sm:pt-20 shrink-0 flex justify-center px-2 sm:px-4">
-          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full backdrop-blur-xl shadow-2xl transition-all border border-[#1E293B] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#42CF8B] animate-pulse shadow-[0_0_8px_#42CF8B] shrink-0" />
-            <span className="font-bold text-[#42CF8B] tracking-wider uppercase shrink-0">STUDIO PIPELINES</span>
+          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full backdrop-blur-xl shadow-2xl transition-all border border-[#3b494b] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#54de99] animate-pulse shadow-[0_0_8px_#54de99] shrink-0" />
+            <span className="font-bold text-[#54de99] tracking-wider uppercase shrink-0">STUDIO PIPELINES</span>
             <span className="opacity-40 shrink-0">|</span>
             <span className="opacity-80 shrink-0">{data.badge || 'Architectural CGI'}</span>
           </div>
@@ -54,7 +54,7 @@ export default function StudioHubPage() {
             {data.subtitle}
           </p>
 
-          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]">
+          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#e5e2e3]">
             {data.description || 'Translating CAD blueprints and BIM models into emotionally evocative, photorealistic exterior, interior, and walkthrough imagery.'}
           </p>
 
@@ -71,9 +71,9 @@ export default function StudioHubPage() {
             <Link
               href="/portfolio"
               id="hero-secondary-cta"
-              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider backdrop-blur-xl transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#1E293B]"
+              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider backdrop-blur-xl transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#3b494b]"
             >
-              <Eye className="w-4 h-4 text-[#42CF8B]" />
+              <Eye className="w-4 h-4 text-[#54de99]" />
               <span>Explore Studio Portfolio</span>
             </Link>
           </div>
@@ -92,7 +92,7 @@ export default function StudioHubPage() {
                     window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
                   }
                 }}
-                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full backdrop-blur-md text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-lg border border-[#1E293B]"
+                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full backdrop-blur-md text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-lg border border-[#3b494b]"
                 aria-label="Scroll down to explore services"
               >
                 <span>Scroll to explore</span>
@@ -183,7 +183,7 @@ export default function StudioHubPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-[1100px] mx-auto">
-          <div className="p-7 rounded-3xl bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 shadow-md space-y-4">
+          <div className="p-7 rounded-3xl bg-white dark:bg-[#201f20] border border-zinc-200 dark:border-zinc-800 shadow-md space-y-4">
             <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Essentials Render</h3>
             <div className="text-3xl font-bold font-mono text-zinc-900 dark:text-white">$3,500 <span className="text-xs font-normal text-zinc-400">/ project</span></div>
             <p className="text-xs text-zinc-500 dark:text-zinc-400">Up to 3 high-resolution 8K stills with 2 rounds of creative revisions.</p>
@@ -208,7 +208,7 @@ export default function StudioHubPage() {
             </ul>
           </div>
 
-          <div className="p-7 rounded-3xl bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 shadow-md space-y-4">
+          <div className="p-7 rounded-3xl bg-white dark:bg-[#201f20] border border-zinc-200 dark:border-zinc-800 shadow-md space-y-4">
             <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Masterplan Enterprise</h3>
             <div className="text-3xl font-bold font-mono text-zinc-900 dark:text-white">Custom <span className="text-xs font-normal text-zinc-400">/ proposal</span></div>
             <p className="text-xs text-zinc-500 dark:text-zinc-400">Multi-building districts, aerial drone integration, and complete media suites.</p>

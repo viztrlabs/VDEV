@@ -201,13 +201,13 @@ export function TourBuilderShell({ projectId, experienceId }: TourBuilderShellPr
         onCopy={handleCopy}
         onPaste={handlePaste}
       >
-        <div className="h-screen flex flex-col bg-[#09090B] text-white overflow-hidden">
+        <div className="h-screen flex flex-col bg-[#131314] text-white overflow-hidden">
           {previewMode ? (
             <>
-              <div className="h-10 border-b border-[#27272A] flex items-center justify-end px-4 flex-shrink-0">
+              <div className="h-10 border-b border-[#353436] flex items-center justify-end px-4 flex-shrink-0">
                 <button
                   onClick={handlePreview}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono bg-[#27272A] hover:bg-[#3F3F46] text-white transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono bg-[#353436] hover:bg-[#3F3F46] text-white transition-colors"
                 >
                   <X className="w-3.5 h-3.5" />
                   Exit Preview (Esc)
@@ -232,7 +232,7 @@ export function TourBuilderShell({ projectId, experienceId }: TourBuilderShellPr
               </div>
               <button
                 onClick={handlePreview}
-                className="fixed bottom-6 right-6 px-4 py-2 rounded-lg text-sm font-mono bg-black/70 hover:bg-black/90 border border-[#27272A] text-white backdrop-blur-sm transition-colors z-50"
+                className="fixed bottom-6 right-6 px-4 py-2 rounded-lg text-sm font-mono bg-black/70 hover:bg-black/90 border border-[#353436] text-white backdrop-blur-sm transition-colors z-50"
               >
                 Exit Preview (Esc)
               </button>
@@ -254,7 +254,7 @@ export function TourBuilderShell({ projectId, experienceId }: TourBuilderShellPr
 
               <div className="flex-1 flex overflow-hidden">
                 {leftOpen && (
-                  <div className="w-64 border-r border-[#27272A] flex-shrink-0">
+                  <div className="w-64 border-r border-[#353436] flex-shrink-0">
                     <RoomManager
                       selectedRoomId={selectedRoomId}
                       onSelectRoom={setSelectedRoomId}
@@ -291,13 +291,13 @@ export function TourBuilderShell({ projectId, experienceId }: TourBuilderShellPr
                 </div>
 
                 {validationOpen && (
-                  <div className="w-72 border-l border-[#27272A] flex-shrink-0">
+                  <div className="w-72 border-l border-[#353436] flex-shrink-0">
                     <ValidationPanel />
                   </div>
                 )}
 
                 {rightOpen && !validationOpen && (
-                  <div className="w-72 border-l border-[#27272A] flex-shrink-0">
+                  <div className="w-72 border-l border-[#353436] flex-shrink-0">
                     <InspectorPanel
                       roomId={selectedRoomId}
                     />

@@ -49,13 +49,13 @@ export default function ProjectIdAccessCodeAuth({ onAuthenticated }: ProjectIdAc
   };
 
   return (
-    <div className="min-h-screen bg-[#09090B] text-[#FAFAFA] flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-[#131314] text-[#e5e2e3] flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
       {/* Background glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-[#3ECF8E]/10 via-rose-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-[#dbfcff]/10 via-rose-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-lg relative z-10 space-y-6">
         <div className="text-center space-y-3">
-          <div className="inline-flex p-3 rounded-2xl bg-[#18181B] border border-[#27272A] shadow-2xl">
+          <div className="inline-flex p-3 rounded-2xl bg-[#201f20] border border-[#353436] shadow-2xl">
             <ViztrLogoMark className="w-10 h-10" />
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold font-serif tracking-tight text-white">
@@ -67,7 +67,7 @@ export default function ProjectIdAccessCodeAuth({ onAuthenticated }: ProjectIdAc
         </div>
 
         {/* Access Form Card */}
-        <div className="p-6 sm:p-8 rounded-2xl bg-[#18181B] border border-[#27272A] shadow-2xl space-y-6">
+        <div className="p-6 sm:p-8 rounded-2xl bg-[#201f20] border border-[#353436] shadow-2xl space-y-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-mono text-[#A1A1AA] mb-1.5 uppercase tracking-wider">
@@ -80,7 +80,7 @@ export default function ProjectIdAccessCodeAuth({ onAuthenticated }: ProjectIdAc
                   value={projectId}
                   onChange={(e) => setProjectId(e.target.value)}
                   placeholder="e.g. VIZTR-DEMO or VZ-9021"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-sm text-white font-mono placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] transition-colors uppercase"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-sm text-white font-mono placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] transition-colors uppercase"
                   required
                 />
               </div>
@@ -97,7 +97,7 @@ export default function ProjectIdAccessCodeAuth({ onAuthenticated }: ProjectIdAc
                   value={accessCode}
                   onChange={(e) => setAccessCode(e.target.value)}
                   placeholder="e.g. DEMO-2026 or ALPHA-99"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-sm text-white font-mono placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] transition-colors uppercase"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-sm text-white font-mono placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] transition-colors uppercase"
                   required
                 />
               </div>
@@ -113,7 +113,7 @@ export default function ProjectIdAccessCodeAuth({ onAuthenticated }: ProjectIdAc
             <button
               type="submit"
               disabled={loading || !projectId || !accessCode}
-              className="w-full py-3 px-4 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-[#3ECF8E]/20 disabled:opacity-50 cursor-pointer"
+              className="w-full py-3 px-4 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-[#dbfcff]/20 disabled:opacity-50 cursor-pointer"
             >
               {loading ? (
                 <span>Authenticating Workspace...</span>
@@ -128,8 +128,8 @@ export default function ProjectIdAccessCodeAuth({ onAuthenticated }: ProjectIdAc
           </form>
 
           {/* Quick Demo Tokens Section */}
-          <div className="pt-4 border-t border-[#27272A] space-y-3">
-            <div className="flex items-center gap-1.5 text-xs font-mono text-[#3ECF8E]">
+          <div className="pt-4 border-t border-[#353436] space-y-3">
+            <div className="flex items-center gap-1.5 text-xs font-mono text-[#dbfcff]">
               <Sparkles className="w-3.5 h-3.5" />
               <span>1-Click Demo Credentials:</span>
             </div>
@@ -138,9 +138,9 @@ export default function ProjectIdAccessCodeAuth({ onAuthenticated }: ProjectIdAc
               <button
                 type="button"
                 onClick={() => handleDemoFill('VIZTR-DEMO', 'DEMO-2026')}
-                className="p-2.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/50 text-left transition-all group cursor-pointer"
+                className="p-2.5 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff]/50 text-left transition-all group cursor-pointer"
               >
-                <div className="text-xs font-bold text-white group-hover:text-[#3ECF8E] flex items-center justify-between">
+                <div className="text-xs font-bold text-white group-hover:text-[#dbfcff] flex items-center justify-between">
                   <span>Horizon Pavilion</span>
                   <span className="text-[10px] font-mono text-emerald-400 font-normal">Active</span>
                 </div>
@@ -152,9 +152,9 @@ export default function ProjectIdAccessCodeAuth({ onAuthenticated }: ProjectIdAc
               <button
                 type="button"
                 onClick={() => handleDemoFill('VZ-9021', 'ALPHA-99')}
-                className="p-2.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/50 text-left transition-all group cursor-pointer"
+                className="p-2.5 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff]/50 text-left transition-all group cursor-pointer"
               >
-                <div className="text-xs font-bold text-white group-hover:text-[#3ECF8E] flex items-center justify-between">
+                <div className="text-xs font-bold text-white group-hover:text-[#dbfcff] flex items-center justify-between">
                   <span>Solarium Penthouse</span>
                   <span className="text-[10px] font-mono text-amber-400 font-normal">Review</span>
                 </div>
@@ -166,9 +166,9 @@ export default function ProjectIdAccessCodeAuth({ onAuthenticated }: ProjectIdAc
               <button
                 type="button"
                 onClick={() => handleDemoFill('VZ-8410', 'VIP-2026')}
-                className="p-2.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/50 text-left transition-all group cursor-pointer"
+                className="p-2.5 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff]/50 text-left transition-all group cursor-pointer"
               >
-                <div className="text-xs font-bold text-white group-hover:text-[#3ECF8E] flex items-center justify-between">
+                <div className="text-xs font-bold text-white group-hover:text-[#dbfcff] flex items-center justify-between">
                   <span>Nordic Villa</span>
                   <span className="text-[10px] font-mono text-sky-400 font-normal">Final</span>
                 </div>
@@ -180,9 +180,9 @@ export default function ProjectIdAccessCodeAuth({ onAuthenticated }: ProjectIdAc
               <button
                 type="button"
                 onClick={() => handleDemoFill('VZ-7732', 'SKY-404')}
-                className="p-2.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/50 text-left transition-all group cursor-pointer"
+                className="p-2.5 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff]/50 text-left transition-all group cursor-pointer"
               >
-                <div className="text-xs font-bold text-white group-hover:text-[#3ECF8E] flex items-center justify-between">
+                <div className="text-xs font-bold text-white group-hover:text-[#dbfcff] flex items-center justify-between">
                   <span>Apex Tower WebXR</span>
                   <span className="text-[10px] font-mono text-purple-400 font-normal">WebXR</span>
                 </div>
@@ -199,7 +199,7 @@ export default function ProjectIdAccessCodeAuth({ onAuthenticated }: ProjectIdAc
             ← Return to Studio Homepage
           </Link>
           <span>•</span>
-          <Link href="/track-project" className="hover:text-[#3ECF8E] transition-colors">
+          <Link href="/track-project" className="hover:text-[#dbfcff] transition-colors">
             Track Pipeline Milestones
           </Link>
         </div>

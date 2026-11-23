@@ -131,7 +131,7 @@ export const useEngineStore = create<EngineStoreState>()(
       {
         id: 'mat-arch-cube',
         name: 'Architectural Emerald',
-        color: '#3ecf8e',
+        color: '#dbfcff',
         roughness: 0.3,
         metalness: 0.2,
         opacity: 1,

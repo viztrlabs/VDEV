@@ -60,7 +60,7 @@ export default function Breadcrumbs() {
             {isLast || !crumb.href ? (
               <span className="text-[#A1A1AA] font-medium">{crumb.label}</span>
             ) : (
-              <Link href={crumb.href} className="hover:text-[#3ECF8E] transition-colors flex items-center gap-1">
+              <Link href={crumb.href} className="hover:text-[#dbfcff] transition-colors flex items-center gap-1">
                 {index === 0 && <Home className="w-3 h-3" />}
                 {crumb.label}
               </Link>

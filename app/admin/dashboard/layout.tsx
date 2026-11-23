@@ -265,7 +265,7 @@ function SectionFallback() {
   return (
     <div className="flex items-center justify-center min-h-[400px]">
       <div className="text-center space-y-4">
-        <div className="w-12 h-12 border-4 border-[#3ECF8E]/30 border-t-[#3ECF8E] rounded-full animate-spin mx-auto" />
+        <div className="w-12 h-12 border-4 border-[#dbfcff]/30 border-t-[#dbfcff] rounded-full animate-spin mx-auto" />
         <p className="text-xs font-mono text-[#71717A]">Loading section...</p>
       </div>
     </div>
@@ -300,18 +300,18 @@ function AdminTopBar({
   activityCount: number;
 }) {
   return (
-    <header className="h-16 border-b border-[#27272A] bg-[#18181B] px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-40 w-full">
+    <header className="h-16 border-b border-[#353436] bg-[#201f20] px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-40 w-full">
       <div className="flex items-center gap-3">
         <button
           onClick={() => setMobileSidebarOpen(true)}
-          className="md:hidden p-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white"
+          className="md:hidden p-2 rounded-lg bg-[#131314] border border-[#353436] text-white"
         >
           <Menu className="w-4 h-4" />
         </button>
         <Link href="/" className="flex items-center gap-2.5 group">
           <ViztrLogoMark className="w-7 h-7 group-hover:scale-105 transition-transform" />
           <span className="font-serif font-bold text-lg tracking-wider text-white">VizTR</span>
-          <span className="hidden sm:inline px-2 py-0.5 rounded bg-[#09090B] border border-[#27272A] text-[#e2c073] text-[10px] font-mono font-bold uppercase">Super Admin Core v3.0</span>
+          <span className="hidden sm:inline px-2 py-0.5 rounded bg-[#131314] border border-[#353436] text-[#e2c073] text-[10px] font-mono font-bold uppercase">Super Admin Core v3.0</span>
         </Link>
       </div>
       <div className="hidden md:flex items-center gap-4 max-w-lg w-full">
@@ -322,7 +322,7 @@ function AdminTopBar({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search projects, client tokens, assets, hour logs..."
-            className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+            className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
           />
         </div>
       </div>
@@ -332,8 +332,8 @@ function AdminTopBar({
           onClick={() => setLeftPanelOpen(!leftPanelOpen)}
           className={`px-2.5 py-1.5 rounded-lg text-xs font-mono border transition-colors flex items-center gap-1.5 cursor-pointer ${
             leftPanelOpen
-              ? 'bg-[#3ECF8E]/20 text-[#3ECF8E] border-[#3ECF8E]/40'
-              : 'bg-[#09090B] text-[#A1A1AA] border-[#27272A] hover:text-white'
+              ? 'bg-[#dbfcff]/20 text-[#dbfcff] border-[#dbfcff]/40'
+              : 'bg-[#131314] text-[#A1A1AA] border-[#353436] hover:text-white'
           }`}
           title="Toggle Left Filter Panel"
         >
@@ -345,8 +345,8 @@ function AdminTopBar({
           onClick={() => setRightPanelOpen(!rightPanelOpen)}
           className={`px-2.5 py-1.5 rounded-lg text-xs font-mono border transition-colors flex items-center gap-1.5 cursor-pointer ${
             rightPanelOpen
-              ? 'bg-[#3ECF8E]/20 text-[#3ECF8E] border-[#3ECF8E]/40'
-              : 'bg-[#09090B] text-[#A1A1AA] border-[#27272A] hover:text-white'
+              ? 'bg-[#dbfcff]/20 text-[#dbfcff] border-[#dbfcff]/40'
+              : 'bg-[#131314] text-[#A1A1AA] border-[#353436] hover:text-white'
           }`}
           title="Toggle Right Hours & Pipeline Inspector"
         >
@@ -355,28 +355,28 @@ function AdminTopBar({
         </button>
         <button
           onClick={() => showToast('Cluster healthy: 0 critical pipeline alerts.', 'info')}
-          className="p-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] hover:text-white relative cursor-pointer"
+          className="p-2 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] hover:text-white relative cursor-pointer"
           title={activityCount > 0 ? `${activityCount} live activity updates` : 'Notifications'}
         >
           <Bell className="w-4 h-4" />
           {activityCount > 0 ? (
-            <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#3ECF8E] text-black text-[9px] font-mono font-bold flex items-center justify-center">
+            <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#dbfcff] text-black text-[9px] font-mono font-bold flex items-center justify-center">
               {activityCount > 99 ? '99+' : activityCount}
             </span>
           ) : (
-            <span className="w-2 h-2 rounded-full bg-[#3ECF8E] absolute top-1.5 right-1.5" />
+            <span className="w-2 h-2 rounded-full bg-[#dbfcff] absolute top-1.5 right-1.5" />
           )}
         </button>
-        <div className="flex items-center gap-2 pl-2 border-l border-[#27272A]">
-          <div className="w-8 h-8 rounded-full bg-[#3ECF8E]/20 border border-[#3ECF8E]/40 flex items-center justify-center text-xs font-mono font-bold text-[#3ECF8E]">SA</div>
+        <div className="flex items-center gap-2 pl-2 border-l border-[#353436]">
+          <div className="w-8 h-8 rounded-full bg-[#dbfcff]/20 border border-[#dbfcff]/40 flex items-center justify-center text-xs font-mono font-bold text-[#dbfcff]">SA</div>
           <div className="hidden xl:block text-left">
             <div className="text-xs font-mono font-bold text-white">SuperAdmin Master</div>
-            <div className="text-[10px] font-mono text-[#3ECF8E]">Full Authority</div>
+            <div className="text-[10px] font-mono text-[#dbfcff]">Full Authority</div>
           </div>
         </div>
         <Link
           href="/client-dashboard"
-          className="px-3 py-1.5 rounded-lg bg-[#27272A] hover:bg-[#3ECF8E] hover:text-black border border-[#27272A] text-xs font-mono font-bold text-white transition-all"
+          className="px-3 py-1.5 rounded-lg bg-[#353436] hover:bg-[#dbfcff] hover:text-black border border-[#353436] text-xs font-mono font-bold text-white transition-all"
           title="Switch to Client Portal View"
         >
           Client View &rarr;
@@ -418,7 +418,7 @@ function AdminSidebar({
       >
         <div className="p-3.5 space-y-5">
           {/* Collapse toggle button */}
-          <div className="flex items-center justify-between p-2 rounded-lg bg-[#09090B] border border-[#27272A] cursor-pointer hover:bg-[#27272A] transition-colors" onClick={() => setCollapsed(!collapsed)}>
+          <div className="flex items-center justify-between p-2 rounded-lg bg-[#131314] border border-[#353436] cursor-pointer hover:bg-[#353436] transition-colors" onClick={() => setCollapsed(!collapsed)}>
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#71717A]">
               {collapsed ? 'Expend' : 'Collapse'}
             </span>
@@ -443,12 +443,12 @@ function AdminSidebar({
                       }}
                       className={`flex items-center gap-2.5 rounded-lg text-xs font-mono transition-all text-left cursor-pointer ${
                         isActive
-                          ? 'bg-[#09090B] text-[#3ECF8E] font-bold border-l-2 border-[#3ECF8E] pl-2'
-                          : 'text-[#A1A1AA] hover:text-white hover:bg-[#09090B]/50'
+                          ? 'bg-[#131314] text-[#dbfcff] font-bold border-l-2 border-[#dbfcff] pl-2'
+                          : 'text-[#A1A1AA] hover:text-white hover:bg-[#131314]/50'
                         } w-full px-2.5 py-1.5`}
                     >
                       <div className="w-8 flex items-center justify-center shrink-0">
-                        <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-[#3ECF8E]' : 'text-[#71717A]'}`} />
+                        <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-[#dbfcff]' : 'text-[#71717A]'}`} />
                       </div>
                       <span className={collapsed ? 'hidden' : 'truncate'}>
                         {item.label}
@@ -460,10 +460,10 @@ function AdminSidebar({
             </div>
           ))}
         </div>
-        <div className="p-3 border-t border-[#27272A] text-[10px] font-mono text-[#71717A] flex items-center justify-between whitespace-nowrap">
+        <div className="p-3 border-t border-[#353436] text-[10px] font-mono text-[#71717A] flex items-center justify-between whitespace-nowrap">
           <span className="truncate">Prisma 5.x DB Sync</span>
-          <span className="text-[#3ECF8E] flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#3ECF8E] animate-pulse" />
+          <span className="text-[#dbfcff] flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#dbfcff] animate-pulse" />
             Live Connected
           </span>
         </div>
@@ -817,7 +817,7 @@ export default function AdminDashboardLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-[#09090B] text-[#FAFAFA] flex flex-col w-full">
+    <div className="min-h-screen bg-[#131314] text-[#e5e2e3] flex flex-col w-full">
       <AdminTopBar
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
@@ -1078,7 +1078,7 @@ function renderSection(section: ActiveSection, props: {
       return (
         <div className="space-y-6">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase">
+            <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase">
               <Box className="w-4 h-4" />
               <span>ASSET PIPELINE</span>
             </div>
@@ -1181,8 +1181,8 @@ function renderSection(section: ActiveSection, props: {
       );
     default:
       return (
-        <div className="p-8 rounded-2xl bg-[#18181B] border border-[#27272A] text-center space-y-4 font-mono">
-          <div className="w-12 h-12 rounded-full bg-[#3ECF8E]/10 border border-[#3ECF8E]/40 flex items-center justify-center mx-auto text-[#3ECF8E]">
+        <div className="p-8 rounded-2xl bg-[#201f20] border border-[#353436] text-center space-y-4 font-mono">
+          <div className="w-12 h-12 rounded-full bg-[#dbfcff]/10 border border-[#dbfcff]/40 flex items-center justify-center mx-auto text-[#dbfcff]">
             <Settings className="w-6 h-6 animate-spin-slow" />
           </div>
           <h3 className="text-lg font-bold font-display text-white capitalize">
@@ -1193,7 +1193,7 @@ function renderSection(section: ActiveSection, props: {
           </p>
           <button
             onClick={() => window.location.href = '/admin/dashboard?section=dashboard'}
-            className="px-4 py-2 rounded-lg bg-[#3ECF8E] text-black font-bold text-xs uppercase"
+            className="px-4 py-2 rounded-lg bg-[#dbfcff] text-black font-bold text-xs uppercase"
           >
             Return to Overview
           </button>

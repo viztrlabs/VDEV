@@ -45,7 +45,7 @@ export function EditorBottomBar({
   onSetStartView,
 }: EditorBottomBarProps) {
   return (
-    <div className="h-10 border-t border-[#27272A] flex items-center justify-between px-4 bg-[#09090B]">
+    <div className="h-10 border-t border-[#353436] flex items-center justify-between px-4 bg-[#131314]">
       <div className="flex items-center gap-1">
         <button
           onClick={onUndo}
@@ -63,7 +63,7 @@ export function EditorBottomBar({
         >
           <Redo2 className="w-3.5 h-3.5" />
         </button>
-        <div className="h-4 w-px bg-[#27272A] mx-1" />
+        <div className="h-4 w-px bg-[#353436] mx-1" />
       </div>
 
       <div className="flex items-center gap-1">
@@ -79,8 +79,8 @@ export function EditorBottomBar({
             }}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono transition-colors ${
               activeTool === tool.id
-                ? 'bg-[#3ECF8E]/20 text-[#3ECF8E] border border-[#3ECF8E]/50'
-                : 'bg-[#18181B] text-[#71717A] hover:text-white hover:bg-[#27272A] border border-transparent'
+                ? 'bg-[#dbfcff]/20 text-[#dbfcff] border border-[#dbfcff]/50'
+                : 'bg-[#201f20] text-[#71717A] hover:text-white hover:bg-[#353436] border border-transparent'
             }`}
             title={`${tool.label} (${tool.shortcut})`}
           >

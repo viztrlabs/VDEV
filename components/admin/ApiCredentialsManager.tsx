@@ -56,9 +56,9 @@ export default function ApiCredentialsManager({ onSaved }: ApiCredentialsManager
   return (
     <div className="space-y-6">
       {/* BANNER */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#18181B] via-[#121214] to-[#09090B] border border-[#27272A] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-[#201f20] via-[#131314] to-[#131314] border border-[#353436] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#3ECF8E] font-bold uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#dbfcff] font-bold uppercase tracking-wider">
             <KeyRound className="w-4 h-4" />
             <span>CORE SYSTEM 04 • AI &amp; INTEGRATION CREDENTIALS</span>
           </div>
@@ -68,14 +68,14 @@ export default function ApiCredentialsManager({ onSaved }: ApiCredentialsManager
           <p className="text-xs text-[#A1A1AA] max-w-2xl">
             Enter provider credentials here to activate AI and streaming features. Keys are
             stored in this browser (localStorage) for the session and exported as a{' '}
-            <code className="text-[#3ECF8E]">.env.local</code> snippet for deployment. Swap any
+            <code className="text-[#dbfcff]">.env.local</code> snippet for deployment. Swap any
             key here in the future without touching code.
           </p>
         </div>
         <button
           type="button"
           onClick={copySnippet}
-          className="px-4 py-2 rounded-xl bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center gap-2 transition-all cursor-pointer"
+          className="px-4 py-2 rounded-xl bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs flex items-center gap-2 transition-all cursor-pointer"
         >
           {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
           <span>{copied ? 'Copied' : 'Copy .env.local'}</span>
@@ -91,14 +91,14 @@ export default function ApiCredentialsManager({ onSaved }: ApiCredentialsManager
           return (
             <div
               key={field.key}
-              className="p-4 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3"
+              className="p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   {field.key.includes('GEMINI') || field.key.includes('OPENAI') ? (
-                    <Bot className="w-4 h-4 text-[#3ECF8E]" />
+                    <Bot className="w-4 h-4 text-[#dbfcff]" />
                   ) : (
-                    <ShieldCheck className="w-4 h-4 text-[#3ECF8E]" />
+                    <ShieldCheck className="w-4 h-4 text-[#dbfcff]" />
                   )}
                   <span className="text-sm font-bold text-white font-display">
                     {field.label}
@@ -121,12 +121,12 @@ export default function ApiCredentialsManager({ onSaved }: ApiCredentialsManager
                   value={draftVal || (isRevealed ? field.value : maskSecret(field.value))}
                   placeholder={field.placeholder}
                   onChange={(e) => handleChange(field.key, e.target.value)}
-                  className="flex-1 px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                  className="flex-1 px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
                 />
                 <button
                   type="button"
                   onClick={() => toggleReveal(field.key)}
-                  className="p-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                  className="p-2 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
                   title={isRevealed ? 'Hide' : 'Reveal'}
                 >
                   {isRevealed ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -138,7 +138,7 @@ export default function ApiCredentialsManager({ onSaved }: ApiCredentialsManager
                   type="button"
                   onClick={() => commit(field)}
                   disabled={!draftVal}
-                  className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] disabled:opacity-40 text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] disabled:opacity-40 text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>Save</span>
@@ -147,7 +147,7 @@ export default function ApiCredentialsManager({ onSaved }: ApiCredentialsManager
                   <button
                     type="button"
                     onClick={() => resetCredential(field.key)}
-                    className="px-3 py-1.5 rounded-lg bg-[#09090B] border border-[#27272A] text-[#A1A1AA] hover:text-rose-400 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="px-3 py-1.5 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] hover:text-rose-400 text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                     <span>Clear</span>
@@ -163,7 +163,7 @@ export default function ApiCredentialsManager({ onSaved }: ApiCredentialsManager
       </div>
 
       {/* EXPORTED SNIPPET PREVIEW */}
-      <div className="p-4 rounded-2xl bg-[#09090B] border border-[#27272A]">
+      <div className="p-4 rounded-2xl bg-[#131314] border border-[#353436]">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-mono font-bold text-[#A1A1AA] uppercase">
             .env.local snippet (paste into deployment)
@@ -171,7 +171,7 @@ export default function ApiCredentialsManager({ onSaved }: ApiCredentialsManager
           <button
             type="button"
             onClick={copySnippet}
-            className="text-[10px] font-mono text-[#3ECF8E] hover:underline flex items-center gap-1 cursor-pointer"
+            className="text-[10px] font-mono text-[#dbfcff] hover:underline flex items-center gap-1 cursor-pointer"
           >
             <Copy className="w-3 h-3" /> Copy all
           </button>

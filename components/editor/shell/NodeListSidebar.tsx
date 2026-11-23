@@ -43,13 +43,13 @@ function NodeListItemBase({
     <div
       className={`group rounded-lg border transition-colors ${
         isSelected
-          ? 'bg-[#18181B] border-[#3ECF8E]/30'
-          : 'border-transparent hover:bg-[#18181B]'
+          ? 'bg-[#201f20] border-[#dbfcff]/30'
+          : 'border-transparent hover:bg-[#201f20]'
       }`}
     >
       <div className="flex items-center gap-2 px-2 py-1.5">
         <div
-          className="w-8 h-8 rounded bg-cover bg-center shrink-0 border border-[#27272A] cursor-pointer"
+          className="w-8 h-8 rounded bg-cover bg-center shrink-0 border border-[#353436] cursor-pointer"
           style={{ backgroundImage: `url(${room.thumbnailUrl})` }}
           onClick={onSelect}
           role="img"
@@ -65,7 +65,7 @@ function NodeListItemBase({
                 if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
                 if (e.key === 'Escape') (e.target as HTMLInputElement).blur();
               }}
-              className="w-full bg-[#0c0c0f] border border-[#3ECF8E]/40 rounded px-1 text-xs text-white"
+              className="w-full bg-[#201f20] border border-[#dbfcff]/40 rounded px-1 text-xs text-white"
             />
           ) : (
             <div className="flex items-center gap-1 text-xs font-medium truncate">
@@ -168,7 +168,7 @@ function MediaLibraryPanelBase({
   }, [assets]);
 
   return (
-    <div className="rounded-lg border border-[#27272A] bg-[#0c0c0f] overflow-hidden">
+    <div className="rounded-lg border border-[#353436] bg-[#201f20] overflow-hidden">
       <div className="flex items-center">
         <button
           type="button"
@@ -196,7 +196,7 @@ function MediaLibraryPanelBase({
       {open && (
         <div className="px-1 pb-1 space-y-1">
           {onUploadFiles && !uploading && (
-            <label className="flex items-center gap-1 px-1.5 py-1 rounded border border-[#27272A] hover:border-[#3ECF8E]/40 text-[10px] font-mono text-[#3ECF8E] cursor-pointer">
+            <label className="flex items-center gap-1 px-1.5 py-1 rounded border border-[#353436] hover:border-[#dbfcff]/40 text-[10px] font-mono text-[#dbfcff] cursor-pointer">
               <Upload className="w-3 h-3" /> Upload
               <input
                 type="file"
@@ -219,16 +219,16 @@ function MediaLibraryPanelBase({
               unique.map((a) => (
                 <div
                   key={a.url}
-                  className="flex items-center gap-1 rounded border border-[#27272A] p-1"
+                  className="flex items-center gap-1 rounded border border-[#353436] p-1"
                 >
                   <button
                     type="button"
                     onClick={() => onAdd(a.url)}
                     title={`Add ${a.name} as new node`}
-                    className="flex-1 min-w-0 flex items-center gap-2 text-left rounded hover:border-[#3ECF8E]/40"
+                    className="flex-1 min-w-0 flex items-center gap-2 text-left rounded hover:border-[#dbfcff]/40"
                   >
                     <div
-                      className="w-7 h-7 rounded bg-cover bg-center shrink-0 border border-[#27272A]"
+                      className="w-7 h-7 rounded bg-cover bg-center shrink-0 border border-[#353436]"
                       style={{ backgroundImage: `url(${a.url})` }}
                     />
                     <span className="text-[10px] font-mono text-[#A1A1AA] truncate">{a.name}</span>
@@ -238,7 +238,7 @@ function MediaLibraryPanelBase({
                     onClick={() => onAdd(a.url)}
                     title="Add as new node"
                     aria-label={`Add ${a.name}`}
-                    className="p-1 rounded text-[#71717A] hover:text-[#3ECF8E] hover:bg-white/10"
+                    className="p-1 rounded text-[#71717A] hover:text-[#dbfcff] hover:bg-white/10"
                   >
                     <Plus className="w-3 h-3" />
                   </button>
@@ -319,12 +319,12 @@ export function NodeListSidebar({
   onCollapse,
 }: NodeListSidebarProps) {
   return (
-    <aside className="w-64 shrink-0 border-r border-[#27272A] overflow-y-auto p-2 space-y-1 bg-[#09090B]">
+    <aside className="w-64 shrink-0 border-r border-[#353436] overflow-y-auto p-2 space-y-1 bg-[#131314]">
       {/* Header */}
       <div className="flex items-center justify-between px-1 pb-1">
         <span className="text-[10px] font-mono uppercase tracking-wider text-[#71717A]">Nodes</span>
         <div className="flex items-center gap-1">
-          <label className="flex items-center gap-1 px-2 py-1 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#3ECF8E] text-[10px] font-mono cursor-pointer">
+          <label className="flex items-center gap-1 px-2 py-1 rounded bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#dbfcff] text-[10px] font-mono cursor-pointer">
             <Upload className="w-3 h-3" /> Upload
             <input
               type="file"
@@ -341,7 +341,7 @@ export function NodeListSidebar({
               aria-label="Collapse nodes panel"
               aria-pressed="false"
               title="Collapse panel"
-              className="p-1 rounded text-[#71717A] hover:text-white hover:bg-[#18181B]"
+              className="p-1 rounded text-[#71717A] hover:text-white hover:bg-[#201f20]"
             >
               <PanelLeftClose className="w-3.5 h-3.5" />
             </button>
@@ -372,8 +372,8 @@ export function NodeListSidebar({
         }}
         className={`rounded-xl border-2 border-dashed p-3 text-center text-[10px] font-mono transition-colors ${
           draggingOver
-            ? 'border-[#3ECF8E] bg-[#3ECF8E]/10 text-[#3ECF8E]'
-            : 'border-[#27272A] text-[#71717A]'
+            ? 'border-[#dbfcff] bg-[#dbfcff]/10 text-[#dbfcff]'
+            : 'border-[#353436] text-[#71717A]'
         }`}
       >
         {uploading ? (

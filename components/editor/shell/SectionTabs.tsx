@@ -27,7 +27,7 @@ function SectionTabsBase({ active, onChange }: SectionTabsProps) {
   return (
     <div
       role="tablist"
-      className="flex items-center gap-1 px-4 py-2 border-b border-[#27272A] bg-[#0c0c0f] overflow-x-auto"
+      className="flex items-center gap-1 px-4 py-2 border-b border-[#353436] bg-[#201f20] overflow-x-auto"
     >
       {TABS.map(([tab, label]) => (
         <button
@@ -38,8 +38,8 @@ function SectionTabsBase({ active, onChange }: SectionTabsProps) {
           onClick={() => onChange(tab)}
           className={`px-2 py-1 rounded text-[10px] font-mono whitespace-nowrap ${
             active === tab
-              ? 'border-b-2 border-[#3ECF8E] text-[#3ECF8E] font-bold'
-              : 'bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA]'
+              ? 'border-b-2 border-[#dbfcff] text-[#dbfcff] font-bold'
+              : 'bg-[#201f20] hover:bg-[#353436] text-[#A1A1AA]'
           }`}
         >
           {label}

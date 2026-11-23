@@ -97,7 +97,7 @@ const PlayCameraSceneRenderer: React.FC<PlayCameraSceneRendererProps> = ({
   // Render
   if (error) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-[#18181B] border border-rose-800/50 rounded-xl">
+      <div className="w-full h-full flex items-center justify-center bg-[#201f20] border border-rose-800/50 rounded-xl">
         <div className="text-center p-4">
           <AlertCircle className="w-6 h-6 text-rose-400 mx-auto mb-2" />
           <p className="text-xs text-rose-300">{error}</p>
@@ -110,12 +110,12 @@ const PlayCameraSceneRenderer: React.FC<PlayCameraSceneRendererProps> = ({
     <div className="relative w-full h-full rounded-xl overflow-hidden bg-black">
       {/* Loading overlay */}
       {isLoading && (
-        <div className="absolute inset-0 z-50 bg-[#09090B] flex flex-col items-center justify-center gap-3">
-          <div className="text-xs font-mono text-[#3ECF8E]">Loading Scene...
+        <div className="absolute inset-0 z-50 bg-[#131314] flex flex-col items-center justify-center gap-3">
+          <div className="text-xs font-mono text-[#dbfcff]">Loading Scene...
           </div>
-          <div className="w-48 h-1 bg-[#27272A] rounded-full overflow-hidden">
+          <div className="w-48 h-1 bg-[#353436] rounded-full overflow-hidden">
             <div
-              className="h-full bg-[#3ECF8E] transition-all duration-300 rounded-full"
+              className="h-full bg-[#dbfcff] transition-all duration-300 rounded-full"
               style={{ width: `${loadProgress * 100}%` }}
             />
           </div>
@@ -132,10 +132,10 @@ const PlayCameraSceneRenderer: React.FC<PlayCameraSceneRendererProps> = ({
 
       {/* Scene info overlay */}
       {isInitialized && !isLoading && (
-        <div className="absolute bottom-2 left-2 z-10 bg-[#09090B]/80 backdrop-blur-sm rounded-lg px-2 py-1.5 border border-[#27272A]">
+        <div className="absolute bottom-2 left-2 z-10 bg-[#131314]/80 backdrop-blur-sm rounded-lg px-2 py-1.5 border border-[#353436]">
           <div className="flex items-center gap-2">
             {xrMode === 'vr' ? (
-              <Wifi className="w-3 h-3 text-[#3ECF8E]" />
+              <Wifi className="w-3 h-3 text-[#dbfcff]" />
             ) : (
               <WifiOff className="w-3 h-3 text-[#71717A]" />
             )}

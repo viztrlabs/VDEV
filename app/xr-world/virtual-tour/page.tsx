@@ -32,15 +32,15 @@ export default function VirtualTourServicePage() {
               className="hero-bg-image object-cover object-center render-lighting-enhanced"
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/40 to-[#0A0A0B]/65 pointer-events-none z-20" />
-          <div className="absolute inset-0 bg-radial from-transparent via-[#0A0A0B]/25 to-[#0A0A0B]/80 pointer-events-none z-20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#131314] via-[#131314]/40 to-[#131314]/65 pointer-events-none z-20" />
+          <div className="absolute inset-0 bg-radial from-transparent via-[#131314]/25 to-[#131314]/80 pointer-events-none z-20" />
         </div>
 
         {/* TOP AREA: Clears floating header & hosts Eyebrow Badge (No directory breadcrumbs) */}
         <div className="relative z-20 w-full pt-16 sm:pt-20 shrink-0 flex justify-center px-2 sm:px-4">
-          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full backdrop-blur-xl shadow-2xl transition-all border border-[#1E293B] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#42CF8B] animate-pulse shadow-[0_0_8px_#42CF8B] shrink-0" />
-            <span className="font-bold text-[#42CF8B] tracking-wider uppercase shrink-0">SPHERICAL ENVIRONMENTS</span>
+          <div className="hero-eyebrow inline-flex items-center gap-1.5 sm:gap-2.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full backdrop-blur-xl shadow-2xl transition-all border border-[#3b494b] text-[10px] sm:text-xs max-w-[95vw] sm:max-w-none">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#54de99] animate-pulse shadow-[0_0_8px_#54de99] shrink-0" />
+            <span className="font-bold text-[#54de99] tracking-wider uppercase shrink-0">SPHERICAL ENVIRONMENTS</span>
             <span className="opacity-40 shrink-0">|</span>
             <span className="opacity-80 shrink-0">16K Ultra-HD 360° Virtual Tours</span>
           </div>
@@ -56,7 +56,7 @@ export default function VirtualTourServicePage() {
             {data.subtitle}
           </p>
 
-          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#E5E2E3]">
+          <p className="hero-desc text-fluid-desc max-w-2xl 2xl:max-w-3xl text-center prose-readable font-normal leading-relaxed mb-6 text-[#e5e2e3]">
             {data.description || 'Photorealistic 16K panoramic tours with interactive hotspot navigation, multi-floor maps, and integrated spatial audio.'}
           </p>
 
@@ -75,9 +75,9 @@ export default function VirtualTourServicePage() {
             <Link
               href="/xr-world/virtual-tour/editor"
               id="hero-secondary-cta"
-              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider backdrop-blur-xl transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#1E293B]"
+              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider backdrop-blur-xl transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-xl hover:scale-105 active:scale-95 border border-[#3b494b]"
             >
-              <Edit3 className="w-4 h-4 text-[#42CF8B]" />
+              <Edit3 className="w-4 h-4 text-[#54de99]" />
               <span>Edit Tour in Studio</span>
             </Link>
           </div>
@@ -93,7 +93,7 @@ export default function VirtualTourServicePage() {
                   if (target) target.scrollIntoView({ behavior: 'smooth' });
                   else window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
                 }}
-                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full backdrop-blur-md text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-lg border border-[#1E293B]"
+                className="hero-scroll-btn group inline-flex items-center gap-2 px-4 py-1.5 rounded-full backdrop-blur-md text-[10px] font-mono uppercase tracking-widest transition-all cursor-pointer shadow-lg border border-[#3b494b]"
                 aria-label="Scroll down to explore"
               >
                 <span>Scroll to explore</span>
@@ -152,7 +152,7 @@ export default function VirtualTourServicePage() {
 
         {/* DELIVERABLES & PRICING */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="p-8 rounded-3xl bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 space-y-4">
+          <div className="p-8 rounded-3xl bg-white dark:bg-[#201f20] border border-zinc-200 dark:border-zinc-800 space-y-4">
             <h4 className="text-lg font-bold text-zinc-900 dark:text-white font-display">
               Technical Deliverables
             </h4>

@@ -216,7 +216,7 @@ export default function XRLinkGeneratorPage() {
                     className="w-full bg-[#0e0e0f] border border-[#3b494b] focus:border-[#00F0FF] focus:ring-1 focus:ring-[#00F0FF] text-[#f4f6ff] font-medium py-3.5 px-4 rounded-xl appearance-none transition-all outline-none cursor-pointer"
                   >
                     {SAMPLE_PROJECTS.map((project) => (
-                      <option key={project.id} value={project.id} className="bg-[#1c1b1c] text-white">
+                      <option key={project.id} value={project.id} className="bg-[#e5e2e3] text-white">
                         {project.name} ({project.category})
                       </option>
                     ))}
@@ -239,7 +239,7 @@ export default function XRLinkGeneratorPage() {
                     className={`flex flex-col items-center justify-center p-5 rounded-xl border transition-all text-center cursor-pointer ${
                       mode === 'webxr'
                         ? 'border-[#00F0FF] bg-[#00F0FF]/10 text-white shadow-[0_0_20px_rgba(0,240,255,0.15)]'
-                        : 'border-[#3b494b] bg-[#1c1b1c]/40 text-[#b9cacb] hover:border-[#00F0FF]/50 hover:bg-[#1c1b1c]'
+                        : 'border-[#3b494b] bg-[#e5e2e3]/40 text-[#b9cacb] hover:border-[#00F0FF]/50 hover:bg-[#e5e2e3]'
                     }`}
                   >
                     <Eye className={`w-6 h-6 mb-2 ${mode === 'webxr' ? 'text-[#00F0FF]' : 'text-[#b9cacb]'}`} />
@@ -253,7 +253,7 @@ export default function XRLinkGeneratorPage() {
                     className={`flex flex-col items-center justify-center p-5 rounded-xl border transition-all text-center cursor-pointer ${
                       mode === 'webar'
                         ? 'border-[#00F0FF] bg-[#00F0FF]/10 text-white shadow-[0_0_20px_rgba(0,240,255,0.15)]'
-                        : 'border-[#3b494b] bg-[#1c1b1c]/40 text-[#b9cacb] hover:border-[#00F0FF]/50 hover:bg-[#1c1b1c]'
+                        : 'border-[#3b494b] bg-[#e5e2e3]/40 text-[#b9cacb] hover:border-[#00F0FF]/50 hover:bg-[#e5e2e3]'
                     }`}
                   >
                     <Smartphone className={`w-6 h-6 mb-2 ${mode === 'webar' ? 'text-[#00F0FF]' : 'text-[#b9cacb]'}`} />
@@ -357,7 +357,7 @@ export default function XRLinkGeneratorPage() {
                         placeholder="Enter link password..."
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full bg-[#1c1b1c] border border-[#3b494b] text-white px-3 py-2 rounded-lg text-sm focus:border-[#00F0FF] outline-none"
+                        className="w-full bg-[#e5e2e3] border border-[#3b494b] text-white px-3 py-2 rounded-lg text-sm focus:border-[#00F0FF] outline-none"
                       />
                     </div>
                   )}
@@ -499,7 +499,7 @@ export default function XRLinkGeneratorPage() {
                           handleCopyLink();
                         }
                       }}
-                      className="flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl bg-[#1c1b1c] border border-[#3b494b] hover:border-[#00F0FF] hover:text-[#00F0FF] text-xs font-mono uppercase tracking-wider transition-all cursor-pointer"
+                      className="flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl bg-[#e5e2e3] border border-[#3b494b] hover:border-[#00F0FF] hover:text-[#00F0FF] text-xs font-mono uppercase tracking-wider transition-all cursor-pointer"
                     >
                       <Share2 className="w-3.5 h-3.5" />
                       <span>Share Link</span>
@@ -508,7 +508,7 @@ export default function XRLinkGeneratorPage() {
                     <Link
                       href={fullUrl}
                       target="_blank"
-                      className="flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl bg-[#1c1b1c] border border-[#3b494b] hover:border-[#00F0FF] hover:text-[#00F0FF] text-xs font-mono uppercase tracking-wider transition-all"
+                      className="flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl bg-[#e5e2e3] border border-[#3b494b] hover:border-[#00F0FF] hover:text-[#00F0FF] text-xs font-mono uppercase tracking-wider transition-all"
                     >
                       <span>Preview</span>
                       <ArrowUpRight className="w-3.5 h-3.5" />

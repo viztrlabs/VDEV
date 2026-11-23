@@ -58,7 +58,7 @@ export default function SceneGalaxy({ open, scenes, links, currentId, onSelect, 
           y1={a.y}
           x2={b.x}
           y2={b.y}
-          stroke="#3ECF8E"
+          stroke="#dbfcff"
           strokeWidth={1.5}
           strokeDasharray="4 3"
           opacity={0.55}
@@ -68,8 +68,8 @@ export default function SceneGalaxy({ open, scenes, links, currentId, onSelect, 
     .filter(Boolean);
 
   return (
-    <div className="fixed inset-0 z-[60] bg-[#09090B]/95 backdrop-blur-sm flex flex-col">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#27272A]">
+    <div className="fixed inset-0 z-[60] bg-[#131314]/95 backdrop-blur-sm flex flex-col">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[#353436]">
         <div className="text-xs font-mono font-bold text-white">{title || 'Tour map'}</div>
         <button onClick={onClose} className="text-[#71717A] hover:text-white text-xs px-1" aria-label="Close tour map">
           ✕
@@ -91,7 +91,7 @@ export default function SceneGalaxy({ open, scenes, links, currentId, onSelect, 
             >
               <span
                 className={`w-14 h-14 rounded-full bg-cover bg-center border-2 shadow-lg transition-transform group-hover:scale-105 ${
-                  active ? 'border-[#3ECF8E] ring-2 ring-[#3ECF8E]/30' : 'border-[#3F3F46]'
+                  active ? 'border-[#dbfcff] ring-2 ring-[#dbfcff]/30' : 'border-[#3F3F46]'
                 }`}
                 style={{ backgroundImage: `url(${n.thumbnailUrl})` }}
               />

@@ -154,7 +154,7 @@ export default function TourDashboardPage() {
   });
 
   return (
-    <div className="h-screen bg-[#09090B] text-white flex flex-col">
+    <div className="h-screen bg-[#131314] text-white flex flex-col">
       {/* Content (no top nav, no footer — fills the viewport) */}
       <div className="flex-1 min-h-0 overflow-auto">
         {tab === 'projects' && (
@@ -186,7 +186,7 @@ export default function TourDashboardPage() {
                     onClick={() => setTab(t)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-mono capitalize ${
                       tab === t
-                        ? 'bg-[#18181B] text-white border border-[#27272A]'
+                        ? 'bg-[#201f20] text-white border border-[#353436]'
                         : 'text-[#A1A1AA] hover:text-white'
                     }`}
                   >
@@ -210,7 +210,7 @@ export default function TourDashboardPage() {
                 <button
                   type="button"
                   onClick={() => setView('grid')}
-                  className={`p-1.5 rounded ${view === 'grid' ? 'bg-[#3ECF8E] text-black' : 'text-[#A1A1AA] hover:text-white'}`}
+                  className={`p-1.5 rounded ${view === 'grid' ? 'bg-[#dbfcff] text-black' : 'text-[#A1A1AA] hover:text-white'}`}
                   title="Grid view"
                 >
                   <Grid3X3 className="w-4 h-4" />
@@ -218,7 +218,7 @@ export default function TourDashboardPage() {
                 <button
                   type="button"
                   onClick={() => setView('list')}
-                  className={`p-1.5 rounded ${view === 'list' ? 'bg-[#3ECF8E] text-black' : 'text-[#A1A1AA] hover:text-white'}`}
+                  className={`p-1.5 rounded ${view === 'list' ? 'bg-[#dbfcff] text-black' : 'text-[#A1A1AA] hover:text-white'}`}
                   title="List view"
                 >
                   <ListIcon className="w-4 h-4" />
@@ -226,7 +226,7 @@ export default function TourDashboardPage() {
                 <select
                   value={filter}
                   onChange={(e) => setFilter(e.target.value as any)}
-                  className="ml-2 bg-[#18181B] border border-[#27272A] rounded px-2 py-1 text-[10px] font-mono text-white"
+                  className="ml-2 bg-[#201f20] border border-[#353436] rounded px-2 py-1 text-[10px] font-mono text-white"
                 >
                   <option value="all">All</option>
                   <option value="draft">Draft</option>
@@ -243,7 +243,7 @@ export default function TourDashboardPage() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search tours…"
-                  className="pl-7 pr-2 py-1.5 rounded bg-[#18181B] border border-[#27272A] text-xs font-mono text-white w-48"
+                  className="pl-7 pr-2 py-1.5 rounded bg-[#201f20] border border-[#353436] text-xs font-mono text-white w-48"
                 />
               </div>
             </div>
@@ -251,7 +251,7 @@ export default function TourDashboardPage() {
             {loading ? (
               <div className="text-center text-xs font-mono text-[#71717A] py-12">Loading tours…</div>
             ) : filtered.length === 0 ? (
-              <div className="text-center text-xs font-mono text-[#71717A] py-12 border border-dashed border-[#27272A] rounded-lg">
+              <div className="text-center text-xs font-mono text-[#71717A] py-12 border border-dashed border-[#353436] rounded-lg">
                 {tours.length === 0 ? 'No tours yet. Click "New Tour" to start.' : 'No tours match the filter.'}
               </div>
             ) : view === 'grid' ? (
@@ -270,7 +270,7 @@ export default function TourDashboardPage() {
             ) : (
               <table className="w-full text-xs font-mono">
                 <thead>
-                  <tr className="text-[#71717A] border-b border-[#27272A]">
+                  <tr className="text-[#71717A] border-b border-[#353436]">
                     <th className="text-left p-2">Tour</th>
                     <th className="text-left p-2">Scenes</th>
                     <th className="text-left p-2">Views</th>
@@ -281,13 +281,13 @@ export default function TourDashboardPage() {
                 </thead>
                 <tbody>
                   {filtered.map((t) => (
-                    <tr key={t.id} className="border-b border-[#18181B] hover:bg-[#0c0c0f]">
+                    <tr key={t.id} className="border-b border-[#201f20] hover:bg-[#201f20]">
                       <td className="p-2 flex items-center gap-2">
                         {t.thumbnailUrl ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={t.thumbnailUrl} alt={t.title} className="w-8 h-8 rounded object-cover" />
                         ) : (
-                          <div className="w-8 h-8 rounded bg-[#27272A]" />
+                          <div className="w-8 h-8 rounded bg-[#353436]" />
                         )}
                         <div>
                           <div className="text-white">{t.title}</div>
@@ -295,14 +295,14 @@ export default function TourDashboardPage() {
                         </div>
                       </td>
                       <td className="p-2 text-[#A1A1AA]">
-                        <span className="px-1.5 py-0.5 rounded bg-[#27272A]">{t.sceneCount ?? 0} scene{(t.sceneCount ?? 0) === 1 ? '' : 's'}</span>
+                        <span className="px-1.5 py-0.5 rounded bg-[#353436]">{t.sceneCount ?? 0} scene{(t.sceneCount ?? 0) === 1 ? '' : 's'}</span>
                       </td>
                       <td className="p-2 text-[#A1A1AA]">{t.views ?? 0}</td>
                       <td className="p-2">
                         <span
                           className={`px-1.5 py-0.5 rounded text-[10px] ${
                             t.is_live
-                              ? 'bg-[#3ECF8E]/15 text-[#3ECF8E]'
+                              ? 'bg-[#dbfcff]/15 text-[#dbfcff]'
                               : 'bg-amber-500/15 text-amber-400'
                           }`}
                         >
@@ -315,7 +315,7 @@ export default function TourDashboardPage() {
                       <td className="p-2 text-right whitespace-nowrap">
                         <Link
                           href={`/xr-world/virtual-tour/editor?tour=${encodeURIComponent(t.id)}`}
-                          className="inline-flex p-1 hover:text-[#3ECF8E]"
+                          className="inline-flex p-1 hover:text-[#dbfcff]"
                           title="Edit"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
@@ -323,7 +323,7 @@ export default function TourDashboardPage() {
                         {t.is_live && (
                           <Link
                             href={`/virtual-tour/${t.slug || t.id}`}
-                            className="inline-flex p-1 hover:text-[#3ECF8E]"
+                            className="inline-flex p-1 hover:text-[#dbfcff]"
                             title="View public tour"
                           >
                             <Eye className="w-3.5 h-3.5" />
@@ -332,15 +332,15 @@ export default function TourDashboardPage() {
                         <button
                           type="button"
                           onClick={() => togglePublish(t)}
-                          className="inline-flex p-1 hover:text-[#3ECF8E]"
+                          className="inline-flex p-1 hover:text-[#dbfcff]"
                           title={t.is_live ? 'Unpublish' : 'Publish'}
                         >
-                          <Globe className={`w-3.5 h-3.5 ${t.is_live ? 'text-[#3ECF8E]' : ''}`} />
+                          <Globe className={`w-3.5 h-3.5 ${t.is_live ? 'text-[#dbfcff]' : ''}`} />
                         </button>
                         <button
                           type="button"
                           onClick={() => duplicateTour(t)}
-                          className="inline-flex p-1 hover:text-[#3ECF8E]"
+                          className="inline-flex p-1 hover:text-[#dbfcff]"
                           title="Duplicate"
                         >
                           <Copy className="w-3.5 h-3.5" />
@@ -348,7 +348,7 @@ export default function TourDashboardPage() {
                         <button
                           type="button"
                           onClick={() => shareTour(t)}
-                          className="inline-flex p-1 hover:text-[#3ECF8E]"
+                          className="inline-flex p-1 hover:text-[#dbfcff]"
                           title="Copy public link"
                         >
                           <Share2 className="w-3.5 h-3.5" />
@@ -401,13 +401,13 @@ function TourCard({
 }) {
   const publicHref = `/virtual-tour/${tour.slug || tour.id}`;
   return (
-    <div className="group rounded-lg border border-[#27272A] bg-[#0c0c0f] overflow-hidden hover:border-[#3ECF8E]/40 transition-colors">
-      <div className="relative aspect-video bg-[#18181B]">
+    <div className="group rounded-lg border border-[#353436] bg-[#201f20] overflow-hidden hover:border-[#dbfcff]/40 transition-colors">
+      <div className="relative aspect-video bg-[#201f20]">
         {tour.thumbnailUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={tour.thumbnailUrl} alt={tour.title} className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-[#27272A]">
+          <div className="w-full h-full flex items-center justify-center text-[#353436]">
             <Layers className="w-12 h-12" />
           </div>
         )}
@@ -415,7 +415,7 @@ function TourCard({
           <div className="flex items-center gap-1.5">
             <Link
               href={`/xr-world/virtual-tour/editor?tour=${encodeURIComponent(tour.id)}`}
-              className="p-2 rounded bg-[#3ECF8E] text-black"
+              className="p-2 rounded bg-[#dbfcff] text-black"
               title="Edit"
             >
               <Edit3 className="w-4 h-4" />
@@ -480,7 +480,7 @@ function TourCard({
             onClick={onTogglePublish}
             className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
               tour.is_live
-                ? 'bg-[#3ECF8E]/15 text-[#3ECF8E] hover:bg-[#3ECF8E]/25'
+                ? 'bg-[#dbfcff]/15 text-[#dbfcff] hover:bg-[#dbfcff]/25'
                 : 'bg-amber-500/15 text-amber-400 hover:bg-amber-500/25'
             }`}
             title={tour.is_live ? 'Click to unpublish' : 'Click to publish'}
@@ -507,7 +507,7 @@ function TourCard({
 function ToolsSection({ onOpenWizard }: { onOpenWizard: () => void }) {
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-4">
-      <h2 className="text-base font-mono font-bold text-[#3ECF8E]">Tools</h2>
+      <h2 className="text-base font-mono font-bold text-[#dbfcff]">Tools</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <ToolCard
           icon={<Wrench className="w-5 h-5" />}
@@ -553,8 +553,8 @@ function ToolCard({
   onClick?: () => void;
 }) {
   const inner = (
-    <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-4 hover:border-[#3ECF8E]/40 transition-colors cursor-pointer">
-      <div className="flex items-center gap-2 mb-1 text-[#3ECF8E]">
+    <div className="rounded-xl border border-[#353436] bg-[#201f20] p-4 hover:border-[#dbfcff]/40 transition-colors cursor-pointer">
+      <div className="flex items-center gap-2 mb-1 text-[#dbfcff]">
         {icon}
         <span className="text-sm font-mono font-bold">{title}</span>
         {locked && <Lock className="w-3 h-3 text-amber-400 ml-auto" />}
@@ -575,9 +575,9 @@ function ToolCard({
 function MediaSection() {
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto text-center text-xs font-mono text-[#71717A] py-12">
-      <Cloud className="w-8 h-8 mx-auto mb-2 text-[#27272A]" />
+      <Cloud className="w-8 h-8 mx-auto mb-2 text-[#353436]" />
       Media library — go to{' '}
-      <Link href="/xr-world/virtual-tour/editor" className="text-[#3ECF8E] hover:underline">
+      <Link href="/xr-world/virtual-tour/editor" className="text-[#dbfcff] hover:underline">
         Tour Editor
       </Link>{' '}
       to upload panoramas.
@@ -589,10 +589,10 @@ function MediaSection() {
 function PromotionSection() {
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-4">
-      <h2 className="text-base font-mono font-bold text-[#3ECF8E]">Promotion</h2>
+      <h2 className="text-base font-mono font-bold text-[#dbfcff]">Promotion</h2>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {PROMOTION_CARDS.map((c) => (
-          <div key={c.title} className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-4 space-y-2">
+          <div key={c.title} className="rounded-xl border border-[#353436] bg-[#201f20] p-4 space-y-2">
             <div className="text-[10px] font-mono uppercase text-amber-400 tracking-wider">{c.badge}</div>
             <div className="text-sm font-mono font-bold text-white">{c.title}</div>
             <p className="text-[10px] font-mono text-[#A1A1AA]">{c.body}</p>
@@ -640,7 +640,7 @@ function EnterpriseSection() {
 
 function Card({ title, body, locked, children }: { title: string; body?: string; locked?: boolean; children?: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-3 space-y-2">
+    <div className="rounded-xl border border-[#353436] bg-[#201f20] p-3 space-y-2">
       <div className="flex items-center gap-2 text-[#A1A1AA]">
         <span className="text-sm font-mono font-bold">{title}</span>
         {locked && <Lock className="w-3 h-3 ml-auto" />}

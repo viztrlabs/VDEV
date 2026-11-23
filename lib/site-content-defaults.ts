@@ -198,7 +198,7 @@ const LIST_ITEMS: Partial<Record<SectionType, Record<string, SiteListItem[]>>> =
           verb: 'Experience.',
           description: 'Interactive, immersive property experiences with WebXR, WebAR, VR, and virtual tours.',
         },
-        { icon: 'Box', href: '/xr-world', color: 'text-[#42CF8B]', bgColor: 'bg-[#42CF8B]/10' },
+        { icon: 'Box', href: '/xr-world', color: 'text-[#54de99]', bgColor: 'bg-[#54de99]/10' },
       ),
       item(
         'project-hub',

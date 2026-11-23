@@ -133,7 +133,7 @@ export class PlayCanvasEngineAdapter implements EngineAdapter {
     this.createGridHelper();
 
     // Set background color
-    const bgColor = options.backgroundColor || '#09090b';
+    const bgColor = options.backgroundColor || '#131314';
     this.app.scene.clearColor = new pc.Color(
       parseInt(bgColor.slice(1, 3), 16) / 255,
       parseInt(bgColor.slice(3, 5), 16) / 255,
@@ -591,7 +591,7 @@ export class PlayCanvasEngineAdapter implements EngineAdapter {
         title: spot.name,
         type: 'info',
         position: { x: pos.x, y: pos.y, z: pos.z },
-        color: '#3ecf8e',
+        color: '#dbfcff',
       });
     });
 
@@ -780,7 +780,7 @@ export class PlayCanvasEngineAdapter implements EngineAdapter {
     hotspot.billboard = true;
 
     const mat = new pc.StandardMaterial();
-    mat.emissive = new pc.Color(data.color || '#3ecf8e');
+    mat.emissive = new pc.Color(data.color || '#dbfcff');
     mat.useLighting = false;
     mat.opacity = 0.9;
     mat.transparent = true;

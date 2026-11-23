@@ -56,12 +56,12 @@ export default function SearchPanel({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   autoFocus
-                  className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-[#09090B] border border-[#27272A] text-sm text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-[#131314] border border-[#353436] text-sm text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
                 />
               </div>
               <button
                 onClick={() => setShowSearch(false)}
-                className="p-2 rounded-xl hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors"
+                className="p-2 rounded-xl hover:bg-[#353436] text-[#A1A1AA] hover:text-white transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -78,8 +78,8 @@ export default function SearchPanel({
                   }}
                   className={`w-full p-3 rounded-xl flex items-center gap-3 transition-colors text-left ${
                     room.id === currentRoom.id
-                      ? 'bg-[#3ECF8E]/20 border border-[#3ECF8E]'
-                      : 'bg-[#09090B] border border-[#27272A] hover:border-[#3ECF8E]/50'
+                      ? 'bg-[#dbfcff]/20 border border-[#dbfcff]'
+                      : 'bg-[#131314] border border-[#353436] hover:border-[#dbfcff]/50'
                   }`}
                 >
                   <img
@@ -92,7 +92,7 @@ export default function SearchPanel({
                     <div className="text-[10px] text-[#71717A] truncate">{room.subtitle}</div>
                   </div>
                   {room.id === currentRoom.id && (
-                    <span className="text-[9px] font-mono text-[#3ECF8E] uppercase tracking-wider shrink-0">
+                    <span className="text-[9px] font-mono text-[#dbfcff] uppercase tracking-wider shrink-0">
                       Current
                     </span>
                   )}

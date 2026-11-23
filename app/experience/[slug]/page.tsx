@@ -54,15 +54,15 @@ export default function ExperiencePage({ params }: PageProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#09090B] flex items-center justify-center">
-        <div className="text-xs font-mono text-[#3ECF8E]">Loading experience…</div>
+      <div className="min-h-screen bg-[#131314] flex items-center justify-center">
+        <div className="text-xs font-mono text-[#dbfcff]">Loading experience…</div>
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-[#09090B] flex items-center justify-center">
+      <div className="min-h-screen bg-[#131314] flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-xl font-bold text-white mb-2">Experience Not Found</h1>
           <p className="text-sm text-[#71717A]">This experience may not exist or has not been published.</p>
@@ -74,7 +74,7 @@ export default function ExperiencePage({ params }: PageProps) {
   const { experience, config } = data;
 
   return (
-    <div className="min-h-screen bg-[#09090B]" onMouseMove={handleMouseMove}>
+    <div className="min-h-screen bg-[#131314]" onMouseMove={handleMouseMove}>
       {/* Full-screen viewer */}
       <div className="h-screen">
         <ExperienceViewer experience={experience} config={config} />
@@ -98,7 +98,7 @@ export default function ExperiencePage({ params }: PageProps) {
       </div>
 
       {/* Collapsible metadata panel */}
-      <div className="border-t border-[#27272A]">
+      <div className="border-t border-[#353436]">
         <button
           onClick={() => setExpanded(!expanded)}
           className="w-full px-4 py-3 flex items-center justify-between text-xs font-mono text-[#71717A] hover:text-[#A1A1AA] transition-colors"
@@ -116,7 +116,7 @@ export default function ExperiencePage({ params }: PageProps) {
               <p><strong>Published:</strong> {new Date(experience.published_at).toLocaleDateString()}</p>
             )}
             {config && (
-              <pre className="mt-2 p-2 bg-[#18181B] rounded text-[10px] overflow-auto max-h-48">
+              <pre className="mt-2 p-2 bg-[#201f20] rounded text-[10px] overflow-auto max-h-48">
                 {JSON.stringify(config.config, null, 2)}
               </pre>
             )}

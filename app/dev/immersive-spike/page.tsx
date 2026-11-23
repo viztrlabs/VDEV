@@ -10,7 +10,7 @@ const ImmersiveSpikeClient = dynamic(
 
 export default function ImmersiveSpikePage() {
   return (
-    <main className="min-h-screen bg-[#09090b] text-white">
+    <main className="min-h-screen bg-[#131314] text-white">
       <div className="container-ultrawide py-12 px-6">
         <header className="mb-12">
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">

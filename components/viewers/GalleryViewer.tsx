@@ -140,12 +140,12 @@ export default function GalleryViewer() {
       onMouseUp={handleMouseUp}
     >
       {/* TOP BAR CONTROLS */}
-      <div className="flex items-center justify-between px-6 py-3.5 bg-[#0A0A0B] border-b border-[#1E293B] z-10">
+      <div className="flex items-center justify-between px-6 py-3.5 bg-[#131314] border-b border-[#3b494b] z-10">
         <div className="flex items-center gap-3">
-          <span className="text-sm font-display font-bold tracking-wide text-[#FAFAFA]">
+          <span className="text-sm font-display font-bold tracking-wide text-[#e5e2e3]">
             {currentItem.title}
           </span>
-          <span className="text-[10px] px-3 py-1 rounded-full bg-[#131314] border border-[#1E293B] text-[#00F0FF] font-mono font-bold">
+          <span className="text-[10px] px-3 py-1 rounded-full bg-[#131314] border border-[#3b494b] text-[#00F0FF] font-mono font-bold">
             {lightboxIndex + 1} / {lightboxItems.length}
           </span>
         </div>
@@ -166,35 +166,35 @@ export default function GalleryViewer() {
 
           <button
             onClick={handleZoomIn}
-            className="p-2 rounded-full bg-[#131314] hover:bg-[#1E293B] border border-[#1E293B] text-[#FAFAFA] transition-colors cursor-pointer"
+            className="p-2 rounded-full bg-[#131314] hover:bg-[#3b494b] border border-[#3b494b] text-[#e5e2e3] transition-colors cursor-pointer"
             title="Zoom In (+)"
           >
             <ZoomIn className="w-4 h-4" />
           </button>
           <button
             onClick={handleZoomOut}
-            className="p-2 rounded-full bg-[#131314] hover:bg-[#1E293B] border border-[#1E293B] text-[#FAFAFA] transition-colors cursor-pointer"
+            className="p-2 rounded-full bg-[#131314] hover:bg-[#3b494b] border border-[#3b494b] text-[#e5e2e3] transition-colors cursor-pointer"
             title="Zoom Out (-)"
           >
             <ZoomOut className="w-4 h-4" />
           </button>
           <button
             onClick={resetTransform}
-            className="p-2 rounded-full bg-[#131314] hover:bg-[#1E293B] border border-[#1E293B] text-[#FAFAFA] transition-colors cursor-pointer"
+            className="p-2 rounded-full bg-[#131314] hover:bg-[#3b494b] border border-[#3b494b] text-[#e5e2e3] transition-colors cursor-pointer"
             title="Reset Zoom"
           >
             <RotateCcw className="w-4 h-4" />
           </button>
           <button
             onClick={toggleFullscreen}
-            className="p-2 rounded-full bg-[#131314] hover:bg-[#1E293B] border border-[#1E293B] text-[#FAFAFA] transition-colors cursor-pointer"
+            className="p-2 rounded-full bg-[#131314] hover:bg-[#3b494b] border border-[#3b494b] text-[#e5e2e3] transition-colors cursor-pointer"
             title="Toggle Fullscreen (F)"
           >
             {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
           </button>
           <button
             onClick={closeLightbox}
-            className="p-2 rounded-full bg-[#1E293B] hover:bg-[#00F0FF] hover:text-black text-white transition-all ml-1 cursor-pointer"
+            className="p-2 rounded-full bg-[#3b494b] hover:bg-[#00F0FF] hover:text-black text-white transition-all ml-1 cursor-pointer"
             title="Close Viewer (Esc)"
           >
             <X className="w-4 h-4" />
@@ -215,7 +215,7 @@ export default function GalleryViewer() {
               e.stopPropagation();
               handlePrev();
             }}
-            className="absolute left-6 z-20 p-3.5 rounded-full bg-[#0A0A0B]/80 hover:bg-[#00F0FF] hover:text-black text-white border border-[#1E293B] hover:border-[#00F0FF] backdrop-blur-md transition-all shadow-lg hover:scale-110"
+            className="absolute left-6 z-20 p-3.5 rounded-full bg-[#131314]/80 hover:bg-[#00F0FF] hover:text-black text-white border border-[#3b494b] hover:border-[#00F0FF] backdrop-blur-md transition-all shadow-lg hover:scale-110"
             aria-label="Previous image"
           >
             <ChevronLeft className="w-6 h-6" />
@@ -230,7 +230,7 @@ export default function GalleryViewer() {
           }}
         >
           {currentItem.type === 'video' ? (
-            <div className="relative group max-w-5xl rounded-[2rem] overflow-hidden shadow-2xl border border-[#1E293B]">
+            <div className="relative group max-w-5xl rounded-[2rem] overflow-hidden shadow-2xl border border-[#3b494b]">
               <video
                 ref={videoRef}
                 src={currentItem.url}
@@ -253,7 +253,7 @@ export default function GalleryViewer() {
                     }
                   }
                 }}
-                className="absolute bottom-5 left-5 p-3 rounded-full bg-[#0A0A0B]/80 hover:bg-[#00F0FF] hover:text-black text-white border border-[#1E293B] backdrop-blur-sm transition-all"
+                className="absolute bottom-5 left-5 p-3 rounded-full bg-[#131314]/80 hover:bg-[#00F0FF] hover:text-black text-white border border-[#3b494b] backdrop-blur-sm transition-all"
               >
                 {isVideoPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
               </button>
@@ -281,7 +281,7 @@ export default function GalleryViewer() {
               e.stopPropagation();
               handleNext();
             }}
-            className="absolute right-6 z-20 p-3.5 rounded-full bg-[#0A0A0B]/80 hover:bg-[#00F0FF] hover:text-black text-white border border-[#1E293B] hover:border-[#00F0FF] backdrop-blur-md transition-all shadow-lg hover:scale-110"
+            className="absolute right-6 z-20 p-3.5 rounded-full bg-[#131314]/80 hover:bg-[#00F0FF] hover:text-black text-white border border-[#3b494b] hover:border-[#00F0FF] backdrop-blur-md transition-all shadow-lg hover:scale-110"
             aria-label="Next image"
           >
             <ChevronRight className="w-6 h-6" />
@@ -298,7 +298,7 @@ export default function GalleryViewer() {
         )}
 
         {lightboxItems.length > 1 && (
-          <div className="flex items-center gap-2.5 overflow-x-auto max-w-2xl py-1.5 px-3 rounded-full bg-[#131314]/90 border border-[#1E293B] backdrop-blur-md">
+          <div className="flex items-center gap-2.5 overflow-x-auto max-w-2xl py-1.5 px-3 rounded-full bg-[#131314]/90 border border-[#3b494b] backdrop-blur-md">
             {lightboxItems.map((item, idx) => (
               <button
                 key={idx}

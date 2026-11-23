@@ -63,12 +63,12 @@ export function Toolbar({ activeTool, onSelectTool }: ToolbarProps) {
   const btnClass = (id: string) =>
     `flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono transition-colors ${
       activeTool === id
-        ? 'bg-[#3ECF8E]/20 text-[#3ECF8E] border border-[#3ECF8E]/50'
-        : 'bg-[#18181B] text-[#71717A] hover:text-white hover:bg-[#27272A] border border-transparent'
+        ? 'bg-[#dbfcff]/20 text-[#dbfcff] border border-[#dbfcff]/50'
+        : 'bg-[#201f20] text-[#71717A] hover:text-white hover:bg-[#353436] border border-transparent'
     }`;
 
   return (
-    <div className="h-10 border-t border-[#27272A] flex items-center justify-center gap-1 px-4">
+    <div className="h-10 border-t border-[#353436] flex items-center justify-center gap-1 px-4">
       {primary.map((tool) => (
         <button
           key={tool.id}
@@ -84,7 +84,7 @@ export function Toolbar({ activeTool, onSelectTool }: ToolbarProps) {
       <div className="relative" ref={flyoutRef}>
         <button
           onClick={() => setFlyoutOpen((o) => !o)}
-          className={flyoutOpen ? btnClass('flyout-open') : 'flex items-center px-3 py-1.5 rounded text-xs font-mono bg-[#18181B] text-[#71717A] hover:text-white hover:bg-[#27272A] transition-colors'}
+          className={flyoutOpen ? btnClass('flyout-open') : 'flex items-center px-3 py-1.5 rounded text-xs font-mono bg-[#201f20] text-[#71717A] hover:text-white hover:bg-[#353436] transition-colors'}
           title="More tools"
           aria-label="More tools"
           aria-expanded={flyoutOpen}
@@ -93,7 +93,7 @@ export function Toolbar({ activeTool, onSelectTool }: ToolbarProps) {
         </button>
         {flyoutOpen && (
           <div
-            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 min-w-[190px] rounded-lg bg-[#09090B] border border-[#27272A] py-1 z-20"
+            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 min-w-[190px] rounded-lg bg-[#131314] border border-[#353436] py-1 z-20"
             role="menu"
           >
             {extra.map((tool) => (
@@ -106,7 +106,7 @@ export function Toolbar({ activeTool, onSelectTool }: ToolbarProps) {
                 }}
                 className={`w-full text-left px-3 py-1.5 text-xs font-mono transition-colors cursor-pointer ${
                   activeTool === tool.id
-                    ? 'text-[#3ECF8E] bg-[#3ECF8E]/10'
+                    ? 'text-[#dbfcff] bg-[#dbfcff]/10'
                     : 'text-[#A1A1AA] hover:text-white hover:bg-white/5'
                 }`}
                 title={`${tool.label} (${tool.shortcut})`}

@@ -104,16 +104,16 @@ export const HermesButton: React.FC<HermesButtonProps> = ({ user }) => {
           setIsOpen(true);
           setIsMinimized(false);
         }}
-        className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[#3ECF8E] hover:bg-[#3ECF8E]/90 shadow-lg hover:shadow-[#3ECF8E]/30 transition-all duration-300 flex items-center justify-center z-50 group"
+        className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[#dbfcff] hover:bg-[#dbfcff]/90 shadow-lg hover:shadow-[#dbfcff]/30 transition-all duration-300 flex items-center justify-center z-50 group"
         title="Hermes AI Assistant"
       >
         <div className="relative">
           <Bot className="w-6 h-6 text-black" />
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#09090B] rounded-full flex items-center justify-center">
-            <div className="w-1.5 h-1.5 bg-[#3ECF8E] rounded-full animate-pulse" />
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#131314] rounded-full flex items-center justify-center">
+            <div className="w-1.5 h-1.5 bg-[#dbfcff] rounded-full animate-pulse" />
           </div>
         </div>
-        <span className="absolute bottom-full right-0 mb-2 px-2.5 py-1 bg-[#18181B] border border-[#27272A] text-[10px] font-mono text-white rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+        <span className="absolute bottom-full right-0 mb-2 px-2.5 py-1 bg-[#201f20] border border-[#353436] text-[10px] font-mono text-white rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
           Hermes AI
         </span>
       </button>
@@ -126,18 +126,18 @@ export const HermesButton: React.FC<HermesButtonProps> = ({ user }) => {
         isMinimized ? 'w-14 h-14' : 'w-80 sm:w-96'
       }`}
     >
-      <div className="w-full h-full bg-[#18181B] border border-[#27272A] rounded-xl shadow-2xl shadow-black/50 flex flex-col">
+      <div className="w-full h-full bg-[#201f20] border border-[#353436] rounded-xl shadow-2xl shadow-black/50 flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-3 border-b border-[#27272A] bg-[#09090B] rounded-t-xl">
+        <div className="flex items-center justify-between p-3 border-b border-[#353436] bg-[#131314] rounded-t-xl">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-[#3ECF8E]/20 border border-[#3ECF8E]/40 flex items-center justify-center">
-              <Bot className="w-4 h-4 text-[#3ECF8E]" />
+            <div className="w-8 h-8 rounded-full bg-[#dbfcff]/20 border border-[#dbfcff]/40 flex items-center justify-center">
+              <Bot className="w-4 h-4 text-[#dbfcff]" />
             </div>
             <div>
               <div className="text-xs font-bold text-white flex items-center gap-1">
                 Hermes AI Assistant
                 <span
-                  className={`text-[10px] ${isApiAvailable ? 'text-[#3ECF8E]' : 'text-[#71717A]'}`}
+                  className={`text-[10px] ${isApiAvailable ? 'text-[#dbfcff]' : 'text-[#71717A]'}`}
                 >
                   {isApiAvailable ? '●' : '○'}
                 </span>
@@ -150,7 +150,7 @@ export const HermesButton: React.FC<HermesButtonProps> = ({ user }) => {
           <div className="flex items-center gap-1">
             <button
               onClick={() => setIsMinimized(true)}
-              className="p-1 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors"
+              className="p-1 rounded hover:bg-[#353436] text-[#A1A1AA] hover:text-white transition-colors"
               title="Minimize"
             >
               <Minimize2 className="w-3.5 h-3.5" />
@@ -160,7 +160,7 @@ export const HermesButton: React.FC<HermesButtonProps> = ({ user }) => {
                 setIsOpen(false);
                 setIsMinimized(false);
               }}
-              className="p-1 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white transition-colors"
+              className="p-1 rounded hover:bg-[#353436] text-[#A1A1AA] hover:text-white transition-colors"
               title="Close"
             >
               <X className="w-3.5 h-3.5" />
@@ -180,8 +180,8 @@ export const HermesButton: React.FC<HermesButtonProps> = ({ user }) => {
                   <div
                     className={`max-w-[85%] px-3 py-2 rounded-lg text-xs font-mono ${
                       msg.role === 'user'
-                        ? 'bg-[#3ECF8E]/20 text-white border border-[#3ECF8E]/40'
-                        : 'bg-[#09090B] text-[#E4E4E7] border border-[#27272A]'
+                        ? 'bg-[#dbfcff]/20 text-white border border-[#dbfcff]/40'
+                        : 'bg-[#131314] text-[#E4E4E7] border border-[#353436]'
                     }`}
                   >
                     {msg.content}
@@ -190,7 +190,7 @@ export const HermesButton: React.FC<HermesButtonProps> = ({ user }) => {
               ))}
               {isSending && (
                 <div className="flex justify-start">
-                  <div className="max-w-[85%] px-3 py-2 rounded-lg text-xs font-mono bg-[#09090B] text-[#E4E4E7] border border-[#27272A]">
+                  <div className="max-w-[85%] px-3 py-2 rounded-lg text-xs font-mono bg-[#131314] text-[#E4E4E7] border border-[#353436]">
                     Hermes is thinking...
                   </div>
                 </div>
@@ -198,7 +198,7 @@ export const HermesButton: React.FC<HermesButtonProps> = ({ user }) => {
             </div>
 
             {/* Input */}
-            <div className="p-2 border-t border-[#27272A]">
+            <div className="p-2 border-t border-[#353436]">
               <div className="flex items-center gap-1">
                 <input
                   type="text"
@@ -206,13 +206,13 @@ export const HermesButton: React.FC<HermesButtonProps> = ({ user }) => {
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder={isApiAvailable ? "Ask Hermes..." : "Simulation mode - ask anything"}
-                  className="flex-1 px-2.5 py-1.5 bg-[#09090B] border border-[#27272A] rounded-lg text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]"
+                  className="flex-1 px-2.5 py-1.5 bg-[#131314] border border-[#353436] rounded-lg text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
                   disabled={isSending}
                 />
                 <button
                   onClick={sendMessage}
                   disabled={!inputValue.trim() || isSending}
-                  className="p-1.5 rounded-lg bg-[#3ECF8E] text-black hover:bg-[#3ECF8E]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="p-1.5 rounded-lg bg-[#dbfcff] text-black hover:bg-[#dbfcff]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   title="Send"
                 >
                   <Send className="w-3.5 h-3.5" />

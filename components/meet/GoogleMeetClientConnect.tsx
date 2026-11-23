@@ -226,9 +226,9 @@ export default function GoogleMeetClientConnect({
   };
 
   return (
-    <div id="google-meet-client-section" className="p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-6 shadow-xl">
+    <div id="google-meet-client-section" className="p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-6 shadow-xl">
       {/* HEADER & CONNECTION STATE */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#27272A] pb-5">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#353436] pb-5">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-[#00897B]/10 border border-[#00897B]/30 flex items-center justify-center text-[#26A69A]">
             <Video className="w-5 h-5" />
@@ -244,7 +244,7 @@ export default function GoogleMeetClientConnect({
                   Live Video Connected
                 </span>
               ) : (
-                <span className="px-2 py-0.5 rounded-full bg-[#27272A] text-[#A1A1AA] text-[10px] font-mono">
+                <span className="px-2 py-0.5 rounded-full bg-[#353436] text-[#A1A1AA] text-[10px] font-mono">
                   Not Linked
                 </span>
               )}
@@ -276,16 +276,16 @@ export default function GoogleMeetClientConnect({
               <button
                 id="gmeet-schedule-btn"
                 onClick={() => setShowScheduleModal(true)}
-                className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-xs font-mono text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-xs font-mono text-white flex items-center gap-1.5 transition-colors cursor-pointer"
               >
-                <Calendar className="w-3.5 h-3.5 text-[#3ECF8E]" />
+                <Calendar className="w-3.5 h-3.5 text-[#dbfcff]" />
                 <span>Schedule</span>
               </button>
 
               <button
                 id="gmeet-settings-btn"
                 onClick={() => setShowConfigModal(true)}
-                className="p-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                className="p-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
                 title="Meet Preferences"
               >
                 <Settings className="w-3.5 h-3.5" />
@@ -294,7 +294,7 @@ export default function GoogleMeetClientConnect({
               <button
                 id="gmeet-disconnect-btn"
                 onClick={() => setShowConfirmDisconnect(true)}
-                className="p-2 rounded-lg bg-[#09090B] hover:bg-rose-950/40 border border-[#27272A] hover:border-rose-800 text-[#A1A1AA] hover:text-rose-400 transition-colors cursor-pointer"
+                className="p-2 rounded-lg bg-[#131314] hover:bg-rose-950/40 border border-[#353436] hover:border-rose-800 text-[#A1A1AA] hover:text-rose-400 transition-colors cursor-pointer"
                 title="Disconnect Google Meet"
               >
                 <LogOut className="w-3.5 h-3.5" />
@@ -326,7 +326,7 @@ export default function GoogleMeetClientConnect({
       {/* CONNECTED ACCOUNT PROFILE BADGE & STATUS METRICS */}
       {connectedAccount && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A] flex items-center gap-3">
+          <div className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-[#00897B]/20 border border-[#00897B]/40 flex items-center justify-center font-mono font-bold text-[#26A69A] text-xs shrink-0 overflow-hidden">
               {connectedAccount.photoURL ? (
                 <Image
@@ -355,21 +355,21 @@ export default function GoogleMeetClientConnect({
             </div>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A] space-y-1">
+          <div className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] space-y-1">
             <div className="text-[10px] font-mono text-[#71717A] uppercase">Active Review Spaces</div>
             <div className="text-base font-bold font-display text-white flex items-center gap-2">
               <span>{meetings.length} Scheduled Sessions</span>
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
             </div>
-            <div className="text-[10px] font-mono text-[#3ECF8E]">
+            <div className="text-[10px] font-mono text-[#dbfcff]">
               Next: {meetings[0]?.title?.slice(0, 30)}...
             </div>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A] space-y-1">
+          <div className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] space-y-1">
             <div className="text-[10px] font-mono text-[#71717A] uppercase">Studio Lead Sync</div>
             <div className="text-xs font-mono font-bold text-white flex items-center gap-1.5">
-              <Users className="w-3.5 h-3.5 text-[#3ECF8E]" />
+              <Users className="w-3.5 h-3.5 text-[#dbfcff]" />
               <span>VizTR CGI Supervisors</span>
             </div>
             <div className="text-[10px] font-mono text-emerald-400">
@@ -381,7 +381,7 @@ export default function GoogleMeetClientConnect({
 
       {/* DISCONNECTED INTRO STATE */}
       {!connectedAccount && (
-        <div className="p-6 rounded-xl bg-[#09090B] border border-[#27272A] text-center space-y-4">
+        <div className="p-6 rounded-xl bg-[#131314] border border-[#353436] text-center space-y-4">
           <div className="w-12 h-12 rounded-2xl bg-[#00897B]/10 border border-[#00897B]/30 flex items-center justify-center mx-auto text-[#26A69A]">
             <Video className="w-6 h-6" />
           </div>
@@ -424,14 +424,14 @@ export default function GoogleMeetClientConnect({
                 whileHover={{ y: -2 }}
                 className={`p-4 rounded-xl border transition-all flex flex-col justify-between space-y-3 ${
                   meeting.isLive
-                    ? 'bg-[#18181B] border-[#00897B]/60 shadow-lg shadow-[#00897B]/10'
-                    : 'bg-[#09090B] border-[#27272A] hover:border-[#00897B]/40'
+                    ? 'bg-[#201f20] border-[#00897B]/60 shadow-lg shadow-[#00897B]/10'
+                    : 'bg-[#131314] border-[#353436] hover:border-[#00897B]/40'
                 }`}
               >
                 <div className="space-y-2.5">
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2 overflow-hidden">
-                      <div className={`p-2 rounded-lg shrink-0 ${meeting.isLive ? 'bg-[#00897B]/20 text-[#26A69A]' : 'bg-[#18181B] text-[#A1A1AA]'}`}>
+                      <div className={`p-2 rounded-lg shrink-0 ${meeting.isLive ? 'bg-[#00897B]/20 text-[#26A69A]' : 'bg-[#201f20] text-[#A1A1AA]'}`}>
                         <Video className="w-4 h-4" />
                       </div>
                       <div className="overflow-hidden">
@@ -439,7 +439,7 @@ export default function GoogleMeetClientConnect({
                           {meeting.title}
                         </h5>
                         <div className="text-[10px] font-mono text-[#71717A]">
-                          Code: <span className="text-[#3ECF8E] font-bold">{meeting.meetingCode}</span>
+                          Code: <span className="text-[#dbfcff] font-bold">{meeting.meetingCode}</span>
                         </div>
                       </div>
                     </div>
@@ -471,7 +471,7 @@ export default function GoogleMeetClientConnect({
                 </div>
 
                 {/* ACTION BUTTONS */}
-                <div className="flex items-center gap-2 pt-2 border-t border-[#27272A]">
+                <div className="flex items-center gap-2 pt-2 border-t border-[#353436]">
                   <a
                     href={meeting.meetingUri}
                     target="_blank"
@@ -484,7 +484,7 @@ export default function GoogleMeetClientConnect({
 
                   <button
                     onClick={() => handleCopyLink(meeting.meetingUri)}
-                    className="p-2 rounded-lg bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                    className="p-2 rounded-lg bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
                     title="Copy Meet URL"
                   >
                     {copiedMeetUri === meeting.meetingUri ? (
@@ -523,16 +523,16 @@ export default function GoogleMeetClientConnect({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-md w-full p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5 shadow-2xl text-xs font-mono"
+              className="max-w-md w-full p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5 shadow-2xl text-xs font-mono"
             >
-              <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+              <div className="flex items-center justify-between border-b border-[#353436] pb-3">
                 <div className="flex items-center gap-2 text-white font-bold text-sm font-display">
                   <Calendar className="w-4 h-4 text-[#26A69A]" />
                   <span>Schedule Google Meet Review</span>
                 </div>
                 <button
                   onClick={() => setShowScheduleModal(false)}
-                  className="p-1 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white"
+                  className="p-1 rounded hover:bg-[#353436] text-[#A1A1AA] hover:text-white"
                 >
                   ✕
                 </button>
@@ -546,7 +546,7 @@ export default function GoogleMeetClientConnect({
                     required
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B]"
                   />
                 </div>
 
@@ -556,7 +556,7 @@ export default function GoogleMeetClientConnect({
                     <select
                       value={newCategory}
                       onChange={(e) => setNewCategory(e.target.value as any)}
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B]"
                     >
                       <option value="milestone_review">Milestone Review</option>
                       <option value="vr_walkthrough">VR / WebXR Walkthrough</option>
@@ -570,7 +570,7 @@ export default function GoogleMeetClientConnect({
                     <select
                       value={newDuration}
                       onChange={(e) => setNewDuration(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B]"
+                      className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B]"
                     >
                       <option value="30">30 Minutes</option>
                       <option value="45">45 Minutes</option>
@@ -586,7 +586,7 @@ export default function GoogleMeetClientConnect({
                     type="datetime-local"
                     value={newDateTime}
                     onChange={(e) => setNewDateTime(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B]"
                   />
                 </div>
 
@@ -595,7 +595,7 @@ export default function GoogleMeetClientConnect({
                   <select
                     value={newAccessType}
                     onChange={(e) => setNewAccessType(e.target.value as any)}
-                    className="w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-white focus:outline-none focus:border-[#00897B]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-white focus:outline-none focus:border-[#00897B]"
                   >
                     <option value="OPEN">Open (Anyone with link can join)</option>
                     <option value="TRUSTED">Trusted (Invited architects & VizTR domain)</option>
@@ -603,11 +603,11 @@ export default function GoogleMeetClientConnect({
                   </select>
                 </div>
 
-                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#27272A]">
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#353436]">
                   <button
                     type="button"
                     onClick={() => setShowScheduleModal(false)}
-                    className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-[#A1A1AA] hover:text-white"
+                    className="px-3 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#A1A1AA] hover:text-white"
                   >
                     Cancel
                   </button>
@@ -632,23 +632,23 @@ export default function GoogleMeetClientConnect({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-md w-full p-6 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-5 shadow-2xl text-xs font-mono"
+              className="max-w-md w-full p-6 rounded-2xl bg-[#201f20] border border-[#353436] space-y-5 shadow-2xl text-xs font-mono"
             >
-              <div className="flex items-center justify-between border-b border-[#27272A] pb-3">
+              <div className="flex items-center justify-between border-b border-[#353436] pb-3">
                 <div className="flex items-center gap-2 text-white font-bold text-sm font-display">
                   <Settings className="w-4 h-4 text-[#26A69A]" />
                   <span>Google Meet Client Configuration</span>
                 </div>
                 <button
                   onClick={() => setShowConfigModal(false)}
-                  className="p-1 rounded hover:bg-[#27272A] text-[#A1A1AA] hover:text-white"
+                  className="p-1 rounded hover:bg-[#353436] text-[#A1A1AA] hover:text-white"
                 >
                   ✕
                 </button>
               </div>
 
               <div className="space-y-3">
-                <div className="p-3.5 rounded-xl bg-[#09090B] border border-[#27272A] space-y-3">
+                <div className="p-3.5 rounded-xl bg-[#131314] border border-[#353436] space-y-3">
                   <label className="flex items-center justify-between cursor-pointer">
                     <div>
                       <div className="text-white font-bold">Auto-invite Project Director</div>
@@ -690,7 +690,7 @@ export default function GoogleMeetClientConnect({
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#27272A]">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#353436]">
                 <button
                   onClick={() => {
                     setShowConfigModal(false);
@@ -714,7 +714,7 @@ export default function GoogleMeetClientConnect({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-sm w-full p-6 rounded-2xl bg-[#18181B] border border-rose-900/50 space-y-4 shadow-2xl text-xs font-mono"
+              className="max-w-sm w-full p-6 rounded-2xl bg-[#201f20] border border-rose-900/50 space-y-4 shadow-2xl text-xs font-mono"
             >
               <div className="flex items-center gap-2 text-rose-400 font-bold text-sm font-display">
                 <AlertCircle className="w-5 h-5" />
@@ -726,7 +726,7 @@ export default function GoogleMeetClientConnect({
               <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   onClick={() => setShowConfirmDisconnect(false)}
-                  className="px-3 py-2 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] text-white"
+                  className="px-3 py-2 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] text-white"
                 >
                   Cancel
                 </button>

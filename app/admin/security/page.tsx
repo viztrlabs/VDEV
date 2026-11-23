@@ -18,7 +18,7 @@ export default function AdminSecurityPage() {
   const [loading, setLoading] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-white p-6">
+    <div className="min-h-screen bg-[#131314] text-white p-6">
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
@@ -28,7 +28,7 @@ export default function AdminSecurityPage() {
         <button
           onClick={() => { setLoading(true); setTimeout(() => setLoading(false), 1000); }}
           disabled={loading}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#3ecf8e] text-black text-xs font-mono font-bold hover:bg-[#34b27b] transition disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#dbfcff] text-black text-xs font-mono font-bold hover:bg-[#34b27b] transition disabled:opacity-50"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           <span>Refresh All</span>
@@ -36,15 +36,15 @@ export default function AdminSecurityPage() {
       </div>
 
       {/* Tab Navigation */}
-      <div className="mb-6 flex gap-1 bg-[#121216]/85 border border-[#27272a] rounded-xl p-1">
+      <div className="mb-6 flex gap-1 bg-[#131314]/85 border border-[#353436] rounded-xl p-1">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-mono transition ${
               activeTab === tab.id
-                ? 'bg-[#3ecf8e] text-black shadow-sm'
-                : 'text-[#a1a1aa] hover:text-white hover:bg-[#27272a]'
+                ? 'bg-[#dbfcff] text-black shadow-sm'
+                : 'text-[#a1a1aa] hover:text-white hover:bg-[#353436]'
             }`}
           >
             <tab.icon className="w-3.5 h-3.5" />
@@ -69,7 +69,7 @@ export default function AdminSecurityPage() {
               icon={Users}
               value="247"
               label="Active Sessions"
-              color="#3ecf8e"
+              color="#dbfcff"
               trend="Normal"
             />
             <StatCard
@@ -102,7 +102,7 @@ export default function AdminSecurityPage() {
                 icon={Database}
                 value="48.6 TB"
                 label="Used Storage"
-                color="#3ecf8e"
+                color="#dbfcff"
                 trend="75.9% capacity"
               />
               <StatCard
@@ -122,34 +122,34 @@ export default function AdminSecurityPage() {
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
-              <div className="p-5 rounded-xl bg-[#121216]/85 border border-[#27272a]">
+              <div className="p-5 rounded-xl bg-[#131314]/85 border border-[#353436]">
                 <h3 className="font-mono font-bold text-white mb-4 flex items-center gap-2">
-                  <RefreshCw className="w-5 h-5 text-[#3ecf8e]" />
+                  <RefreshCw className="w-5 h-5 text-[#dbfcff]" />
                   Chunked Upload Configuration
                 </h3>
                 <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="p-3 rounded-lg bg-[#09090b]/50 border border-[#27272a]">
+                  <div className="p-3 rounded-lg bg-[#131314]/50 border border-[#353436]">
                     <div className="text-[10px] text-[#71717a]">Max File Size</div>
                     <div className="font-mono font-bold text-white">500 MB</div>
                   </div>
-                  <div className="p-3 rounded-lg bg-[#09090b]/50 border border-[#27272a]">
+                  <div className="p-3 rounded-lg bg-[#131314]/50 border border-[#353436]">
                     <div className="text-[10px] text-[#71717a]">Chunk Size</div>
                     <div className="font-mono font-bold text-white">5 MB</div>
                   </div>
-                  <div className="p-3 rounded-lg bg-[#09090b]/50 border border-[#27272a]">
+                  <div className="p-3 rounded-lg bg-[#131314]/50 border border-[#353436]">
                     <div className="text-[10px] text-[#71717a]">Max Retries</div>
                     <div className="font-mono font-bold text-white">3</div>
                   </div>
-                  <div className="p-3 rounded-lg bg-[#09090b]/50 border border-[#27272a]">
+                  <div className="p-3 rounded-lg bg-[#131314]/50 border border-[#353436]">
                     <div className="text-[10px] text-[#71717a]">Retry Delay</div>
                     <div className="font-mono font-bold text-white">1s (exponential)</div>
                   </div>
                 </div>
               </div>
 
-              <div className="p-5 rounded-xl bg-[#121216]/85 border border-[#27272a]">
+              <div className="p-5 rounded-xl bg-[#131314]/85 border border-[#353436]">
                 <h3 className="font-mono font-bold text-white mb-4 flex items-center gap-2">
-                  <Database className="w-5 h-5 text-[#3ecf8e]" />
+                  <Database className="w-5 h-5 text-[#dbfcff]" />
                   Multi-Cloud Providers
                 </h3>
                 <div className="space-y-3">
@@ -158,15 +158,15 @@ export default function AdminSecurityPage() {
                     { name: 'Cloudflare R2 (Global CDN)', status: 'online', used: '15.4/20.0 TB' },
                     { name: 'Google Cloud Storage (EU-West)', status: 'online', used: '8.4/12.0 TB' },
                   ].map((provider) => (
-                    <div key={provider.name} className="flex items-center justify-between p-3 rounded-lg bg-[#09090b]/50 border border-[#27272a]">
+                    <div key={provider.name} className="flex items-center justify-between p-3 rounded-lg bg-[#131314]/50 border border-[#353436]">
                       <div className="flex items-center gap-3">
-                        <div className={`w-2.5 h-2.5 rounded-full ${provider.status === 'online' ? 'bg-[#3ecf8e]' : 'bg-rose-500'}`} />
+                        <div className={`w-2.5 h-2.5 rounded-full ${provider.status === 'online' ? 'bg-[#dbfcff]' : 'bg-rose-500'}`} />
                         <div>
                           <div className="font-mono text-white text-sm">{provider.name}</div>
                           <div className="text-[10px] text-[#71717a] font-mono">{provider.used}</div>
                         </div>
                       </div>
-                      <span className={`px-2 py-0.5 rounded text-[9px] font-mono ${provider.status === 'online' ? 'bg-[#3ecf8e]/15 text-[#3ecf8e]' : 'bg-rose-500/15 text-rose-400'}`}>
+                      <span className={`px-2 py-0.5 rounded text-[9px] font-mono ${provider.status === 'online' ? 'bg-[#dbfcff]/15 text-[#dbfcff]' : 'bg-rose-500/15 text-rose-400'}`}>
                         {provider.status.toUpperCase()}
                       </span>
                     </div>
@@ -179,20 +179,20 @@ export default function AdminSecurityPage() {
 
         {/* Active Sessions */}
         {activeTab === 'sessions' && (
-          <div className="p-5 rounded-xl bg-[#121216]/85 border border-[#27272a]">
+          <div className="p-5 rounded-xl bg-[#131314]/85 border border-[#353436]">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-mono font-bold text-white flex items-center gap-2">
-                <Users className="w-5 h-5 text-[#3ecf8e]" />
+                <Users className="w-5 h-5 text-[#dbfcff]" />
                 Active Sessions
               </h3>
-              <span className="px-2 py-1 rounded text-[10px] font-mono bg-[#3ecf8e]/15 text-[#3ecf8e] border border-[#3ecf8e]/30">
+              <span className="px-2 py-1 rounded text-[10px] font-mono bg-[#dbfcff]/15 text-[#dbfcff] border border-[#dbfcff]/30">
                 247 Active
               </span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm font-mono">
                 <thead>
-                  <tr className="border-b border-[#27272a] text-left text-[#71717a]">
+                  <tr className="border-b border-[#353436] text-left text-[#71717a]">
                     <th className="pb-2">Session ID</th>
                     <th className="pb-2">User</th>
                     <th className="pb-2">Role</th>
@@ -210,14 +210,14 @@ export default function AdminSecurityPage() {
                     { id: 'sess_ghi789', user: 'client@viztr.com', role: 'client', ip: '203.0.113.2', created: '1h ago', last: '30s ago', status: 'active' },
                     { id: 'sess_jkl012', user: 'user@viztr.com', role: 'user', ip: '198.51.100.1', created: '30m ago', last: '2m ago', status: 'idle' },
                   ].map((session) => (
-                    <tr key={session.id} className="border-b border-[#27272a]/50 hover:bg-[#18181b]/50">
+                    <tr key={session.id} className="border-b border-[#353436]/50 hover:bg-[#201f20]/50">
                       <td className="py-3 font-mono text-[#a1a1aa]">{session.id}</td>
                       <td className="py-3 text-white">{session.user}</td>
                       <td className="py-3">
                         <span className={`px-2 py-0.5 rounded text-[9px] font-mono ${
                           session.role === 'super_admin' ? 'bg-rose-500/15 text-rose-400' :
                           session.role === 'admin' ? 'bg-[#6366f1]/15 text-[#818cf8]' :
-                          session.role === 'client' ? 'bg-[#3ecf8e]/15 text-[#3ecf8e]' :
+                          session.role === 'client' ? 'bg-[#dbfcff]/15 text-[#dbfcff]' :
                           'bg-[#6366f1]/15 text-[#818cf8]'
                         }`}>
                           {session.role.toUpperCase()}
@@ -228,13 +228,13 @@ export default function AdminSecurityPage() {
                       <td className="py-3 text-[#71717a]">{session.last}</td>
                       <td className="py-3">
                         <span className={`px-2 py-0.5 rounded text-[9px] font-mono ${
-                          session.status === 'active' ? 'bg-[#3ecf8e]/15 text-[#3ecf8e]' : 'bg-[#6366f1]/15 text-[#818cf8]'
+                          session.status === 'active' ? 'bg-[#dbfcff]/15 text-[#dbfcff]' : 'bg-[#6366f1]/15 text-[#818cf8]'
                         }`}>
                           {session.status.toUpperCase()}
                         </span>
                       </td>
                       <td className="py-3">
-                        <button className="px-2 py-1 rounded text-[10px] font-mono bg-[#18181b] hover:bg-rose-500/20 hover:text-rose-400 text-[#71717a] transition">
+                        <button className="px-2 py-1 rounded text-[10px] font-mono bg-[#201f20] hover:bg-rose-500/20 hover:text-rose-400 text-[#71717a] transition">
                           Revoke
                         </button>
                       </td>
@@ -248,21 +248,21 @@ export default function AdminSecurityPage() {
 
         {/* Audit Logs */}
         {activeTab === 'audit' && (
-          <div className="p-5 rounded-xl bg-[#121216]/85 border border-[#27272a]">
+          <div className="p-5 rounded-xl bg-[#131314]/85 border border-[#353436]">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-mono font-bold text-white flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-rose-500" />
                 Security Audit Logs
               </h3>
               <div className="flex gap-2">
-                <select className="bg-[#18181b] border border-[#27272a] rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-[#3ecf8e]">
+                <select className="bg-[#201f20] border border-[#353436] rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-[#dbfcff]">
                   <option>All Severities</option>
                   <option>Critical</option>
                   <option>Error</option>
                   <option>Warning</option>
                   <option>Info</option>
                 </select>
-                <select className="bg-[#18181b] border border-[#27272a] rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-[#3ecf8e]">
+                <select className="bg-[#201f20] border border-[#353436] rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-[#dbfcff]">
                   <option>All Events</option>
                   <option>auth.login</option>
                   <option>auth.failed</option>
@@ -275,7 +275,7 @@ export default function AdminSecurityPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm font-mono">
                 <thead>
-                  <tr className="border-b border-[#27272a] text-left text-[#71717a]">
+                  <tr className="border-b border-[#353436] text-left text-[#71717a]">
                     <th className="pb-2">Time</th>
                     <th className="pb-2">Event</th>
                     <th className="pb-2">User</th>
@@ -294,13 +294,13 @@ export default function AdminSecurityPage() {
                     { time: '1h ago', event: 'admin.user_delete', user: 'admin@viztr.com', ip: '192.168.1.1', outcome: 'success', risk: 60, details: 'Deleted user usr_old_01' },
                     { time: '2h ago', event: 'security.suspicious_activity', user: 'unknown', ip: '185.220.101.1', outcome: 'blocked', risk: 80, details: 'Rate limit exceeded' },
                   ].map((log, i) => (
-                    <tr key={i} className="border-b border-[#27272a]/50 hover:bg-[#18181b]/50">
+                    <tr key={i} className="border-b border-[#353436]/50 hover:bg-[#201f20]/50">
                       <td className="py-3 text-[#71717a]">{log.time}</td>
                       <td className="py-3">
                         <span className={`px-2 py-0.5 rounded text-[9px] font-mono ${
                           log.event.startsWith('auth.') ? 'bg-[#6366f1]/15 text-[#818cf8]' :
                           log.event.startsWith('access.') ? 'bg-rose-500/15 text-rose-400' :
-                          log.event.startsWith('data.') ? 'bg-[#3ecf8e]/15 text-[#3ecf8e]' :
+                          log.event.startsWith('data.') ? 'bg-[#dbfcff]/15 text-[#dbfcff]' :
                           log.event.startsWith('admin.') ? 'bg-[#f59e0b]/15 text-[#f59e0b]' :
                           'bg-rose-500/15 text-rose-400'
                         }`}>
@@ -311,7 +311,7 @@ export default function AdminSecurityPage() {
                       <td className="py-3 font-mono text-[#a1a1aa]">{log.ip}</td>
                       <td className="py-3">
                         <span className={`px-2 py-0.5 rounded text-[9px] font-mono ${
-                          log.outcome === 'success' ? 'bg-[#3ecf8e]/15 text-[#3ecf8e]' : 'bg-rose-500/15 text-rose-400'
+                          log.outcome === 'success' ? 'bg-[#dbfcff]/15 text-[#dbfcff]' : 'bg-rose-500/15 text-rose-400'
                         }`}>
                           {log.outcome.toUpperCase()}
                         </span>
@@ -320,7 +320,7 @@ export default function AdminSecurityPage() {
                         <span className={`px-2 py-0.5 rounded text-[9px] font-mono ${
                           log.risk >= 70 ? 'bg-rose-500/15 text-rose-400' :
                           log.risk >= 40 ? 'bg-[#f59e0b]/15 text-[#f59e0b]' :
-                          'bg-[#3ecf8e]/15 text-[#3ecf8e]'
+                          'bg-[#dbfcff]/15 text-[#dbfcff]'
                         }`}>
                           {log.risk}/100
                         </span>
@@ -341,7 +341,7 @@ export default function AdminSecurityPage() {
               icon={BarChart2}
               value="12ms"
               label="Avg API Latency"
-              color="#3ecf8e"
+              color="#dbfcff"
               trend="p99: 45ms"
             />
             <StatCard
@@ -380,7 +380,7 @@ function StatCard({ icon: Icon, value, label, color, trend }: {
   trend: string;
 }) {
   return (
-    <div className="p-5 rounded-xl bg-[#121216]/85 border border-[#27272a]">
+    <div className="p-5 rounded-xl bg-[#131314]/85 border border-[#353436]">
       <div className="flex items-center justify-between mb-2">
         <div className={`p-2 rounded-lg ${typeof color === 'string' && color.startsWith('#') ? `bg-[${color}]/10` : `bg-[${color}]/10`} text-[${color}]`}>
           <Icon className="w-5 h-5" />

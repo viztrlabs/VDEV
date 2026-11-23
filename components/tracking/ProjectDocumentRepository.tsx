@@ -184,20 +184,20 @@ export default function ProjectDocumentRepository({
   return (
     <div
       id={`project-document-repository-${projectId}`}
-      className={`rounded-2xl bg-[#18181B] border border-[#27272A] overflow-hidden space-y-0 ${className}`}
+      className={`rounded-2xl bg-[#201f20] border border-[#353436] overflow-hidden space-y-0 ${className}`}
     >
       {/* HEADER & ACTION BAR */}
-      <div className="p-5 border-b border-[#27272A] bg-[#18181B] space-y-4">
+      <div className="p-5 border-b border-[#353436] bg-[#201f20] space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-[#09090B] border border-[#27272A] flex items-center justify-center text-[#3ECF8E]">
+              <div className="w-7 h-7 rounded-lg bg-[#131314] border border-[#353436] flex items-center justify-center text-[#dbfcff]">
                 <FileBox className="w-4 h-4" />
               </div>
               <h3 className="text-sm font-bold font-display text-white">
                 Technical Document & CAD Repository
               </h3>
-              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-[#09090B] border border-[#27272A] text-[#3ECF8E]">
+              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-[#131314] border border-[#353436] text-[#dbfcff]">
                 {projectId} Vault
               </span>
             </div>
@@ -218,9 +218,9 @@ export default function ProjectDocumentRepository({
                   (e.currentTarget.querySelector('input[type="file"]') as HTMLInputElement)?.click();
                 }
               }}
-              className="px-3 py-1.5 rounded-lg bg-[#09090B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3ECF8E]/40 text-xs font-mono text-white flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]"
+              className="px-3 py-1.5 rounded-lg bg-[#131314] hover:bg-[#353436] border border-[#353436] hover:border-[#dbfcff]/40 text-xs font-mono text-white flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 focus:outline-none focus:ring-1 focus:ring-[#dbfcff]"
             >
-              <Upload className="w-3.5 h-3.5 text-[#3ECF8E]" />
+              <Upload className="w-3.5 h-3.5 text-[#dbfcff]" />
               <span>{isUploading ? 'Ingesting...' : 'Upload Reference'}</span>
               <input
                 type="file"
@@ -236,7 +236,7 @@ export default function ProjectDocumentRepository({
               type="button"
               onClick={handleBatchDownload}
               aria-label={`Export all ${filteredDocuments.length} repository documents as ZIP`}
-              className="px-3 py-1.5 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 shadow focus:outline-none focus:ring-2 focus:ring-white"
+              className="px-3 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs uppercase flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 shadow focus:outline-none focus:ring-2 focus:ring-white"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Export All (ZIP)</span>
@@ -250,7 +250,7 @@ export default function ProjectDocumentRepository({
           <div
             role="tablist"
             aria-label="Document Category Filter"
-            className="flex items-center gap-1.5 p-1 rounded-xl bg-[#09090B] border border-[#27272A] overflow-x-auto text-xs font-mono"
+            className="flex items-center gap-1.5 p-1 rounded-xl bg-[#131314] border border-[#353436] overflow-x-auto text-xs font-mono"
           >
             <button
               type="button"
@@ -260,7 +260,7 @@ export default function ProjectDocumentRepository({
               onClick={() => setSelectedCategory('all')}
               className={`px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap cursor-pointer ${
                 selectedCategory === 'all'
-                  ? 'bg-[#18181B] text-white font-bold border border-[#3ECF8E]/40 text-[#3ECF8E]'
+                  ? 'bg-[#201f20] text-white font-bold border border-[#dbfcff]/40 text-[#dbfcff]'
                   : 'text-[#71717A] hover:text-white'
               }`}
             >
@@ -274,7 +274,7 @@ export default function ProjectDocumentRepository({
               onClick={() => setSelectedCategory('pdf')}
               className={`px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
                 selectedCategory === 'pdf'
-                  ? 'bg-[#18181B] text-rose-400 font-bold border border-rose-800/60'
+                  ? 'bg-[#201f20] text-rose-400 font-bold border border-rose-800/60'
                   : 'text-[#71717A] hover:text-rose-300'
               }`}
             >
@@ -289,7 +289,7 @@ export default function ProjectDocumentRepository({
               onClick={() => setSelectedCategory('cad')}
               className={`px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
                 selectedCategory === 'cad'
-                  ? 'bg-[#18181B] text-blue-400 font-bold border border-blue-800/60'
+                  ? 'bg-[#201f20] text-blue-400 font-bold border border-blue-800/60'
                   : 'text-[#71717A] hover:text-blue-300'
               }`}
             >
@@ -304,7 +304,7 @@ export default function ProjectDocumentRepository({
               onClick={() => setSelectedCategory('spec')}
               className={`px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
                 selectedCategory === 'spec'
-                  ? 'bg-[#18181B] text-amber-400 font-bold border border-amber-800/60'
+                  ? 'bg-[#201f20] text-amber-400 font-bold border border-amber-800/60'
                   : 'text-[#71717A] hover:text-amber-300'
               }`}
             >
@@ -322,7 +322,7 @@ export default function ProjectDocumentRepository({
               aria-label="Search repository documents by title, format, or keyword"
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by title, format, or tag..."
-              className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E] transition-colors"
+              className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] transition-colors"
             />
             {searchQuery && (
               <button
@@ -368,7 +368,7 @@ export default function ProjectDocumentRepository({
                 setSearchQuery('');
                 setSelectedCategory('all');
               }}
-              className="text-xs font-mono text-[#3ECF8E] hover:underline cursor-pointer"
+              className="text-xs font-mono text-[#dbfcff] hover:underline cursor-pointer"
             >
               Reset Filters
             </button>
@@ -392,7 +392,7 @@ export default function ProjectDocumentRepository({
                     }
                   }}
                   onClick={() => setActivePreviewDoc(doc)}
-                  className="p-4 rounded-xl bg-[#09090B] border border-[#27272A] hover:border-[#3ECF8E]/50 transition-all flex flex-col justify-between space-y-3 group cursor-pointer hover:bg-[#121215] focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]"
+                  className="p-4 rounded-xl bg-[#131314] border border-[#353436] hover:border-[#dbfcff]/50 transition-all flex flex-col justify-between space-y-3 group cursor-pointer hover:bg-[#131314] focus:outline-none focus:ring-1 focus:ring-[#dbfcff]"
                 >
                   <div className="space-y-2.5">
                     {/* TOP ROW: ICON + TITLE + BADGES */}
@@ -404,7 +404,7 @@ export default function ProjectDocumentRepository({
                           {badge.icon}
                         </div>
                         <div className="min-w-0 space-y-0.5">
-                          <h4 className="text-xs font-bold font-display text-white truncate group-hover:text-[#3ECF8E] transition-colors" title={doc.title}>
+                          <h4 className="text-xs font-bold font-display text-white truncate group-hover:text-[#dbfcff] transition-colors" title={doc.title}>
                             {doc.title}
                           </h4>
                           <div className="text-[10px] font-mono text-[#71717A] truncate">
@@ -437,14 +437,14 @@ export default function ProjectDocumentRepository({
                   </div>
 
                   {/* METADATA STRIP */}
-                  <div className="pt-2.5 border-t border-[#27272A]/70 flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono">
+                  <div className="pt-2.5 border-t border-[#353436]/70 flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono">
                     <div className="flex items-center gap-3 text-[#71717A]">
                       <span className="flex items-center gap-1">
-                        <HardDrive className="w-3 h-3 text-[#3ECF8E]" />
+                        <HardDrive className="w-3 h-3 text-[#dbfcff]" />
                         <span>{doc.fileSize}</span>
                       </span>
                       <span className="flex items-center gap-1">
-                        <Tag className="w-3 h-3 text-[#3ECF8E]" />
+                        <Tag className="w-3 h-3 text-[#dbfcff]" />
                         <span>{doc.version}</span>
                       </span>
                       <span className="hidden sm:inline text-[#71717A]">
@@ -461,9 +461,9 @@ export default function ProjectDocumentRepository({
                           e.stopPropagation();
                           setActivePreviewDoc(doc);
                         }}
-                        className="px-2.5 py-1 rounded bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[10px] font-mono text-white flex items-center gap-1 transition-colors cursor-pointer hover:border-[#3ECF8E]/40 focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]"
+                        className="px-2.5 py-1 rounded bg-[#201f20] hover:bg-[#353436] border border-[#353436] text-[10px] font-mono text-white flex items-center gap-1 transition-colors cursor-pointer hover:border-[#dbfcff]/40 focus:outline-none focus:ring-1 focus:ring-[#dbfcff]"
                       >
-                        <Eye className="w-3 h-3 text-[#3ECF8E]" />
+                        <Eye className="w-3 h-3 text-[#dbfcff]" />
                         <span>Quick View</span>
                       </button>
 
@@ -474,7 +474,7 @@ export default function ProjectDocumentRepository({
                           e.stopPropagation();
                           handleDownload(doc);
                         }}
-                        className="p-1 px-2 rounded bg-[#3ECF8E]/10 hover:bg-[#34b27b] text-[#3ECF8E] hover:text-black border border-[#3ECF8E]/30 text-[10px] font-mono font-bold flex items-center gap-1 transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]"
+                        className="p-1 px-2 rounded bg-[#dbfcff]/10 hover:bg-[#34b27b] text-[#dbfcff] hover:text-black border border-[#dbfcff]/30 text-[10px] font-mono font-bold flex items-center gap-1 transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#dbfcff]"
                       >
                         <Download className="w-3 h-3" />
                         <span>Download</span>
@@ -489,9 +489,9 @@ export default function ProjectDocumentRepository({
       </div>
 
       {/* FOOTER INFO BAR */}
-      <div className="p-3 bg-[#09090B] border-t border-[#27272A] flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] font-mono text-[#71717A]">
+      <div className="p-3 bg-[#131314] border-t border-[#353436] flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] font-mono text-[#71717A]">
         <div className="flex items-center gap-1.5">
-          <Info className="w-3.5 h-3.5 text-[#3ECF8E]" />
+          <Info className="w-3.5 h-3.5 text-[#dbfcff]" />
           <span>All CAD models & PDFs are calibrated to WGS84 coordinates and photorealistic physical scale (1:1).</span>
         </div>
         <div className="text-[#A1A1AA]">

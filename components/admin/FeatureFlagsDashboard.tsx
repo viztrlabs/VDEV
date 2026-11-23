@@ -128,7 +128,7 @@ export function FeatureFlagsDashboard({ initialFlags = {} }: FeatureFlagsDashboa
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-6 h-6 text-[#3ecf8e] animate-spin" />
+        <Loader2 className="w-6 h-6 text-[#dbfcff] animate-spin" />
       </div>
     );
   }
@@ -141,7 +141,7 @@ export function FeatureFlagsDashboard({ initialFlags = {} }: FeatureFlagsDashboa
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-[#3ecf8e]/10 text-[#3ecf8e]">
+          <div className="p-2 rounded-lg bg-[#dbfcff]/10 text-[#dbfcff]">
             <Beaker className="w-5 h-5" />
           </div>
           <div>
@@ -154,7 +154,7 @@ export function FeatureFlagsDashboard({ initialFlags = {} }: FeatureFlagsDashboa
         <div className="flex items-center gap-2">
           <button
             onClick={resetToDefaults}
-            className="px-3 py-1.5 rounded-lg border border-[#27272a] bg-[#18181b] hover:bg-[#27272a] text-xs font-mono text-[#a1a1aa] hover:text-white transition flex items-center gap-1.5"
+            className="px-3 py-1.5 rounded-lg border border-[#353436] bg-[#201f20] hover:bg-[#353436] text-xs font-mono text-[#a1a1aa] hover:text-white transition flex items-center gap-1.5"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Reset Defaults</span>
@@ -162,7 +162,7 @@ export function FeatureFlagsDashboard({ initialFlags = {} }: FeatureFlagsDashboa
           <button
             onClick={saveFlags}
             disabled={saving}
-            className="px-4 py-1.5 rounded-lg bg-[#3ecf8e] text-black text-xs font-mono font-bold hover:bg-[#34b27b] transition flex items-center gap-1.5 disabled:opacity-50"
+            className="px-4 py-1.5 rounded-lg bg-[#dbfcff] text-black text-xs font-mono font-bold hover:bg-[#34b27b] transition flex items-center gap-1.5 disabled:opacity-50"
           >
             {saving ? (
               <>
@@ -183,7 +183,7 @@ export function FeatureFlagsDashboard({ initialFlags = {} }: FeatureFlagsDashboa
       {message && (
         <div className={`fixed bottom-4 right-4 px-4 py-3 rounded-lg border shadow-xl animate-in slide-in-from-bottom-2 text-xs font-mono ${
           message.type === 'success' 
-            ? 'bg-[#3ecf8e]/10 border-[#3ecf8e]/30 text-[#3ecf8e]' 
+            ? 'bg-[#dbfcff]/10 border-[#dbfcff]/30 text-[#dbfcff]' 
             : 'bg-rose-500/10 border-rose-500/30 text-rose-400'
         }`}>
           <div className="flex items-center gap-2">
@@ -206,8 +206,8 @@ export function FeatureFlagsDashboard({ initialFlags = {} }: FeatureFlagsDashboa
               key={key}
               className={`group relative p-4 rounded-xl border transition ${
                 enabled
-                  ? 'bg-[#3ecf8e]/5 border-[#3ecf8e]/30'
-                  : 'bg-[#121216]/85 border-[#27272a]'
+                  ? 'bg-[#dbfcff]/5 border-[#dbfcff]/30'
+                  : 'bg-[#131314]/85 border-[#353436]'
               }`}
             >
               {/* Status Badge */}
@@ -224,7 +224,7 @@ export function FeatureFlagsDashboard({ initialFlags = {} }: FeatureFlagsDashboa
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-xs font-mono font-bold text-white">{flag.key}</span>
                   {enabled && (
-                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-[#3ecf8e]/15 text-[#3ecf8e] border border-[#3ecf8e]/30">
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-[#dbfcff]/15 text-[#dbfcff] border border-[#dbfcff]/30">
                       ACTIVE
                     </span>
                   )}
@@ -234,23 +234,23 @@ export function FeatureFlagsDashboard({ initialFlags = {} }: FeatureFlagsDashboa
               </div>
 
               {/* Metrics */}
-              <div className="grid grid-cols-3 gap-3 p-3 rounded-lg bg-[#09090b]/50 border border-[#27272a]">
+              <div className="grid grid-cols-3 gap-3 p-3 rounded-lg bg-[#131314]/50 border border-[#353436]">
                 <div className="text-center">
                   <div className="text-lg font-mono font-bold text-white">{flagMetrics.impressions.toLocaleString()}</div>
                   <div className="text-[9px] text-[#71717a] uppercase">Impressions</div>
                 </div>
-                <div className="text-center border-l border-[#27272a]">
-                  <div className="text-lg font-mono font-bold text-[#3ecf8e]">{flagMetrics.conversions.toLocaleString()}</div>
+                <div className="text-center border-l border-[#353436]">
+                  <div className="text-lg font-mono font-bold text-[#dbfcff]">{flagMetrics.conversions.toLocaleString()}</div>
                   <div className="text-[9px] text-[#71717a] uppercase">Conversions</div>
                 </div>
-                <div className="text-center border-l border-[#27272a]">
+                <div className="text-center border-l border-[#353436]">
                   <div className="text-lg font-mono font-bold text-[#6366f1]">{conversionRate}%</div>
                   <div className="text-[9px] text-[#71717a] uppercase">Conv. Rate</div>
                 </div>
               </div>
 
               {/* Environment Variable */}
-              <div className="mt-3 pt-3 border-t border-[#27272a]/50">
+              <div className="mt-3 pt-3 border-t border-[#353436]/50">
                 <div className="flex items-center justify-between text-[9px] font-mono">
                   <span className="text-[#52525b]">Env: <code className="text-[#a1a1aa]">{flag.envVar}</code></span>
                   <span className="text-[#52525b">Default: <code className="text-[#a1a1aa]">{String(flag.defaultValue)}</code></span>
@@ -261,14 +261,14 @@ export function FeatureFlagsDashboard({ initialFlags = {} }: FeatureFlagsDashboa
               <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-3 right-3 flex gap-1">
                 <button
                   onClick={() => trackImpression(key)}
-                  className="p-1 rounded text-[10px] text-[#71717a] hover:text-[#3ecf8e] hover:bg-[#3ecf8e]/10 transition"
+                  className="p-1 rounded text-[10px] text-[#71717a] hover:text-[#dbfcff] hover:bg-[#dbfcff]/10 transition"
                   title="Track Impression"
                 >
                   <BarChart2 className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => trackConversion(key)}
-                  className="p-1 rounded text-[10px] text-[#71717a] hover:text-[#3ecf8e] hover:bg-[#3ecf8e]/10 transition"
+                  className="p-1 rounded text-[10px] text-[#71717a] hover:text-[#dbfcff] hover:bg-[#dbfcff]/10 transition"
                   title="Track Conversion"
                 >
                   <Settings className="w-3.5 h-3.5" />
@@ -280,7 +280,7 @@ export function FeatureFlagsDashboard({ initialFlags = {} }: FeatureFlagsDashboa
       </div>
 
       {/* A/B Testing Panel */}
-      <div className="mt-8 p-5 rounded-xl bg-[#121216]/85 border border-[#27272a]">
+      <div className="mt-8 p-5 rounded-xl bg-[#131314]/85 border border-[#353436]">
         <div className="flex items-center gap-2 mb-4">
           <BarChart2 className="w-5 h-5 text-[#6366f1]" />
           <h3 className="font-mono font-bold text-white">A/B Testing Configuration</h3>
@@ -288,12 +288,12 @@ export function FeatureFlagsDashboard({ initialFlags = {} }: FeatureFlagsDashboa
         
         <div className="grid gap-4 md:grid-cols-2">
           {/* Test Creation */}
-          <div className="p-4 rounded-lg bg-[#09090b]/50 border border-[#27272a]">
+          <div className="p-4 rounded-lg bg-[#131314]/50 border border-[#353436]">
             <h4 className="text-xs font-mono font-bold text-[#a1a1aa] mb-3 uppercase">Create A/B Test</h4>
             <div className="space-y-3">
               <div>
                 <label className="block text-[10px] text-[#71717a] mb-1">Flag to Test</label>
-                <select className="w-full bg-[#18181b] border border-[#27272a] rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-[#3ecf8e]">
+                <select className="w-full bg-[#201f20] border border-[#353436] rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-[#dbfcff]">
                   <option value="">Select a flag...</option>
                   {flagEntries.map(([key]) => (
                     <option key={key} value={key}>{key}</option>
@@ -322,13 +322,13 @@ export function FeatureFlagsDashboard({ initialFlags = {} }: FeatureFlagsDashboa
           </div>
 
           {/* Active Tests */}
-          <div className="p-4 rounded-lg bg-[#09090b]/50 border border-[#27272a]">
+          <div className="p-4 rounded-lg bg-[#131314]/50 border border-[#353436]">
             <h4 className="text-xs font-mono font-bold text-[#a1a1aa] mb-3 uppercase">Active Tests</h4>
             <div className="space-y-2 max-h-64 overflow-y-auto">
-              <div className="p-3 rounded-lg bg-[#18181b] border border-[#27272a]">
+              <div className="p-3 rounded-lg bg-[#201f20] border border-[#353436]">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-mono text-white">home-v2-hero (50/50 split)</span>
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-[#3ecf8e]/15 text-[#3ecf8e] border border-[#3ecf8e]/30">RUNNING</span>
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-[#dbfcff]/15 text-[#dbfcff] border border-[#dbfcff]/30">RUNNING</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-[10px] text-[#71717a]">
                   <div><span className="text-white">Control:</span> 1,247 impressions / 3.2% conv.</div>
@@ -336,7 +336,7 @@ export function FeatureFlagsDashboard({ initialFlags = {} }: FeatureFlagsDashboa
                 </div>
                 <div className="text-[10px] text-[#6366f1] mt-1">+28% lift (p=0.03)</div>
               </div>
-              <div className="p-3 rounded-lg bg-[#18181b] border border-[#27272a] text-center text-[11px] text-[#71717a]">
+              <div className="p-3 rounded-lg bg-[#201f20] border border-[#353436] text-center text-[11px] text-[#71717a]">
                 No other active tests. Create one above to start experimenting.
               </div>
             </div>
@@ -345,26 +345,26 @@ export function FeatureFlagsDashboard({ initialFlags = {} }: FeatureFlagsDashboa
       </div>
 
       {/* Performance Monitoring */}
-      <div className="mt-6 p-5 rounded-xl bg-[#121216]/85 border border-[#27272a]">
+      <div className="mt-6 p-5 rounded-xl bg-[#131314]/85 border border-[#353436]">
         <div className="flex items-center gap-2 mb-4">
           <BarChart2 className="w-5 h-5 text-[#f59e0b]" />
           <h3 className="font-mono font-bold text-white">Performance Impact Monitoring</h3>
         </div>
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 rounded-lg bg-[#09090b]/50 border border-[#27272a] text-center">
-            <div className="text-2xl font-mono font-bold text-[#3ecf8e]">12ms</div>
+          <div className="p-4 rounded-lg bg-[#131314]/50 border border-[#353436] text-center">
+            <div className="text-2xl font-mono font-bold text-[#dbfcff]">12ms</div>
             <div className="text-[10px] text-[#71717a]">Avg Flag Check Latency</div>
           </div>
-          <div className="p-4 rounded-lg bg-[#09090b]/50 border border-[#27272a] text-center">
+          <div className="p-4 rounded-lg bg-[#131314]/50 border border-[#353436] text-center">
             <div className="text-2xl font-mono font-bold text-[#6366f1]">0.02%</div>
             <div className="text-[10px] text-[#71717a]">Bundle Size Impact</div>
           </div>
-          <div className="p-4 rounded-lg bg-[#09090b]/50 border border-[#27272a] text-center">
+          <div className="p-4 rounded-lg bg-[#131314]/50 border border-[#353436] text-center">
             <div className="text-2xl font-mono font-bold text-[#f59e0b]">3</div>
             <div className="text-[10px] text-[#71717a]">Flags in Critical Path</div>
           </div>
-          <div className="p-4 rounded-lg bg-[#09090b]/50 border border-[#27272a] text-center">
+          <div className="p-4 rounded-lg bg-[#131314]/50 border border-[#353436] text-center">
             <div className="text-2xl font-mono font-bold text-rose-500">0</div>
             <div className="text-[10px] text-[#71717a]">Runtime Errors (24h)</div>
           </div>
@@ -380,7 +380,7 @@ function Toggle({ checked, onChange, className = '' }: { checked: boolean; onCha
     <button
       onClick={onChange}
       className={`relative inline-flex h-6 w-10 items-center rounded-full transition-colors ${
-        checked ? 'bg-[#3ecf8e]' : 'bg-[#27272a]'
+        checked ? 'bg-[#dbfcff]' : 'bg-[#353436]'
       } ${className}`}
       role="switch"
       aria-checked={checked}

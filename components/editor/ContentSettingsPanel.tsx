@@ -41,16 +41,16 @@ interface ContentSettingsPanelProps {
 
 function ToggleRow({ label, value, onChange, description }: { label: string; value: boolean; onChange: (v: boolean) => void; description?: string }) {
   return (
-    <div className="flex items-center justify-between p-2 rounded bg-[#09090B] border border-[#27272A]">
+    <div className="flex items-center justify-between p-2 rounded bg-[#131314] border border-[#353436]">
       <div>
-        <div className="text-[10px] font-mono text-[#FAFAFA]">{label}</div>
+        <div className="text-[10px] font-mono text-[#e5e2e3]">{label}</div>
         {description && <div className="text-[9px] text-[#71717A]">{description}</div>}
       </div>
       <button
         type="button"
         onClick={() => onChange(!value)}
         className={`w-9 h-5 rounded-full relative transition-colors ${
-          value ? 'bg-[#3ECF8E]' : 'bg-[#27272A]'
+          value ? 'bg-[#dbfcff]' : 'bg-[#353436]'
         }`}
       >
         <span
@@ -68,7 +68,7 @@ function SliderRow({ label, value, onChange, min = 0, max = 100 }: { label: stri
     <div>
       <label className="flex items-center justify-between text-[10px] font-mono text-[#A1A1AA]">
         <span>{label}</span>
-        <span className="text-[#FAFAFA] font-bold">{value}</span>
+        <span className="text-[#e5e2e3] font-bold">{value}</span>
       </label>
       <input
         type="range"
@@ -76,7 +76,7 @@ function SliderRow({ label, value, onChange, min = 0, max = 100 }: { label: stri
         max={max}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full accent-[#3ECF8E]"
+        className="w-full accent-[#dbfcff]"
       />
     </div>
   );
@@ -102,7 +102,7 @@ function LogoTab({ logo, onChange }: { logo: VtedLogo; onChange: (next: VtedLogo
           value={logo.imageUrl || ''}
           onChange={(e) => set({ imageUrl: e.target.value })}
           placeholder="https://…/logo.png"
-          className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+          className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
         />
       </div>
       <div>
@@ -115,7 +115,7 @@ function LogoTab({ logo, onChange }: { logo: VtedLogo; onChange: (next: VtedLogo
           max={400}
           value={logo.width}
           onChange={(e) => set({ width: Number(e.target.value) })}
-          className="w-full accent-[#3ECF8E]"
+          className="w-full accent-[#dbfcff]"
         />
       </div>
       <div>
@@ -126,7 +126,7 @@ function LogoTab({ logo, onChange }: { logo: VtedLogo; onChange: (next: VtedLogo
           value={logo.redirectUrl || ''}
           onChange={(e) => set({ redirectUrl: e.target.value })}
           placeholder="https://…"
-          className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+          className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
         />
       </div>
       <div>
@@ -141,8 +141,8 @@ function LogoTab({ logo, onChange }: { logo: VtedLogo; onChange: (next: VtedLogo
               onClick={() => set({ position: p })}
               className={`px-2 py-1.5 rounded border text-[9px] font-mono ${
                 logo.position === p
-                  ? 'bg-[#3ECF8E]/15 border-[#3ECF8E]/40 text-[#3ECF8E]'
-                  : 'bg-[#09090B] border-[#27272A] text-[#A1A1AA]'
+                  ? 'bg-[#dbfcff]/15 border-[#dbfcff]/40 text-[#dbfcff]'
+                  : 'bg-[#131314] border-[#353436] text-[#A1A1AA]'
               }`}
             >
               {p.replace('_', ' ')}
@@ -178,8 +178,8 @@ function PopupIntroTab({ popup, onChange }: { popup: VtedPopupIntro; onChange: (
               onClick={() => set({ mode: m })}
               className={`px-2 py-1.5 rounded border text-[9px] font-mono ${
                 popup.mode === m
-                  ? 'bg-[#3ECF8E]/15 border-[#3ECF8E]/40 text-[#3ECF8E]'
-                  : 'bg-[#09090B] border-[#27272A] text-[#A1A1AA]'
+                  ? 'bg-[#dbfcff]/15 border-[#dbfcff]/40 text-[#dbfcff]'
+                  : 'bg-[#131314] border-[#353436] text-[#A1A1AA]'
               }`}
             >
               {m.replace('_', ' ')}
@@ -197,7 +197,7 @@ function PopupIntroTab({ popup, onChange }: { popup: VtedPopupIntro; onChange: (
               value={popup.imageDesktopUrl || ''}
               onChange={(e) => set({ imageDesktopUrl: e.target.value })}
               placeholder="https://…/intro-desktop.png"
-              className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+              className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
             />
           </div>
           <div>
@@ -208,7 +208,7 @@ function PopupIntroTab({ popup, onChange }: { popup: VtedPopupIntro; onChange: (
               value={popup.imageMobileUrl || ''}
               onChange={(e) => set({ imageMobileUrl: e.target.value })}
               placeholder="https://…/intro-mobile.png"
-              className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+              className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
             />
           </div>
         </>
@@ -223,7 +223,7 @@ function PopupIntroTab({ popup, onChange }: { popup: VtedPopupIntro; onChange: (
               value={popup.videoDesktopUrl || ''}
               onChange={(e) => set({ videoDesktopUrl: e.target.value })}
               placeholder="https://…/intro-desktop.mp4"
-              className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+              className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
             />
           </div>
           <div>
@@ -234,7 +234,7 @@ function PopupIntroTab({ popup, onChange }: { popup: VtedPopupIntro; onChange: (
               value={popup.videoMobileUrl || ''}
               onChange={(e) => set({ videoMobileUrl: e.target.value })}
               placeholder="https://…/intro-mobile.mp4"
-              className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+              className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
             />
           </div>
           <ToggleRow
@@ -253,7 +253,7 @@ function PopupIntroTab({ popup, onChange }: { popup: VtedPopupIntro; onChange: (
             <select
               value={popup.descriptionTourId || ''}
               onChange={(e) => set({ descriptionTourId: e.target.value })}
-              className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+              className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
             >
               <option value="">— Default —</option>
             </select>
@@ -270,8 +270,8 @@ function PopupIntroTab({ popup, onChange }: { popup: VtedPopupIntro; onChange: (
                   onClick={() => set({ descriptionMode: m })}
                   className={`px-2 py-1.5 rounded border text-[9px] font-mono ${
                     popup.descriptionMode === m
-                      ? 'bg-[#3ECF8E]/15 border-[#3ECF8E]/40 text-[#3ECF8E]'
-                      : 'bg-[#09090B] border-[#27272A] text-[#A1A1AA]'
+                      ? 'bg-[#dbfcff]/15 border-[#dbfcff]/40 text-[#dbfcff]'
+                      : 'bg-[#131314] border-[#353436] text-[#A1A1AA]'
                   }`}
                 >
                   {m}
@@ -297,7 +297,7 @@ function PopupIntroTab({ popup, onChange }: { popup: VtedPopupIntro; onChange: (
             max={30}
             value={popup.autoCloseTime ?? 2}
             onChange={(e) => set({ autoCloseTime: Number(e.target.value) })}
-            className="w-full accent-[#3ECF8E]"
+            className="w-full accent-[#dbfcff]"
           />
         </div>
       )}
@@ -309,7 +309,7 @@ function PopupIntroTab({ popup, onChange }: { popup: VtedPopupIntro; onChange: (
           value={popup.textClose || ''}
           onChange={(e) => set({ textClose: e.target.value })}
           placeholder="Skip intro"
-          className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+          className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
         />
       </div>
     </div>
@@ -322,12 +322,12 @@ function PopupIntroTab({ popup, onChange }: { popup: VtedPopupIntro; onChange: (
 function SystemTab({ system, onChange }: { system: VtedSystem; onChange: (next: VtedSystem) => void }) {
   return (
     <div className="space-y-2">
-      <div className="rounded-lg border border-[#27272A] bg-[#0c0c0f] p-3">
+      <div className="rounded-lg border border-[#353436] bg-[#201f20] p-3">
         <div className="text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA] mb-1">
           Archived images
         </div>
         {system.archivedImagesReady ? (
-          <div className="text-[10px] font-mono text-[#3ECF8E]">Ready to restore</div>
+          <div className="text-[10px] font-mono text-[#dbfcff]">Ready to restore</div>
         ) : (
           <div className="text-[10px] font-mono text-amber-400">No archives available</div>
         )}
@@ -345,7 +345,7 @@ function SystemTab({ system, onChange }: { system: VtedSystem; onChange: (next: 
           <button
             type="button"
             onClick={() => onChange({ ...system, lastArchiveRefreshAt: new Date().toISOString() })}
-            className="px-2 py-1.5 rounded bg-[#18181B] border border-[#27272A] text-white text-[10px] font-mono flex items-center gap-1"
+            className="px-2 py-1.5 rounded bg-[#201f20] border border-[#353436] text-white text-[10px] font-mono flex items-center gap-1"
           >
             <RefreshCw className="w-3 h-3" />
             Refresh
@@ -396,8 +396,8 @@ function CollaborationTab({
               onClick={() => onChange({ ...collab, permissions: p })}
               className={`px-2 py-1.5 rounded border text-[10px] font-mono ${
                 collab.permissions === p
-                  ? 'bg-[#3ECF8E]/15 border-[#3ECF8E]/40 text-[#3ECF8E]'
-                  : 'bg-[#09090B] border-[#27272A] text-[#A1A1AA]'
+                  ? 'bg-[#dbfcff]/15 border-[#dbfcff]/40 text-[#dbfcff]'
+                  : 'bg-[#131314] border-[#353436] text-[#A1A1AA]'
               }`}
             >
               {p}
@@ -413,12 +413,12 @@ function CollaborationTab({
           <input
             value={url}
             readOnly
-            className="flex-1 bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[10px] font-mono text-white"
+            className="flex-1 bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[10px] font-mono text-white"
           />
           <button
             type="button"
             onClick={() => navigator.clipboard?.writeText(url)}
-            className="px-2 py-1 rounded bg-[#27272A] hover:bg-[#3f3f46] text-white"
+            className="px-2 py-1 rounded bg-[#353436] hover:bg-[#3f3f46] text-white"
             title="Copy"
           >
             <Copy className="w-3 h-3" />
@@ -427,7 +427,7 @@ function CollaborationTab({
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-2 py-1 rounded bg-[#3ECF8E] hover:bg-[#34b876] text-black"
+            className="px-2 py-1 rounded bg-[#dbfcff] hover:bg-[#34b876] text-black"
             title="Open"
           >
             <LinkIcon className="w-3 h-3" />
@@ -441,11 +441,11 @@ function CollaborationTab({
 function MetricMini({ label, value, color = 'default' }: { label: string; value: number; color?: 'default' | 'emerald' | 'amber' }) {
   const colors = {
     default: 'text-white',
-    emerald: 'text-[#3ECF8E]',
+    emerald: 'text-[#dbfcff]',
     amber: 'text-amber-400',
   };
   return (
-    <div className="rounded border border-[#27272A] bg-[#0c0c0f] p-2 text-center">
+    <div className="rounded border border-[#353436] bg-[#201f20] p-2 text-center">
       <div className={`text-base font-mono font-bold ${colors[color]}`}>{value}</div>
       <div className="text-[9px] font-mono uppercase text-[#71717A]">{label}</div>
     </div>
@@ -485,7 +485,7 @@ function GeneralTab({
           value={content.descriptionTour || ''}
           onChange={(e) => set({ descriptionTour: e.target.value })}
           rows={3}
-          className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white resize-none"
+          className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white resize-none"
         />
       </div>
       <div>
@@ -495,7 +495,7 @@ function GeneralTab({
         <select
           value={content.initialSceneId || ''}
           onChange={(e) => set({ initialSceneId: e.target.value })}
-          className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+          className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
         >
           <option value="">— First scene —</option>
           {sceneOptions.map((s) => (
@@ -512,7 +512,7 @@ function GeneralTab({
         <select
           value={content.category || 'Architecture'}
           onChange={(e) => set({ category: e.target.value })}
-          className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[11px] font-mono text-white"
+          className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[11px] font-mono text-white"
         >
           <option>Architecture</option>
           <option>Hospitality</option>
@@ -524,7 +524,7 @@ function GeneralTab({
         </select>
       </div>
 
-      <div className="rounded-lg border border-[#27272A] bg-[#0c0c0f] p-2 space-y-2">
+      <div className="rounded-lg border border-[#353436] bg-[#201f20] p-2 space-y-2">
         <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase text-[#A1A1AA]">
           <Volume2 className="w-3 h-3" />
           Background sound
@@ -542,7 +542,7 @@ function GeneralTab({
             value={content.backgroundSound?.url || ''}
             onChange={(e) => setSound({ url: e.target.value })}
             placeholder="https://…/ambient.mp3"
-            className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[10px] font-mono text-white"
+            className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[10px] font-mono text-white"
           />
         </div>
         <SliderRow
@@ -576,7 +576,7 @@ function GeneralTab({
                 value={content.copyright?.link || ''}
                 onChange={(e) => setCopyright({ link: e.target.value })}
                 placeholder="https://panoee.com"
-                className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[10px] font-mono text-white"
+                className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[10px] font-mono text-white"
               />
             </div>
             <div>
@@ -584,7 +584,7 @@ function GeneralTab({
               <input
                 value={content.copyright?.authorName || ''}
                 onChange={(e) => setCopyright({ authorName: e.target.value })}
-                className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[10px] font-mono text-white"
+                className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[10px] font-mono text-white"
               />
             </div>
             <div>
@@ -592,7 +592,7 @@ function GeneralTab({
               <input
                 value={content.copyright?.description || ''}
                 onChange={(e) => setCopyright({ description: e.target.value })}
-                className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[10px] font-mono text-white"
+                className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[10px] font-mono text-white"
               />
             </div>
             <div>
@@ -601,7 +601,7 @@ function GeneralTab({
                 value={content.copyright?.qrData || ''}
                 onChange={(e) => setCopyright({ qrData: e.target.value })}
                 rows={2}
-                className="w-full bg-[#09090B] border border-[#27272A] rounded px-2 py-1 text-[10px] font-mono text-white resize-none"
+                className="w-full bg-[#131314] border border-[#353436] rounded px-2 py-1 text-[10px] font-mono text-white resize-none"
               />
             </div>
           </>
@@ -631,19 +631,19 @@ export default function ContentSettingsPanel({
   return (
     <div className="max-w-3xl mx-auto p-4 space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-mono font-bold text-[#3ECF8E] flex items-center gap-2">
+        <h2 className="text-sm font-mono font-bold text-[#dbfcff] flex items-center gap-2">
           <Info className="w-4 h-4" />
           Content Settings
         </h2>
         {saved && (
-          <span className="flex items-center gap-1 text-[10px] font-mono text-[#3ECF8E]">
+          <span className="flex items-center gap-1 text-[10px] font-mono text-[#dbfcff]">
             <CheckCircle2 className="w-3.5 h-3.5" />
             Saved
           </span>
         )}
       </div>
 
-      <div role="tablist" className="flex items-center gap-1 p-1 rounded-lg bg-[#09090B] border border-[#27272A] overflow-x-auto">
+      <div role="tablist" className="flex items-center gap-1 p-1 rounded-lg bg-[#131314] border border-[#353436] overflow-x-auto">
         {[
           { id: 'general', label: 'General', icon: <Info className="w-3 h-3" /> },
           { id: 'logo', label: 'Logo', icon: <ImageIcon className="w-3 h-3" /> },
@@ -659,7 +659,7 @@ export default function ContentSettingsPanel({
             onClick={() => setTab(t.id as any)}
             className={`flex items-center justify-center gap-1 px-2.5 py-1.5 rounded text-[10px] font-mono transition-all ${
               tab === t.id
-                ? 'bg-[#3ECF8E]/15 text-[#3ECF8E] border border-[#3ECF8E]/30'
+                ? 'bg-[#dbfcff]/15 text-[#dbfcff] border border-[#dbfcff]/30'
                 : 'text-[#71717A] hover:text-white border border-transparent'
             }`}
           >
@@ -669,7 +669,7 @@ export default function ContentSettingsPanel({
         ))}
       </div>
 
-      <div className="rounded-xl border border-[#27272A] bg-[#0c0c0f] p-3">
+      <div className="rounded-xl border border-[#353436] bg-[#201f20] p-3">
         {tab === 'general' && <GeneralTab content={value} onChange={set} sceneOptions={sceneOptions} />}
         {tab === 'logo' && (
           <LogoTab
@@ -700,7 +700,7 @@ export default function ContentSettingsPanel({
       <button
         type="button"
         onClick={onSave}
-        className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
+        className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b876] text-black text-xs font-bold font-mono"
       >
         <Save className="w-3.5 h-3.5" />
         Save Content

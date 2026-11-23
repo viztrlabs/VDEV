@@ -199,7 +199,7 @@ export const INITIAL_MANAGED_PROJECTS: ManagedProject[] = [
       hoursSpent: 148.5,
       hourlyRate: 175,
       disciplineBreakdown: [
-        { discipline: '3D Modeling & CAD Ingestion', hours: 42.0, budgetHours: 40.0, color: '#3ECF8E' },
+        { discipline: '3D Modeling & CAD Ingestion', hours: 42.0, budgetHours: 40.0, color: '#dbfcff' },
         { discipline: 'PBR Materials & Shaders', hours: 38.5, budgetHours: 45.0, color: '#06B6D4' },
         { discipline: 'Spatial WebXR & Audio', hours: 34.0, budgetHours: 50.0, color: '#8B5CF6' },
         { discipline: 'Lighting & Optimization', hours: 22.0, budgetHours: 35.0, color: '#F59E0B' },
@@ -299,7 +299,7 @@ export const INITIAL_MANAGED_PROJECTS: ManagedProject[] = [
       hoursSpent: 72.0,
       hourlyRate: 175,
       disciplineBreakdown: [
-        { discipline: '3D Parametric Modeling', hours: 32.0, budgetHours: 45.0, color: '#3ECF8E' },
+        { discipline: '3D Parametric Modeling', hours: 32.0, budgetHours: 45.0, color: '#dbfcff' },
         { discipline: 'Foliage & Botanical Sims', hours: 22.0, budgetHours: 35.0, color: '#10B981' },
         { discipline: 'VR Interaction & Lighting', hours: 14.0, budgetHours: 50.0, color: '#8B5CF6' },
         { discipline: 'Client Review Prep', hours: 4.0, budgetHours: 30.0, color: '#F59E0B' },
@@ -363,7 +363,7 @@ export const INITIAL_MANAGED_PROJECTS: ManagedProject[] = [
       hoursSpent: 91.5,
       hourlyRate: 175,
       disciplineBreakdown: [
-        { discipline: 'Interior CAD & FF&E Modeling', hours: 28.0, budgetHours: 30.0, color: '#3ECF8E' },
+        { discipline: 'Interior CAD & FF&E Modeling', hours: 28.0, budgetHours: 30.0, color: '#dbfcff' },
         { discipline: '16K Panorama Rendering', hours: 32.5, budgetHours: 35.0, color: '#3B82F6' },
         { discipline: 'Interactive Hotspot Logic', hours: 18.0, budgetHours: 18.0, color: '#8B5CF6' },
         { discipline: 'Color Timing & Delivery', hours: 13.0, budgetHours: 12.0, color: '#10B981' },
@@ -427,7 +427,7 @@ export const INITIAL_MANAGED_PROJECTS: ManagedProject[] = [
       hoursSpent: 168.0,
       hourlyRate: 195,
       disciplineBreakdown: [
-        { discipline: 'Masterplan BIM Ingestion', hours: 54.0, budgetHours: 65.0, color: '#3ECF8E' },
+        { discipline: 'Masterplan BIM Ingestion', hours: 54.0, budgetHours: 65.0, color: '#dbfcff' },
         { discipline: 'Terrain & Building Models', hours: 48.0, budgetHours: 60.0, color: '#06B6D4' },
         { discipline: 'Lighting & Materials', hours: 38.0, budgetHours: 70.0, color: '#EAB308' },
         { discipline: 'WebXR Review Experience', hours: 28.0, budgetHours: 85.0, color: '#EC4899' },
@@ -474,7 +474,7 @@ export const INITIAL_MANAGED_PROJECTS: ManagedProject[] = [
       hoursSpent: 10.5,
       hourlyRate: 175,
       disciplineBreakdown: [
-        { discipline: 'Site Survey & Terrain Modeling', hours: 8.5, budgetHours: 25.0, color: '#3ECF8E' },
+        { discipline: 'Site Survey & Terrain Modeling', hours: 8.5, budgetHours: 25.0, color: '#dbfcff' },
         { discipline: 'Camera Composition Setup', hours: 2.0, budgetHours: 15.0, color: '#3B82F6' },
         { discipline: 'PBR Materiality & Rock Shaders', hours: 0, budgetHours: 15.0, color: '#8B5CF6' },
         { discipline: '8K Path-Trace Lighting', hours: 0, budgetHours: 15.0, color: '#F59E0B' },
@@ -520,7 +520,7 @@ export const INITIAL_MANAGED_PROJECTS: ManagedProject[] = [
       hoursSpent: 78.0,
       hourlyRate: 190,
       disciplineBreakdown: [
-        { discipline: 'Kinetic Louver Animation Rig', hours: 38.0, budgetHours: 55.0, color: '#3ECF8E' },
+        { discipline: 'Kinetic Louver Animation Rig', hours: 38.0, budgetHours: 55.0, color: '#dbfcff' },
         { discipline: 'Camera Previs & Animatic', hours: 26.0, budgetHours: 45.0, color: '#06B6D4' },
         { discipline: 'Atmospheric Cloud Sims', hours: 14.0, budgetHours: 60.0, color: '#EAB308' },
         { discipline: 'Cloud Rendering', hours: 0, budgetHours: 60.0, color: '#EC4899' },
@@ -566,7 +566,7 @@ export const INITIAL_MANAGED_PROJECTS: ManagedProject[] = [
       hoursSpent: 76.5,
       hourlyRate: 175,
       disciplineBreakdown: [
-        { discipline: 'USDZ & GLB Mesh Prep', hours: 28.0, budgetHours: 30.0, color: '#3ECF8E' },
+        { discipline: 'USDZ & GLB Mesh Prep', hours: 28.0, budgetHours: 30.0, color: '#dbfcff' },
         { discipline: 'True-Scale AR Calibration', hours: 22.5, budgetHours: 25.0, color: '#06B6D4' },
         { discipline: 'Material Customizer UI', hours: 16.0, budgetHours: 15.0, color: '#8B5CF6' },
         { discipline: 'QR Code & CDN Deploy', hours: 10.0, budgetHours: 10.0, color: '#10B981' },
