@@ -39,3 +39,5 @@ whatsapp_bot/
 ts-errors.txt
 model-section.txt
 .telegram-bot.lock
+# Stray Supabase CLI state from a mis-run link (nested dir)
+/supabase/supabase/
