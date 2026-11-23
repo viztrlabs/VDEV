@@ -20,7 +20,7 @@ describe('ValidationPanel', () => {
         type: '360',
         url: 'https://example.com/panorama.jpg',
         thumbnailUrl: '',
-        initialYaw: 0,
+        initialYaw: 45,
         initialPitch: 0,
         initialFov: 75,
         hotspots: [],
@@ -64,7 +64,7 @@ describe('ValidationPanel', () => {
         hotspots: [
           {
             id: 'hs-1',
-            type: 'link',
+            type: 'navigation',
             title: 'Go to Kitchen',
             yaw: 0,
             pitch: 0,
@@ -74,7 +74,7 @@ describe('ValidationPanel', () => {
     ]);
 
     render(<ValidationPanel />);
-    expect(screen.getByText(/has no destination/)).toBeInTheDocument();
+    expect(screen.getByText(/has no target room/)).toBeInTheDocument();
   });
 
   it('shows success when tour is valid', () => {
@@ -102,7 +102,7 @@ describe('ValidationPanel', () => {
         hotspots: [
           {
             id: 'hs-1',
-            type: 'link',
+            type: 'navigation',
             title: 'Go to Living Room',
             targetSceneId: 'room-1',
             yaw: 0,
@@ -118,8 +118,9 @@ describe('ValidationPanel', () => {
       hotspots: [
         {
           id: 'hs-2',
-          type: 'link',
+          type: 'navigation',
           title: 'Go to Kitchen',
+          description: '',
           targetSceneId: 'room-2',
           yaw: 0,
           pitch: 0,

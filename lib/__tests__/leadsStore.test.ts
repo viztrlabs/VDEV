@@ -1,23 +1,27 @@
 import { saveLead, listLeads } from '@/lib/leadsStore';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 
-jest.mock('node:fs', () => {
-  const actual = jest.requireActual('node:fs') as typeof import('node:fs');
-  return {
-    ...actual,
-    promises: {
-      readFile: jest.fn(),
-      mkdir: jest.fn().mockResolvedValue(undefined),
-      writeFile: jest.fn().mockResolvedValue(undefined),
-    },
-  };
-});
+jest.mock('@/lib/supabase-admin', () => ({ getSupabaseAdmin: jest.fn() }));
 
-import { promises as fs } from 'node:fs';
+const insert = jest.fn();
+const select = jest.fn();
+const order = jest.fn();
 
-describe('lib/leadsStore.ts', () => {
+function mockClient() {
+  // Chain used by saveLead: from().insert().select().single()
+  insert.mockReturnValue({ select: jest.fn(() => ({ single: jest.fn().mockResolvedValue({ data: null }) })) });
+  // Chain used by listLeads: from().select().order()
+  select.mockReturnValue({ order });
+  order.mockResolvedValue({ data: [] });
+  (getSupabaseAdmin as jest.Mock).mockReturnValue({
+    from: jest.fn(() => ({ insert, select })),
+  });
+}
+
+describe('lib/leadsStore.ts (Supabase-backed)', () => {
   beforeEach(() => {
-    (fs.readFile as jest.Mock).mockRejectedValue(Object.assign(new Error('ENOENT'), { code: 'ENOENT' }));
-    (fs.writeFile as jest.Mock).mockClear();
+    jest.clearAllMocks();
+    mockClient();
   });
 
   it('saves a lead and returns it with id + timestamp', async () => {
@@ -25,11 +29,16 @@ describe('lib/leadsStore.ts', () => {
     expect(lead.id).toMatch(/^lead_/);
     expect(lead.type).toBe('contact');
     expect(lead.payload.name).toBe('Ada');
-    expect(fs.writeFile).toHaveBeenCalled();
+    expect(insert).toHaveBeenCalledWith(expect.objectContaining({
+      service: 'contact',
+      name: 'Ada',
+      contact: 'ada@x.dev',
+      metadata: { name: 'Ada', email: 'ada@x.dev' },
+    }));
   });
 
-  it('lists leads from file, defaulting to [] when missing', async () => {
-    const leads = await listLeads();
-    expect(Array.isArray(leads)).toBe(true);
+  it('lists leads from the leads table, defaulting to [] when empty', async () => {
+    expect(await listLeads()).toEqual([]);
+    expect(order).toHaveBeenCalled();
   });
 });

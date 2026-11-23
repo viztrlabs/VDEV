@@ -3,12 +3,27 @@
  */
 import { GET } from '@/app/api/projects/client/route';
 import { NextRequest } from 'next/server';
+import { getServerSession } from 'next-auth';
+
+// This endpoint is auth-gated (admin/client roles). Mock the session so the
+// tests exercise the filtering logic instead of Next's request-scope headers().
+jest.mock('next-auth', () => ({ getServerSession: jest.fn() }));
+jest.mock('@/lib/auth', () => ({ authOptions: {} }));
+// Keep the demo fallback deterministic regardless of local env vars.
+jest.mock('@/lib/supabase/repositories', () => ({
+  isSupabaseAdminReady: jest.fn(() => false),
+  listProjectsSupabase: jest.fn(async () => null),
+}));
 
 function makeRequest(url: string): NextRequest {
   return new NextRequest(url);
 }
 
 describe('GET /api/projects/client', () => {
+  beforeEach(() => {
+    (getServerSession as jest.Mock).mockResolvedValue({ user: { role: 'admin', email: 'admin@viztr.in' } });
+  });
+
   it('returns full list of managed projects when no filters are applied', async () => {
     const res = await GET(makeRequest('http://localhost:3000/api/projects/client'));
     const data = await res.json();
