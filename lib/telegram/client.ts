@@ -16,6 +16,13 @@ import type {
 } from './types';
 import { TelegramApiError } from './types';
 
+export interface ForumTopic {
+  message_thread_id: number;
+  name: string;
+  icon_color: number;
+  icon_custom_emoji_id?: string;
+}
+
 const API_BASE = 'https://api.telegram.org/bot';
 const DEFAULT_TIMEOUT = 10000; // 10 seconds
 const MAX_RETRIES = 3;
@@ -188,6 +195,25 @@ export class TelegramClient {
       disable_web_page_preview: options.disable_web_page_preview,
       reply_markup: options.reply_markup,
       entities: options.entities,
+    });
+  }
+
+  /**
+   * Create a Forum Topic in a forum supergroup (used to isolate each
+   * website-visitor human-handoff session).
+   */
+  async createForumTopic(
+    chatId: string | number,
+    name: string,
+    options: { icon_color?: number; icon_custom_emoji_id?: string } = {},
+  ): Promise<ForumTopic> {
+    // Telegram enforces a 128-character topic name limit.
+    const safeName = name.trim().slice(0, 128) || 'Visitor';
+    return this.request<ForumTopic>('createForumTopic', {
+      chat_id: chatId,
+      name: safeName,
+      icon_color: options.icon_color ?? 0x6FB9F0,
+      icon_custom_emoji_id: options.icon_custom_emoji_id,
     });
   }
 

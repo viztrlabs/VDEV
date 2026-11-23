@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ViztrIntroOverlay from '@/components/landing/ViztrIntroOverlay';
-import { WhatsAppButton } from '@/components/ui/WhatsAppButton';
 import { MessagingAgent } from '@/components/ui/MessagingAgent';
 
 export default function LayoutShell({ children }: { children: React.ReactNode }) {
@@ -83,7 +82,6 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
       <Header />
       <div className="flex-1 flex flex-col">{children}</div>
       <Footer />
-      {isPublicPage && <WhatsAppButton />}
       {isPublicPage && <MessagingAgent />}
     </>
   );

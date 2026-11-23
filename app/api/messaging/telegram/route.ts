@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase-admin';
-import { validateTelegramConfig } from '@/lib/telegram/config';
+import { validateTelegramConfig, getSupportGroupId } from '@/lib/telegram/config';
 import { createTelegramClient } from '@/lib/telegram/client';
 import { UpdateSchema, extractCommand, isCommand, validateUpdate } from '@/lib/telegram/validation';
 import { checkAndMarkProcessed } from '@/lib/telegram/deduplication';
@@ -9,6 +9,8 @@ import { COMMAND_HANDLERS, isKnownCommand, getCommandHandler } from '@/lib/teleg
 import { registerAllHandlers } from '@/lib/telegram/commands/handlers';
 import { handleCallbackQuery } from '@/lib/telegram/callbacks';
 import { getViztrAgentReply } from '@/lib/messaging/viztr-agent';
+import { getConversationByThreadId, insertMessage } from '@/lib/chat/session';
+import { publishChatMessage } from '@/lib/chat/realtime';
 
 // Register all command handlers on module load
 registerAllHandlers();
@@ -79,6 +81,79 @@ export async function POST(req: NextRequest) {
   }
 
   const client = createTelegramClient();
+
+  // -----------------------------------------------------------------------
+  // Website-visitor human handoff bridge.
+  // Replies inside a bound Forum Topic are delivered to the browser widget
+  // via Supabase Realtime on `messages`; the AI is never invoked here.
+  // -----------------------------------------------------------------------
+  const supportGroupId = getSupportGroupId();
+  const inSupportGroup = supportGroupId !== null && message?.chat?.id === supportGroupId;
+  if (inSupportGroup && message?.from && !(message.from as any).is_bot) {
+    const threadId = message.message_thread_id;
+    const text = (message.text || '').trim();
+
+    if (threadId && /^\/done(?:@\w+)?(?:\s|$)/i.test(text)) {
+      const conv = await getConversationByThreadId(supabaseAdmin, threadId);
+      if (conv) {
+        await supabaseAdmin
+          .from('conversations')
+          .update({ mode: 'ai', closed_at: new Date().toISOString(), status: 'open' })
+          .eq('id', conv.id);
+        const notice = await insertMessage(supabaseAdmin, conv.id, {
+          sender: 'system',
+          text: 'The specialist closed this conversation. Our AI assistant is helping you again.',
+        });
+        if (notice) {
+          await publishChatMessage({
+            id: notice.id,
+            conversationId: conv.id,
+            sender: notice.sender,
+            text: notice.text,
+            status: notice.status,
+            createdAt: notice.created_at,
+            metadata: notice.metadata,
+          });
+        }
+        await client.sendMessage(supportGroupId!, 'Done — this visitor is back with the AI assistant.', {
+          message_thread_id: threadId,
+          parse_mode: 'HTML',
+        });
+        return NextResponse.json({ ok: true, type: 'handoff_done', conversationId: conv.id });
+      }
+    }
+
+    if (threadId && text) {
+      const conv = await getConversationByThreadId(supabaseAdmin, threadId);
+      if (conv) {
+        const saved = await insertMessage(supabaseAdmin, conv.id, {
+          sender: 'agent',
+          text,
+          metadata: {
+            telegramMessageId: message.message_id,
+            telegramFrom: message.from.username || message.from.first_name,
+          },
+        });
+        if (saved) {
+          await publishChatMessage({
+            id: saved.id,
+            conversationId: conv.id,
+            sender: saved.sender,
+            text: saved.text,
+            status: saved.status,
+            createdAt: saved.created_at,
+            metadata: saved.metadata,
+          });
+        }
+        return NextResponse.json({ ok: true, type: 'agent_reply', conversationId: conv.id, messageId: saved?.id });
+      }
+      // Unbound topic — never let the bot answer unrelated support threads.
+      return NextResponse.json({ ok: true, type: 'unbound_topic_ignored' });
+    }
+
+    // Messages posted directly in the support group (no topic) aren't chats.
+    return NextResponse.json({ ok: true, type: 'support_group_ignored' });
+  }
 
   // Handle callback queries (inline keyboard buttons)
   if (callback_query) {

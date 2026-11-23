@@ -5,7 +5,6 @@ import { ThemeProvider } from '@/lib/theme-provider';
 import NextAuthProvider from '@/components/providers/NextAuthProvider';
 import LayoutShell from '@/components/layout/LayoutShell';
 import GlobalViewers from '@/components/layout/GlobalViewers';
-import { MessagingAgent } from '@/components/ui/MessagingAgent';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 import { GoogleTagManager } from '@/components/analytics/GoogleTagManager';
 import { OrganizationJsonLd, WebSiteJsonLd } from '@/components/seo';

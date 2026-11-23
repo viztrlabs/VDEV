@@ -22,6 +22,18 @@ function getRequiredEnv(name: string): string {
   return value.trim();
 }
 
+/**
+ * Private forum supergroup used for website-visitor human handoff.
+ * Optional so existing bot commands keep working without it; chat routes
+ * treat a missing/invalid value as "handoff unavailable" and degrade safely.
+ */
+export function getSupportGroupId(): number | null {
+  const raw = process.env.TELEGRAM_SUPPORT_GROUP_ID?.trim();
+  if (!raw) return null;
+  const id = Number(raw);
+  return Number.isSafeInteger(id) ? id : null;
+}
+
 export function validateTelegramConfig(): TelegramConfig {
   return {
     token: getRequiredEnv('TELEGRAM_BOT_TOKEN'),

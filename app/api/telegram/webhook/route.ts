@@ -1,6 +1,9 @@
 /**
- * Telegram Bot Webhook Endpoint
- * Secure POST endpoint for receiving Telegram updates
+ * Telegram Bot Webhook Endpoint (LEGACY — DEPRECATED).
+ * Kept only for older validation scripts / command handling. The canonical
+ * endpoint for all Telegram traffic — including website-visitor Forum Topic
+ * handoff — is POST /api/messaging/telegram. Do NOT register this URL with
+ * Telegram's setWebhook for the live-chat system.
  */
 
 export const dynamic = 'force-dynamic';
