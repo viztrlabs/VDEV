@@ -12,18 +12,15 @@ import {
   Camera,
   Cuboid,
   MonitorPlay,
+  Compass,
+  RotateCcw,
   Info,
   X,
   QrCode,
   Maximize2,
   Minimize2,
-  AlertCircle,
-  CheckCircle2,
-  WifiOff,
-  Smartphone,
-  Monitor,
 } from 'lucide-react';
-import { detectCapabilities, type DeviceCapabilities, arFallbackMode, vrFallbackMode, canRequestXR, launchQuickLook, requestARSession, requestVRSession } from '@/lib/xr/capabilities';
+import { detectCapabilities, type DeviceCapabilities, arFallbackMode, canRequestXR, launchQuickLook, requestARSession, requestVRSession } from '@/lib/xr/capabilities';
 import { getServiceViewer } from '@/lib/xr/service-viewers';
 import { useAppStore } from '@/lib/store';
 
@@ -77,6 +74,23 @@ const SERVICE_ICONS: Record<string, React.ComponentType<{ className?: string }>>
   'gallery-media': Images,
 };
 
+type IconComponent = React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+
+/** The five canonical XR World services, always rendered in the HUD. */
+const XR_SERVICES: Array<{
+  slug: string;
+  name: string;
+  short: string;
+  icon: IconComponent;
+  accent: string;
+}> = [
+  { slug: 'webxr', name: 'WebXR', short: 'WebXR', icon: Box, accent: '#00E5FF' },
+  { slug: 'webar', name: 'WebAR', short: 'AR', icon: Camera, accent: '#00E5FF' },
+  { slug: 'virtual-reality', name: 'Virtual Reality', short: 'VR', icon: Headset, accent: '#FFB800' },
+  { slug: 'virtual-tour', name: 'Virtual Tour', short: 'Tour', icon: Compass, accent: '#3ECF8E' },
+  { slug: 'gaussian-splat', name: 'Gaussian Splat', short: 'Splat', icon: Cuboid, accent: '#3ECF8E' },
+];
+
 export default function ProjectExperienceHub({
   project,
   services,
@@ -91,10 +105,15 @@ export default function ProjectExperienceHub({
   const servicesWithContent = services.filter(
     (s) => s.experiences.length > 0 || s.slug === 'gallery-media'
   );
+  const contentSlugs = useMemo(
+    () => new Set(servicesWithContent.map((s) => s.slug)),
+    [servicesWithContent]
+  );
+
   const [activeSlug, setActiveSlug] = useState<string>(
-    initial && servicesWithContent.some((s) => s.slug === initial)
+    initial && services.some((s) => s.slug === initial)
       ? initial
-      : servicesWithContent[0]?.slug || ''
+      : servicesWithContent[0]?.slug || services[0]?.slug || ''
   );
   const [caps, setCaps] = useState<DeviceCapabilities | null>(null);
   const [showInfo, setShowInfo] = useState(false);
@@ -102,7 +121,11 @@ export default function ProjectExperienceHub({
   const [showQr, setShowQr] = useState(false);
   const [lightbox, setLightbox] = useState<{ url: string; type: 'image' | 'video' } | null>(null);
   const [launchError, setLaunchError] = useState<string | null>(null);
+  const [resetNonce, setResetNonce] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
+  // Bottom HUD bar doubles as the dom-overlay root so "Exit AR" stays tappable.
+  const hudRef = useRef<HTMLDivElement>(null);
 
   // Immersive launch state lives in the store so the deep ExperienceViewer tree
   // can start a real XR session without losing the user-gesture context.
@@ -116,20 +139,27 @@ export default function ProjectExperienceHub({
     detectCapabilities().then(setCaps).catch(() => setCaps(null));
   }, []);
 
-  const active = useMemo(
-    () => servicesWithContent.find((s) => s.slug === activeSlug) || servicesWithContent[0] || null,
-    [servicesWithContent, activeSlug]
-  );
+  // Keep the URL service param in sync without a navigation/refetch.
+  useEffect(() => {
+    if (!activeSlug || typeof window === 'undefined') return;
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('service') === activeSlug) return;
+    url.searchParams.set('service', activeSlug);
+    window.history.replaceState({}, '', url.toString());
+  }, [activeSlug]);
 
+  // The selected service (may have no published content yet).
+  const active = useMemo(
+    () => services.find((s) => s.slug === activeSlug) || servicesWithContent[0] || null,
+    [services, servicesWithContent, activeSlug]
+  );
   const activeExperience = active?.experiences[0] || null;
 
-  // Service-driven launch mode (single source of truth in lib/xr/service-viewers).
-  const serviceViewer = getServiceViewer(active?.slug);
+  // Service-driven viewer + launch mode (single source of truth).
+  const serviceViewer = getServiceViewer(activeSlug);
   const launchMode = serviceViewer?.mode ?? null;
   const isAR = launchMode === 'immersive-ar';
   const isVR = launchMode === 'immersive-vr';
-  // Root element kept visible over the camera feed via the dom-overlay feature.
-  const arOverlayRef = useRef<HTMLDivElement>(null);
 
   // Best-effort USDZ asset for iOS AR Quick Look across common config shapes.
   const usdzUrl = useMemo(() => {
@@ -137,6 +167,16 @@ export default function ProjectExperienceHub({
     const url = c.usdz || c.quickLook?.usdz || c.ar?.usdz || c.ios?.quickLookUrl;
     return (url as string) || null;
   }, [activeExperience]);
+
+  const selectService = useCallback(
+    (slug: string) => {
+      if (slug === activeSlug) return;
+      if (xrMode) endXR();
+      setLaunchError(null);
+      setActiveSlug(slug);
+    },
+    [activeSlug, xrMode, endXR]
+  );
 
   /**
    * Launch (or exit) an immersive session. MUST run from a click handler so the
@@ -157,7 +197,6 @@ export default function ProjectExperienceHub({
       }
 
       const activeMode = target === 'ar' ? 'immersive-ar' : 'immersive-vr';
-      // Toggle off if already running this mode.
       if (xrMode === activeMode) {
         endXR();
         return;
@@ -168,13 +207,12 @@ export default function ProjectExperienceHub({
 
       if (canRequestXR() && supported) {
         try {
-          // requestARSession/requestVRSession invoke navigator.xr.requestSession
+          // requestARSession/requestVRSession call navigator.xr.requestSession
           // synchronously as their first action, preserving the gesture context.
-          // Pass the AR control bar as the dom-overlay root so "Exit AR" stays
-          // tappable over the live camera feed.
+          // The bottom HUD bar is the dom-overlay root so "Exit AR" stays tappable.
           const session =
             target === 'ar'
-              ? await requestARSession(arOverlayRef.current)
+              ? await requestARSession(hudRef.current)
               : await requestVRSession();
           startXR(activeMode, session);
           return;
@@ -215,12 +253,6 @@ export default function ProjectExperienceHub({
         }
       }
     };
-    const drawTiming = () => {
-      for (let i = 8; i < gridSize - 8; i++) {
-        grid[6][i] = i % 2;
-        grid[i][6] = i % 2;
-      }
-    };
     drawFinder(0, 0);
     drawFinder(gridSize - 7, 0);
     drawFinder(0, gridSize - 7);
@@ -236,12 +268,17 @@ export default function ProjectExperienceHub({
     for (let y = 0; y < gridSize; y++) {
       for (let x = 0; x < gridSize; x++) {
         if (grid[y][x]) {
-          const modSize = size / gridSize;
-          ctx.fillRect(x * (size / gridSize), y * (size / gridSize), size / gridSize, size / gridSize);
+          const cell = size / gridSize;
+          ctx.fillRect(x * cell, y * cell, cell, cell);
         }
       }
     }
   }, []);
+
+  // Draw the QR once the modal (and its canvas) has mounted.
+  useEffect(() => {
+    if (showQr) generateQr(window.location.href);
+  }, [showQr, generateQr]);
 
   const share = async () => {
     try {
@@ -258,9 +295,16 @@ export default function ProjectExperienceHub({
     }
   };
 
-  const showQrCode = () => {
-    generateQr(window.location.href);
-    setShowQr(true);
+  const showQrCode = () => setShowQr(true);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      const p = document.documentElement.requestFullscreen?.();
+      if (p) p.then(() => setIsFullscreen(true)).catch(() => {});
+    } else {
+      const p = document.exitFullscreen?.();
+      if (p) p.then(() => setIsFullscreen(false)).catch(() => {});
+    }
   };
 
   const capabilityNote = useMemo(() => {
@@ -281,162 +325,261 @@ export default function ProjectExperienceHub({
     return null;
   }, [caps, isAR, isVR]);
 
+  // Engine / mode badge for the left zone.
+  const engineBadge = xrMode === 'immersive-ar'
+    ? 'IWSDK • AR'
+    : xrMode === 'immersive-vr'
+      ? 'IWSDK • VR'
+      : serviceViewer
+        ? `${serviceViewer.engine.toUpperCase()}${serviceViewer.mode === 'immersive-ar' ? ' • AR' : serviceViewer.mode === 'immersive-vr' ? ' • VR' : ''}`
+        : '—';
+
+  const xrReady = !!(caps?.webxrAR || caps?.webxrVR || caps?.quickLook);
+  const readyDotClass = xrMode
+    ? 'bg-emerald-400 animate-pulse'
+    : xrReady
+      ? 'bg-emerald-400'
+      : 'bg-amber-400';
+
+  const extraServices = servicesWithContent.filter(
+    (s) => !XR_SERVICES.some((x) => x.slug === s.slug)
+  );
+
   return (
-    <main className="min-h-screen flex flex-col bg-[#131314] text-[#e5e2e3]">
-      {/* Header */}
-      <header className="shrink-0 border-b border-zinc-800/80 bg-[#0e0e0f]/95 backdrop-blur px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <h1 className="text-sm sm:text-base font-bold truncate">{project.name}</h1>
-            <span className="shrink-0 text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#dbfcff]/10 text-[#dbfcff] border border-[#dbfcff]/30">
-              Published
-            </span>
-          </div>
-          <p className="text-[11px] text-zinc-500 truncate">Project Experience · One unified destination</p>
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <button
-            onClick={() => setShowInfo((v) => !v)}
-            className="p-2 rounded-lg border border-zinc-700 hover:bg-zinc-800 transition-colors"
-            aria-label="Project information"
-          >
-            <Info className="w-4 h-4" />
-          </button>
-          <button
-            onClick={share}
-            className="p-2 rounded-lg border border-zinc-700 hover:bg-zinc-800 transition-colors"
-            aria-label="Share project"
-          >
-            <Share2 className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => {
-              generateQr(window.location.href);
-              setShowQr(true);
-            }}
-            className="p-2 rounded-lg border border-zinc-700 hover:bg-zinc-800 transition-colors"
-            aria-label="Show QR code"
-          >
-            <QrCode className="w-4 h-4" />
-          </button>
-        </div>
-      </header>
-
-      {/* Info drawer */}
-      {showInfo && (
-        <aside className="shrink-0 border-b border-zinc-800 bg-[#0e0e0f] px-4 sm:px-6 py-4 relative">
-          <button
-            onClick={() => setShowInfo(false)}
-            className="absolute top-3 right-3 text-zinc-500 hover:text-white"
-            aria-label="Close project info"
-          >
-            <X className="w-4 h-4" />
-          </button>
-          <h2 className="text-sm font-bold mb-1">{project.name}</h2>
-          <p className="text-xs text-zinc-400 max-w-2xl">
-            {project.description || 'Immersive project experiences by VizTR.'}
-          </p>
-          {shared && <p className="text-[11px] text-[#dbfcff] mt-2">Link copied to clipboard.</p>}
-        </aside>
-      )}
-
-      {/* Service switcher */}
-      <nav className="shrink-0 border-b border-zinc-800/80 px-4 sm:px-6 py-2 flex gap-2 overflow-x-auto" aria-label="Services">
-        {servicesWithContent.map((s) => {
-          const Icon = SERVICE_ICONS[s.slug] || Box;
-          const isActive = s.slug === active?.slug;
-          return (
-            <button
-              key={s.projectServiceId}
-              onClick={() => setActiveSlug(s.slug)}
-              className={`shrink-0 flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-mono uppercase tracking-wider transition-colors border ${
-                isActive
-                  ? 'bg-[#00F0FF]/10 text-[#00F0FF] border-[#00F0FF]/40'
-                  : 'text-zinc-400 border-zinc-800 hover:bg-zinc-900'
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              {s.name}
-            </button>
-          );
-        })}
-      </nav>
-
-      {/* Immersive (AR/VR) control bar */}
-      {launchMode && activeExperience && (
-        <div ref={arOverlayRef} className="shrink-0 px-4 sm:px-6 py-2.5 bg-zinc-900/70 border-b border-zinc-800 flex flex-wrap items-center gap-x-4 gap-y-2">
-          <div className="flex items-center gap-2 text-[11px] font-mono text-zinc-400 min-w-0">
-            {isVR ? (
-              <Headset className="w-3.5 h-3.5 text-[#dbfcff] shrink-0" />
-            ) : (
-              <Camera className="w-3.5 h-3.5 text-[#dbfcff] shrink-0" />
-            )}
-            <span className="truncate">
-              {capabilityNote ||
-                (isAR
-                  ? 'WebAR — browser-native augmented reality.'
-                  : 'WebXR VR — immersive headset experience.')}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 ml-auto shrink-0">
-            {xrMode && (
-              <span className="text-[10px] font-mono text-emerald-300 px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/30">
-                {xrMode === 'immersive-ar' ? 'AR LIVE' : 'VR LIVE'}
-              </span>
-            )}
-            <button
-              onClick={() => handleLaunchImmersive(isAR ? 'ar' : 'vr')}
-              className="px-3 py-1.5 rounded-lg bg-[#00F0FF] hover:bg-[#00d4e6] text-black text-[11px] font-mono font-bold uppercase tracking-wider transition-colors cursor-pointer"
-            >
-              {xrMode
-                ? 'Exit AR/VR'
-                : isAR
-                  ? caps?.ios && usdzUrl
-                    ? 'Open in AR (Quick Look)'
-                    : 'Launch AR'
-                  : 'Enter VR'}
-            </button>
-            {!xrMode &&
-              !(isAR && caps?.ios && usdzUrl) &&
-              !((isAR ? caps?.webxrAR : caps?.webxrVR) ?? false) && (
-                <button
-                  onClick={showQrCode}
-                  className="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-[11px] font-mono uppercase tracking-wider border border-zinc-700 transition-colors cursor-pointer"
-                >
-                  QR to mobile
-                </button>
-              )}
-          </div>
-
-          {launchError && (
-            <p className="w-full text-[10px] font-mono text-rose-300 leading-snug">{launchError}</p>
-          )}
-        </div>
-      )}
-
-      {/* Active experience area */}
-      <section className="flex-1 min-h-0 relative">
+    <main className="relative h-screen w-full overflow-hidden bg-[#131314] text-[#e5e2e3]">
+      {/* Full-bleed experience canvas */}
+      <section className="absolute inset-0">
         {active?.slug === 'gallery-media' ? (
           <GalleryGrid items={gallery} onOpenLightbox={(url, type) => setLightbox({ url, type })} />
         ) : activeExperience ? (
           <div className="absolute inset-0">
             <ExperienceViewer
-              key={`${project.id}-${active?.slug}-${activeExperience.id}-${xrMode ?? 'preview'}-${xrSession ? 'session' : 'preview'}`}
+              key={`${project.id}-${activeSlug}-${activeExperience.id}-${xrMode ?? 'preview'}-${xrSession ? 'session' : 'preview'}-${resetNonce}`}
               experience={{ id: activeExperience.id, title: activeExperience.title }}
               config={{ config: activeExperience.config || {} }}
-              serviceSlug={active?.slug}
+              serviceSlug={activeSlug}
             />
           </div>
         ) : (
           <div className="flex items-center justify-center h-full">
-            <div className="text-center">
-              <p className="text-zinc-500 font-mono text-sm mb-1">No published experience for this service yet.</p>
-              <p className="text-zinc-600 text-xs">VizTR will notify you when it goes live.</p>
+            <div className="text-center max-w-sm px-6">
+              <p className="text-zinc-400 font-mono text-sm mb-1">
+                No published experience for {active?.name || 'this service'} yet.
+              </p>
+              <p className="text-zinc-600 text-xs">
+                VizTR will notify you when it goes live. You can still explore the other services below.
+              </p>
             </div>
           </div>
         )}
       </section>
+
+      {/* Info drawer (floating overlay) */}
+      {showInfo && (
+        <aside className="absolute top-3 left-3 right-3 sm:right-auto sm:max-w-md z-40 rounded-xl border border-[#27272A] bg-[#080808]/95 backdrop-blur-xl p-4 shadow-2xl">
+          <button
+            onClick={() => setShowInfo(false)}
+            className="absolute top-2.5 right-2.5 text-zinc-500 hover:text-white"
+            aria-label="Close project info"
+          >
+            <X className="w-4 h-4" />
+          </button>
+          <h2 className="text-sm font-bold mb-1 pr-6">{project.name}</h2>
+          <p className="text-xs text-zinc-400">
+            {project.description || 'Immersive project experiences by VizTR.'}
+          </p>
+          {shared && <p className="text-[11px] text-[#00E5FF] mt-2">Link copied to clipboard.</p>}
+        </aside>
+      )}
+
+      {/* Bottom-docked Spatial HUD */}
+      <div className="absolute bottom-0 left-0 right-0 z-40 px-2 pb-2 sm:px-4 sm:pb-4 pointer-events-none">
+        {/* Launch error / status pill */}
+        {(launchError || xrMode) && (
+          <div className="mx-auto mb-2 max-w-3xl w-fit pointer-events-auto">
+            <div
+              className={`flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] font-mono backdrop-blur-md ${
+                launchError
+                  ? 'border-rose-500/50 bg-rose-950/80 text-rose-200'
+                  : 'border-emerald-500/40 bg-emerald-950/70 text-emerald-200'
+              }`}
+            >
+              <span className={`w-1.5 h-1.5 rounded-full ${launchError ? 'bg-rose-400' : 'bg-emerald-400 animate-pulse'}`} />
+              <span className="truncate max-w-[70vw]">
+                {launchError || (xrMode === 'immersive-ar' ? 'AR live — camera passthrough' : 'VR live')}
+              </span>
+              {launchError && (
+                <button onClick={() => setLaunchError(null)} className="text-rose-300 hover:text-white px-0.5" aria-label="Dismiss">
+                  ✕
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div
+          ref={hudRef}
+          className="pointer-events-auto mx-auto max-w-6xl rounded-2xl border border-[#27272A] bg-[#080808]/90 backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.6)]"
+        >
+          <div className="flex items-center gap-2 sm:gap-3 px-2.5 sm:px-3 py-2">
+            {/* LEFT — project & engine status */}
+            <div className="flex items-center gap-2 min-w-0 shrink-0">
+              <div className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 border border-white/10 shrink-0">
+                <Box className="w-4 h-4 text-[#00E5FF]" />
+                <span className={`absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full border border-[#080808] ${readyDotClass}`} />
+              </div>
+              <div className="min-w-0 hidden sm:block">
+                <div className="truncate text-xs font-semibold leading-tight max-w-[160px]">{project.name}</div>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[#00E5FF] whitespace-nowrap">
+                    {engineBadge}
+                  </span>
+                  <span className="text-[9px] font-mono text-zinc-500 truncate max-w-[110px]">
+                    {activeExperience?.title || active?.name || '—'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* CENTER — 5 XR World service keys */}
+            <nav
+              className="flex-1 flex items-center justify-center gap-0.5 sm:gap-1 min-w-0"
+              aria-label="XR World services"
+            >
+              {XR_SERVICES.map((svc) => {
+                const Icon = svc.icon;
+                const isActive = activeSlug === svc.slug;
+                const hasContent = contentSlugs.has(svc.slug);
+                return (
+                  <button
+                    key={svc.slug}
+                    onClick={() => selectService(svc.slug)}
+                    title={svc.name}
+                    aria-label={svc.name}
+                    aria-pressed={isActive}
+                    className={`group relative flex items-center gap-1.5 px-2 sm:px-2.5 py-2 rounded-xl border transition-all ${
+                      isActive
+                        ? 'bg-white/[0.07] border-white/20'
+                        : 'border-transparent hover:bg-white/[0.05]'
+                    }`}
+                    style={isActive ? { borderColor: `${svc.accent}66`, boxShadow: `0 0 0 1px ${svc.accent}22` } : undefined}
+                  >
+                    <span className="relative flex items-center justify-center">
+                      <Icon
+                        className="w-4 h-4"
+                        style={{ color: isActive ? svc.accent : undefined }}
+                      />
+                      <span
+                        className={`absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full border border-[#080808] ${
+                          hasContent ? 'bg-[#3ECF8E]' : 'bg-[#FFB800]'
+                        }`}
+                      />
+                    </span>
+                    <span
+                      className={`text-[9px] sm:text-[10px] font-mono uppercase tracking-wider whitespace-nowrap ${
+                        isActive ? 'inline text-white' : 'hidden md:group-hover:inline text-zinc-400'
+                      }`}
+                    >
+                      {svc.short}
+                    </span>
+                  </button>
+                );
+              })}
+
+              {extraServices.map((s) => {
+                const Icon = SERVICE_ICONS[s.slug] || Box;
+                const isActive = activeSlug === s.slug;
+                return (
+                  <button
+                    key={s.projectServiceId}
+                    onClick={() => selectService(s.slug)}
+                    title={s.name}
+                    aria-label={s.name}
+                    className={`group relative hidden sm:flex items-center gap-1.5 px-2.5 py-2 rounded-xl border transition-all ${
+                      isActive ? 'bg-white/[0.07] border-white/20 text-white' : 'border-transparent text-zinc-400 hover:bg-white/[0.05]'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span className="text-[10px] font-mono uppercase tracking-wider whitespace-nowrap">
+                      {s.name}
+                    </span>
+                  </button>
+                );
+              })}
+            </nav>
+
+            {/* RIGHT — contextual primary action + utilities */}
+            <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+              {launchMode && activeExperience && (
+                <button
+                  onClick={() => handleLaunchImmersive(isAR ? 'ar' : 'vr')}
+                  className="flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl bg-[#00E5FF] hover:bg-[#00d4e6] text-black text-[10px] font-mono font-bold uppercase tracking-wider transition-colors cursor-pointer whitespace-nowrap"
+                >
+                  {isAR ? <Camera className="w-3.5 h-3.5" /> : <Headset className="w-3.5 h-3.5" />}
+                  <span className="hidden sm:inline">
+                    {xrMode
+                      ? 'Exit AR/VR'
+                      : isAR
+                        ? caps?.ios && usdzUrl
+                          ? 'Open in AR'
+                          : 'Launch AR Camera'
+                        : 'Enter VR'}
+                  </span>
+                  <span className="sm:hidden">{xrMode ? 'Exit' : isAR ? 'AR' : 'VR'}</span>
+                </button>
+              )}
+
+              <button
+                onClick={showQrCode}
+                title="QR mobile handoff"
+                aria-label="QR mobile handoff"
+                className="p-2 rounded-xl border border-[#27272A] bg-white/[0.03] hover:bg-white/[0.08] text-zinc-300 transition-colors cursor-pointer"
+              >
+                <QrCode className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setResetNonce((n) => n + 1)}
+                title="Reset camera"
+                aria-label="Reset camera"
+                className="p-2 rounded-xl border border-[#27272A] bg-white/[0.03] hover:bg-white/[0.08] text-zinc-300 transition-colors cursor-pointer"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+              <button
+                onClick={toggleFullscreen}
+                title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+                aria-label="Toggle fullscreen"
+                className="p-2 rounded-xl border border-[#27272A] bg-white/[0.03] hover:bg-white/[0.08] text-zinc-300 transition-colors cursor-pointer"
+              >
+                {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+              </button>
+              <button
+                onClick={share}
+                title="Share project"
+                aria-label="Share project"
+                className="p-2 rounded-xl border border-[#27272A] bg-white/[0.03] hover:bg-white/[0.08] text-zinc-300 transition-colors cursor-pointer hidden sm:block"
+              >
+                <Share2 className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setShowInfo((v) => !v)}
+                title="Project info"
+                aria-label="Project information"
+                className="p-2 rounded-xl border border-[#27272A] bg-white/[0.03] hover:bg-white/[0.08] text-zinc-300 transition-colors cursor-pointer hidden sm:block"
+              >
+                <Info className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Capability note strip (only when relevant) */}
+          {capabilityNote && (
+            <div className="px-3 pb-2 -mt-0.5 text-[9px] font-mono text-zinc-500 truncate">
+              {capabilityNote}
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Lightbox Modal */}
       {lightbox && (
@@ -466,26 +609,7 @@ export default function ProjectExperienceHub({
             </div>
             <canvas ref={qrCanvasRef} className="mx-auto" width={256} height={256} />
             <p className="text-center text-xs text-zinc-500 mt-3">Scan to open on mobile</p>
-            <button onClick={() => setShowQr(false)} className="mt-4 w-full px-4 py-2 rounded-lg bg-[#00F0FF] text-black font-mono text-xs uppercase tracking-wider">
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* QR Code Modal */}
-      {showQr && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80" onClick={() => setShowQr(false)}>
-          <div className="bg-[#201f20] rounded-xl p-6 max-w-sm w-full mx-4 relative" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold">Share via QR Code</h3>
-              <button onClick={() => setShowQr(false)} className="text-zinc-500 hover:text-white">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <canvas ref={qrCanvasRef} className="mx-auto" width={256} height={256} />
-            <p className="text-center text-xs text-zinc-500 mt-3">Scan to open on mobile</p>
-            <button onClick={() => setShowQr(false)} className="mt-4 w-full px-4 py-2 rounded-lg bg-[#00F0FF] text-black font-mono text-xs uppercase tracking-wider">
+            <button onClick={() => setShowQr(false)} className="mt-4 w-full px-4 py-2 rounded-lg bg-[#00E5FF] text-black font-mono text-xs uppercase tracking-wider">
               Close
             </button>
           </div>
@@ -508,7 +632,7 @@ function GalleryGrid({ items, onOpenLightbox }: { items: HubGalleryItem[]; onOpe
     );
   }
   return (
-    <div className="h-full overflow-y-auto p-4 sm:p-6">
+    <div className="h-full overflow-y-auto p-4 sm:p-6 pb-28">
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
         {items.map((item) =>
           item.type === 'image' ? (
