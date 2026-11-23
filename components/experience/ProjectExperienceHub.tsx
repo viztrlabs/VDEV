@@ -177,8 +177,6 @@ export default function ProjectExperienceHub({
     setShowQr(true);
   };
 
-  const activeExperience = active?.experiences[0] || null;
-
   const capabilityNote = useMemo(() => {
     if (!caps) return null;
     if (activeSlug === 'virtual-reality') {

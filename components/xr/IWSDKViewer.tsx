@@ -92,14 +92,3 @@ export function IWSDKViewer({ experienceId, config, containerRef }: IWSDKViewerP
 
   return <div ref={containerRefInternal} className="w-full h-full" />;
 }
-
-function IWSDKLoading() {
-  return (
-    <div className="flex items-center justify-center h-full bg-[#0A0A0B]">
-      <div className="text-center">
-        <div className="w-8 h-8 border-4 border-[#3ECF8E] border-t-transparent rounded-full animate-spin mb-3 mx-auto" />
-        <p className="text-zinc-500 font-mono text-xs">Initializing IWSDK…</p>
-      </div>
-    </div>
-  );
-}
