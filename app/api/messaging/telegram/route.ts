@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase-admin';
-import { validateTelegramConfig, getSupportGroupId } from '@/lib/telegram/config';
+import { validateTelegramConfig } from '@/lib/telegram/config';
 import { createTelegramClient } from '@/lib/telegram/client';
 import { UpdateSchema, extractCommand, isCommand, validateUpdate } from '@/lib/telegram/validation';
 import { checkAndMarkProcessed } from '@/lib/telegram/deduplication';
@@ -11,6 +11,7 @@ import { handleCallbackQuery } from '@/lib/telegram/callbacks';
 import { getViztrAgentReply } from '@/lib/messaging/viztr-agent';
 import { getConversationByThreadId, insertMessage } from '@/lib/chat/session';
 import { publishChatMessage } from '@/lib/chat/realtime';
+import { getChatConfig, parseSupportGroupId } from '@/lib/chat/config';
 
 // Register all command handlers on module load
 registerAllHandlers();
@@ -31,15 +32,16 @@ async function markUpdateProcessed(supabaseAdmin: any, updateId: number): Promis
 }
 
 export async function POST(req: NextRequest) {
-  let config;
-  try {
-    config = validateTelegramConfig();
-  } catch {
+  // Admin-configured values first (Supabase settings), env vars as fallback.
+  const chatConfig = await getChatConfig();
+  if (!chatConfig.botToken) {
     return NextResponse.json({ ok: false, error: 'Telegram bot not configured' }, { status: 503 });
   }
 
   // Validate secret token via header (never in query params per security requirements)
-  const expectedSecret = process.env.TELEGRAM_WEBHOOK_SECRET;
+  const expectedSecret = chatConfig.webhookSecret || (() => {
+    try { return validateTelegramConfig().secret; } catch { return ''; }
+  })();
   if (expectedSecret) {
     const provided = req.headers.get('x-telegram-bot-api-secret-token');
     if (provided !== expectedSecret) {
@@ -80,14 +82,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, duplicate: true });
   }
 
-  const client = createTelegramClient();
+  const client = createTelegramClient(chatConfig.botToken);
 
   // -----------------------------------------------------------------------
   // Website-visitor human handoff bridge.
   // Replies inside a bound Forum Topic are delivered to the browser widget
   // via Supabase Realtime on `messages`; the AI is never invoked here.
   // -----------------------------------------------------------------------
-  const supportGroupId = getSupportGroupId();
+  const supportGroupId = parseSupportGroupId(chatConfig.supportGroupId);
   const inSupportGroup = supportGroupId !== null && message?.chat?.id === supportGroupId;
   if (inSupportGroup && message?.from && !(message.from as any).is_bot) {
     const threadId = message.message_thread_id;

@@ -54,6 +54,8 @@ export function MessagingAgent({ hidden = false }: MessagingAgentProps) {
   const [escalating, setEscalating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [initialized, setInitialized] = useState(false);
+  const [chatEnabled, setChatEnabled] = useState(true);
+  const [aiEnabled, setAiEnabled] = useState(true);
   const [leadPrompt, setLeadPrompt] = useState(false);
   const [leadName, setLeadName] = useState('');
   const [leadEmail, setLeadEmail] = useState('');
@@ -70,7 +72,7 @@ export function MessagingAgent({ hidden = false }: MessagingAgentProps) {
     pathname.startsWith('/xr-world/virtual-tour/tour-builder') ||
     pathname.startsWith('/xr-world/virtual-tour/editor');
 
-  const isHidden = hidden || isAgentClosed || isPathHidden;
+  const isHidden = hidden || isAgentClosed || isPathHidden || !chatEnabled;
 
   const mergeMessages = useCallback((incoming: any[]) => {
     if (!Array.isArray(incoming) || incoming.length === 0) return;
@@ -109,6 +111,15 @@ export function MessagingAgent({ hidden = false }: MessagingAgentProps) {
     }
     sessionRef.current = stored;
     setSessionId(stored);
+
+    // Non-sensitive runtime flags from the Admin CMS.
+    fetch('/api/chat/config', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((data) => {
+        if (typeof data?.chatEnabled === 'boolean') setChatEnabled(data.chatEnabled);
+        if (typeof data?.chatAiEnabled === 'boolean') setAiEnabled(data.chatAiEnabled);
+      })
+      .catch(() => {});
 
     (async () => {
       try {
@@ -310,7 +321,7 @@ export function MessagingAgent({ hidden = false }: MessagingAgentProps) {
             <span className="text-sm font-bold text-white tracking-wide">VIZTR Agent</span>
             <span className={`text-[10px] font-mono flex items-center gap-1 ${humanMode ? 'text-amber-300' : 'text-[#42CF8B]'}`}>
               <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${humanMode ? 'bg-amber-300' : 'bg-[#42CF8B]'}`} />
-              {humanMode ? 'Specialist connected' : 'AI assistant · Online'}
+              {humanMode ? 'Specialist connected' : aiEnabled ? 'AI assistant · Online' : 'AI auto-reply paused'}
             </span>
           </div>
         </div>

@@ -7,10 +7,9 @@
  * this (group id, bot username, topic names) to the browser widget.
  */
 
-import { createTelegramClient } from '@/lib/telegram/client';
-import { getSupportGroupId } from '@/lib/telegram/config';
 import { visitorTopicLabel, insertMessage, type ChatConversation } from './session';
 import { publishChatMessage } from './realtime';
+import { getChatConfig, parseSupportGroupId, createConfiguredTelegramClient } from './config';
 
 export type HandoffTrigger = 'ai_escalation' | 'human_request' | 'quote_request' | 'manual';
 
@@ -57,9 +56,10 @@ export async function performHandoff(params: {
   trigger: HandoffTrigger;
 }): Promise<HandoffResult> {
   const { supabase, conversation, trigger } = params;
-  const groupId = getSupportGroupId();
+  const cfg = await getChatConfig();
+  const groupId = parseSupportGroupId(cfg.supportGroupId);
   if (groupId === null) {
-    return { ok: false, error: 'TELEGRAM_SUPPORT_GROUP_ID is not configured' };
+    return { ok: false, error: 'Telegram support group ID is not configured' };
   }
 
   // Already bound to a live human topic — don't open a second one.
@@ -67,10 +67,14 @@ export async function performHandoff(params: {
     return { ok: true, threadId: conversation.telegram_thread_id };
   }
 
-  const topicName = visitorTopicLabel(conversation.session_id || conversation.id, conversation.client_name);
+  const topicName = visitorTopicLabel(
+    conversation.session_id || conversation.id,
+    conversation.client_name,
+    cfg.topicPrefix,
+  );
 
   try {
-    const client = createTelegramClient();
+    const client = await createConfiguredTelegramClient();
     const topic = await client.createForumTopic(groupId, topicName);
 
     const { data: history } = await supabase

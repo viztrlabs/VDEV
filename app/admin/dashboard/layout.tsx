@@ -112,6 +112,7 @@ const MessagingSettings = lazy(() => import('@/components/admin/MessagingSetting
 const KnowledgeManager = lazy(() => import('@/components/admin/KnowledgeManager').then(m => ({ default: m.default })));
 const SettingsManager = lazy(() => import('@/components/admin/SettingsManager').then(m => ({ default: m.default })));
 const WhatsAppAdmin = lazy(() => import('@/components/admin/WhatsAppAdmin').then(m => ({ default: m.default })));
+const LiveChatSettings = lazy(() => import('@/components/admin/LiveChatSettings').then(m => ({ default: m.default })));
 
 // =====================================================================
 // SECTION TYPE DEFINITIONS
@@ -243,6 +244,7 @@ const SIDEBAR_SECTIONS = [
       { id: 'google-drive', label: 'Google Drive Fleet', icon: HardDrive },
       { id: 'ai-credentials', label: 'AI & API Credentials', icon: KeyRound },
       { id: 'messaging-settings', label: 'Messaging Settings', icon: MessageSquare },
+      { id: 'live-chat-settings', label: 'Live Chat & Telegram', icon: MessageSquare },
       { id: 'knowledge-manager', label: 'Knowledge Manager', icon: Database },
       { id: 'playcanvas-engine', label: 'PlayCanvas XR Engine', icon: Cube },
       { id: 'settings', label: 'Platform Settings', icon: Settings },
@@ -1040,6 +1042,12 @@ function renderSection(section: ActiveSection, props: {
       return (
         <Suspense fallback={<SectionFallback />}>
           <MessagingSettings />
+        </Suspense>
+      );
+    case 'live-chat-settings':
+      return (
+        <Suspense fallback={<SectionFallback />}>
+          <LiveChatSettings />
         </Suspense>
       );
     case 'knowledge-manager':

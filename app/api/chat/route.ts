@@ -17,6 +17,7 @@ import {
 } from '@/lib/chat/session';
 import { performHandoff, type HandoffTrigger } from '@/lib/chat/handoff';
 import { publishChatMessage } from '@/lib/chat/realtime';
+import { getChatConfig } from '@/lib/chat/config';
 
 interface ChatMessageInput {
   sessionId?: string;
@@ -84,6 +85,9 @@ export async function POST(req: NextRequest) {
   const userRole = session?.user?.role || null;
   const hasSession = isValidSessionId(body.sessionId);
 
+  // Admin-configured runtime settings (Supabase first, env fallback).
+  const cfg = await getChatConfig();
+
   try {
     // ---------- Resolve or create the conversation ----------
     let conversation: ChatConversation | null = null;
@@ -135,8 +139,13 @@ export async function POST(req: NextRequest) {
       conversation = newConv as ChatConversation;
     }
 
-    // 4-hour stale-human fallback before deciding whether to call the AI.
-    conversation = await resumeStaleHumanSession(supabaseAdmin, conversation);
+    // Configurable stale-human fallback before deciding whether to call the AI.
+    conversation = await resumeStaleHumanSession(
+      supabaseAdmin,
+      conversation,
+      Date.now(),
+      cfg.autoResumeHours * 60 * 60 * 1000,
+    );
 
     // ---------- Persist the visitor message ----------
     const saved = await insertMessage(supabaseAdmin, conversation.id, {
@@ -162,36 +171,38 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // ---------- AI-first reply ----------
+    // ---------- AI-first reply (can be disabled from Admin CMS) ----------
     let handoff: { ok: boolean; error?: string } | null = null;
-    try {
-      const reply = await getViztrAgentReply(text, {
-        userId: hasSession ? (body.sessionId as string) : (userId ? String(userId) : undefined),
-        provider: 'web',
-        conversationId: conversation.id,
-        escalateIfNoAnswer: true,
-      });
+    let aiEscalated = false;
+    if (cfg.chatAiEnabled) {
+      try {
+        const reply = await getViztrAgentReply(text, {
+          userId: hasSession ? (body.sessionId as string) : (userId ? String(userId) : undefined),
+          provider: 'web',
+          conversationId: conversation.id,
+          escalateIfNoAnswer: true,
+        });
+        aiEscalated = Boolean(reply.escalated);
 
-      const botMessage = await insertMessage(supabaseAdmin, conversation.id, {
-        sender: 'bot',
-        text: reply.text,
-        metadata: { model: reply.model, simulated: reply.simulated, escalated: reply.escalated, sources: reply.sources?.map((s) => ({ title: s.title, url: s.url })) },
-      });
-      if (botMessage) responseMessages.push(serializeMessage(botMessage));
-
-      if (shouldHandoff(text, reply.escalated)) {
-        const trigger: HandoffTrigger = reply.escalated
-          ? 'ai_escalation'
-          : /\b(human|agent|specialist|person|talk to someone|real person|speak to someone)\b/i.test(text)
-            ? 'human_request'
-            : 'quote_request';
-        handoff = await performHandoff({ supabase: supabaseAdmin, conversation, trigger });
+        const botMessage = await insertMessage(supabaseAdmin, conversation.id, {
+          sender: 'bot',
+          text: reply.text,
+          metadata: { model: reply.model, simulated: reply.simulated, escalated: reply.escalated, sources: reply.sources?.map((s) => ({ title: s.title, url: s.url })) },
+        });
+        if (botMessage) responseMessages.push(serializeMessage(botMessage));
+      } catch (aiError: any) {
+        // AI failure still delivers the visitor's message; a specialist
+        // handoff is attempted as the fallback.
+        console.error('[chat] AI reply failed:', aiError?.message);
+        aiEscalated = true;
       }
-    } catch (aiError: any) {
-      // AI failure still delivers the visitor's message; log and keep the
-      // conversation usable (a specialist handoff is attempted as fallback).
-      console.error('[chat] AI reply failed:', aiError?.message);
-      handoff = await performHandoff({ supabase: supabaseAdmin, conversation, trigger: 'ai_escalation' });
+    }
+
+    if (shouldHandoff(text, aiEscalated, cfg.handoffKeywords)) {
+      const lower = text.toLowerCase();
+      const humanTerm = cfg.handoffKeywords.some((k) => lower.includes(k));
+      const trigger: HandoffTrigger = aiEscalated ? 'ai_escalation' : humanTerm ? 'human_request' : 'quote_request';
+      handoff = await performHandoff({ supabase: supabaseAdmin, conversation, trigger });
     }
 
     // Instant delivery to the widget (broadcast); polling remains the fallback.
@@ -262,7 +273,12 @@ export async function GET(req: NextRequest) {
       if (conversationId && conversationId !== conversation.id) {
         return NextResponse.json({ success: false, error: 'Access denied' }, { status: 403 });
       }
-      conversation = await resumeStaleHumanSession(supabaseAdmin, conversation);
+      conversation = await resumeStaleHumanSession(
+        supabaseAdmin,
+        conversation,
+        Date.now(),
+        cfg.autoResumeHours * 60 * 60 * 1000,
+      );
     } else {
       const { data: conv, error: convError } = await supabaseAdmin
         .from('conversations')

@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { applyRateLimit } from '@/lib/rate-limit';
 import { isValidSessionId, ensureConversation, resumeStaleHumanSession } from '@/lib/chat/session';
+import { getChatConfig } from '@/lib/chat/config';
 
 /**
  * POST /api/chat/session — public, anonymous.
@@ -46,7 +47,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Could not initialize chat session' }, { status: 500 });
     }
 
-    const active = await resumeStaleHumanSession(supabase, conversation);
+    const cfg = await getChatConfig();
+    const active = await resumeStaleHumanSession(
+      supabase,
+      conversation,
+      Date.now(),
+      cfg.autoResumeHours * 60 * 60 * 1000,
+    );
 
     return NextResponse.json({
       success: true,

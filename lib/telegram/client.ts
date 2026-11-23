@@ -288,13 +288,21 @@ export class TelegramClient {
   async getWebhookInfo(): Promise<any> {
     return this.request<any>('getWebhookInfo', {});
   }
+
+  /**
+   * Get chat/supergroup info — used by admin diagnostics to verify the
+   * configured support group is reachable by the bot.
+   */
+  async getChat(chatId: string | number): Promise<any> {
+    return this.request<any>('getChat', { chat_id: chatId });
+  }
 }
 
 /**
  * Create a TelegramClient instance using environment config
  */
-export function createTelegramClient(): TelegramClient {
-  return new TelegramClient();
+export function createTelegramClient(token?: string): TelegramClient {
+  return new TelegramClient(token);
 }
 
 /**

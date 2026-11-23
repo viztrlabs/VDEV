@@ -9,6 +9,7 @@ import {
   resumeStaleHumanSession,
 } from '@/lib/chat/session';
 import { performHandoff } from '@/lib/chat/handoff';
+import { getChatConfig } from '@/lib/chat/config';
 
 /** POST /api/chat/handoff — visitor's "Talk to specialist" button. */
 export async function POST(req: NextRequest) {
@@ -37,7 +38,13 @@ export async function POST(req: NextRequest) {
     if (!found) {
       return NextResponse.json({ success: false, error: 'Conversation not found' }, { status: 404 });
     }
-    const conversation = await resumeStaleHumanSession(supabase, found);
+    const cfg = await getChatConfig();
+    const conversation = await resumeStaleHumanSession(
+      supabase,
+      found,
+      Date.now(),
+      cfg.autoResumeHours * 60 * 60 * 1000,
+    );
     const result = await performHandoff({ supabase, conversation, trigger: 'manual' });
     return NextResponse.json({
       success: result.ok,

@@ -6,6 +6,7 @@ import { applyRateLimit } from '@/lib/rate-limit';
 import { isValidSessionId, getConversationBySessionId, insertMessage } from '@/lib/chat/session';
 import { createTelegramClient } from '@/lib/telegram/client';
 import { publishChatMessage } from '@/lib/chat/realtime';
+import { getChatConfig, parseSupportGroupId } from '@/lib/chat/config';
 
 /**
  * POST /api/chat/lead — frictionless lead capture, shown only after handoff.
@@ -78,9 +79,11 @@ export async function POST(req: NextRequest) {
 
     if (conv.mode === 'human' && conv.telegram_thread_id) {
       try {
-        const groupId = Number(process.env.TELEGRAM_SUPPORT_GROUP_ID);
-        if (Number.isSafeInteger(groupId)) {
-          await createTelegramClient().sendMessage(groupId, `<b>${detailText}</b>`, {
+        const cfg = await getChatConfig();
+        const groupId = parseSupportGroupId(cfg.supportGroupId);
+        if (groupId !== null) {
+          const client = createTelegramClient(cfg.botToken || undefined);
+          await client.sendMessage(groupId, `<b>${detailText}</b>`, {
             message_thread_id: conv.telegram_thread_id,
             parse_mode: 'HTML',
           });

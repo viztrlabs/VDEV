@@ -32,20 +32,25 @@ export function isValidSessionId(value: unknown): value is string {
 }
 
 /** `Visitor #VTR-4821` — short, stable forum-topic label. */
-export function visitorTopicLabel(sessionId: string, clientName?: string | null): string {
+export function visitorTopicLabel(
+  sessionId: string,
+  clientName?: string | null,
+  labelPrefix = 'Visitor #VTR-',
+): string {
   const prefix = sessionId.replace(/[^A-Za-z0-9]/g, '').slice(0, 6).toUpperCase() || 'ANON';
   const name = clientName?.trim().slice(0, 40);
-  return name ? `Visitor #VTR-${prefix} — ${name}` : `Visitor #VTR-${prefix}`;
+  return name ? `${labelPrefix}${prefix} — ${name}` : `${labelPrefix}${prefix}`;
 }
 
 /**
  * Whether a message (or the AI's escalation flag) should open a human session.
  * Pure function — the webhook and the chat route share the same rule.
  */
-export function shouldHandoff(text: string, aiEscalated = false): boolean {
+export function shouldHandoff(text: string, aiEscalated = false, keywords?: string[]): boolean {
   if (aiEscalated) return true;
   const lower = text.toLowerCase();
-  if (HUMAN_KEYWORDS.some((k) => lower.includes(k))) return true;
+  const terms = keywords && keywords.length > 0 ? keywords : HUMAN_KEYWORDS;
+  if (terms.some((k) => lower.includes(k.toLowerCase()))) return true;
   return QUOTE_PATTERNS.some((p) => p.test(text));
 }
 
@@ -158,10 +163,11 @@ export async function resumeStaleHumanSession(
   supabase: any,
   conversation: ChatConversation,
   now = Date.now(),
+  timeoutMs = HUMAN_INACTIVITY_TIMEOUT_MS,
 ): Promise<ChatConversation> {
   if (conversation.mode !== 'human' || !conversation.handoff_at) return conversation;
   const lastActivity = Date.parse(conversation.last_message_at || conversation.handoff_at);
-  if (!Number.isFinite(lastActivity) || now - lastActivity < HUMAN_INACTIVITY_TIMEOUT_MS) {
+  if (!Number.isFinite(lastActivity) || now - lastActivity < timeoutMs) {
     return conversation;
   }
 

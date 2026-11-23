@@ -1,5 +1,6 @@
 import { isValidSessionId, shouldHandoff, visitorTopicLabel, HUMAN_INACTIVITY_TIMEOUT_MS } from '@/lib/chat/session';
 import { formatHistoryForTelegram } from '@/lib/chat/handoff';
+import { parseSupportGroupId, CHAT_SETTING_DEFAULTS } from '@/lib/chat/config';
 
 describe('chat session helpers', () => {
   it('accepts browser session tokens and rejects junk', () => {
@@ -32,6 +33,22 @@ describe('chat session helpers', () => {
 
   it('uses a 4 hour inactivity timeout', () => {
     expect(HUMAN_INACTIVITY_TIMEOUT_MS).toBe(4 * 60 * 60 * 1000);
+  });
+
+  it('uses the admin-configurable topic prefix', () => {
+    expect(visitorTopicLabel('VTR-4821-abcdef', 'Rahul', 'Tour #')).toBe('Tour #VTR482 — Rahul');
+  });
+
+  it('honours admin-configured handoff keywords', () => {
+    expect(shouldHandoff('Please send a proposal', false, ['human', 'proposal'])).toBe(true);
+    expect(shouldHandoff('What is the weather?', false, ['human', 'proposal'])).toBe(false);
+  });
+
+  it('parses the support group id and exposes defaults', () => {
+    expect(parseSupportGroupId('-1004419719289')).toBe(-1004419719289);
+    expect(parseSupportGroupId('not-a-number')).toBeNull();
+    expect(CHAT_SETTING_DEFAULTS.autoResumeHours).toBe('4');
+    expect(CHAT_SETTING_DEFAULTS.topicPrefix).toBe('Visitor #VTR-');
   });
 
   it('formats Telegram history as escaped HTML with reply instructions', () => {
