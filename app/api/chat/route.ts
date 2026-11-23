@@ -236,6 +236,9 @@ export async function GET(req: NextRequest) {
   const limited = await applyRateLimit(req, { limit: 60, window: '60 s' });
   if (limited) return limited;
 
+  // Admin-configured runtime settings (Supabase first, env fallback).
+  const cfg = await getChatConfig();
+
   const { searchParams } = new URL(req.url);
   const sessionIdParam = searchParams.get('sessionId');
   const conversationId = searchParams.get('conversationId');
