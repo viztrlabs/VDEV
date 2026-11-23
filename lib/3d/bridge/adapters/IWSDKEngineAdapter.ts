@@ -102,8 +102,12 @@ export class IWSDKEngineAdapter implements EngineAdapter {
     this.sparkModule = spark;
 
     // 2. Create Three.js scene/renderer for IWSDK to render into
+    const arMode = options.xrMode === 'immersive-ar';
+
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(options.backgroundColor || '#131314');
+    // AR must render on a transparent background so the immersive-ar camera
+    // passthrough is visible behind the scene. Opaque elsewhere.
+    this.scene.background = arMode ? null : new THREE.Color(options.backgroundColor || '#131314');
 
     this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
     this.camera.position.set(0, 1.6, 3);
@@ -119,13 +123,27 @@ export class IWSDKEngineAdapter implements EngineAdapter {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, options.pixelRatio || 2));
     this.renderer.xr.enabled = true; // Enable WebXR
 
+    if (arMode) {
+      // Transparent clear colour + transparent canvas = camera passthrough.
+      this.renderer.setClearColor(0x000000, 0);
+      const canvas = this.renderer.domElement;
+      canvas.style.background = 'transparent';
+      canvas.style.position = 'fixed';
+      canvas.style.inset = '0';
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      canvas.style.zIndex = '0';
+    }
+
     if (!options.canvas && this.container) {
       this.container.appendChild(this.renderer.domElement);
     }
 
+    // Render loop. three.js drives XR frames automatically once a session is set.
+    this.renderer.setAnimationLoop(this.renderFrame);
+
     // 3. Initialize IWSDK World
     const { World, SessionMode } = this.iwSDKModule;
-    const arMode = options.xrMode === 'immersive-ar';
     const sessionMode = arMode
       ? (SessionMode?.ImmersiveAR ?? 'immersive-ar')
       : (SessionMode?.ImmersiveVR ?? 'immersive-vr');
@@ -180,6 +198,15 @@ export class IWSDKEngineAdapter implements EngineAdapter {
   }
 
   /**
+   * three.js animation-loop callback. Renders the scene every frame; when an
+   * immersive session is active, three.js redirects this to the XR framebuffer.
+   */
+  private renderFrame = () => {
+    if (!this.renderer || !this.scene || !this.camera) return;
+    this.renderer.render(this.scene, this.camera);
+  };
+
+  /**
    * Start an immersive session.
    *
    * `session` is an optional pre-created XRSession (requested synchronously from
@@ -203,10 +230,12 @@ export class IWSDKEngineAdapter implements EngineAdapter {
 
     try {
       if (session) {
-        if (this.world && typeof this.world.launchXR === 'function') {
-          await this.world.launchXR({ sessionMode: mode, session });
-        } else if (this.renderer.xr && typeof this.renderer.xr.setSession === 'function') {
+        // Prefer three.js' WebXR manager: it composites the transparent AR
+        // canvas over the live camera feed and renders our scene each frame.
+        if (this.renderer.xr && typeof this.renderer.xr.setSession === 'function') {
           await this.renderer.xr.setSession(session as never);
+        } else if (this.world && typeof this.world.launchXR === 'function') {
+          await this.world.launchXR({ sessionMode: mode, session });
         } else {
           return false;
         }
@@ -279,6 +308,8 @@ export class IWSDKEngineAdapter implements EngineAdapter {
     this.materialMap.clear();
 
     if (this.renderer) {
+      // Stop the three.js render loop before disposing.
+      this.renderer.setAnimationLoop(null);
       this.renderer.dispose();
       if (this.renderer.domElement.parentElement) {
         this.renderer.domElement.parentElement.removeChild(this.renderer.domElement);
@@ -484,6 +515,13 @@ export class IWSDKEngineAdapter implements EngineAdapter {
       await this.loadSplat(splatUrl);
     }
 
+    // Load a GLB model for AR placement / 3D preview (Draco supported).
+    const modelUrl =
+      (snapshot.settings as any)?.modelUrl || (snapshot.settings as any)?.glbUrl;
+    if (modelUrl) {
+      await this.loadModel(modelUrl);
+    }
+
     // Load GLB collision mesh if present
     const colliderUrl = (snapshot.settings as any)?.colliderUrl;
     if (colliderUrl) {
@@ -576,6 +614,27 @@ export class IWSDKEngineAdapter implements EngineAdapter {
         entity.addComponent(this.iwSDKModule.LocomotionEnvironment, { type: EnvironmentType.STATIC });
       }
     });
+  }
+
+  /**
+   * Load a GLB model (Draco-compressed or plain) and place it in front of the
+   * viewer. In immersive-ar the model sits ~2m ahead so it appears in the room.
+   */
+  private async loadModel(url: string): Promise<void> {
+    if (!this.scene) return;
+    const { GLTFLoader } = await import('three/examples/jsm/loaders/GLTFLoader.js');
+    const { DRACOLoader } = await import('three/examples/jsm/loaders/DRACOLoader.js');
+    const draco = new DRACOLoader();
+    draco.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
+    const loader = new GLTFLoader();
+    loader.setDRACOLoader(draco);
+
+    const gltf = await loader.loadAsync(url);
+    const model = gltf.scene;
+    model.position.set(0, 0, -2);
+    this.scene.add(model);
+    this.entityMap.set('model', model);
+    draco.dispose();
   }
 
   // --------------------------------------------------------------------------

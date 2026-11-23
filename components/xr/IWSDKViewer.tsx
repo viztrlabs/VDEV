@@ -78,6 +78,32 @@ export function IWSDKViewer({ experienceId, config, containerRef, mode = null, x
         }
         engineBridge.attachAdapter(adapterInstance);
 
+        // Load the experience content (Gaussian splat and/or GLB model) so the
+        // scene isn't empty — critical for AR, where the model must be visible
+        // over the camera passthrough.
+        const snapshot = {
+          id: experienceId,
+          version: 1,
+          name: (config?.name as string) || 'Experience',
+          engine: 'iwSDK',
+          camera: { position: { x: 0, y: 1.6, z: 3 }, target: { x: 0, y: 1.6, z: 0 }, fov: 60 },
+          entities: [],
+          materials: [],
+          hotspots: [],
+          settings: {
+            splat: config?.splat,
+            modelUrl: config?.modelUrl || config?.glbUrl || config?.model,
+            colliderUrl: config?.colliderUrl,
+          },
+          updatedAt: new Date().toISOString(),
+        };
+        try {
+          await adapterInstance.loadSceneSnapshot(snapshot as any);
+        } catch (contentErr) {
+          // A missing/invalid asset must not block the AR session itself.
+          console.warn('[IWSDKViewer] content load failed:', contentErr);
+        }
+
         // Start an immersive session if one was requested from a user gesture.
         if (xrSession && mode) {
           const started = await adapterInstance.startXR(xrSession, mode);

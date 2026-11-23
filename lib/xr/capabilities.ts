@@ -149,16 +149,24 @@ export function isQuickLookSupported(): boolean {
  * Call this directly inside a click handler. On Android Chrome this prompts for
  * camera access; on unsupported browsers it rejects with a descriptive error so
  * the UI can fall back to Quick Look / 3D preview.
+ *
+ * @param domOverlayRoot Optional DOM element whose HTML UI stays visible over the
+ *   live camera feed (requires the `dom-overlay` feature). Pass the AR control
+ *   bar so "Exit AR" remains tappable in immersive mode.
  */
-export async function requestARSession(): Promise<XRSession> {
+export async function requestARSession(domOverlayRoot?: HTMLElement | null): Promise<XRSession> {
   const xr = (navigator as XRNavigator).xr;
   if (!xr?.requestSession) {
     throw new Error('WebXR is not available in this browser.');
   }
-  return xr.requestSession('immersive-ar', {
+  const init: Record<string, unknown> = {
     requiredFeatures: [...AR_REQUIRED_FEATURES],
     optionalFeatures: [...AR_OPTIONAL_FEATURES],
-  });
+  };
+  if (domOverlayRoot) {
+    init.domOverlay = { root: domOverlayRoot };
+  }
+  return xr.requestSession('immersive-ar', init);
 }
 
 /** Request an immersive VR session (headsets / Android Chrome). */

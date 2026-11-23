@@ -24,6 +24,7 @@ import {
   Monitor,
 } from 'lucide-react';
 import { detectCapabilities, type DeviceCapabilities, arFallbackMode, vrFallbackMode, canRequestXR, launchQuickLook, requestARSession, requestVRSession } from '@/lib/xr/capabilities';
+import { getServiceViewer } from '@/lib/xr/service-viewers';
 import { useAppStore } from '@/lib/store';
 
 export interface HubExperience {
@@ -122,8 +123,13 @@ export default function ProjectExperienceHub({
 
   const activeExperience = active?.experiences[0] || null;
 
-  const isAR = active?.slug === 'webar';
-  const isVR = active?.slug === 'virtual-reality';
+  // Service-driven launch mode (single source of truth in lib/xr/service-viewers).
+  const serviceViewer = getServiceViewer(active?.slug);
+  const launchMode = serviceViewer?.mode ?? null;
+  const isAR = launchMode === 'immersive-ar';
+  const isVR = launchMode === 'immersive-vr';
+  // Root element kept visible over the camera feed via the dom-overlay feature.
+  const arOverlayRef = useRef<HTMLDivElement>(null);
 
   // Best-effort USDZ asset for iOS AR Quick Look across common config shapes.
   const usdzUrl = useMemo(() => {
@@ -164,7 +170,12 @@ export default function ProjectExperienceHub({
         try {
           // requestARSession/requestVRSession invoke navigator.xr.requestSession
           // synchronously as their first action, preserving the gesture context.
-          const session = target === 'ar' ? await requestARSession() : await requestVRSession();
+          // Pass the AR control bar as the dom-overlay root so "Exit AR" stays
+          // tappable over the live camera feed.
+          const session =
+            target === 'ar'
+              ? await requestARSession(arOverlayRef.current)
+              : await requestVRSession();
           startXR(activeMode, session);
           return;
         } catch (e: any) {
@@ -254,19 +265,21 @@ export default function ProjectExperienceHub({
 
   const capabilityNote = useMemo(() => {
     if (!caps) return null;
-    if (activeSlug === 'virtual-reality') {
-      return caps.webxrVR ? 'Headset detected — Enter VR available.' : 'No headset on this device — desktop preview shown.';
+    if (isVR) {
+      return caps.webxrVR
+        ? 'Headset detected — Enter VR available.'
+        : 'No headset on this device — desktop preview shown.';
     }
-    if (activeSlug === 'webar') {
+    if (isAR) {
       const mode = arFallbackMode(caps);
       return mode === 'immersive'
-        ? 'AR ready on this device.'
+        ? 'AR ready — live camera passthrough on this device.'
         : mode === 'quicklook'
-          ? 'AR Quick Look available (iOS).'
-          : 'AR not supported here — interactive 3D preview shown.';
+          ? 'AR Quick Look available (iOS Safari).'
+          : 'AR not supported here — interactive 3D preview + QR handoff.';
     }
     return null;
-  }, [caps, activeSlug]);
+  }, [caps, isAR, isVR]);
 
   return (
     <main className="min-h-screen flex flex-col bg-[#131314] text-[#e5e2e3]">
@@ -350,8 +363,8 @@ export default function ProjectExperienceHub({
       </nav>
 
       {/* Immersive (AR/VR) control bar */}
-      {(isAR || isVR) && activeExperience && (
-        <div className="shrink-0 px-4 sm:px-6 py-2.5 bg-zinc-900/70 border-b border-zinc-800 flex flex-wrap items-center gap-x-4 gap-y-2">
+      {launchMode && activeExperience && (
+        <div ref={arOverlayRef} className="shrink-0 px-4 sm:px-6 py-2.5 bg-zinc-900/70 border-b border-zinc-800 flex flex-wrap items-center gap-x-4 gap-y-2">
           <div className="flex items-center gap-2 text-[11px] font-mono text-zinc-400 min-w-0">
             {isVR ? (
               <Headset className="w-3.5 h-3.5 text-[#dbfcff] shrink-0" />
@@ -412,6 +425,7 @@ export default function ProjectExperienceHub({
               key={`${project.id}-${active?.slug}-${activeExperience.id}-${xrMode ?? 'preview'}-${xrSession ? 'session' : 'preview'}`}
               experience={{ id: activeExperience.id, title: activeExperience.title }}
               config={{ config: activeExperience.config || {} }}
+              serviceSlug={active?.slug}
             />
           </div>
         ) : (

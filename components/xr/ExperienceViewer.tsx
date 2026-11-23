@@ -8,6 +8,7 @@ import TourViewer from './TourViewer';
 import GaussianSplatViewer from './GaussianSplatViewer';
 import { PlayCanvasPublicViewer } from './PlayCanvasPublicViewer';
 import { useAppStore } from '@/lib/store';
+import { getServiceViewer } from '@/lib/xr/service-viewers';
 
 // Pano2VR package playback (browser-only iframe host)
 const Pano2VrPlayer = dynamic(() => import('@/components/experience/Pano2VrPlayer'), { ssr: false });
@@ -21,6 +22,8 @@ const IWSDKViewer = dynamic(
 interface ExperienceViewerProps {
   experience: { id: string; title: string; description?: string };
   config: { config: Record<string, any> };
+  /** XR World service slug (webxr|webar|virtual-reality|virtual-tour|gaussian-splat). */
+  serviceSlug?: string;
 }
 
 export type ResolvedEngine = 'iwSDK' | 'playcanvas' | 'pano2vr' | 'tour' | 'splat' | 'none';
@@ -44,9 +47,11 @@ export function resolveEngine(config: Record<string, any> | null | undefined): R
 function ExperienceViewerInner({
   experience,
   config,
+  serviceSlug,
 }: {
   experience: { id: string; title: string };
   config: Record<string, any>;
+  serviceSlug?: string;
 }) {
   const xrMode = useAppStore((s) => s.xrMode);
   const xrSession = useAppStore((s) => s.xrSession);
@@ -67,7 +72,10 @@ function ExperienceViewerInner({
     };
   }, [xrSession, endXR]);
 
-  const baseEngine = resolveEngine(config);
+  // Service wins over config so a WebAR project can never silently fall back to
+  // a plain 3D orbit canvas when its config lacks `engine: 'iwSDK'`.
+  const serviceViewer = getServiceViewer(serviceSlug);
+  const baseEngine: ResolvedEngine = (serviceViewer?.engine as ResolvedEngine) ?? resolveEngine(config);
   // Launching an immersive session always runs through the IWSDK runtime.
   const arActive = xrMode === 'immersive-ar' || xrMode === 'immersive-vr';
   const engine: ResolvedEngine = arActive ? 'iwSDK' : baseEngine;
@@ -188,14 +196,14 @@ function ExperienceViewerInner({
   );
 }
 
-export function ExperienceViewer({ experience, config }: ExperienceViewerProps) {
+export function ExperienceViewer({ experience, config, serviceSlug }: ExperienceViewerProps) {
   const xrError = useAppStore((s) => s.xrError);
   const endXR = useAppStore((s) => s.endXR);
 
   return (
     <SharedExperienceProvider>
       <div className="relative w-full h-full">
-        <ExperienceViewerInner experience={experience} config={config.config} />
+        <ExperienceViewerInner experience={experience} config={config.config} serviceSlug={serviceSlug} />
         {xrError && (
           <div className="absolute top-3 left-1/2 -translate-x-1/2 z-50 max-w-md w-[calc(100%-2rem)] rounded-lg border border-rose-500/50 bg-rose-950/90 backdrop-blur px-4 py-2.5 shadow-lg">
             <div className="flex items-start gap-2">
