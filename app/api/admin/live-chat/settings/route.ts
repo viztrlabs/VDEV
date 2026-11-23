@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/api-guard';
 import { getSupabaseAdmin } from '@/lib/supabase-admin';
 import { clearSettingsCache } from '@/lib/server-credentials';
-import { maskSecret } from '@/lib/credentials-store';
+import { maskSecret } from '@/lib/utils';
 import {
   CHAT_SETTING_KEYS,
   CHAT_SETTING_DEFAULTS,

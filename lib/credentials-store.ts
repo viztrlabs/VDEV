@@ -149,9 +149,6 @@ export const useCredentialsStore = create<CredentialsState>()(
   )
 );
 
-// Mask a secret for display (show last 4 chars)
-export function maskSecret(value: string): string {
-  if (!value) return '';
-  if (value.length <= 6) return '••••';
-  return '••••' + value.slice(-4);
-}
+// Re-exported from a framework-agnostic module so server code never has to
+// import from this 'use client' store.
+export { maskSecret } from './utils';
