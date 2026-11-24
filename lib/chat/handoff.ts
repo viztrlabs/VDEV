@@ -62,9 +62,15 @@ export async function performHandoff(params: {
     return { ok: false, error: 'Telegram support group ID is not configured' };
   }
 
-  // Already bound to a live human topic — don't open a second one.
+  // Already bound to a live human topic — verify the thread still exists on Telegram.
   if (conversation.mode === 'human' && conversation.telegram_thread_id) {
-    return { ok: true, threadId: conversation.telegram_thread_id };
+    try {
+      const client = await createConfiguredTelegramClient();
+      await client.getChat(conversation.telegram_thread_id);
+      return { ok: true, threadId: conversation.telegram_thread_id };
+    } catch {
+      // Thread doesn't exist anymore — fall through to create a new one.
+    }
   }
 
   const topicName = visitorTopicLabel(

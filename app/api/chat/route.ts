@@ -17,7 +17,8 @@ import {
 } from '@/lib/chat/session';
 import { performHandoff, type HandoffTrigger } from '@/lib/chat/handoff';
 import { publishChatMessage } from '@/lib/chat/realtime';
-import { getChatConfig } from '@/lib/chat/config';
+import { getChatConfig, createConfiguredTelegramClient, parseSupportGroupId } from '@/lib/chat/config';
+import { formatHistoryForTelegram } from '@/lib/chat/handoff';
 
 interface ChatMessageInput {
   sessionId?: string;
@@ -160,7 +161,67 @@ export async function POST(req: NextRequest) {
     const responseMessages: any[] = [serializeMessage(saved)];
 
     // A human owns this session — the AI must stay silent.
+    // Forward the visitor message to Telegram so the specialist sees it live.
     if (conversation.mode === 'human') {
+      const cfg = await getChatConfig();
+      const groupId = parseSupportGroupId(cfg.supportGroupId);
+      const client = await createConfiguredTelegramClient();
+      let threadId: number | null = conversation.telegram_thread_id;
+
+      // Recreate the topic if it's missing (e.g. deleted in Telegram).
+      if (!threadId) {
+        const handoff = await performHandoff({ supabase: supabaseAdmin, conversation, trigger: 'manual' });
+        if (!handoff.ok || !handoff.threadId) {
+          return NextResponse.json({ success: false, error: handoff.error || 'Handoff failed' }, { status: 500 });
+        }
+        threadId = handoff.threadId;
+        // Persist the thread id on the conversation so future messages reuse it.
+        await supabaseAdmin
+          .from('conversations')
+          .update({ telegram_thread_id: threadId })
+          .eq('id', conversation.id);
+      }
+
+      try {
+        await client.sendMessage(groupId!, formatHistoryForTelegram([{ sender: 'user', text }], {
+          name: conversation.client_name,
+          email: conversation.client_email,
+        }, 'human_request'), {
+          message_thread_id: threadId,
+          parse_mode: 'HTML',
+          disable_web_page_preview: true,
+        });
+      } catch (err: any) {
+        const msg = (err as Error)?.message || '';
+        // If Telegram says the thread no longer exists, recreate it and retry once.
+        if (msg.includes('message thread not found') || msg.includes('chat not found')) {
+          const handoff = await performHandoff({ supabase: supabaseAdmin, conversation, trigger: 'manual' });
+          if (handoff.ok && handoff.threadId) {
+            await supabaseAdmin
+              .from('conversations')
+              .update({ telegram_thread_id: handoff.threadId })
+              .eq('id', conversation.id);
+            threadId = handoff.threadId;
+            try {
+              await client.sendMessage(groupId!, formatHistoryForTelegram([{ sender: 'user', text }], {
+                name: conversation.client_name,
+                email: conversation.client_email,
+              }, 'human_request'), {
+                message_thread_id: threadId,
+                parse_mode: 'HTML',
+                disable_web_page_preview: true,
+              });
+            } catch (retryErr) {
+              return NextResponse.json({ success: false, error: (retryErr as Error)?.message || 'Failed to forward to Telegram' }, { status: 500 });
+            }
+          } else {
+            return NextResponse.json({ success: false, error: handoff.error || 'Handoff failed' }, { status: 500 });
+          }
+        } else {
+          return NextResponse.json({ success: false, error: msg }, { status: 500 });
+        }
+      }
+
       return NextResponse.json({
         success: true,
         conversationId: conversation.id,
