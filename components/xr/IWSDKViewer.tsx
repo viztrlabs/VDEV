@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { DEFAULT_VIEWER_SETTINGS, type ViewerSettings } from '@/lib/xr/viewer-settings';
 
 function IWSDKLoading() {
   return (
@@ -24,9 +25,11 @@ interface IWSDKViewerProps {
   mode?: 'immersive-ar' | 'immersive-vr' | null;
   /** Pre-created XRSession from a user-gesture click handler. */
   xrSession?: any;
+  /** Shared model transform / lock settings. */
+  settings?: ViewerSettings;
 }
 
-export function IWSDKViewer({ experienceId, config, containerRef, mode = null, xrSession = null }: IWSDKViewerProps) {
+export function IWSDKViewer({ experienceId, config, containerRef, mode = null, xrSession = null, settings = DEFAULT_VIEWER_SETTINGS }: IWSDKViewerProps) {
   const [initialized, setInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const containerRefInternal = useRef<HTMLDivElement | null>(null);
@@ -34,6 +37,13 @@ export function IWSDKViewer({ experienceId, config, containerRef, mode = null, x
   // (The previous version shadowed this variable inside `init`, so cleanup never
   // ran and WebGL/XR contexts leaked on unmount.)
   const adapterRef = useRef<any>(null);
+  const settingsRef = useRef<ViewerSettings>(settings);
+  settingsRef.current = settings;
+
+  // Apply live transform/lock settings whenever they change.
+  useEffect(() => {
+    adapterRef.current?.applyTransform?.(settings);
+  }, [settings]);
 
   const mergedRef = (el: HTMLDivElement | null) => {
     containerRefInternal.current = el;
@@ -103,6 +113,7 @@ export function IWSDKViewer({ experienceId, config, containerRef, mode = null, x
           // A missing/invalid asset must not block the AR session itself.
           console.warn('[IWSDKViewer] content load failed:', contentErr);
         }
+        adapterInstance.applyTransform?.(settingsRef.current);
 
         // Start an immersive session if one was requested from a user gesture.
         if (xrSession && mode) {

@@ -66,6 +66,19 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
     setIsNavigating(false);
   }, [pathname]);
 
+  // Safety: never leave the loading overlay stuck (e.g. query-only nav that
+  // doesn't change the pathname, or a slow/failed route).
+  useEffect(() => {
+    if (!isNavigating) return;
+    const t = setTimeout(() => setIsNavigating(false), 8000);
+    const onPop = () => setIsNavigating(false);
+    window.addEventListener('popstate', onPop);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener('popstate', onPop);
+    };
+  }, [isNavigating]);
+
   // Hide header and footer for editor, dashboard, tour editor, and experience layouts
   if (isEditor || isDashboard || isTourBuilder || isTourEditor || isExperience) {
     return (

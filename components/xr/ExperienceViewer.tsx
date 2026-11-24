@@ -9,6 +9,7 @@ import GaussianSplatViewer from './GaussianSplatViewer';
 import { PlayCanvasPublicViewer } from './PlayCanvasPublicViewer';
 import { useAppStore } from '@/lib/store';
 import { getServiceViewer } from '@/lib/xr/service-viewers';
+import { DEFAULT_VIEWER_SETTINGS, type ViewerSettings } from '@/lib/xr/viewer-settings';
 
 // Pano2VR package playback (browser-only iframe host)
 const Pano2VrPlayer = dynamic(() => import('@/components/experience/Pano2VrPlayer'), { ssr: false });
@@ -24,6 +25,8 @@ interface ExperienceViewerProps {
   config: { config: Record<string, any> };
   /** XR World service slug (webxr|webar|virtual-reality|virtual-tour|gaussian-splat). */
   serviceSlug?: string;
+  /** Shared model transform / lock settings. */
+  settings?: ViewerSettings;
 }
 
 export type ResolvedEngine = 'iwSDK' | 'playcanvas' | 'pano2vr' | 'tour' | 'splat' | 'none';
@@ -48,10 +51,12 @@ function ExperienceViewerInner({
   experience,
   config,
   serviceSlug,
+  settings = DEFAULT_VIEWER_SETTINGS,
 }: {
   experience: { id: string; title: string };
   config: Record<string, any>;
   serviceSlug?: string;
+  settings?: ViewerSettings;
 }) {
   const xrMode = useAppStore((s) => s.xrMode);
   const xrSession = useAppStore((s) => s.xrSession);
@@ -149,6 +154,7 @@ function ExperienceViewerInner({
             config={config}
             mode={xrMode}
             xrSession={xrSession}
+            settings={settings}
           />
         );
       case 'pano2vr':
@@ -196,14 +202,14 @@ function ExperienceViewerInner({
   );
 }
 
-export function ExperienceViewer({ experience, config, serviceSlug }: ExperienceViewerProps) {
+export function ExperienceViewer({ experience, config, serviceSlug, settings = DEFAULT_VIEWER_SETTINGS }: ExperienceViewerProps) {
   const xrError = useAppStore((s) => s.xrError);
   const endXR = useAppStore((s) => s.endXR);
 
   return (
     <SharedExperienceProvider>
       <div className="relative w-full h-full">
-        <ExperienceViewerInner experience={experience} config={config.config} serviceSlug={serviceSlug} />
+        <ExperienceViewerInner experience={experience} config={config.config} serviceSlug={serviceSlug} settings={settings} />
         {xrError && (
           <div className="absolute top-3 left-1/2 -translate-x-1/2 z-50 max-w-md w-[calc(100%-2rem)] rounded-lg border border-rose-500/50 bg-rose-950/90 backdrop-blur px-4 py-2.5 shadow-lg">
             <div className="flex items-start gap-2">

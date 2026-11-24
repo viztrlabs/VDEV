@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useSession, signIn } from 'next-auth/react';
 import { notFound } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
 import Pano2VrPackageEditor from '@/components/builder/Pano2VrPackageEditor';
 
 export default function Pano2VrUploadPage() {

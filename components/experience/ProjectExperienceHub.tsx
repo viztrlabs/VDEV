@@ -14,6 +14,7 @@ import {
   MonitorPlay,
   Compass,
   RotateCcw,
+  Settings,
   Info,
   X,
   QrCode,
@@ -22,6 +23,7 @@ import {
 } from 'lucide-react';
 import { detectCapabilities, type DeviceCapabilities, arFallbackMode, canRequestXR, launchQuickLook, requestARSession, requestVRSession } from '@/lib/xr/capabilities';
 import { getServiceViewer } from '@/lib/xr/service-viewers';
+import { DEFAULT_VIEWER_SETTINGS, type ViewerSettings } from '@/lib/xr/viewer-settings';
 import { useAppStore } from '@/lib/store';
 
 export interface HubExperience {
@@ -123,6 +125,8 @@ export default function ProjectExperienceHub({
   const [launchError, setLaunchError] = useState<string | null>(null);
   const [resetNonce, setResetNonce] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [settings, setSettings] = useState<ViewerSettings>(DEFAULT_VIEWER_SETTINGS);
   const qrCanvasRef = useRef<HTMLCanvasElement>(null);
   // Bottom HUD bar doubles as the dom-overlay root so "Exit AR" stays tappable.
   const hudRef = useRef<HTMLDivElement>(null);
@@ -358,6 +362,7 @@ export default function ProjectExperienceHub({
               experience={{ id: activeExperience.id, title: activeExperience.title }}
               config={{ config: activeExperience.config || {} }}
               serviceSlug={activeSlug}
+              settings={settings}
             />
           </div>
         ) : (
@@ -530,6 +535,14 @@ export default function ProjectExperienceHub({
               )}
 
               <button
+                onClick={() => setShowSettings((v) => !v)}
+                title="Viewer settings"
+                aria-label="Viewer settings"
+                className="p-2 rounded-xl border border-[#27272A] bg-white/[0.03] hover:bg-white/[0.08] text-zinc-300 transition-colors cursor-pointer"
+              >
+                <Settings className="w-4 h-4" />
+              </button>
+              <button
                 onClick={showQrCode}
                 title="QR mobile handoff"
                 aria-label="QR mobile handoff"
@@ -576,6 +589,41 @@ export default function ProjectExperienceHub({
           {capabilityNote && (
             <div className="px-3 pb-2 -mt-0.5 text-[9px] font-mono text-zinc-500 truncate">
               {capabilityNote}
+            </div>
+          )}
+
+          {/* Viewer settings popover */}
+          {showSettings && (
+            <div className="border-t border-[#27272A] px-3 py-3 grid grid-cols-2 sm:grid-cols-4 gap-3 text-[10px] font-mono">
+              <label className="flex items-center justify-between gap-2 col-span-2 sm:col-span-4">
+                <span className="text-zinc-300">Model Position Lock</span>
+                <button
+                  onClick={() => setSettings((s) => ({ ...s, modelLocked: !s.modelLocked }))}
+                  className={`px-2 py-0.5 rounded font-bold ${settings.modelLocked ? 'bg-[#3ECF8E] text-black' : 'bg-[#201f20] text-zinc-400 border border-[#353436]'}`}
+                >
+                  {settings.modelLocked ? 'LOCKED' : 'UNLOCKED'}
+                </button>
+              </label>
+              <label className={`flex flex-col gap-1 ${settings.modelLocked ? 'opacity-40 pointer-events-none' : ''}`}>
+                <span className="text-zinc-400">Scale {settings.scale.toFixed(1)}x</span>
+                <input type="range" min={0.1} max={3} step={0.1} value={settings.scale} onChange={(e) => setSettings((s) => ({ ...s, scale: +e.target.value }))} className="accent-[#00E5FF]" />
+              </label>
+              <label className={`flex flex-col gap-1 ${settings.modelLocked ? 'opacity-40 pointer-events-none' : ''}`}>
+                <span className="text-zinc-400">Y-Rotation {Math.round(settings.rotationY)}°</span>
+                <input type="range" min={0} max={360} step={1} value={settings.rotationY} onChange={(e) => setSettings((s) => ({ ...s, rotationY: +e.target.value }))} className="accent-[#00E5FF]" />
+              </label>
+              <label className={`flex flex-col gap-1 ${settings.modelLocked ? 'opacity-40 pointer-events-none' : ''}`}>
+                <span className="text-zinc-400">Elevation {settings.elevation.toFixed(2)}m</span>
+                <input type="range" min={-1} max={2} step={0.05} value={settings.elevation} onChange={(e) => setSettings((s) => ({ ...s, elevation: +e.target.value }))} className="accent-[#00E5FF]" />
+              </label>
+              <label className="flex flex-col gap-1">
+                <span className="text-zinc-400">Sensitivity {settings.sensitivity.toFixed(1)}x</span>
+                <input type="range" min={0.2} max={2} step={0.1} value={settings.sensitivity} onChange={(e) => setSettings((s) => ({ ...s, sensitivity: +e.target.value }))} className="accent-[#3ECF8E]" />
+              </label>
+              <div className="flex items-center gap-2 col-span-2">
+                <button onClick={() => setSettings((s) => ({ ...s, autoRotate: !s.autoRotate }))} className={`px-2 py-1 rounded border ${settings.autoRotate ? 'bg-[#3ECF8E] text-black border-[#3ECF8E]' : 'bg-[#201f20] text-zinc-300 border-[#353436]'}`}>Auto-Rotate</button>
+                <button onClick={() => { setSettings(DEFAULT_VIEWER_SETTINGS); setResetNonce((n) => n + 1); }} className="px-2 py-1 rounded bg-[#201f20] text-zinc-300 border border-[#353436]">Reset All</button>
+              </div>
             </div>
           )}
         </div>

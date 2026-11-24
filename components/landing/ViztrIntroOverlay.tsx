@@ -38,8 +38,17 @@ export default function ViztrIntroOverlay({
   const [complete, setComplete] = useState(false);
   const [activeCharIndex, setActiveCharIndex] = useState(-1);
   const [shimmerCycle, setShimmerCycle] = useState(0);
+  const [timedOut, setTimedOut] = useState(false);
 
-  const shouldShow = isIntroMode ? internalVisible : isLoading;
+  const shouldShow = isIntroMode ? internalVisible : isLoading && !timedOut;
+
+  // Loading mode safety: never block the page for more than 12s.
+  useEffect(() => {
+    if (isIntroMode) return;
+    setTimedOut(false);
+    const t = setTimeout(() => setTimedOut(true), 12000);
+    return () => clearTimeout(t);
+  }, [isIntroMode, isLoading]);
 
   // Sequential letter entry
   useEffect(() => {

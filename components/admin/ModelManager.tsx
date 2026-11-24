@@ -17,6 +17,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
+import { resolveModelUrl } from '@/lib/storage/resolve-model-url';
 import { portfolioProjects } from '@/data/portfolio';
 
 interface Model3DItem {
@@ -356,7 +357,7 @@ export default function ModelManager() {
 
                 {/* Preview in Viewer */}
                 <button
-                  onClick={() => openModelViewer(model.storageKey, model.title)}
+                  onClick={() => openModelViewer(resolveModelUrl(model.storageKey), model.title)}
                   className="p-1.5 rounded bg-[#131314] hover:bg-[#353436] border border-[#353436] text-[#e5e2e3] transition-colors cursor-pointer"
                   title="Test in 3D Viewer"
                 >

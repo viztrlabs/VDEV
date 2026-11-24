@@ -38,6 +38,12 @@ export class IWSDKEngineAdapter implements EngineAdapter {
   private scene: THREE.Scene | null = null;
   private camera: THREE.PerspectiveCamera | null = null;
 
+  // XR rig (camera + controllers move together for locomotion)
+  private xrRig: THREE.Group | null = null;
+  private controllers: any[] = [];
+  private laserGeo: THREE.BufferGeometry | null = null;
+  private laserMat: THREE.LineBasicMaterial | null = null;
+
   // IWSDK World
   private world: any = null; // IWSDK World instance
   private iwSDKModule: any = null; // Loaded @iwsdk/core module
@@ -113,6 +119,11 @@ export class IWSDKEngineAdapter implements EngineAdapter {
     this.camera.position.set(0, 1.6, 3);
     this.camera.lookAt(0, 1.6, 0);
 
+    // Rig so locomotion moves camera + controllers together.
+    this.xrRig = new THREE.Group();
+    this.scene.add(this.xrRig);
+    this.xrRig.add(this.camera);
+
     this.renderer = new THREE.WebGLRenderer({
       canvas: options.canvas,
       antialias: options.antialias ?? true,
@@ -122,6 +133,7 @@ export class IWSDKEngineAdapter implements EngineAdapter {
     this.renderer.setSize(width, height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, options.pixelRatio || 2));
     this.renderer.xr.enabled = true; // Enable WebXR
+    this.setupControllers();
 
     if (arMode) {
       // Transparent clear colour + transparent canvas = camera passthrough.
@@ -197,12 +209,89 @@ export class IWSDKEngineAdapter implements EngineAdapter {
       });
   }
 
+  /** Attach WebXR controllers (laser pointers + grip models) to the rig. */
+  private setupControllers(): void {
+    if (!this.renderer || !this.xrRig) return;
+    const raycaster = new THREE.Raycaster();
+    const tempMatrix = new THREE.Matrix4();
+
+    import('three/examples/jsm/webxr/XRControllerModelFactory.js')
+      .then(({ XRControllerModelFactory }) => {
+        if (!this.renderer || !this.xrRig || this.isDisposed) return;
+        const factory = new XRControllerModelFactory();
+        this.laserGeo = new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(0, 0, 0),
+          new THREE.Vector3(0, 0, -1),
+        ]);
+        this.laserMat = new THREE.LineBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.85 });
+
+        for (let i = 0; i < 2; i++) {
+          const controller = this.renderer.xr.getController(i);
+          const grip = this.renderer.xr.getControllerGrip(i);
+          grip.add(factory.createControllerModel(grip));
+          const laser = new THREE.Line(this.laserGeo, this.laserMat);
+          laser.scale.z = 5;
+          controller.add(laser);
+          controller.addEventListener('selectstart', () => {
+            tempMatrix.identity().extractRotation(controller.matrixWorld);
+            raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
+            raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
+            const hits = raycaster.intersectObjects(Array.from(this.entityMap.values()), true);
+            if (hits[0]) {
+              this.selectedEntityId = hits[0].object.name || this.selectedEntityId;
+              this.emit({ type: 'SELECTION_CHANGED', payload: { selectedIds: this.selectedEntityId ? [this.selectedEntityId] : [] } });
+            }
+          });
+          controller.addEventListener('squeezestart', () => {
+            if (this.xrRig) this.xrRig.rotation.y += Math.PI / 6; // 30° snap turn
+          });
+          this.xrRig.add(controller, grip);
+          this.controllers.push(controller);
+        }
+      })
+      .catch(() => {
+        /* controllers optional */
+      });
+  }
+
+  /** Apply shared viewer settings (scale / rotation / elevation) to the model. */
+  public applyTransform(settings: any): void {
+    const model = this.entityMap.get('model');
+    if (!model || !settings) return;
+    if (typeof settings.scale === 'number' && settings.scale > 0) model.scale.setScalar(settings.scale);
+    if (typeof settings.rotationY === 'number') model.rotation.y = THREE.MathUtils.degToRad(settings.rotationY);
+    if (typeof settings.elevation === 'number') model.position.y = settings.elevation;
+  }
+
   /**
    * three.js animation-loop callback. Renders the scene every frame; when an
    * immersive session is active, three.js redirects this to the XR framebuffer.
+   * Also drives thumbstick locomotion + snap-turn in VR.
    */
   private renderFrame = () => {
     if (!this.renderer || !this.scene || !this.camera) return;
+
+    if (this.renderer.xr.isPresenting && this.xrRig) {
+      const session = this.renderer.xr.getSession();
+      if (session) {
+        for (const src of Array.from((session as any).inputSources as any)) {
+          const gp = (src as any).gamepad;
+          if (!gp) continue;
+          const ax = gp.axes || [];
+          const y = ax[3] ?? ax[1] ?? 0;
+          const x = ax[2] ?? ax[0] ?? 0;
+          if (Math.abs(y) > 0.15) {
+            const dir = new THREE.Vector3(0, 0, -y * 0.06).applyAxisAngle(
+              new THREE.Vector3(0, 1, 0),
+              this.xrRig.rotation.y
+            );
+            this.xrRig.position.add(dir);
+          }
+          if (Math.abs(x) > 0.15) this.xrRig.rotation.y -= x * 0.03;
+        }
+      }
+    }
+
     this.renderer.render(this.scene, this.camera);
   };
 
@@ -273,6 +362,25 @@ export class IWSDKEngineAdapter implements EngineAdapter {
     } catch {
       /* no active session */
     }
+
+    // Dispose XR controllers + laser resources.
+    for (const c of this.controllers) {
+      try {
+        this.xrRig?.remove(c);
+      } catch {
+        /* ignore */
+      }
+    }
+    this.controllers = [];
+    try {
+      this.laserGeo?.dispose();
+      this.laserMat?.dispose();
+    } catch {
+      /* ignore */
+    }
+    this.laserGeo = null;
+    this.laserMat = null;
+    this.xrRig = null;
 
     // Stop IWSDK render loop
     if (this.world) {
