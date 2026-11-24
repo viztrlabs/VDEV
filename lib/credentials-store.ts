@@ -111,20 +111,6 @@ const DEFAULT_CREDENTIALS: CredentialField[] = [
     placeholder: 'openssl rand -hex 32',
     value: '',
   },
-  {
-    key: 'WHATSAPP_ACCESS_TOKEN',
-    label: 'WhatsApp Access Token (reserved)',
-    description: 'Meta Cloud API token — NOT free/easy. Requires Meta Business verification. Placeholder for future official integration.',
-    placeholder: 'EAAxxxx...',
-    value: '',
-  },
-  {
-    key: 'WHATSAPP_PHONE_NUMBER_ID',
-    label: 'WhatsApp Phone Number ID (reserved)',
-    description: 'Meta Cloud API phone number ID — paired with Access Token above.',
-    placeholder: '123456789012345',
-    value: '',
-  },
 ];
 
 export const useCredentialsStore = create<CredentialsState>()(

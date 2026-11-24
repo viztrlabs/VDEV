@@ -51,7 +51,6 @@ import {
   Brain,
   BarChart3,
   Mail,
-  Phone,
   Tag,
 } from 'lucide-react';
 import { ViztrLogoMark } from '@/components/ui/Logo';
@@ -111,7 +110,6 @@ const ContactManager = lazy(() => import('@/components/admin/ContactManager').th
 const MessagingSettings = lazy(() => import('@/components/admin/MessagingSettings').then(m => ({ default: m.default })));
 const KnowledgeManager = lazy(() => import('@/components/admin/KnowledgeManager').then(m => ({ default: m.default })));
 const SettingsManager = lazy(() => import('@/components/admin/SettingsManager').then(m => ({ default: m.default })));
-const WhatsAppAdmin = lazy(() => import('@/components/admin/WhatsAppAdmin').then(m => ({ default: m.default })));
 const LiveChatSettings = lazy(() => import('@/components/admin/LiveChatSettings').then(m => ({ default: m.default })));
 
 // =====================================================================
@@ -168,7 +166,6 @@ type ActiveSection =
   | 'ai-platform'
   | 'messaging-settings'
   | 'knowledge-manager'
-  | 'whatsapp-admin'
   | string;
 
 const SIDEBAR_SECTIONS = [
@@ -235,7 +232,6 @@ const SIDEBAR_SECTIONS = [
       { id: 'google-meet', label: 'Google Meet Fleet', icon: Video },
       { id: 'bookings', label: 'All Bookings', icon: Calendar },
       { id: 'support', label: 'Support Tickets', icon: LifeBuoy },
-      { id: 'whatsapp-admin', label: 'WhatsApp Support', icon: Phone },
     ],
   },
   {
@@ -1054,12 +1050,6 @@ function renderSection(section: ActiveSection, props: {
       return (
         <Suspense fallback={<SectionFallback />}>
           <KnowledgeManager />
-        </Suspense>
-      );
-    case 'whatsapp-admin':
-      return (
-        <Suspense fallback={<SectionFallback />}>
-          <WhatsAppAdmin />
         </Suspense>
       );
     case 'settings':

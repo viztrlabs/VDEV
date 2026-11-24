@@ -47,20 +47,6 @@ const MESSAGING_FIELDS: CredentialField[] = [
     placeholder: 'openssl rand -hex 32',
     value: '',
   },
-  {
-    key: 'WHATSAPP_ACCESS_TOKEN',
-    label: 'WhatsApp Access Token (reserved)',
-    description: 'Meta Cloud API token — NOT free/easy. Requires Meta Business verification, phone number registration, and hosting partner. Placeholder for future official integration.',
-    placeholder: 'EAAxxxx...',
-    value: '',
-  },
-  {
-    key: 'WHATSAPP_PHONE_NUMBER_ID',
-    label: 'WhatsApp Phone Number ID (reserved)',
-    description: 'Meta Cloud API phone number ID — paired with Access Token above.',
-    placeholder: '123456789012345',
-    value: '',
-  },
 ];
 
 export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
@@ -200,7 +186,7 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
             Messaging Settings
           </h2>
           <p className="text-xs text-[#A1A1AA] max-w-2xl">
-            Configure Telegram (free, instant) and reserve WhatsApp (official Cloud API — requires Meta verification).
+            Configure Telegram (free, instant) for the AI-first live chat handoff.
             Keys stored in browser (localStorage) and exported as <code className="text-[#dbfcff]">.env.local</code> for deployment.
           </p>
         </div>
@@ -308,12 +294,11 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
           const isRevealed = revealMap[field.key];
           const draftVal = draft[field.key] ?? '';
           const hasValue = !!cred?.value;
-          const isReserved = field.key.startsWith('WHATSAPP_');
 
           return (
             <div
               key={field.key}
-              className={`p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3 ${isReserved ? 'opacity-60' : ''}`}
+              className="p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -323,11 +308,7 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
                     <ShieldCheck className="w-4 h-4 text-[#dbfcff]" />
                   )}
                   <span className="text-sm font-bold text-white font-display">
-                    {field.label} {isReserved && (
-                      <span title="Reserved for future Meta Cloud API integration">
-                        <AlertCircle className="w-3.5 h-3.5 text-rose-400/70" />
-                      </span>
-                    )}
+                    {field.label}
                   </span>
                 </div>
                 {hasValue && (
@@ -347,18 +328,12 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
                   value={draftVal || (isRevealed ? (cred?.value ?? '') : maskSecret(cred?.value ?? ''))}
                   placeholder={field.placeholder}
                   onChange={(e) => handleChange(field.key, e.target.value)}
-                  disabled={isReserved}
-                  className={`flex-1 px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff] ${
-                    isReserved ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                  className="flex-1 px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]"
                 />
                 <button
                   type="button"
                   onClick={() => toggleReveal(field.key)}
-                  disabled={isReserved}
-                  className={`p-2 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer ${
-                    isReserved ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                  className="p-2 rounded-lg bg-[#131314] border border-[#353436] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
                   title={isRevealed ? 'Hide' : 'Reveal'}
                 >
                   {isRevealed ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -369,13 +344,13 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
                 <button
                   type="button"
                   onClick={() => commit(field)}
-                  disabled={!draftVal || isReserved}
-                  className={`px-3 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] disabled:opacity-40 text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${isReserved ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  disabled={!draftVal}
+                  className="px-3 py-1.5 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] disabled:opacity-40 text-black text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>Save</span>
                 </button>
-                {hasValue && !isReserved && (
+                {hasValue && (
                   <button
                     type="button"
                     onClick={() => resetCredential(field.key)}
@@ -390,14 +365,6 @@ export default function MessagingSettings({ onSaved }: MessagingSettingsProps) {
                 </span>
               </div>
 
-              {isReserved && (
-                <div className="p-2 rounded-lg bg-rose-950/40 border border-rose-700/40">
-                  <p className="text-[9px] font-mono text-rose-400/80 flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" />
-                    Reserved — requires Meta Business verification, phone registration fee, and hosting partner.
-                  </p>
-                </div>
-              )}
             </div>
           );
         })}
