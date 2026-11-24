@@ -16,9 +16,6 @@ import {
   Mail,
   Bot,
   Lock,
-  Smartphone,
-  Globe,
-  Send,
 } from 'lucide-react';
 
 interface SettingRow {
@@ -42,20 +39,6 @@ const PRESET_KEYS: Array<{ key: string; label: string; description: string; icon
     placeholder: 're_1234567890abcdef',
   },
   {
-    key: 'WHATSAPP_ACCESS_TOKEN',
-    label: 'WhatsApp Access Token',
-    description: 'WhatsApp Business Platform access token (official integration).',
-    icon: Bot,
-    placeholder: 'EAAxxxx...',
-  },
-  {
-    key: 'WHATSAPP_PHONE_NUMBER_ID',
-    label: 'WhatsApp Phone Number ID',
-    description: 'WhatsApp Business phone number ID.',
-    icon: Bot,
-    placeholder: '123456789012345',
-  },
-  {
     key: 'TELEGRAM_BOT_TOKEN',
     label: 'Telegram Bot Token',
     description: 'From @BotFather — activates the free Telegram connector.',
@@ -75,34 +58,6 @@ const PRESET_KEYS: Array<{ key: string; label: string; description: string; icon
     description: 'Powers the Hermes AI assistant (live LLM chat).',
     icon: Bot,
     placeholder: 'AIza... or AQ....',
-  },
-  {
-    key: 'WHATSAPP_PHONE_NUMBER',
-    label: 'WhatsApp Phone Number',
-    description: 'Official WhatsApp Business phone number for click-to-chat and bot integration (E.164 format, e.g. +12125550198).',
-    icon: Smartphone,
-    placeholder: '+12125550198',
-  },
-  {
-    key: 'WHATSAPP_WEBHOOK_SECRET',
-    label: 'WhatsApp Webhook Secret',
-    description: 'Secret to verify inbound webhook calls from the VizTR WhatsApp Bot (FEI XMD).',
-    icon: Lock,
-    placeholder: 'openssl rand -hex 32',
-  },
-  {
-    key: 'WHATSAPP_WEBHOOK_URL',
-    label: 'WhatsApp Webhook URL',
-    description: 'URL where FEI-XMD bot posts incoming WhatsApp messages (e.g. https://your-app.vercel.app/api/messaging/whatsapp).',
-    icon: Globe,
-    placeholder: 'https://your-app.vercel.app/api/messaging/whatsapp',
-  },
-  {
-    key: 'WHATSAPP_SEND_URL',
-    label: 'WhatsApp Send URL',
-    description: 'URL where VizTR hands replies to the bot for delivery (e.g. https://your-app.vercel.app/api/messaging/whatsapp/send).',
-    icon: Send,
-    placeholder: 'https://your-app.vercel.app/api/messaging/whatsapp/send',
   },
 ];
 
@@ -343,104 +298,6 @@ export default function SettingsManager({ onSaved }: SettingsManagerProps) {
         </div>
       </div>
 
-      {/* WHATSAPP BOT CONFIGURATION */}
-      <div className="p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Smartphone className="w-4 h-4 text-[#25D366]" />
-            <span className="text-sm font-bold text-white font-display">VizTR WhatsApp Bot (FEI XMD)</span>
-          </div>
-          <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase bg-emerald-950/80 text-emerald-300 border border-emerald-700/60">
-            Standalone Bot Service
-          </span>
-        </div>
-        <p className="text-[10px] text-[#71717A] leading-relaxed">
-          The WhatsApp bot runs as a separate Node.js service using{' '}
-          <a
-            href="https://github.com/viztrlabs/whatsapp_bot"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#dbfcff] underline hover:text-[#4ade80]"
-          >
-            FEI XMD (rebranded as VizTR)
-          </a>
-          . It connects to VizTR via webhook to sync messages between WhatsApp users and your support dashboard.
-        </p>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* Webhook URL and Send URL are managed as preset keys above */}
-        </div>
-
-        <div className="p-3 rounded-lg bg-[#131314] border border-[#353436]">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-mono font-bold text-[#A1A1AA] uppercase">Bot .env file</span>
-              <button
-                type="button"
-                onClick={() => {
-                  const baseUrl = typeof process !== 'undefined' && process.env.NEXTAUTH_URL ? process.env.NEXTAUTH_URL : 'https://viztr.com';
-                  const webhookUrl = `${baseUrl}/api/messaging/whatsapp`;
-                  const sendUrl = `${baseUrl}/api/messaging/whatsapp/send`;
-                  const envContent = `# VizTR WhatsApp Bot (.env)
-# Rebranded FEI XMD - https://github.com/viztrlabs/whatsapp_bot
-
-BOT_NAME=VizTR Support
-BOT_VERSION=1.0.0
-BOT_URL=${webhookUrl}
-OWNER_NAME=VizTR Support Team
-OWNER_NUMBER=REPLACE_WITH_YOUR_NUMBER
-PREFIX=!
-
-FEI_SESSION_DIR=./auth_info_baileys
-FEI_DATA_DIR=./data
-
-# VizTR Webhooks
-VIZTR_WEBHOOK_URL=${webhookUrl}
-VIZTR_WEBHOOK_SECRET=REPLACE_WITH_WEBHOOK_SECRET
-
-# VizTR Send API
-VIZTR_SEND_URL=${sendUrl}
-`;
-                  navigator.clipboard.writeText(envContent);
-                }}
-                className="text-[10px] font-mono text-[#dbfcff] hover:underline cursor-pointer flex items-center gap-1"
-              >
-                <Copy className="w-3 h-3" /> Copy .env
-              </button>
-            </div>
-            <pre className="text-[10px] font-mono text-[#A1A1AA] whitespace-pre-wrap break-all bg-[#201f20] p-2 rounded border border-[#353436] max-h-40 overflow-y-auto">
-# VizTR WhatsApp Bot (.env)
-BOT_NAME=VizTR Support
-BOT_URL=https://viztr.com
-OWNER_NUMBER=REPLACE_WITH_YOUR_NUMBER
-VIZTR_WEBHOOK_URL=https://viztr.com/api/messaging/whatsapp
-VIZTR_SEND_URL=https://viztr.com/api/messaging/whatsapp/send
-</pre>
-        </div>
-
-        <div className="p-3 rounded-lg bg-[#201f20] border border-[#353436]">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs font-mono text-[#71717A]">Setup steps:</span>
-          </div>
-          <div className="text-[10px] text-[#A1A1AA] font-mono space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="text-[#dbfcff] font-bold">1.</span>
-              <span>Clone the bot: <code className="bg-[#131314] px-1 rounded">git clone https://github.com/viztrlabs/whatsapp_bot</code></span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[#dbfcff] font-bold">2.</span>
-              <span>Copy the .env above into the bot directory and set OWNER_NUMBER</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[#dbfcff] font-bold">3.</span>
-              <span>Run <code className="bg-[#131314] px-1 rounded">npm install</code> then <code className="bg-[#131314] px-1 rounded">npm start</code></span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[#dbfcff] font-bold">4.</span>
-              <span>Pair WhatsApp via terminal (link device with phone number)</span>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* CUSTOM KEY */}
       <div className="p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-4">

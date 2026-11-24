@@ -48,35 +48,15 @@ const telegramAdapter: MessagingAdapter = {
   },
 };
 
-/**
- * WhatsApp placeholder for the future official Cloud API integration.
- * WhatsApp is intentionally NOT registered as a live provider yet — the
- * official WhatsApp Business Platform requires Meta business verification,
- * a phone-number registration fee, and a hosting partner (Twilio/Meta Cloud),
- * so it is not the free/easy path. Drop this adapter in and register it in the
- * `providers` map below when the official setup is complete; the agent layer
- * above needs no changes.
- *
- * WhatsApp Cloud API webhook payload (simplified):
- *   { messages: [{ id, from, text: { body }, timestamp, ... }] }
- */
-const whatsappAdapter: MessagingAdapter = {
-  parseWebhook(_payload) {
-    return null; // TODO: implement once WHATSAPP_ACCESS_TOKEN is configured
-  },
-  async sendTextReply(_conversationId, _text) {
-    throw new Error('WhatsApp provider is not yet configured');
-  },
-};
-
-const providers: Record<MessagingProvider, MessagingAdapter> = {
+const providers: Partial<Record<MessagingProvider, MessagingAdapter>> = {
   telegram: telegramAdapter,
-  whatsapp: whatsappAdapter,
 };
 
+// 'whatsapp' remains in the type union only for legacy conversation rows;
+// no live provider is registered for it.
 export function getMessagingProvider(provider: string): MessagingAdapter | null {
-  const adapter = (providers as Record<string, MessagingAdapter>)[provider];
-  return adapter && provider !== 'whatsapp' ? adapter : null;
+  if (provider === 'whatsapp') return null;
+  return (providers as Record<string, MessagingAdapter>)[provider] ?? null;
 }
 
 export function listMessagingProviders(): MessagingProvider[] {
