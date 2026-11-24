@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
 import {
@@ -34,16 +34,16 @@ type Health = {
   };
 };
 
-const INPUT = 'w-full px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#dbfcff]';
-const CARD = 'p-4 rounded-2xl bg-[#201f20] border border-[#353436] space-y-3';
-const PRIMARY = 'flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#dbfcff] hover:bg-[#34b27b] text-black font-mono font-bold text-xs disabled:opacity-50';
-const SECONDARY = 'flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#131314] border border-[#353436] text-xs font-mono text-[#A1A1AA] hover:text-white hover:border-[#3F3F46] disabled:opacity-50';
+const INPUT = 'w-full px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-white placeholder-[#71717A] focus:outline-none focus:border-[#3ECF8E]';
+const CARD = 'p-4 rounded-2xl bg-[#18181B] border border-[#27272A] space-y-3';
+const PRIMARY = 'flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#3ECF8E] hover:bg-[#34b27b] text-black font-mono font-bold text-xs disabled:opacity-50';
+const SECONDARY = 'flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#09090B] border border-[#27272A] text-xs font-mono text-[#A1A1AA] hover:text-white hover:border-[#3F3F46] disabled:opacity-50';
 
 function StatusTile({ label, value, detail, ok }: { label: string; value: string; detail?: string; ok: boolean }) {
   return (
-    <div className="p-3 rounded-xl bg-[#131314] border border-[#353436] space-y-1">
+    <div className="p-3 rounded-xl bg-[#09090B] border border-[#27272A] space-y-1">
       <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA]">
-        {ok ? <CheckCircle2 className="w-3.5 h-3.5 text-[#dbfcff]" /> : <XCircle className="w-3.5 h-3.5 text-red-400" />}
+        {ok ? <CheckCircle2 className="w-3.5 h-3.5 text-[#3ECF8E]" /> : <XCircle className="w-3.5 h-3.5 text-red-400" />}
         {label}
       </div>
       <div className={`text-sm font-bold truncate ${ok ? 'text-white' : 'text-red-300'}`}>{value}</div>
@@ -181,7 +181,7 @@ export default function LiveChatSettings() {
     <div className="space-y-1.5">
       <label className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA]">
         <KeyRound className="w-3 h-3" /> {label}
-        {settings[key]?.hasValue && <span className="text-[9px] text-[#dbfcff] normal-case">configured</span>}
+        {settings[key]?.hasValue && <span className="text-[9px] text-[#3ECF8E] normal-case">configured</span>}
       </label>
       <div className="relative">
         <input
@@ -208,8 +208,8 @@ export default function LiveChatSettings() {
     <div className="space-y-6 max-w-5xl mx-auto pb-10">
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-3">
-          <div className="p-2 rounded-xl bg-[#dbfcff]/10 border border-[#dbfcff]/20">
-            <MessageSquare className="w-5 h-5 text-[#dbfcff]" />
+          <div className="p-2 rounded-xl bg-[#3ECF8E]/10 border border-[#3ECF8E]/20">
+            <MessageSquare className="w-5 h-5 text-[#3ECF8E]" />
           </div>
           <div>
             <h1 className="text-lg font-display font-bold text-white">Live Chat &amp; Telegram</h1>
@@ -242,7 +242,7 @@ export default function LiveChatSettings() {
           <StatusTile
             label="Webhook"
             value={health?.checks.webhook?.ok ? 'Registered' : 'Not registered'}
-            detail={health?.checks.webhook?.url || health?.checks.webhook?.detail || 'Checking…'}
+            detail={String(health?.checks.webhook?.url || health?.checks.webhook?.detail || 'Checking…')}
             ok={Boolean(health?.checks.webhook?.ok)}
           />
           <StatusTile
@@ -262,7 +262,7 @@ export default function LiveChatSettings() {
       {/* Webhook registration */}
       <section className={CARD}>
         <div className="flex items-center gap-2">
-          <Webhook className="w-4 h-4 text-[#dbfcff]" />
+          <Webhook className="w-4 h-4 text-[#3ECF8E]" />
           <h2 className="text-xs font-mono font-bold text-white">Webhook registration</h2>
           <span className="text-[10px] font-mono text-[#71717A]">auto-detected from this site&apos;s origin</span>
         </div>
@@ -279,8 +279,8 @@ export default function LiveChatSettings() {
         </div>
         {(webhookResult || testResult) && (
           <div className="grid gap-2">
-            {webhookResult && <pre className="max-h-40 overflow-auto p-2 rounded-lg bg-[#131314] border border-[#353436] text-[10px] font-mono text-[#A1A1AA] whitespace-pre-wrap">{webhookResult}</pre>}
-            {testResult && <p className="text-[11px] font-mono text-[#dbfcff]">{testResult}</p>}
+            {webhookResult && <pre className="max-h-40 overflow-auto p-2 rounded-lg bg-[#09090B] border border-[#27272A] text-[10px] font-mono text-[#A1A1AA] whitespace-pre-wrap">{webhookResult}</pre>}
+            {testResult && <p className="text-[11px] font-mono text-[#3ECF8E]">{testResult}</p>}
           </div>
         )}
       </section>
@@ -304,10 +304,10 @@ export default function LiveChatSettings() {
               key={key}
               type="button"
               onClick={() => setDraft(key, drafts[key] === 'true' ? 'false' : 'true')}
-              className="flex items-center justify-between p-3 rounded-xl bg-[#131314] border border-[#353436] text-left"
+              className="flex items-center justify-between p-3 rounded-xl bg-[#09090B] border border-[#27272A] text-left"
             >
-              <span className="flex items-center gap-2 text-xs font-mono text-zinc-200"><Icon className="w-3.5 h-3.5 text-[#dbfcff]" />{label}</span>
-              <span className={`w-9 h-5 rounded-full p-0.5 transition-colors ${drafts[key] === 'true' ? 'bg-[#dbfcff]' : 'bg-[#3F3F46]'}`}>
+              <span className="flex items-center gap-2 text-xs font-mono text-zinc-200"><Icon className="w-3.5 h-3.5 text-[#3ECF8E]" />{label}</span>
+              <span className={`w-9 h-5 rounded-full p-0.5 transition-colors ${drafts[key] === 'true' ? 'bg-[#3ECF8E]' : 'bg-[#3F3F46]'}`}>
                 <span className={`block w-4 h-4 rounded-full bg-black transition-transform ${drafts[key] === 'true' ? 'translate-x-4' : ''}`} />
               </span>
             </button>

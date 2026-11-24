@@ -90,12 +90,23 @@ export async function POST(req: NextRequest) {
   // via Supabase Realtime on `messages`; the AI is never invoked here.
   // -----------------------------------------------------------------------
   const supportGroupId = parseSupportGroupId(chatConfig.supportGroupId);
-  const inSupportGroup = supportGroupId !== null && message?.chat?.id === supportGroupId;
-  if (inSupportGroup && message?.from && !(message.from as any).is_bot) {
+  const chatId = message?.chat?.id;
+  const senderChatId = message?.sender_chat?.id;
+  const inSupportGroup =
+    supportGroupId !== null &&
+    (chatId === supportGroupId || senderChatId === supportGroupId);
+  if (
+    inSupportGroup &&
+    message &&
+    !(message.from?.is_bot || (message.sender_chat as any)?.is_bot)
+  ) {
     const threadId = message.message_thread_id;
     const text = (message.text || '').trim();
 
     if (threadId && /^\/done(?:@\w+)?(?:\s|$)/i.test(text)) {
+      if (!supabaseAdmin) {
+        return NextResponse.json({ ok: false, error: 'Database not configured' }, { status: 503 });
+      }
       const conv = await getConversationByThreadId(supabaseAdmin, threadId);
       if (conv) {
         await supabaseAdmin
@@ -128,12 +139,13 @@ export async function POST(req: NextRequest) {
     if (threadId && text) {
       const conv = await getConversationByThreadId(supabaseAdmin, threadId);
       if (conv) {
+        const fromUser = message.from || message.sender_chat;
         const saved = await insertMessage(supabaseAdmin, conv.id, {
           sender: 'agent',
           text,
           metadata: {
             telegramMessageId: message.message_id,
-            telegramFrom: message.from.username || message.from.first_name,
+            telegramFrom: (fromUser as any)?.username || (fromUser as any)?.first_name || (fromUser as any)?.title,
           },
         });
         if (saved) {
@@ -169,8 +181,14 @@ export async function POST(req: NextRequest) {
   }
 
   // Handle messages
-  if (message && message.text && message.from && message.chat) {
+  if (message && message.text && message.chat) {
     const text = message.text.trim();
+
+    // Determine sender identity (handles both regular users and GroupAnonymousBot sender_chat)
+    const fromUser = message.from || message.sender_chat;
+    if (!fromUser || (fromUser as any).is_bot) {
+      return NextResponse.json({ ok: true });
+    }
 
     if (isCommand(text)) {
       const parsed = extractCommand(text);
@@ -190,9 +208,9 @@ export async function POST(req: NextRequest) {
               client,
               chatId: message.chat.id,
               from: {
-                id: message.from.id,
-                first_name: message.from.first_name,
-                username: message.from.username,
+                id: (fromUser as { id: number }).id,
+                first_name: (fromUser as { first_name?: string; title?: string }).first_name || (fromUser as { title?: string }).title,
+                username: (fromUser as { username?: string }).username,
               },
               messageId: message.message_id,
             });
@@ -220,7 +238,7 @@ export async function POST(req: NextRequest) {
     // Regular message - route to AI agent (escalation only for genuine enquiries)
     try {
       const reply = await getViztrAgentReply(text, {
-        userId: String(message.from.id),
+        userId: String(fromUser.id),
         provider: 'telegram',
         conversationId: String(message.chat.id),
         escalateIfNoAnswer: true,
