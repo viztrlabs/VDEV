@@ -92,12 +92,6 @@ export const primaryNav: NavItem[] = [
         description: 'Edit GLB, GLTF, FBX, OBJ, USDZ',
       },
       {
-        id: 'creator-supersplat',
-        label: 'SuperSplat Editor',
-        href: '/creator/supersplat',
-        description: 'Specialized Gaussian Splat editor',
-      },
-      {
         id: 'creator-assets',
         label: 'Asset Manager',
         href: '/creator/assets',

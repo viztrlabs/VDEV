@@ -78,14 +78,6 @@ export default function DashboardPage() {
               <p className="text-xs text-zinc-400 mt-1">Edit GLB, GLTF, FBX, OBJ</p>
             </Link>
             <Link
-              href="/creator/supersplat"
-              className="group bg-zinc-900/50 border border-zinc-800 rounded-xl p-5 hover:border-rose-500/50 transition-all"
-            >
-              <Sparkles className="w-6 h-6 text-rose-400 mb-3" />
-              <h3 className="font-semibold">Open SuperSplat</h3>
-              <p className="text-xs text-zinc-400 mt-1">Edit Gaussian Splats</p>
-            </Link>
-            <Link
               href="/creator/assets"
               className="group bg-zinc-900/50 border border-zinc-800 rounded-xl p-5 hover:border-emerald-500/50 transition-all"
             >

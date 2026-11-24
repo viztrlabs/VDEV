@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft,
-  ArrowRight,
   Sparkles,
   CheckCircle2,
   ArrowUpRight,
@@ -12,7 +11,6 @@ import {
   Camera,
   Zap,
   Download,
-  ArrowDown,
   Box,
   ChevronDown
 } from 'lucide-react';
@@ -23,23 +21,6 @@ export default function GaussianSplatShowcasePage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [showInfo, setShowInfo] = useState(true);
-
-  const handleOpenEditor = useCallback(async () => {
-    try {
-      const projectId = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('projectId') : null;
-      const res = await fetch('/api/editor/launch-token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ projectId, service: 'gaussian-splat' }),
-      });
-      const data = await res.json();
-      const editorUrl = `/supersplat/index.html${data?.token ? `?token=${data.token}&projectId=${projectId || ''}` : ''}`;
-      window.open(editorUrl, '_blank', 'noopener,noreferrer');
-    } catch (err) {
-      console.error('Failed to launch editor:', err);
-      window.open('/supersplat/index.html', '_blank', 'noopener,noreferrer');
-    }
-  }, []);
 
   useEffect(() => {
     // Initialize a simple Three.js Gaussian Splatting demo
@@ -210,16 +191,6 @@ export default function GaussianSplatShowcasePage() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-md sm:max-w-none mb-6">
-            <button
-              onClick={handleOpenEditor}
-              id="hero-primary-cta"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#00F0FF] hover:bg-[#33f3ff] text-black font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-sm hover:shadow-md hover:scale-105 active:scale-95"
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>Open SuperSplat Editor</span>
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </button>
-
             <Link
               href="http://localhost:3487/editor/scene/1"
               target="_blank"

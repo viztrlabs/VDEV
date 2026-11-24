@@ -25,6 +25,7 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ['*.trycloudflare.com', 'localhost'],
   // Allow access to remote image placeholder.
   images: {
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -222,12 +223,7 @@ const nextConfig: NextConfig = {
     ];
   },
   async rewrites() {
-    return [
-      {
-        source: '/supersplat/:path*',
-        destination: 'http://localhost:3002/:path*',
-      },
-    ];
+    return [];
   },
 };
 

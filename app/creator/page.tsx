@@ -22,14 +22,6 @@ export default function CreatorHub() {
               <h3 className="text-xl font-bold mb-2 group-hover:text-emerald-400">Open 3D Editor</h3>
               <p className="text-sm text-zinc-400">Create and edit 3D scenes with full WebGL support</p>
             </Link>
-            <Link
-              href="/xr-world/supersplat"
-              className="group p-6 bg-zinc-900/50 border border-zinc-800 rounded-xl hover:border-rose-500/50 transition-all"
-            >
-              <Sparkles className="w-8 h-8 text-rose-400 mb-3" />
-              <h3 className="text-xl font-bold mb-2 group-hover:text-rose-400">SuperSplat Editor</h3>
-              <p className="text-sm text-zinc-400">Gaussian splatting capture and editing</p>
-            </Link>
           </div>
           <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-8 text-center">
             <p className="text-zinc-400">Full Creator Hub is being built.</p>

@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Sparkles, Camera, Edit3, Download, BarChart2, ExternalLink, Box, ArrowRight, ChevronDown, Compass } from 'lucide-react';
+import { Sparkles, Camera, Edit3, Download, BarChart2, ExternalLink, Box, ChevronDown, Compass } from 'lucide-react';
 
 const features = [
   {
@@ -94,17 +94,6 @@ export default function VizSplatPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-md sm:max-w-none mb-6">
-            <a
-              href="/supersplat/index.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              id="hero-primary-cta"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#00F0FF] hover:bg-[#33f3ff] text-black font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer hover:scale-105 active:scale-95"
-            >
-              <span>Open SuperSplat Editor</span>
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </a>
-
             <Link
               href="/pricing"
               id="hero-secondary-cta"

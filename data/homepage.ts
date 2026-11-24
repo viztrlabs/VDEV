@@ -68,7 +68,6 @@ export const homepageData = {
     tagline: 'Create. Edit. Publish.',
     tools: [
       { id: '3d-editor', name: '3D Editor', icon: 'Box', description: 'Edit GLB, GLTF, FBX, OBJ, USDZ models', href: '/creator/3d-editor' },
-      { id: 'supersplat', name: 'SuperSplat Editor', icon: 'Sparkles', description: 'Specialized Gaussian Splat editor', href: '/creator/supersplat' },
       { id: 'asset-manager', name: 'Asset Manager', icon: 'Layers', description: 'Manage 3D assets, textures, materials', href: '/creator/assets' },
       { id: 'material-editor', name: 'Material Editor', icon: 'PenTool', description: 'PBR materials, shaders, texture mapping', href: '#', comingSoon: true },
       { id: 'lighting', name: 'Lighting', icon: 'Zap', description: 'Scene lighting, HDRI environments', href: '#', comingSoon: true },

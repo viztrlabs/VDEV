@@ -2,8 +2,9 @@
 
 import React, { Suspense } from 'react';
 import Link from 'next/link';
-import SplatConfigurator from '@/components/xr/SplatConfigurator';
-import GaussianSplatViewer from '@/components/xr/GaussianSplatViewer';
+import dynamic from 'next/dynamic';
+
+const SplatConfigurator = dynamic(() => import('@/components/xr/SplatConfigurator'), { ssr: false });
 import {
   Sparkles,
   Box,
@@ -85,14 +86,6 @@ export default function SplatShowcasePage() {
             >
               <Cpu className="w-4 h-4" />
               <span>Open Admin Dashboard</span>
-            </Link>
-
-            <Link
-              href="/xr-world/super-splat"
-              className="hero-secondary-btn w-full sm:w-auto px-8 py-3.5 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider bg-[#131314] hover:bg-[#3b494b] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer hover:scale-105 active:scale-95 border border-[#3b494b]"
-            >
-              <Sparkles className="w-4 h-4 text-rose-400" />
-              <span>Open SuperSplat Editor</span>
             </Link>
           </div>
           

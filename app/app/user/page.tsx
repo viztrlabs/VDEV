@@ -74,17 +74,6 @@ export default function UserDashboard() {
                 <span className="text-sm font-medium">Open 3D Editor</span>
               </Link>
               <Link
-                href="/creator/supersplat"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center gap-3 px-3 py-2.5 rounded-lg bg-zinc-800/50 hover:bg-zinc-800 transition-all border border-transparent hover:border-rose-500/30"
-              >
-                <div className="p-2 rounded-lg bg-rose-500/20">
-                  <Sparkles className="w-5 h-5 text-rose-400" />
-                </div>
-                <span className="text-sm font-medium">Open SuperSplat</span>
-              </Link>
-              <Link
                 href="/app/user/assets"
                 className="group flex items-center gap-3 px-3 py-2.5 rounded-lg bg-zinc-800/50 hover:bg-zinc-800 transition-all border border-transparent hover:border-cyan-500/30"
               >
